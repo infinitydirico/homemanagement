@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  homemanagement.api:
+    image: ${DOCKER_REGISTRY}homemanagementapi
+    build:
+      context: .
+      dockerfile: HomeManagement.API\Dockerfile
