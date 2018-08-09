@@ -1,7 +1,10 @@
+using System;
 using HomeManagement.App.Services.Components;
 using HomeManagement.App.Services.Components.Language;
 using HomeManagement.App.Services.Rest;
 using HomeManagement.App.Views.Login;
+using HomeManagement.Contracts.Mapper;
+using HomeManagement.Mapper;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -36,15 +39,30 @@ namespace HomeManagement.App
 
         private void InitializeDependencies()
         {
+            RegisterServiceClients();
+
+            RegisterMappers();
+
+            DependencyService.Register<IMetadataHandler, MetadataHandler>();
+            DependencyService.Register<ILanguageFactory, LanguageFactory>();
+
+        }
+
+        private void RegisterServiceClients()
+        {
             DependencyService.Register<IAccountServiceClient, AccountServiceClient>();
             DependencyService.Register<IAuthServiceClient, AuthServiceClient>();
             DependencyService.Register<IChargeServiceClient, ChargeServiceClient>();
             DependencyService.Register<IAccountMetricsServiceClient, AccountMetricsServiceClient>();
             DependencyService.Register<ICategoryServiceClient, CategoryServiceClient>();
+        }
 
-            DependencyService.Register<IMetadataHandler, MetadataHandler>();
-            DependencyService.Register<ILanguageFactory, LanguageFactory>();
-
+        private void RegisterMappers()
+        {
+            DependencyService.Register<IAccountMapper, AccountMapper>();
+            DependencyService.Register<ICategoryMapper, CategoryMapper>();
+            DependencyService.Register<IChargeMapper, ChargeMapper>();
+            DependencyService.Register<IUserMapper, UserMapper>();
         }
     }
 }

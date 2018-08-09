@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HomeManagement.Contracts\HomeManagement.Contracts.csproj" />
     <ProjectReference Include="..\HomeManagement.Domain\HomeManagement.Domain.csproj" />
     <ProjectReference Include="..\HomeManagement.Models\HomeManagement.Models.csproj" />
   </ItemGroup>

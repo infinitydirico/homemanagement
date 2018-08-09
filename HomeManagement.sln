@@ -13,13 +13,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeManagement.App.UWP", "H
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.App", "HomeManagement.App\HomeManagement.App\HomeManagement.App.csproj", "{ACEEB4ED-128F-47A7-860E-D70F24600C30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeManagement.Domain", "HomeManagement.Domain\HomeManagement.Domain.csproj", "{8F105C75-C687-48C6-A846-85D65E179253}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.Domain", "HomeManagement.Domain\HomeManagement.Domain.csproj", "{8F105C75-C687-48C6-A846-85D65E179253}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeManagement.Models", "HomeManagement.Models\HomeManagement.Models.csproj", "{195EB52D-66FD-4F7D-B4B1-8A0C65B6BC99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.Models", "HomeManagement.Models\HomeManagement.Models.csproj", "{195EB52D-66FD-4F7D-B4B1-8A0C65B6BC99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeManagement.Contracts", "HomeManagement.Contracts\HomeManagement.Contracts.csproj", "{C74D42D7-BBDA-4CA8-A6D5-436996C3177A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.Contracts", "HomeManagement.Contracts\HomeManagement.Contracts.csproj", "{C74D42D7-BBDA-4CA8-A6D5-436996C3177A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeManagement.Core", "HomeManagement.Core\HomeManagement.Core.csproj", "{A4B6AB68-54E3-49D7-A155-794C427309B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.Core", "HomeManagement.Core\HomeManagement.Core.csproj", "{A4B6AB68-54E3-49D7-A155-794C427309B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeManagement.Mapper", "HomeManagement.Mapper\HomeManagement.Mapper.csproj", "{16F4CC96-BBD4-46AE-A867-62B6346D60AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeManagement.Mapper.Tests", "HomeManagement.Mapper.Tests\HomeManagement.Mapper.Tests.csproj", "{EDC1B71C-1B53-4B42-807F-00D1A0816E52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -189,6 +193,38 @@ Global
 		{A4B6AB68-54E3-49D7-A155-794C427309B6}.Release|x64.Build.0 = Release|Any CPU
 		{A4B6AB68-54E3-49D7-A155-794C427309B6}.Release|x86.ActiveCfg = Release|Any CPU
 		{A4B6AB68-54E3-49D7-A155-794C427309B6}.Release|x86.Build.0 = Release|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Debug|ARM.Build.0 = Debug|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Debug|x64.Build.0 = Debug|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Debug|x86.Build.0 = Debug|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Release|ARM.ActiveCfg = Release|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Release|ARM.Build.0 = Release|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Release|x64.ActiveCfg = Release|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Release|x64.Build.0 = Release|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Release|x86.ActiveCfg = Release|Any CPU
+		{16F4CC96-BBD4-46AE-A867-62B6346D60AD}.Release|x86.Build.0 = Release|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Debug|ARM.Build.0 = Debug|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Debug|x64.Build.0 = Debug|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Debug|x86.Build.0 = Debug|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Release|ARM.ActiveCfg = Release|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Release|ARM.Build.0 = Release|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Release|x64.ActiveCfg = Release|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Release|x64.Build.0 = Release|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Release|x86.ActiveCfg = Release|Any CPU
+		{EDC1B71C-1B53-4B42-807F-00D1A0816E52}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

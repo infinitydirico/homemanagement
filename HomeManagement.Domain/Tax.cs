@@ -2,8 +2,10 @@
 
 namespace HomeManagement.Domain
 {
-    public class Tax : BaseEntity
+    public class Tax
     {
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public int Price { get; set; }

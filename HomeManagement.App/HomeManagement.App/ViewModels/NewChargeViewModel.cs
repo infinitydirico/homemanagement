@@ -1,5 +1,7 @@
 ﻿using HomeManagement.App.Services.Rest;
+using HomeManagement.Contracts.Mapper;
 using HomeManagement.Domain;
+using HomeManagement.Mapper;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +14,7 @@ namespace HomeManagement.App.ViewModels
         protected IAccountServiceClient accountServiceClient = DependencyService.Get<IAccountServiceClient>(DependencyFetchTarget.GlobalInstance);
         protected IEnumerable<Account> accounts = Enumerable.Empty<Account>();
         private readonly IAuthServiceClient authServiceClient = DependencyService.Get<IAuthServiceClient>(DependencyFetchTarget.GlobalInstance);
+        private readonly IAccountMapper accountMapper = DependencyService.Get<IAccountMapper>(DependencyFetchTarget.NewInstance);
 
         public Account SelectedAccount
         {
@@ -45,7 +48,7 @@ namespace HomeManagement.App.ViewModels
                     CurrentPage = 1
                 });
 
-                accounts = page.Accounts;
+                accounts = accountMapper.ToEntities(page.Accounts);
             });
 
             base.InitializeData();

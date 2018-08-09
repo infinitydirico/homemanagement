@@ -1,5 +1,4 @@
-﻿using HomeManagement.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace HomeManagement.Models
@@ -10,6 +9,6 @@ namespace HomeManagement.Models
         public int AccountId { get; set; }
 
         [DataMember(Name = "charges")]
-        public List<Charge> Charges { get; set; }
+        public List<ChargeModel> Charges { get; set; }
     }
 }

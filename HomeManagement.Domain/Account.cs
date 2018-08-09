@@ -1,11 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace HomeManagement.Domain
 {
-    public class Account : BaseEntity
+    public class Account
     {
+        public Account()
+        {
+            Charges = new List<Charge>();
+            Taxes = new List<Tax>();
+        }
+
+        public Account(int id, string name, int balance, bool excludeFormStatistics, bool isCash, int userId)
+            :this()
+        {
+            Id = id;
+            Name = name;
+            Balance = balance;
+            ExcludeFromStatistics = excludeFormStatistics;
+            IsCash = isCash;
+            UserId = userId;
+        }
+
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public int Balance { get; set; }

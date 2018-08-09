@@ -1,5 +1,7 @@
 ﻿using HomeManagement.App.Services.Rest;
+using HomeManagement.Contracts.Mapper;
 using HomeManagement.Domain;
+using HomeManagement.Mapper;
 using HomeManagement.Models;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -9,8 +11,10 @@ namespace HomeManagement.App.ViewModels
 {
     public class ChargesListViewModel : BaseViewModel
     {
+        private readonly IChargeMapper chargeMapper = DependencyService.Get<IChargeMapper>(DependencyFetchTarget.NewInstance);
+        private readonly IChargeServiceClient chargeServiceClient = DependencyService.Get<IChargeServiceClient>(DependencyFetchTarget.GlobalInstance);
+
         ObservableCollection<Charge> charges;
-        private IChargeServiceClient chargeServiceClient = DependencyService.Get<IChargeServiceClient>(DependencyFetchTarget.GlobalInstance);
 
         Account account;
         Charge selectedCharge;
@@ -52,7 +56,7 @@ namespace HomeManagement.App.ViewModels
             set
             {
                 page = value;
-                Charges = new ObservableCollection<Charge>(page.Charges);
+                Charges = new ObservableCollection<Charge>(chargeMapper.ToEntities(page.Charges));
                 OnPropertyChanged();
             }
         }

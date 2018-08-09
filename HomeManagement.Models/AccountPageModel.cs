@@ -1,5 +1,4 @@
-﻿using HomeManagement.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace HomeManagement.Models
@@ -10,6 +9,6 @@ namespace HomeManagement.Models
         public int UserId { get; set; }
 
         [DataMember(Name = "accounts")]
-        public List<Account> Accounts { get; set; }
+        public List<AccountModel> Accounts { get; set; }
     }
 }

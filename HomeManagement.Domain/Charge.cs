@@ -2,7 +2,7 @@
 
 namespace HomeManagement.Domain
 {
-    public class Charge : BaseEntity//, IExportable
+    public class Charge //, IExportable
     {
         //IList<string> exportableHeaders = new List<string>
         //{
@@ -12,6 +12,21 @@ namespace HomeManagement.Domain
         //    nameof(ChargeType),
         //    nameof(CategoryName)
         //};
+
+        public Charge() { }
+
+        public Charge(int id, string name, int price, DateTime date, ChargeType chargeType, int categoryId, int accountId)
+        {
+            Id = id;
+            Name = name;
+            Price = price;
+            Date = date;
+            ChargeType = chargeType;
+            CategoryId = categoryId;
+            AccountId = accountId;
+        }
+
+        public int Id { get; set; }
 
         public string Name { get; set; }
 

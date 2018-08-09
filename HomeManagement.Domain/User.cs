@@ -2,13 +2,23 @@
 
 namespace HomeManagement.Domain
 {
-    public class User : BaseEntity
+    public class User
     {
         public User()
         {
             Accounts = new List<Account>();
             UsersInRoles = new List<UserInRole>();
         }
+
+        public User(int id,string email, string password)
+            :this()
+        {
+            Id = id;
+            Email = email;
+            Password = password;
+        }
+
+        public int Id { get; set; }
 
         public string Email { get; set; }
 

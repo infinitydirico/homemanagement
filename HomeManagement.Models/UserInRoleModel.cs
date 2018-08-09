@@ -1,13 +1,11 @@
-﻿using HomeManagement.Domain;
-
-namespace HomeManagement.Models
+﻿namespace HomeManagement.Models
 {
-    public class UserInRoleModel
-    {
-        public User User { get; set; }
+    //public class UserInRoleModel
+    //{
+    //    public User User { get; set; }
 
-        public Role Role { get; set; }
-    }
+    //    public Role Role { get; set; }
+    //}
 
     public class EnRollUserModel
     {
