@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HomeManagement.App.Views.Main.MainPage"
+            xmlns:viewModels="clr-namespace:HomeManagement.App.ViewModels"
+            xmlns:mainPages="clr-namespace:HomeManagement.App.Views.Main"
+            BarBackgroundColor="{StaticResource TabBarColor}"
+            BackgroundColor="{StaticResource TabBarColor}"
+            Title="Home">
+  <!--Pages can be added as references or inline-->
+    <BindableObject.BindingContext>
+        <viewModels:MainViewModel />
+    </BindableObject.BindingContext>
+    <TabbedPage.ToolbarItems>
+        <ToolbarItem Icon="exit.png" Command="{Binding LogoutCommand}" />
+    </TabbedPage.ToolbarItems>
+    
+    <mainPages:DashboardPage />
+    <mainPages:StatisticsPage />
+</TabbedPage>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace HomeManagement.Domain
 {
@@ -14,8 +13,6 @@ namespace HomeManagement.Domain
         //    nameof(CategoryName)
         //};
 
-        [Required]
-        [MaxLength(250)]
         public string Name { get; set; }
 
         public int Price { get; set; }

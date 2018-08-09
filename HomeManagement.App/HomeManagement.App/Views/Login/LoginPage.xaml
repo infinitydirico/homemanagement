@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HomeManagement.App.Views.Login.LoginPage"
+             Title="Login"
+             BackgroundColor="{StaticResource LayoutDark}">
+    <ContentPage.Content>
+        <StackLayout VerticalOptions="Center">
+            <StackLayout HorizontalOptions="FillAndExpand" Margin="20,0,20,0">
+                <Label Text="{Binding UsernameText}" TextColor="White"/>
+
+                <Entry x:Name="usernameEntry" TextColor="White" Text="{Binding Username}" IsEnabled="{Binding !IsBusy}" BackgroundColor="{StaticResource LayoutDark}" />
+
+                <Label Text="{Binding PasswordText}" TextColor="White" />
+
+                <Entry x:Name="passwordEntry" TextColor="White" Text="{Binding Password}" IsEnabled="{Binding !IsBusy}" BackgroundColor="{StaticResource LayoutDark}" IsPassword="true" />
+            </StackLayout>
+
+            <StackLayout HorizontalOptions="Center">
+                <Button Image="login.png" Clicked="OnLoginButtonClicked" WidthRequest="180" IsEnabled="{Binding !IsBusy}" BackgroundColor="{StaticResource ControlLight}" />
+            </StackLayout>
+
+            <Label x:Name="messageLabel" />
+            <ActivityIndicator x:Name="indicator" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="White" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

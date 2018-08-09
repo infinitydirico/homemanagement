@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HomeManagement.App.Views.Main.StatisticsPage"
+             BackgroundColor="{StaticResource TabBarColor}"
+             Icon="bar_chart.png"
+             xmlns:viewModels="clr-namespace:HomeManagement.App.ViewModels"
+             xmlns:microcharts="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms">
+    <ContentPage.Content>
+        <StackLayout HorizontalOptions="FillAndExpand">
+            <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,10,10,10" HeightRequest="220">
+                <microcharts:ChartView x:Name="firstChart" Chart="{Binding AccountBalances}" />
+            </Frame>
+
+            <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,10,10,10" HeightRequest="220">
+                <microcharts:ChartView x:Name="secondChart" Chart="{Binding ExpensivesCategories}" />
+            </Frame>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
