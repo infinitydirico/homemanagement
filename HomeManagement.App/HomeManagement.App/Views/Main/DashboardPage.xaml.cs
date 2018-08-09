@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HomeManagement.App.ViewModels;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace HomeManagement.App.Views.Main
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class DashboardPage : ContentPage
 	{
-		public DashboardPage ()
+        DashboardViewModel dashboardViewModel = new DashboardViewModel();
+
+        public DashboardPage ()
 		{
 			InitializeComponent ();
-		}
-	}
+
+            BindingContext = dashboardViewModel;
+        }
+    }
 }

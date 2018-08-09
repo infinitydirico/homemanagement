@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HomeManagement.App.Views.Charges.EditCharge"
+             xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
+             BackgroundColor="{StaticResource LayoutDark}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Conv:InverseBoolConverter x:Key="InverseVisibility"/>
+            <Conv:ChargeTypeLabelConverter x:Key="ChargeTypeLabel" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Icon="check_green.png" Command="{Binding UpdateChargeCommand}" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical">
+
+            <StackLayout Orientation="Vertical" Padding="20,20,20,20">
+                <Label Text="Nombre del movimiento" TextColor="White" FontSize="Large" />
+
+                <Entry TextColor="White" Text="{Binding Charge.Name}" FontSize="Large" BackgroundColor="{StaticResource LayoutDark}" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
+                <Image Source="money.png" HorizontalOptions="Start" HeightRequest="50" />
+
+                <Entry WidthRequest="100" Keyboard="Numeric" TextColor="White" Text="{Binding Charge.Price}" BackgroundColor="{StaticResource LayoutDark}" />
+
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
+                <Image Source="date.png" HorizontalOptions="Start" HeightRequest="50" />
+
+                <DatePicker Date="{Binding Charge.Date}" TextColor="White" BackgroundColor="{StaticResource LayoutDark}"/>
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
+                <Image Source="label.png" HorizontalOptions="Start" HeightRequest="50" />
+
+                <Picker WidthRequest="150" TextColor="White" BackgroundColor="{StaticResource LayoutDark}" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" />
+
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
+                <Image Source="money_green.png" IsVisible="{Binding Source={x:Reference chargeTypeSwitch}, Path=IsToggled}" HorizontalOptions="Start" HeightRequest="50" />
+                <Image Source="money_red.png" IsVisible="{Binding Source={x:Reference chargeTypeSwitch}, Path=IsToggled, Converter={StaticResource InverseVisibility}}" HorizontalOptions="Start" HeightRequest="50" />
+
+                <Switch x:Name="chargeTypeSwitch" IsToggled="{Binding ChargeType}" />
+
+                <Label Text="{Binding Source={x:Reference chargeTypeSwitch}, Path=IsToggled, Converter={StaticResource ChargeTypeLabel}}" VerticalOptions="Center" TextColor="White" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

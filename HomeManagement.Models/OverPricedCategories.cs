@@ -23,7 +23,7 @@ namespace HomeManagement.Models
 
             foreach (var item in Categories)
             {
-                values.Add(item.Category.Name, (item.Value * 1000).ToString());
+                values.Add(item.Category.Name, (item.Price * 1000).ToString());
             }
 
             return values;

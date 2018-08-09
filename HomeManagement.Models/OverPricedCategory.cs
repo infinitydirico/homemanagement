@@ -8,7 +8,7 @@ namespace HomeManagement.Models
         [DataMember(Name = "category")]
         public Category Category { get; set; }
 
-        [DataMember(Name = "value")]
-        public double Value { get; set; }
+        [DataMember(Name = "price")]
+        public double Price { get; set; }
     }
 }

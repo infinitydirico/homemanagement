@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HomeManagement.App.Views.Controls.AccountListControl"
+            xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
+             BackgroundColor="{StaticResource LayoutDark}"
+              MinimumHeightRequest="200"
+              HeightRequest="200">
+    <StackLayout.Resources>
+        <ResourceDictionary>
+            <Conv:PositiveNegativeColorConverter x:Key="PositiveNegative" />
+        </ResourceDictionary>
+    </StackLayout.Resources>
+    <Label Text="{Binding AccountLabelText}" FontSize="Large" TextColor="{StaticResource LightBlue}" Margin="0,20,0,20"/>
+    <ListView x:Name="accountsList" ItemTapped="EditCharge" ItemsSource="{Binding Accounts}">
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <ViewCell>
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                        <Label Text = "{Binding Name}" FontSize="Medium" TextColor="White"/>
+                        <Label Text = "{Binding Balance}" FontSize="Medium" TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" HorizontalOptions="EndAndExpand"/>
+                    </StackLayout>
+                </ViewCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+</StackLayout>

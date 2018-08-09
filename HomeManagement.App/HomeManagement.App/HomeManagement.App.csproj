@@ -12,17 +12,27 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Charges\" />
-    <Folder Include="Views\Controls\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\HomeManagement.Contracts\HomeManagement.Contracts.csproj" />
     <ProjectReference Include="..\..\HomeManagement.Domain\HomeManagement.Domain.csproj" />
     <ProjectReference Include="..\..\HomeManagement.Models\HomeManagement.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Views\Charges\AddCharge.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Charges\ChargesList.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Charges\EditCharge.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Controls\AccountListControl.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Controls\NewChargeControl.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Views\Login\LoginPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>

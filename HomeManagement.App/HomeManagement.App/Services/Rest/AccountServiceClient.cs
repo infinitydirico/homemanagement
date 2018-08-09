@@ -1,4 +1,5 @@
 ﻿using HomeManagement.App.Common;
+using HomeManagement.Domain;
 using HomeManagement.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -27,6 +28,5 @@ namespace HomeManagement.App.Services.Rest
         Task<IEnumerable<OverPricedCategory>> GetAccountTopCharges(int accountId, int month);
 
         Task<AccountPageModel> Page(AccountPageModel dto);
-
     }
 }

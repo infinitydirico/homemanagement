@@ -9,9 +9,7 @@ namespace HomeManagement.App.Services.Rest
 {
     public class AuthServiceClient : BaseService, IAuthServiceClient
     {
-        protected User user;
-
-        public User GetUser() => user;
+        public User User { get; private set; }
 
         public async Task<User> Login(User user)
         {
@@ -19,7 +17,7 @@ namespace HomeManagement.App.Services.Rest
 
             DependencyService.Get<IMetadataHandler>().StoreValue("header", result.Token.Value);
 
-            user = result;
+            User = result;
 
             return result;
         }
@@ -40,7 +38,7 @@ namespace HomeManagement.App.Services.Rest
     {
         Task<User> Login(User user);
 
-        User GetUser();
+        User User { get; }
 
         Task Logout(User user);
         Task Logout();

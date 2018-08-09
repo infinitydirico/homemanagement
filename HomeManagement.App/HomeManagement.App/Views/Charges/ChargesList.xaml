@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HomeManagement.App.Views.Charges.ChargesList"
+             xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
+             BackgroundColor="{StaticResource LayoutDark}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Conv:ChargeTypeColorConverter x:Key="ChargeTypeColor" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Icon="add.png" Clicked="OnAddChargeCommand" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout Margin="20,20,20,20">
+            <ListView x:Name="chargesList" ItemTapped="chargesList_ItemTapped" ItemsSource="{Binding Charges}" IsVisible="{Binding !IsBusy}" SelectedItem="{Binding SelectedCharge}" RowHeight="70">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.ContextActions>
+                                <MenuItem Clicked="OnEdit" CommandParameter="{Binding .}" Icon="edit.png" />
+                                <MenuItem Clicked="OnRemove" CommandParameter="{Binding .}" Icon="red_trash.png" IsDestructive="True"/>
+                            </ViewCell.ContextActions>
+                            <StackLayout Orientation="Vertical">
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text = "{Binding Name}" FontSize="Large" TextColor="White" HorizontalOptions="StartAndExpand" />
+                                    <Label Text = "{Binding Price}" TextColor="{Binding ChargeType, Converter={StaticResource ChargeTypeColor}}" FontSize="Medium" HorizontalOptions="EndAndExpand"/>
+                                </StackLayout>
+                                <StackLayout Padding="0,5,0,0">
+                                    <Label Text = "{Binding CurrentDate}" Grid.Column="0" Grid.Row="1" FontSize="Medium" TextColor="White"/>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <ActivityIndicator x:Name="indicator" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="White" />
+
+            <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="Center">
+                <StackLayout>
+                    <Button Image="arrow_left.png" BackgroundColor="{StaticResource ControlLight}" VerticalOptions="Center" Command="{Binding PreviousPageCommand}" />
+                </StackLayout>
+
+                <StackLayout>
+                    <Button Image="arrow_right.png" BackgroundColor="{StaticResource ControlLight}" VerticalOptions="Center" Command="{Binding NextPageCommand}" />
+                </StackLayout>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

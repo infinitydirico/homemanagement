@@ -18,14 +18,16 @@ namespace HomeManagement.App.ViewModels
         {
             Task.Run(async () =>
             {
+                var user = authServiceClient.User;
+
                 var page = await serviceClient.Page(new Models.AccountPageModel
                 {
-                    UserId = authServiceClient.GetUser().Id,
+                    UserId = user.Id,
                     PageCount = 10,
                     CurrentPage = 1
                 });
 
-                accounts = page.Accounts;
+                Accounts = page.Accounts;
             });
         }
 

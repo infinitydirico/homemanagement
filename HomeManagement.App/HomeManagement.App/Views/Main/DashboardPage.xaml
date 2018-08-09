@@ -1,12 +1,69 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="HomeManagement.App.Views.Main.DashboardPage">
+             x:Class="HomeManagement.App.Views.Main.DashboardPage"
+             xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
+             xmlns:local="clr-namespace:HomeManagement.App.Views.Controls"
+             BackgroundColor="{StaticResource TabBarColor}"
+             Icon="dashboard.png">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Conv:PercentageColorConverter x:Key="PercentageColor" />
+            <Conv:IsGreaterThanToBoolConverter x:Key="GreaterThan" />
+            <Conv:IsLessThanToBoolConverter x:Key="LessThan" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <ScrollView>
+            <StackLayout Orientation="Vertical">
+                <StackLayout Orientation="Vertical" Margin="0,10,0,0">
+                    <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
+                        <StackLayout Orientation="Horizontal">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand">
+                                <Label Text="{Binding OverallIncomeText}" FontSize="Large" TextColor="White" />
+                            </StackLayout>
+                            <StackLayout Orientation="Vertical" HorizontalOptions="EndAndExpand">
+                                <Label Text="{Binding TotalIncome}" FontSize="Large" TextColor="White" />
+
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="{Binding IncomePercentage}" FontSize="Medium" TextColor="{Binding IncomePercentage, Converter={StaticResource PercentageColor}}" />
+
+                                    <Image Source="perc_down.png" IsVisible="{Binding IncomePercentage, Converter={StaticResource LessThan}}" HeightRequest="25" />
+                                    <Image Source="perc_up.png" IsVisible="{Binding IncomePercentage, Converter={StaticResource GreaterThan}}" HeightRequest="25"/>
+                                </StackLayout>
+                            </StackLayout>
+
+                        </StackLayout>
+                    </Frame>
+
+                    <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
+                        <StackLayout Orientation="Horizontal">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand">
+                                <Label Text="Egresos totales" FontSize="Large" TextColor="White" />
+                            </StackLayout>
+                            <StackLayout Orientation="Vertical" HorizontalOptions="EndAndExpand">
+                                <Label Text="{Binding TotalOutcome}" FontSize="Large" TextColor="White" />
+
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="{Binding OutcomePercentage}" FontSize="Medium" TextColor="{Binding OutcomePercentage, Converter={StaticResource PercentageColor}}" />
+
+                                    <Image Source="perc_down.png" IsVisible="{Binding OutcomePercentage, Converter={StaticResource LessThan}}" HeightRequest="25" />
+                                    <Image Source="perc_up.png" IsVisible="{Binding OutcomePercentage, Converter={StaticResource LessThan}}" HeightRequest="25"/>
+                                </StackLayout>
+                            </StackLayout>
+
+                        </StackLayout>
+                    </Frame>
+                </StackLayout>
+
+                <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
+                    <local:AccountListControl></local:AccountListControl>
+                </Frame>
+
+                <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
+                    <local:NewChargeControl></local:NewChargeControl>
+                </Frame>
+            </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>
