@@ -5,14 +5,15 @@ using HomeManagement.Domain;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Autofac;
 
 namespace HomeManagement.App.ViewModels
 {
     public class AccountsViewModel : BaseViewModel
     {
-        private readonly IAccountServiceClient serviceClient = DependencyService.Get<IAccountServiceClient>(DependencyFetchTarget.GlobalInstance);
-        private readonly IAuthServiceClient authServiceClient = DependencyService.Get<IAuthServiceClient>(DependencyFetchTarget.GlobalInstance);
-        private readonly IAccountMapper accountMapper = DependencyService.Get<IAccountMapper>(DependencyFetchTarget.NewInstance);
+        private readonly IAccountServiceClient serviceClient = App._container.Resolve<IAccountServiceClient>();
+        private readonly IAuthServiceClient authServiceClient = App._container.Resolve<IAuthServiceClient>();
+        private readonly IAccountMapper accountMapper = App._container.Resolve<IAccountMapper>();
 
         IEnumerable<Account> accounts;
 

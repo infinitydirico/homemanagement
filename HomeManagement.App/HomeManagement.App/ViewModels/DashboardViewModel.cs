@@ -1,12 +1,13 @@
 ﻿using HomeManagement.App.Services.Rest;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Autofac;
 
 namespace HomeManagement.App.ViewModels
 {
     public class DashboardViewModel : BaseViewModel
     {
-        IAccountMetricsServiceClient metricClient = DependencyService.Get<IAccountMetricsServiceClient>(DependencyFetchTarget.GlobalInstance);
+        IAccountMetricsServiceClient metricClient = App._container.Resolve<IAccountMetricsServiceClient>();
 
         public DashboardViewModel()
         {

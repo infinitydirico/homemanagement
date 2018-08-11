@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Xamarin.Forms;
+using Autofac;
 
 namespace HomeManagement.App.ViewModels
 {
@@ -19,7 +20,7 @@ namespace HomeManagement.App.ViewModels
 
         public BaseViewModel()
         {
-            language = DependencyService.Get<ILanguageFactory>(DependencyFetchTarget.GlobalInstance);
+            language = App._container.Resolve<ILanguageFactory>();
 
             language.PropertyChanged += Language_PropertyChanged;
 

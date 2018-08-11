@@ -2,12 +2,13 @@
 using System;
 using System.Windows.Input;
 using Xamarin.Forms;
+using Autofac;
 
 namespace HomeManagement.App.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-        private readonly IAuthServiceClient authController = DependencyService.Get<IAuthServiceClient>(DependencyFetchTarget.GlobalInstance);
+        private readonly IAuthServiceClient authController = App._container.Resolve<IAuthServiceClient>();
 
         public MainViewModel()
         {

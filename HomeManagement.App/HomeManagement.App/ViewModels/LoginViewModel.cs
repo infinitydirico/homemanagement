@@ -1,10 +1,8 @@
 ﻿using HomeManagement.App.Services.Rest;
 using HomeManagement.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using HomeManagement.Contracts.Repositories;
+using Autofac;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
 namespace HomeManagement.App.ViewModels
 {
@@ -13,15 +11,9 @@ namespace HomeManagement.App.ViewModels
         string username = "ramiro.di.rico@gmail.com";
         string password = "4430598Q#$q";
 
-        private IAuthServiceClient authServiceClient;
-        private ICryptography crypto;
-
-        public LoginViewModel()
-        {
-            crypto = DependencyService.Get<ICryptography>(DependencyFetchTarget.GlobalInstance);
-
-            authServiceClient = DependencyService.Get<IAuthServiceClient>(DependencyFetchTarget.GlobalInstance);
-        }
+        private readonly IAuthServiceClient authServiceClient = App._container.Resolve<IAuthServiceClient>();
+        private readonly ICryptography crypto = App._container.Resolve<ICryptography>();
+        private readonly IUserRepository userRepository = App._container.Resolve<IUserRepository>();
 
         public string Username
         {
@@ -46,11 +38,13 @@ namespace HomeManagement.App.ViewModels
         public async Task LoginAsync()
         {
             IsBusy = true;
+
             await authServiceClient.Login(new Domain.User
             {
                 Email = username,
                 Password = crypto.Encrypt(password)
             });
+
             IsBusy = false;
         }
 

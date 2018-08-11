@@ -6,13 +6,14 @@ using HomeManagement.Models;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Autofac;
 
 namespace HomeManagement.App.ViewModels
 {
     public class ChargesListViewModel : BaseViewModel
     {
-        private readonly IChargeMapper chargeMapper = DependencyService.Get<IChargeMapper>(DependencyFetchTarget.NewInstance);
-        private readonly IChargeServiceClient chargeServiceClient = DependencyService.Get<IChargeServiceClient>(DependencyFetchTarget.GlobalInstance);
+        private readonly IChargeMapper chargeMapper = App._container.Resolve<IChargeMapper>();
+        private readonly IChargeServiceClient chargeServiceClient = App._container.Resolve<IChargeServiceClient>();
 
         ObservableCollection<Charge> charges;
 

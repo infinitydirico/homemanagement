@@ -1,4 +1,5 @@
-﻿using HomeManagement.App.Common;
+﻿using Autofac;
+using HomeManagement.App.Common;
 using HomeManagement.App.Services.Components;
 using Newtonsoft.Json;
 using System;
@@ -106,7 +107,7 @@ namespace HomeManagement.App.Services.Rest
 
         protected string GetToken()
         {
-            return DependencyService.Get<IMetadataHandler>().GetValue("header");
+            return App._container.Resolve<IMetadataHandler>().GetValue("header");
         }
     }
 }

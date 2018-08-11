@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.8.0" />
     <PackageReference Include="Microcharts" Version="0.7.1" />
     <PackageReference Include="Microcharts.Forms" Version="0.7.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0" />
@@ -15,6 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\HomeManagement.Contracts\HomeManagement.Contracts.csproj" />
+    <ProjectReference Include="..\..\HomeManagement.Core\HomeManagement.Core.csproj" />
+    <ProjectReference Include="..\..\HomeManagement.Data\HomeManagement.Data.csproj" />
     <ProjectReference Include="..\..\HomeManagement.Domain\HomeManagement.Domain.csproj" />
     <ProjectReference Include="..\..\HomeManagement.Mapper\HomeManagement.Mapper.csproj" />
     <ProjectReference Include="..\..\HomeManagement.Models\HomeManagement.Models.csproj" />

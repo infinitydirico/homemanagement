@@ -5,16 +5,17 @@ using HomeManagement.Mapper;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Xamarin.Forms;
+using Autofac;
 
 namespace HomeManagement.App.ViewModels
 {
     public class NewChargeViewModel : AddChargeViewModel
     {
-        protected IAccountServiceClient accountServiceClient = DependencyService.Get<IAccountServiceClient>(DependencyFetchTarget.GlobalInstance);
+        private readonly IAccountServiceClient accountServiceClient = App._container.Resolve<IAccountServiceClient>();
+        private readonly IAuthServiceClient authServiceClient = App._container.Resolve<IAuthServiceClient>();
+        private readonly IAccountMapper accountMapper = App._container.Resolve<IAccountMapper>();
+
         protected IEnumerable<Account> accounts = Enumerable.Empty<Account>();
-        private readonly IAuthServiceClient authServiceClient = DependencyService.Get<IAuthServiceClient>(DependencyFetchTarget.GlobalInstance);
-        private readonly IAccountMapper accountMapper = DependencyService.Get<IAccountMapper>(DependencyFetchTarget.NewInstance);
 
         public Account SelectedAccount
         {

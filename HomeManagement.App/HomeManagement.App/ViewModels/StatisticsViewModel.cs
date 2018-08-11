@@ -1,12 +1,10 @@
 ﻿using HomeManagement.App.Services.Components;
 using HomeManagement.App.Services.Rest;
 using Microcharts;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Autofac;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
 namespace HomeManagement.App.ViewModels
 {
@@ -18,7 +16,7 @@ namespace HomeManagement.App.ViewModels
 
         public StatisticsViewModel()
         {
-            accountMetricsServiceClient = DependencyService.Get<IAccountMetricsServiceClient>(DependencyFetchTarget.GlobalInstance);
+            accountMetricsServiceClient = App._container.Resolve<IAccountMetricsServiceClient>();
 
             Task.Run(async () =>
             {

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
+using Autofac;
 
 namespace HomeManagement.App.ViewModels
 {
@@ -20,8 +21,8 @@ namespace HomeManagement.App.ViewModels
 
         public BaseChargeEditionViewModel()
         {
-            categoryServiceClient = DependencyService.Get<ICategoryServiceClient>(DependencyFetchTarget.GlobalInstance);
-            chargeServiceClient = DependencyService.Get<IChargeServiceClient>(DependencyFetchTarget.GlobalInstance);
+            categoryServiceClient = App._container.Resolve<ICategoryServiceClient>();
+            chargeServiceClient = App._container.Resolve<IChargeServiceClient>();
 
             CancelCommand = new Command(Cancel);
 

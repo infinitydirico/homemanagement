@@ -4,6 +4,7 @@ using HomeManagement.Domain;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Autofac;
 
 namespace HomeManagement.App.Services.Rest
 {
@@ -15,7 +16,7 @@ namespace HomeManagement.App.Services.Rest
         {
             var result = await Post(user, Constants.Endpoints.Auth.LOGIN);
 
-            DependencyService.Get<IMetadataHandler>().StoreValue("header", result.Token.Value);
+            App._container.Resolve<IMetadataHandler>().StoreValue("header", result.Token.Value);
 
             User = result;
 
@@ -25,7 +26,7 @@ namespace HomeManagement.App.Services.Rest
         public async Task Logout(User user)
         {
             await Post(user, Constants.Endpoints.Auth.LOGOUT);
-            DependencyService.Get<IMetadataHandler>().Remove("header");
+            App._container.Resolve<IMetadataHandler>().Remove("header");
         }
 
         public Task Logout()
