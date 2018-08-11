@@ -10,12 +10,6 @@ namespace HomeManagement.Data
         {
         }
 
-        public override User GetById(int id)
-        {
-            using (var dbContext = platformContext.GetDbContext())
-            {
-                return dbContext.Set<User>().FirstOrDefault(x => x.Id.Equals(id));
-            }
-        }
+        public override User GetById(int id) => platformContext.GetDbContext().Set<User>().FirstOrDefault(x => x.Id.Equals(id));
     }
 }

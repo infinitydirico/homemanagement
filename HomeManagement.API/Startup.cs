@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using HomeManagement.API.Data;
 using HomeManagement.Contracts.Repositories;
 using HomeManagement.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace HomeManagement.API
@@ -31,6 +35,27 @@ namespace HomeManagement.API
         {
             services.AddDbContext<WebAppDbContext>(options =>
                 options.UseSqlite("Data Source=HomeManagement.db"));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<WebAppDbContext>()
+                .AddDefaultTokenProviders();
+
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+           .AddJwtBearer(jwtBearerOptions =>
+           {
+               jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters()
+               {
+                   ValidateActor = false,
+                   ValidateAudience = false,
+                   ValidateLifetime = false,
+                   ValidateIssuer = false,
+                   ValidateIssuerSigningKey = false,
+                   ValidIssuer = Configuration["Issuer"],
+                   ValidAudience = Configuration["Audience"],
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SigningKey"]))
+               };
+           });
 
             AddRepositories(services);
 

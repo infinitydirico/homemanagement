@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace HomeManagement.Data
 {
-    public class AccountRepository : BaseRepository<Account>, IAccountRepository<Account>
+    public class AccountRepository : BaseRepository<Account>, IAccountRepository
     {
         public AccountRepository(IPlatformContext platformContext) : base(platformContext)
         {

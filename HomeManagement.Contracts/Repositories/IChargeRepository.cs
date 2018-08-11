@@ -2,7 +2,7 @@
 
 namespace HomeManagement.Contracts.Repositories
 {
-    public interface IAccountRepository : IRepository<Account>
+    public interface IChargeRepository : IRepository<Charge>
     {
     }
 }

@@ -18,25 +18,23 @@ namespace HomeManagement.API.Data
             Database.EnsureCreated();
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            //optionsBuilder.UseSqlite("Data Source=HomeManagement.db");
-        }
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>().HasKey(x => x.Id);
-            modelBuilder.Entity<User>().Property(x => x.Email).HasMaxLength(80);
-            modelBuilder.Entity<User>().Property(x => x.Password).HasMaxLength(200);
+            modelBuilder.Entity<ApplicationUser>().HasKey(x => x.Id);
+            modelBuilder.Entity<ApplicationUser>().Property(x => x.Email).HasMaxLength(80);
 
-            modelBuilder.Entity<User>().Ignore("UserCategories");
-            modelBuilder.Entity<User>().Ignore("UsersInRoles");
-            modelBuilder.Entity<User>().Ignore("Token");
-            modelBuilder.Entity<User>().Ignore("Shares");
-            modelBuilder.Entity<User>().Ignore("Accounts");
+            modelBuilder.Ignore<Share>();
+            modelBuilder.Ignore<Charge>();
+            modelBuilder.Ignore<Account>();
+            modelBuilder.Ignore<Category>();
+            modelBuilder.Ignore<Role>();
+            modelBuilder.Ignore<Tax>();
+            modelBuilder.Ignore<Token>();
+            modelBuilder.Ignore<User>();
+            modelBuilder.Ignore<UserCategory>();
+            modelBuilder.Ignore<UserInRole>();
         }
     }
 }
