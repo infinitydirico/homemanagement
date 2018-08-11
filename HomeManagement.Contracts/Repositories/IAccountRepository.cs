@@ -1,6 +1,6 @@
 ﻿namespace HomeManagement.Contracts.Repositories
 {
-    public interface IAccountRepository : IRepository
+    public interface IAccountRepository<T> : IRepository<T>
     {
     }
 }

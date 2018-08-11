@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace HomeManagement.Data
 {
-    public interface ILayerContext : IDisposable
+    public interface IPlatformContext
     {
-        void Add(object value);
+        DbContext GetDbContext();
     }
 }

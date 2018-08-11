@@ -1,30 +1,21 @@
 ﻿using HomeManagement.Contracts.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using HomeManagement.Domain;
+using System.Linq;
 
 namespace HomeManagement.Data
 {
-    public class AccountRepository : IAccountRepository
+    public class AccountRepository : BaseRepository<Account>, IAccountRepository<Account>
     {
-        ILayerContext layerContext;
-
-        public AccountRepository(ILayerContext layerContext)
+        public AccountRepository(IPlatformContext platformContext) : base(platformContext)
         {
-            this.layerContext = layerContext ?? throw new ArgumentNullException($"{nameof(layerContext)} is null");
         }
 
-        public void Add(object value)
+        public override Account GetById(int id)
         {
-            using (layerContext)
+            using(var dbContext = platformContext.GetDbContext())
             {
-                layerContext.Add(value);
+                return dbContext.Set<Account>().FirstOrDefault(x => x.Id.Equals(id));
             }
-        }
-
-        public object GetById(int id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

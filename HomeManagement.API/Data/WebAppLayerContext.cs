@@ -1,28 +1,17 @@
 ﻿using HomeManagement.Data;
-using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeManagement.API.Data
 {
-    public class WebAppLayerContext : ILayerContext
+    public class WebAppLayerContext : IPlatformContext
     {
-        WebAppDbContext dbContext;
+        DbContext dbContext;
 
         public WebAppLayerContext(WebAppDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
 
-        public void Add(object value)
-        {
-            using(dbContext)
-            {
-                dbContext.Add(value);
-            }
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
+        public DbContext GetDbContext() => dbContext;
     }
 }

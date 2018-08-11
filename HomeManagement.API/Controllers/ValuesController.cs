@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using HomeManagement.Contracts.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeManagement.API.Controllers
@@ -9,11 +7,31 @@ namespace HomeManagement.API.Controllers
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        private readonly IUserRepository userRepository;
+
+        public ValuesController(IUserRepository userRepository)
+        {
+            this.userRepository = userRepository;
+        }
+
         // GET api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                userRepository.Add(new Domain.User
+                {
+                    Email = DateTime.Now.ToString("hh.mm.ss"),
+                    Password = DateTime.Now.ToString("hh.mm.ss")
+                });
+
+                return Ok(userRepository.GetAll());
+            }
+            catch (Exception ex)
+            {
+                return Forbid(ex.Message);                
+            }
         }
 
         // GET api/values/5
