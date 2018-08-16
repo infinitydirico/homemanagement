@@ -4,12 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HomeManagement.API.Data;
+using HomeManagement.API.Data.Entities;
+using HomeManagement.API.Data.Repositories;
+using HomeManagement.API.Filters;
+using HomeManagement.API.Throttle;
 using HomeManagement.Contracts.Repositories;
 using HomeManagement.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -57,9 +62,15 @@ namespace HomeManagement.API
                };
            });
 
-            AddRepositories(services);
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddMvc();
+            AddRepositories(services);
+            AddMiddleware(services);
+
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(ThrottleFilter));
+            });
             
             services.AddSwaggerGen(c =>
             {
@@ -112,6 +123,17 @@ namespace HomeManagement.API
             services.AddScoped<IPlatformContext, WebAppLayerContext>();
 
             services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<IWebClientRepository, WebClientRepository>();
+            
+            //with the throttle filter with persisted repo, the requests take around 100ms to respond
+            //with memory values, it takes 30ms
+            //services.AddScoped<IWebClientRepository, MemoryWebClientRepository>();            
+        }
+
+        private void AddMiddleware(IServiceCollection services)
+        {
+            services.AddScoped<IThrottleCore, ThrottleCore>();
         }
     }
 }

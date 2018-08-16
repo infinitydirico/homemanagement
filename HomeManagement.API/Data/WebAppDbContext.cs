@@ -1,4 +1,5 @@
-﻿using HomeManagement.Domain;
+﻿using HomeManagement.API.Data.Entities;
+using HomeManagement.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeManagement.API.Data

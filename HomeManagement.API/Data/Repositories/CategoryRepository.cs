@@ -6,7 +6,7 @@ using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
 
-namespace HomeManagement.API.Data
+namespace HomeManagement.API.Data.Repositories
 {
     public class CategoryRepository : HomeManagement.Data.CategoryRepository
     {

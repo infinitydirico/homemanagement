@@ -1,4 +1,5 @@
-﻿using HomeManagement.API.Data;
+﻿using HomeManagement.API.Data.Entities;
+using HomeManagement.API.Data.Repositories;
 
 namespace HomeManagement.API.Throttle
 {
@@ -23,7 +24,7 @@ namespace HomeManagement.API.Throttle
         {
             var client = webClientRepository.GetByIp(ip);
 
-            if (IsBlackListed(client)) return false;
+            if (client != null && client.IsBanned) return false;
 
             if (client == null)
             {
@@ -36,7 +37,7 @@ namespace HomeManagement.API.Throttle
                 Update(client);
             }
 
-            if (HasExceedCuota(client))
+            if (client.RequestCount > options.MaxRequestsAllowed)
             {
                 client.Ban();
 
@@ -63,11 +64,5 @@ namespace HomeManagement.API.Throttle
 
             webClientRepository.Update(client);
         }        
-
-        public bool IsBlackListed(WebClient client) => client != null ? client.IsBanned : false;
-
-        private bool HasExceedCuota(WebClient clientRequest) => clientRequest.RequestCount > options.MaxRequestsAllowed;
-
-
     }
 }

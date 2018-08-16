@@ -1,7 +1,7 @@
 ﻿using System;
 using HomeManagement.Core.Extensions;
 
-namespace HomeManagement.API.Data
+namespace HomeManagement.API.Data.Entities
 {
     public class WebClient
     {

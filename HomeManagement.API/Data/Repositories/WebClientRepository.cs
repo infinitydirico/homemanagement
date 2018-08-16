@@ -1,7 +1,8 @@
-﻿using HomeManagement.Contracts.Repositories;
+﻿using HomeManagement.API.Data.Entities;
+using HomeManagement.Contracts.Repositories;
 using HomeManagement.Data;
 
-namespace HomeManagement.API.Data
+namespace HomeManagement.API.Data.Repositories
 {
     public interface IWebClientRepository : IRepository<WebClient>
     {
