@@ -1,17 +1,19 @@
-﻿using System;
+﻿using HomeManagement.Contracts;
+using System;
+using System.Collections.Generic;
 
 namespace HomeManagement.Domain
 {
-    public class Charge //, IExportable
+    public class Charge : IExportable
     {
-        //IList<string> exportableHeaders = new List<string>
-        //{
-        //    nameof(Name),
-        //    nameof(Price),
-        //    nameof(Date),
-        //    nameof(ChargeType),
-        //    nameof(CategoryName)
-        //};
+        IList<string> exportableHeaders = new List<string>
+        {
+            nameof(Name),
+            nameof(Price),
+            nameof(Date),
+            nameof(ChargeType),
+            nameof(CategoryName)
+        };
 
         public Charge() { }
 
@@ -46,12 +48,12 @@ namespace HomeManagement.Domain
 
         public Account Account { get; set; }
 
-        //public IList<string> GetProperties() => exportableHeaders;
+        public IList<string> GetProperties() => exportableHeaders;
     }
 
     public enum ChargeType
     {
-        Incoming,
-        Outgoing
+        Income,
+        Expense
     }
 }

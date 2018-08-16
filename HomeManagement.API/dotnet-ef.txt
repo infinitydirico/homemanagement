@@ -1,0 +1,11 @@
+﻿1 -> Before running first migration, set the package manager console to the current project directory
+
+eg.: cd .\HomeManagement.API
+
+2 -> run first migration with dotnet ef migrations add 'migration name'"
+
+3 -> Done. To undo this action, use 'ef migrations remove'
+
+4 -> to apply database update -> "dotnet ef database update"
+
+5 -> Release "dotnet build -c release"

@@ -19,7 +19,7 @@ namespace HomeManagement.Mapper.Tests
                 Name = "Credit Card Payment",
                 AccountId = 1,
                 CategoryId = 1,
-                ChargeType = Domain.ChargeType.Outgoing,
+                ChargeType = Domain.ChargeType.Expense,
                 Date = DateTime.Now,
                 Price = 666
             });

@@ -85,11 +85,11 @@ namespace HomeManagement.App.ViewModels
                 chargeType = value;
                 if (chargeType)
                 {
-                    Charge.ChargeType = HomeManagement.Domain.ChargeType.Incoming;
+                    Charge.ChargeType = HomeManagement.Domain.ChargeType.Income;
                 }
                 else
                 {
-                    Charge.ChargeType = HomeManagement.Domain.ChargeType.Outgoing;
+                    Charge.ChargeType = HomeManagement.Domain.ChargeType.Expense;
                 }
                 OnPropertyChanged(nameof(ChargeType));
             }

@@ -6,6 +6,7 @@ namespace HomeManagement.API.Data
     public class WebAppDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<WebClient> WebClients { get; set; }
 
         public WebAppDbContext()
         {
@@ -24,6 +25,8 @@ namespace HomeManagement.API.Data
 
             modelBuilder.Entity<ApplicationUser>().HasKey(x => x.Id);
             modelBuilder.Entity<ApplicationUser>().Property(x => x.Email).HasMaxLength(80);
+
+            modelBuilder.Entity<WebClient>().HasKey(x => x.Id);
 
             modelBuilder.Ignore<Share>();
             modelBuilder.Ignore<Charge>();

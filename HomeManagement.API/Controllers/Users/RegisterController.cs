@@ -1,12 +1,13 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using HomeManagement.API.Data;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
-namespace HomeManagement.API.Data
+namespace HomeManagement.API.Controllers.Users
 {
     [Produces("application/json")]
     [Route("api/Register")]

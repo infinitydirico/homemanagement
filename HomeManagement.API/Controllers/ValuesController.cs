@@ -1,5 +1,5 @@
 ﻿using System;
-using HomeManagement.Contracts.Repositories;
+using HomeManagement.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeManagement.API.Controllers
@@ -18,20 +18,7 @@ namespace HomeManagement.API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            try
-            {
-                userRepository.Add(new Domain.User
-                {
-                    Email = DateTime.Now.ToString("hh.mm.ss"),
-                    Password = DateTime.Now.ToString("hh.mm.ss")
-                });
-
-                return Ok(userRepository.GetAll());
-            }
-            catch (Exception ex)
-            {
-                return Forbid(ex.Message);                
-            }
+            return Ok();
         }
 
         // GET api/values/5

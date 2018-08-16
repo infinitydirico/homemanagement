@@ -1,5 +1,4 @@
-﻿using HomeManagement.Contracts.Repositories;
-using HomeManagement.Domain;
+﻿using HomeManagement.Domain;
 using System.Linq;
 
 namespace HomeManagement.Data
@@ -9,6 +8,8 @@ namespace HomeManagement.Data
         public UserRepository(IPlatformContext platformContext) : base(platformContext)
         {
         }
+
+        public override bool Exists(User entity) => GetById(entity.Id) != null;
 
         public override User GetById(int id) => platformContext.GetDbContext().Set<User>().FirstOrDefault(x => x.Id.Equals(id));
     }

@@ -13,7 +13,7 @@ namespace HomeManagement.Mapper
                 Id = model.Id,
                 AccountId = model.AccountId,
                 CategoryId = model.CategoryId,
-                ChargeType = model.ChargeType == ChargeTypeModel.Incoming ? ChargeType.Incoming : ChargeType.Outgoing,
+                ChargeType = model.ChargeType == ChargeTypeModel.Income ? ChargeType.Income : ChargeType.Expense,
                 Date = model.Date,
                 Name = model.Name,
                 Price = model.Price
@@ -27,7 +27,7 @@ namespace HomeManagement.Mapper
                 Id = entity.Id,
                 AccountId = entity.AccountId,
                 CategoryId = entity.CategoryId,
-                ChargeType = entity.ChargeType == ChargeType.Incoming ? ChargeTypeModel.Incoming : ChargeTypeModel.Outgoing,
+                ChargeType = entity.ChargeType == ChargeType.Income ? ChargeTypeModel.Income : ChargeTypeModel.Expense,
                 Date = entity.Date,
                 Name = entity.Name,
                 Price = entity.Price

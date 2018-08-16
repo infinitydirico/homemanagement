@@ -1,8 +1,8 @@
 ﻿using HomeManagement.App.Services.Rest;
 using HomeManagement.Contracts;
-using HomeManagement.Contracts.Repositories;
 using Autofac;
 using System.Threading.Tasks;
+using HomeManagement.Data;
 
 namespace HomeManagement.App.ViewModels
 {

@@ -1,7 +1,8 @@
-﻿using HomeManagement.Domain;
+﻿using HomeManagement.Contracts.Mapper;
+using HomeManagement.Domain;
 using HomeManagement.Models;
 
-namespace HomeManagement.Contracts.Mapper
+namespace HomeManagement.Mapper
 {
     public interface ICategoryMapper : IMapper<Category, CategoryModel>
     {

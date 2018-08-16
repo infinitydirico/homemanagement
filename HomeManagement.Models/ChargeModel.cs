@@ -36,7 +36,7 @@ namespace HomeManagement.Models
 
     public enum ChargeTypeModel
     {
-        Incoming,
-        Outgoing
+        Income,
+        Expense
     }
 }

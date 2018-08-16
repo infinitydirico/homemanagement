@@ -19,7 +19,7 @@ namespace HomeManagement.Data
 
         public IQueryable All => throw new NotImplementedException();
 
-        public void Add(T entity)
+        public virtual void Add(T entity)
         {
             var dbContext = platformContext.GetDbContext();
 
@@ -37,6 +37,8 @@ namespace HomeManagement.Data
             await dbContext.SaveChangesAsync();
         }
 
+        public abstract bool Exists(T entity);
+
         public T FirstOrDefault() => platformContext.GetDbContext().Set<T>().FirstOrDefault();
 
         public T FirstOrDefault(Expression<Func<T, bool>> predicate) => platformContext.GetDbContext().Set<T>().FirstOrDefault(predicate);
@@ -45,7 +47,7 @@ namespace HomeManagement.Data
 
         public abstract T GetById(int id);
 
-        public void Remove(T entity)
+        public virtual void Remove(T entity)
         {
             var dbContext = platformContext.GetDbContext();
 
@@ -54,7 +56,7 @@ namespace HomeManagement.Data
             dbContext.SaveChanges();
         }
 
-        public void Remove(int id)
+        public virtual void Remove(int id)
         {
             var dbContext = platformContext.GetDbContext();
 
@@ -65,7 +67,10 @@ namespace HomeManagement.Data
             dbContext.SaveChanges();
         }
 
-        public void Update(T entity)
+        public decimal Sum(Expression<Func<T, int>> selector, Expression<Func<T, bool>> predicate = null) =>
+            predicate == null ? platformContext.GetDbContext().Set<T>().Sum(selector) : platformContext.GetDbContext().Set<T>().Where(predicate).Sum(selector);
+
+        public virtual void Update(T entity)
         {
             var dbContext = platformContext.GetDbContext();
 

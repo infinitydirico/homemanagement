@@ -28,6 +28,10 @@ namespace HomeManagement.Contracts.Repositories
 
         IEnumerable<T> GetAll();
 
+        bool Exists(T entity);
+
         IEnumerable<T> Where(Expression<Func<T, bool>> predicate);
+
+        decimal Sum(Expression<Func<T, int>> selector, Expression<Func<T, bool>> predicate = null);
     }
 }

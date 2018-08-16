@@ -4,9 +4,4 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\HomeManagement.Domain\HomeManagement.Domain.csproj" />
-    <ProjectReference Include="..\HomeManagement.Models\HomeManagement.Models.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -1,5 +1,4 @@
-﻿using HomeManagement.Contracts.Repositories;
-using HomeManagement.Domain;
+﻿using HomeManagement.Domain;
 using System.Linq;
 
 namespace HomeManagement.Data
@@ -9,6 +8,8 @@ namespace HomeManagement.Data
         public ChargeRepository(IPlatformContext platformContext) : base(platformContext)
         {
         }
+
+        public override bool Exists(Charge entity) => GetById(entity.Id) != null;
 
         public override Charge GetById(int id) => platformContext.GetDbContext().Set<Charge>().FirstOrDefault(x => x.Id.Equals(id));
     }
