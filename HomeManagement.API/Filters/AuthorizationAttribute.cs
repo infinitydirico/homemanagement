@@ -5,28 +5,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using HomeManagement.API.Extensions;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace HomeManagement.API.Filters
 {
     public class AuthorizationAttribute : Attribute, IAsyncActionFilter
     {
-        public Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        private JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            //var header = context.HttpContext.GetTokenHeader();
+            var header = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
 
-            //if (string.IsNullOrEmpty(header))
-            //{
-            //    context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Unauthorized, Content = "Header not present" };
+            if (string.IsNullOrEmpty(header))
+            {
+                context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Forbidden, Content = "Header not present" };                                
+            }
 
-            //    return Task.CompletedTask;
-            //}
+            if (jwtSecurityTokenHandler.IsValid(header))
+            {
+                context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Unauthorized, Content = "Token has expired" };
+            }
 
-            //if (JwtTokenGenerator.Instance.IsValid(header))
-            //{
-            //    context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Unauthorized, Content = "Token has expired" };
-            //}
-
-            return Task.CompletedTask;
+            await Task.Yield();
         }
     }
 }

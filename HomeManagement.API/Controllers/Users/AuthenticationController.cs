@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,12 +37,22 @@ namespace HomeManagement.API.Controllers.Users
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var result = await signInManager.PasswordSignInAsync(user.Email, user.Password, false, false);
-
-            if (!result.Succeeded) return Forbid();
-
             var appUser = await userManager.FindByEmailAsync(user.Email);
 
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                var header = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+
+                return Ok(header);
+            }
+
+            var result = await signInManager.PasswordSignInAsync(user.Email, user.Password, true, false);
+            
+            if (!result.Succeeded) return Forbid();
+
+            var cl = await signInManager.CreateUserPrincipalAsync(appUser);
+                      
+            
             var claims = new[]
             {
                  new Claim(JwtRegisteredClaimNames.Sub, user.Email),
@@ -63,6 +74,17 @@ namespace HomeManagement.API.Controllers.Users
 
             if (result.Succeeded) return Ok(tokenValue);
             else return BadRequest();
+        }
+
+        [HttpPost("signout")]
+        public async Task<IActionResult> SignOut([FromBody] UserModel user)
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                await signInManager.SignOutAsync();
+            }
+
+            return Ok();
         }
     }
 }
