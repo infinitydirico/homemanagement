@@ -128,6 +128,8 @@ namespace HomeManagement.API
 
             services.AddScoped<IUserRepository, UserRepository>();
 
+            services.AddScoped<ITokenRepository, TokenRepository>();
+
             services.AddScoped<IWebClientRepository, WebClientRepository>();
             
             //with the throttle filter with persisted repo, the requests take around 100ms to respond
