@@ -17,11 +17,11 @@ namespace HomeManagement.API.Filters
         {
             try
             {
-                this.logger.LogWarning(1, context.Exception, context.Exception.Message);
+                this.logger.LogError(1, context.Exception, context.Exception.Message);
             }
             catch (Exception ex)
             {
-                this.logger.LogWarning(1, ex, ex.Message);
+                this.logger.LogCritical(1, ex, ex.Message);
             }
         }
     }

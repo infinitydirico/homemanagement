@@ -17,7 +17,7 @@ namespace HomeManagement.Data
             this.platformContext = platformContext ?? throw new ArgumentNullException($"{nameof(platformContext)} is null");
         }
 
-        public IQueryable All => throw new NotImplementedException();
+        public IQueryable<T> All => platformContext.GetDbContext().Set<T>().AsQueryable<T>();
 
         public virtual void Add(T entity)
         {

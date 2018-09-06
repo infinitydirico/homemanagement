@@ -35,11 +35,11 @@ namespace HomeManagement.App.Common
         {
             return new ToolbarItem
             {
-                Icon = baseViewModel.LanguageFlag,
+                //Icon = baseViewModel.LanguageFlag,
 
-                Text = baseViewModel.LanguageText,
+                //Text = baseViewModel.LanguageText,
 
-                Command = baseViewModel.ChangeLanguageCommand
+                //Command = baseViewModel.ChangeLanguageCommand
             };
         }
     }

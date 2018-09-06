@@ -11,6 +11,7 @@ using HomeManagement.Contracts.Mapper;
 using HomeManagement.Contracts.Repositories;
 using HomeManagement.Core.Cryptography;
 using HomeManagement.Data;
+using HomeManagement.Localization;
 using HomeManagement.Mapper;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -53,6 +54,8 @@ namespace HomeManagement.App
             builder.RegisterType<MetadataHandler>().As<IMetadataHandler>().SingleInstance();
             builder.RegisterType<LanguageFactory>().As<ILanguageFactory>();
             builder.RegisterType<AesCryptographyService>().As<ICryptography>();
+
+            builder.RegisterType<LocalizationLanguage>().As<ILocalization>().SingleInstance();
 
             RegisterServiceClients(builder);
 

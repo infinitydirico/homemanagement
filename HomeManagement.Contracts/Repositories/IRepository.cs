@@ -8,7 +8,7 @@ namespace HomeManagement.Contracts.Repositories
 {
     public interface IRepository<T>
     {
-        IQueryable All { get; }
+        IQueryable<T> All { get; }
 
         void Add(T entity);
 

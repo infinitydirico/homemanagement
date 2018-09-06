@@ -1,11 +1,17 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using HomeManagement.API.Data;
 using HomeManagement.API.Data.Entities;
+using HomeManagement.API.Extensions;
+using HomeManagement.Data;
+using HomeManagement.Domain;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace HomeManagement.API.Controllers.Users
 {
@@ -17,14 +23,26 @@ namespace HomeManagement.API.Controllers.Users
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IConfiguration configuration;
         private readonly JwtSecurityTokenHandler jwtSecurityToken = new JwtSecurityTokenHandler();
+        private readonly IAccountRepository accountRepository;
+        private readonly IUserRepository userRepository;
+        private readonly ICategoryRepository categoryRepository;
+        private readonly IServiceScopeFactory serviceScopeFactory;
 
         public RegisterController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IAccountRepository accountRepository,
+            ICategoryRepository categoryRepository,
+            IUserRepository userRepository,
+            IServiceScopeFactory serviceScopeFactory)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.configuration = configuration;
+            this.accountRepository = accountRepository;
+            this.categoryRepository = categoryRepository;
+            this.userRepository = userRepository;
+            this.serviceScopeFactory = serviceScopeFactory;
         }
 
         [HttpPost]
@@ -41,6 +59,32 @@ namespace HomeManagement.API.Controllers.Users
             if (result.Succeeded)
             {
                 var applicationUser = await userManager.FindByEmailAsync(user.Email);
+
+#pragma warning disable 4014
+
+                var userEntity = new User
+                {
+                    Email = applicationUser.Email,
+                };
+
+                await userRepository.AddAsync(userEntity);
+
+                var cultureFeature = Request.HttpContext.Features.Get<IRequestCultureFeature>();
+
+                accountRepository.Add(new Account
+                {
+                    UserId = userEntity.Id,
+                    Name = cultureFeature?.RequestCulture?.Culture != null ? cultureFeature.RequestCulture.Culture.IsEnglish() ? "Cash" : "Efectivo" : "Cash",
+                    IsCash = true
+                });
+
+                var defaultCategories = CategoryInitializer.GetDefaultCategories(cultureFeature?.RequestCulture?.Culture);
+
+                foreach (var category in defaultCategories)
+                {
+                    categoryRepository.Add(category, userEntity);
+                }
+#pragma warning restore 4014
 
                 return Ok();
             }

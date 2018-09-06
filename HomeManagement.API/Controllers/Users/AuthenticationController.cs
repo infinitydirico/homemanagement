@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using HomeManagement.API.Data;
 using HomeManagement.API.Data.Entities;
 using HomeManagement.API.Data.Repositories;
+using HomeManagement.API.Filters;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -80,6 +81,7 @@ namespace HomeManagement.API.Controllers.Users
             else return BadRequest();
         }
 
+        [Authorization]
         [HttpPost("signout")]
         public async Task<IActionResult> SignOut([FromBody] UserModel user)
         {

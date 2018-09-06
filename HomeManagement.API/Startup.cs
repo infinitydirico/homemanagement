@@ -10,6 +10,7 @@ using HomeManagement.API.Filters;
 using HomeManagement.API.Throttle;
 using HomeManagement.Contracts.Repositories;
 using HomeManagement.Data;
+using HomeManagement.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -38,7 +39,7 @@ namespace HomeManagement.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<WebAppDbContext>(options =>
+            services.AddDbContextPool<WebAppDbContext>(options =>
                 options.UseSqlite("Data Source=HomeManagement.db"));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -66,6 +67,7 @@ namespace HomeManagement.API
 
             AddRepositories(services);
             AddMiddleware(services);
+            AddMappers(services);
 
             services.AddMvc(options =>
             {
@@ -105,6 +107,8 @@ namespace HomeManagement.API
 
             app.UseAuthentication();
 
+            app.UseRequestLocalization();
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
@@ -128,6 +132,12 @@ namespace HomeManagement.API
 
             services.AddScoped<IUserRepository, UserRepository>();
 
+            services.AddScoped<IAccountRepository, AccountRepository>();
+
+            services.AddScoped<IChargeRepository, ChargeRepository>();
+
+            services.AddScoped<ICategoryRepository, API.Data.Repositories.CategoryRepository>();
+
             services.AddScoped<ITokenRepository, TokenRepository>();
 
             services.AddScoped<IWebClientRepository, WebClientRepository>();
@@ -135,6 +145,16 @@ namespace HomeManagement.API
             //with the throttle filter with persisted repo, the requests take around 100ms to respond
             //with memory values, it takes 30ms
             //services.AddScoped<IWebClientRepository, MemoryWebClientRepository>();            
+        }
+
+        private void AddMappers(IServiceCollection services)
+        {
+            services.AddScoped<ICategoryMapper, CategoryMapper>();
+
+            services.AddScoped<IAccountMapper, AccountMapper>();
+
+            services.AddScoped<IUserMapper, UserMapper>();
+
         }
 
         private void AddMiddleware(IServiceCollection services)

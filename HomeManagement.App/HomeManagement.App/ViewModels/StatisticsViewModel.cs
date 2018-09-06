@@ -63,7 +63,7 @@ namespace HomeManagement.App.ViewModels
             }
         }
 
-        public string OverviewText => language.CurrentLanguage.OverviewText;
+        public string OverviewText => "";//language.CurrentLanguage.OverviewText;
 
     }
 }

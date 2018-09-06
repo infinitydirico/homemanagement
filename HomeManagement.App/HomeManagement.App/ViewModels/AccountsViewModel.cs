@@ -45,6 +45,6 @@ namespace HomeManagement.App.ViewModels
             }
         }
 
-        public string AccountLabelText => language.CurrentLanguage.AccountsText;
+        public string AccountLabelText => "";// language.CurrentLanguage.AccountsText;
     }
 }

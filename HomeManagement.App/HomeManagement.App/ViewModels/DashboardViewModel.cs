@@ -5,7 +5,7 @@ using Autofac;
 
 namespace HomeManagement.App.ViewModels
 {
-    public class DashboardViewModel : BaseViewModel
+    public class DashboardViewModel : LocalizationBaseViewModel
     {
         IAccountMetricsServiceClient metricClient = App._container.Resolve<IAccountMetricsServiceClient>();
 
@@ -38,11 +38,12 @@ namespace HomeManagement.App.ViewModels
                 OnPropertyChanged(nameof(OutcomePercentage));
                 OnPropertyChanged(nameof(TotalIncome));
                 OnPropertyChanged(nameof(TotalOutcome));
+
+                await Task.Delay(7000);
+                localization.ChangeCulture(new System.Globalization.CultureInfo("es"));
             });
         }
 
-        public string OverviewText => language.CurrentLanguage.OverviewText;
-
-        public string OverallIncomeText => language.CurrentLanguage.OverallIncomeText;
+        
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace HomeManagement.API.Data.Repositories
 {
-    public interface ITokenRepository: IRepository<IdentityUserToken<string>>
+    public interface ITokenRepository : IRepository<IdentityUserToken<string>>
     {
         bool UserHasToken(string appId);
 
@@ -25,7 +25,7 @@ namespace HomeManagement.API.Data.Repositories
             this.platformContext = platformContext ?? throw new ArgumentNullException($"{nameof(platformContext)} is null");
         }
 
-        public IQueryable All => platformContext.GetDbContext().Set<IdentityUserToken<string>>().AsQueryable();
+        public IQueryable<IdentityUserToken<string>> All => platformContext.GetDbContext().Set<IdentityUserToken<string>>().AsQueryable();
 
         public void Add(IdentityUserToken<string> entity)
         {
@@ -47,10 +47,10 @@ namespace HomeManagement.API.Data.Repositories
 
         public bool Exists(IdentityUserToken<string> entity) => FirstOrDefault(x => x.UserId.Equals(entity.UserId)) != null;
 
-        public IdentityUserToken<string> FirstOrDefault() => platformContext.GetDbContext().Set<IdentityUserToken<string>>().FirstOrDefault();
+        public IdentityUserToken<string> FirstOrDefault() => All.FirstOrDefault();
 
-        public IdentityUserToken<string> FirstOrDefault(Expression<Func<IdentityUserToken<string>, bool>> predicate) 
-            => platformContext.GetDbContext().Set<IdentityUserToken<string>>().FirstOrDefault(predicate);
+        public IdentityUserToken<string> FirstOrDefault(Expression<Func<IdentityUserToken<string>, bool>> predicate)
+            => All.FirstOrDefault(predicate);
 
         public IEnumerable<IdentityUserToken<string>> GetAll() => platformContext.GetDbContext().Set<IdentityUserToken<string>>().ToList();
 

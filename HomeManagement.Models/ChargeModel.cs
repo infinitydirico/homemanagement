@@ -21,7 +21,7 @@ namespace HomeManagement.Models
 
         public string Name { get; set; }
 
-        public int Price { get; set; }
+        public double Price { get; set; }
 
         public DateTime Date { get; set; }
 

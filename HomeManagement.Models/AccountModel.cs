@@ -1,4 +1,6 @@
-﻿namespace HomeManagement.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace HomeManagement.Models
 {
     public class AccountModel
     {
@@ -14,8 +16,11 @@
             UserId = userId;
         }
 
+        [Required]
         public int Id { get; set; }
 
+        [Required]
+        [MaxLength(50)]
         public string Name { get; set; }
 
         public int Balance { get; set; }
@@ -24,6 +29,7 @@
 
         public bool IsCash { get; set; }
 
+        [Required]
         public int UserId { get; set; }
     }
 }

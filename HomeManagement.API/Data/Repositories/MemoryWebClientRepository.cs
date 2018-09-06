@@ -12,7 +12,7 @@ namespace HomeManagement.API.Data.Repositories
     {
         public static BlockingCollection<WebClient> clients = new BlockingCollection<WebClient>();
 
-        public IQueryable All => clients.AsQueryable();
+        public IQueryable<WebClient> All => clients.AsQueryable();
 
         public void Add(WebClient entity)
         {

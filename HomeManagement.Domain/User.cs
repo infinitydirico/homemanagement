@@ -8,6 +8,7 @@ namespace HomeManagement.Domain
         {
             Accounts = new List<Account>();
             UsersInRoles = new List<UserInRole>();
+            UserCategories = new List<UserCategory>();
         }
 
         public User(int id,string email, string password)

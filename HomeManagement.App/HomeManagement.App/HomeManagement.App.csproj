@@ -20,6 +20,7 @@
     <ProjectReference Include="..\..\HomeManagement.Core\HomeManagement.Core.csproj" />
     <ProjectReference Include="..\..\HomeManagement.Data\HomeManagement.Data.csproj" />
     <ProjectReference Include="..\..\HomeManagement.Domain\HomeManagement.Domain.csproj" />
+    <ProjectReference Include="..\..\HomeManagement.Localization\HomeManagement.Localization.csproj" />
     <ProjectReference Include="..\..\HomeManagement.Mapper\HomeManagement.Mapper.csproj" />
     <ProjectReference Include="..\..\HomeManagement.Models\HomeManagement.Models.csproj" />
   </ItemGroup>
