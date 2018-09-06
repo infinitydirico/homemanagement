@@ -117,7 +117,55 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Accounts" xml:space="preserve">
+    <value>Cuentas</value>
+  </data>
+  <data name="ChangeLanguage" xml:space="preserve">
+    <value>Cambiar Lenguaje</value>
+  </data>
+  <data name="Expense" xml:space="preserve">
+    <value>Gastos</value>
+  </data>
+  <data name="Income" xml:space="preserve">
+    <value>Ingresos</value>
+  </data>
   <data name="Language" xml:space="preserve">
     <value>Castellano</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Iniciar Sesion</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Cerrar Sesion</value>
+  </data>
+  <data name="NewMovement" xml:space="preserve">
+    <value>Nuevo movimiento</value>
+  </data>
+  <data name="OverallIncome" xml:space="preserve">
+    <value>Ingreso Total</value>
+  </data>
+  <data name="OverallOutcome" xml:space="preserve">
+    <value>Egreso Total</value>
+  </data>
+  <data name="Overview" xml:space="preserve">
+    <value>Vision General</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="PickAnAccount" xml:space="preserve">
+    <value>Elija una cuenta</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Configuracion</value>
+  </data>
+  <data name="Statistics" xml:space="preserve">
+    <value>Estadisticas</value>
+  </data>
+  <data name="TopCharges" xml:space="preserve">
+    <value>Mayores Movimientos</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Nombre de usuario</value>
   </data>
 </root>

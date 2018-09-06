@@ -50,11 +50,9 @@ namespace HomeManagement.App.ViewModels
 
         #region labels
 
-        public string UsernameText => "";//language.CurrentLanguage.UsernameText;
+        public string UsernameText => "Username";
 
-        public string PasswordText => "";//language.CurrentLanguage.PasswordText;
-
-        public string LoginButtonText => "";// language.CurrentLanguage.LoginText;
+        public string PasswordText => "Password";
 
         #endregion
     }
