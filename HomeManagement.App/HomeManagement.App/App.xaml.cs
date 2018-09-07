@@ -2,8 +2,8 @@ using System;
 using Autofac;
 using Autofac.Core;
 using HomeManagement.App.Data;
+using HomeManagement.App.Managers;
 using HomeManagement.App.Services.Components;
-using HomeManagement.App.Services.Components.Language;
 using HomeManagement.App.Services.Rest;
 using HomeManagement.App.Views.Login;
 using HomeManagement.Contracts;
@@ -52,7 +52,6 @@ namespace HomeManagement.App
             var builder = new ContainerBuilder();
 
             builder.RegisterType<MetadataHandler>().As<IMetadataHandler>().SingleInstance();
-            builder.RegisterType<LanguageFactory>().As<ILanguageFactory>();
             builder.RegisterType<AesCryptographyService>().As<ICryptography>();
 
             builder.RegisterType<LocalizationLanguage>().As<ILocalization>().SingleInstance();
@@ -63,7 +62,14 @@ namespace HomeManagement.App
 
             RegisterRepositories(builder);
 
+            RegisterManagers(builder);
+
             _container = builder.Build();
+        }
+
+        private void RegisterManagers(ContainerBuilder builder)
+        {
+            builder.RegisterType<ChargeManager>().As<IChargeManager>();
         }
 
         private void RegisterRepositories(ContainerBuilder builder)

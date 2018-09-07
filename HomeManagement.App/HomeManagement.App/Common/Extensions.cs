@@ -1,6 +1,7 @@
 ﻿using HomeManagement.App.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Xamarin.Forms;
 
 namespace HomeManagement.App.Common
@@ -30,6 +31,11 @@ namespace HomeManagement.App.Common
             }
             return parent as Xamarin.Forms.Page;
         }
+
+        public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> collection)
+            => collection == null ?
+                new ObservableCollection<T>() :
+                new ObservableCollection<T>(collection);
 
         public static ToolbarItem CreateLanguateToolbarItem(this BaseViewModel baseViewModel)
         {

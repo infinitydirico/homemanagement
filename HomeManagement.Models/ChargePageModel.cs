@@ -5,6 +5,11 @@ namespace HomeManagement.Models
 {
     public class ChargePageModel : Page
     {
+        public ChargePageModel()
+        {
+            Charges = new List<ChargeModel>();
+        }
+
         [DataMember(Name = "accountId")]
         public int AccountId { get; set; }
 

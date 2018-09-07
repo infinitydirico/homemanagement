@@ -7,29 +7,23 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Autofac;
+using HomeManagement.App.Managers;
+using HomeManagement.App.Common;
 
 namespace HomeManagement.App.ViewModels
 {
     public class ChargesListViewModel : BaseViewModel
     {
-        private readonly IChargeMapper chargeMapper = App._container.Resolve<IChargeMapper>();
-        private readonly IChargeServiceClient chargeServiceClient = App._container.Resolve<IChargeServiceClient>();
+        private readonly IChargeManager chargeManager = App._container.Resolve<IChargeManager>();
 
         ObservableCollection<Charge> charges;
 
         Account account;
         Charge selectedCharge;
 
-        ChargePageModel page = new ChargePageModel
-        {
-            PageCount = 6,
-            CurrentPage = 1
-        };
-
         public ChargesListViewModel(Account account)
         {
             this.account = account;
-            page.AccountId = account.Id;
 
             NextPageCommand = new Command(async () => await NextPage());
             PreviousPageCommand = new Command(async () => await PreviousPage());
@@ -37,7 +31,7 @@ namespace HomeManagement.App.ViewModels
 
             Task.Run(async () =>
             {
-                await Paginate();
+                Charges = (await chargeManager.Load(this.account.Id)).ToObservableCollection();
             });
         }
 
@@ -47,17 +41,6 @@ namespace HomeManagement.App.ViewModels
             set
             {
                 charges = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ChargePageModel Page
-        {
-            get => page;
-            set
-            {
-                page = value;
-                Charges = new ObservableCollection<Charge>(chargeMapper.ToEntities(page.Charges));
                 OnPropertyChanged();
             }
         }
@@ -78,26 +61,23 @@ namespace HomeManagement.App.ViewModels
             }
         }
 
+        public int CurrentPage => chargeManager.CurrentPage;
+
         async Task NextPage()
         {
-            if (page.CurrentPage.Equals(page.TotalPages)) return;
+            IsBusy = true;
 
-            Page.CurrentPage++;
-            await Paginate();
+            Charges = (await chargeManager.NextPage()).ToObservableCollection();
+
+            IsBusy = false;
         }
 
         async Task PreviousPage()
         {
-            if (page.CurrentPage.Equals(1)) return;
-
-            Page.CurrentPage--;
-            await Paginate();
-        }
-
-        async Task Paginate()
-        {
             IsBusy = true;
-            Page = await chargeServiceClient.Page(Page);
+
+            Charges = (await chargeManager.PreviousPage()).ToObservableCollection();
+
             IsBusy = false;
         }
 
@@ -105,8 +85,8 @@ namespace HomeManagement.App.ViewModels
         {
             if (charge != null)
             {
-                chargeServiceClient.Delete(charge.Id);
-                Paginate();
+                //chargeServiceClient.Delete(charge.Id);
+                //Paginate();
             }
         }
     }
