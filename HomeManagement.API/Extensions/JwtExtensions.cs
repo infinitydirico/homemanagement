@@ -12,7 +12,7 @@ namespace HomeManagement.API.Extensions
             {
                 var jwtToken = jwt.ReadToken(token);
 
-                return jwtToken.HasExpired() || jwtToken.IsValid();
+                return !jwtToken.HasExpired() || jwtToken.IsValid();
             }
 
             return false;
@@ -21,5 +21,7 @@ namespace HomeManagement.API.Extensions
         public static bool HasExpired(this SecurityToken securityToken) => (securityToken.ValidTo - DateTime.UtcNow).TotalDays < default(int);
 
         public static bool IsValid(this SecurityToken securityToken) => (DateTime.UtcNow - securityToken.ValidFrom).TotalHours < 1;
+
+        public static JwtSecurityToken GetJwtSecurityToken(this string header) => new JwtSecurityToken(header);
     }
 }

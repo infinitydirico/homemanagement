@@ -24,6 +24,16 @@ namespace HomeManagement.API.Data.Repositories
             throw new NotImplementedException();
         }
 
+        public int Count()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Count(Expression<Func<WebClient, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Exists(WebClient entity) => clients.FirstOrDefault(x => x.Id.Equals(entity.Id)) != null;
 
         public WebClient FirstOrDefault() => clients.FirstOrDefault();

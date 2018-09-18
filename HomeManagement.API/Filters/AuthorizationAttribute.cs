@@ -15,19 +15,19 @@ namespace HomeManagement.API.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var header = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var header = context.HttpContext.GetAuthorizationHeader();
 
             if (string.IsNullOrEmpty(header))
             {
                 context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Forbidden, Content = "Header not present" };                                
             }
 
-            if (jwtSecurityTokenHandler.IsValid(header))
+            if (!jwtSecurityTokenHandler.IsValid(header))
             {
                 context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Unauthorized, Content = "Token has expired" };
             }
-
-            await Task.Yield();
+            
+            await next();
         }
     }
 }

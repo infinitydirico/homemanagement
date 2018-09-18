@@ -37,6 +37,10 @@ namespace HomeManagement.Data
             await dbContext.SaveChangesAsync();
         }
 
+        public int Count() => platformContext.GetDbContext().Set<T>().Count();
+
+        public int Count(Expression<Func<T, bool>> predicate) => platformContext.GetDbContext().Set<T>().Count(predicate);
+
         public abstract bool Exists(T entity);
 
         public T FirstOrDefault() => platformContext.GetDbContext().Set<T>().FirstOrDefault();

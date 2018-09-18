@@ -45,6 +45,16 @@ namespace HomeManagement.API.Data.Repositories
             dbContext.SaveChanges();
         }
 
+        public int Count()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Count(Expression<Func<IdentityUserToken<string>, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Exists(IdentityUserToken<string> entity) => FirstOrDefault(x => x.UserId.Equals(entity.UserId)) != null;
 
         public IdentityUserToken<string> FirstOrDefault() => All.FirstOrDefault();

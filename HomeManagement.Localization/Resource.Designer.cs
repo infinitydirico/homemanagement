@@ -61,6 +61,15 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to remove an account that has charges.
+        /// </summary>
+        public static string AccountHasCharges {
+            get {
+                return ResourceManager.GetString("AccountHasCharges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accounts.
         /// </summary>
         public static string Accounts {

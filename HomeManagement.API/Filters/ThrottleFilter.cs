@@ -38,7 +38,7 @@ namespace HomeManagement.API.Filters
                 {
                     context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
                 }
-            }
+            }            
         }
     }
 }

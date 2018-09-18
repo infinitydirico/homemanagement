@@ -33,5 +33,9 @@ namespace HomeManagement.Contracts.Repositories
         IEnumerable<T> Where(Expression<Func<T, bool>> predicate);
 
         decimal Sum(Expression<Func<T, int>> selector, Expression<Func<T, bool>> predicate = null);
+
+        int Count();
+
+        int Count(Expression<Func<T, bool>> predicate);
     }
 }

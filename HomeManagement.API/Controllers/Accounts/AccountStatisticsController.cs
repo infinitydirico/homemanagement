@@ -12,7 +12,7 @@ namespace HomeManagement.API.Controllers.Accounts
     [Authorization]
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
-    [Route("api/AccountStatistics")]
+    [Route("api/Account")]
     public class AccountStatisticsController : Controller
     {
         private readonly IAccountRepository accountRepository;
@@ -28,7 +28,7 @@ namespace HomeManagement.API.Controllers.Accounts
             this.accountMapper = accountMapper;
         }
 
-        [HttpGet("overall/{id}")]
+        [HttpGet("{id}/overall")]
         public IActionResult Overall(int id)
         {
             if (id < 0) return BadRequest();
