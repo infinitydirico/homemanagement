@@ -1,25 +1,40 @@
 ﻿using HomeManagement.Contracts.Mapper;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace HomeManagement.Mapper
 {
-    public class BaseMapper<TEntity, TModel> : IMapper<TEntity, TModel>
-        where TEntity : class
-        where TModel : class
+    public abstract class BaseMapper<TEntity, TModel> : IMapper<TEntity, TModel>
+        where TEntity : class, new()
+        where TModel : class, new()
     {
-        public virtual TEntity ToEntity(TModel model)
+        public virtual TEntity ToEntity(TModel model) => ConvertTo<TEntity>(model);
+
+        public virtual TModel ToModel(TEntity entity) => ConvertTo<TModel>(entity);
+
+        private TTarget ConvertTo<TTarget>(object source)
+            where TTarget : class, new()
         {
-            var properties = model.GetType().GetProperties().Select(x => x.GetValue(model)).ToArray();
-            return (TEntity)Activator.CreateInstance(typeof(TEntity), properties);
+            var properties = (from entityProperty in GetEntityProperties().ToList()
+                              join modelProperty in GetModelProperties().ToList()
+                              on entityProperty.Name equals modelProperty.Name
+                              where entityProperty.PropertyType.Equals(modelProperty.PropertyType)
+                              select new { entityProperty, modelProperty }).ToList();
+
+            var target = new TTarget();
+
+            foreach (var property in properties)
+            {
+                property.modelProperty.SetValue(target, property.entityProperty.GetValue(source));
+            }
+
+            return target;
         }
 
-        public virtual TModel ToModel(TEntity entity)
-        {
-            var properties = entity.GetType().GetProperties().Where(x => x.PropertyType.IsPrimitive || x.PropertyType == typeof(string)).Select(x => x.GetValue(entity)).ToArray();
-            return (TModel)Activator.CreateInstance(typeof(TModel), properties);
-        }
+        public abstract IEnumerable<PropertyInfo> GetEntityProperties();
+
+        public abstract IEnumerable<PropertyInfo> GetModelProperties();
     }
 
     public static class MappingExtensions
