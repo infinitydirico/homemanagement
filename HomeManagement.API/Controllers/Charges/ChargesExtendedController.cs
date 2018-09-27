@@ -20,7 +20,7 @@ namespace HomeManagement.API.Controllers.Charges
     [Authorization]
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
-    [Route("api/Charges/Extended")]
+    [Route("api/Charges")]
     public class ChargesExtendedController : Controller
     {
         private readonly IAccountRepository accountRepository;

@@ -13,7 +13,7 @@ namespace HomeManagement.API.Controllers.Accounts
     [Authorization]
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
-    [Route("api/Account/Extended")]
+    [Route("api/Account")]
     public class AccountExtendedController : Controller
     {
         private readonly IAccountRepository accountRepository;
