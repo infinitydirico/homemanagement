@@ -11,14 +11,6 @@ namespace HomeManagement.Domain
             UserCategories = new List<UserCategory>();
         }
 
-        public User(int id,string email, string password)
-            :this()
-        {
-            Id = id;
-            Email = email;
-            Password = password;
-        }
-
         public int Id { get; set; }
 
         public string Email { get; set; }

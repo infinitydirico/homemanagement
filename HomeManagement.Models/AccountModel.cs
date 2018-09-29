@@ -6,16 +6,6 @@ namespace HomeManagement.Models
     {
         public AccountModel() { }
 
-        public AccountModel(int id, string name, int balance, bool excludeFormStatistics, bool isCash, int userId)
-        {
-            Id = id;
-            Name = name;
-            Balance = balance;
-            ExcludeFromStatistics = excludeFormStatistics;
-            IsCash = isCash;
-            UserId = userId;
-        }
-
         [Required]
         public int Id { get; set; }
 
