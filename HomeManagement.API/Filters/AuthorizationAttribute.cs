@@ -19,14 +19,18 @@ namespace HomeManagement.API.Filters
 
             if (string.IsNullOrEmpty(header))
             {
-                context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Forbidden, Content = "Header not present" };                                
+                context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Forbidden, Content = "Header not present" };
+
+                return;
             }
 
             if (!jwtSecurityTokenHandler.IsValid(header))
             {
                 context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Unauthorized, Content = "Token has expired" };
+
+                return;
             }
-            
+
             await next();
         }
     }

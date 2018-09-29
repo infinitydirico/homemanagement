@@ -6,7 +6,7 @@ namespace HomeManagement.API.Filters
 {
     public class ExceptionFilter : ExceptionFilterAttribute
     {
-        ILogger logger;
+        private readonly ILogger logger;
 
         public ExceptionFilter(ILogger<ExceptionFilter> logger)
         {

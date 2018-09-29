@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using HomeManagement.API.Data;
 using HomeManagement.API.Data.Entities;
 using HomeManagement.API.Data.Repositories;
 using HomeManagement.API.Filters;
+using HomeManagement.API.Infraestructure;
 using HomeManagement.API.Throttle;
-using HomeManagement.Contracts.Repositories;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,7 +18,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -36,9 +32,13 @@ namespace HomeManagement.API
 
         public IConfiguration Configuration { get; }
 
+        public IServiceCollection Services { get; private set; }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Services = services;
+
             services.AddDbContextPool<WebAppDbContext>(options =>
                 options.UseSqlite("Data Source=HomeManagement.db"));
 
@@ -73,7 +73,7 @@ namespace HomeManagement.API
             {
                 options.Filters.Add(typeof(ThrottleFilter));
             });
-            
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Idnetity API", Version = "v1" });
@@ -110,7 +110,7 @@ namespace HomeManagement.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -138,6 +138,9 @@ namespace HomeManagement.API
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            loggerFactory.AddProvider(new DatabaseLoggerProvider(app.ApplicationServices));
+
         }
 
         private void AddRepositories(IServiceCollection services)
@@ -155,7 +158,9 @@ namespace HomeManagement.API
             services.AddScoped<ITokenRepository, TokenRepository>();
 
             services.AddScoped<IWebClientRepository, WebClientRepository>();
-            
+
+            services.AddScoped<IDataLogRepository, DataLogRepository>();
+
             //with the throttle filter with persisted repo, the requests take around 100ms to respond
             //with memory values, it takes 30ms
             //services.AddScoped<IWebClientRepository, MemoryWebClientRepository>();            
