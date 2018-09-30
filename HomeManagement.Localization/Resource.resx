@@ -126,6 +126,9 @@
   <data name="ChangeLanguage" xml:space="preserve">
     <value>Change Language</value>
   </data>
+  <data name="DefaultAccountName" xml:space="preserve">
+    <value>Pocket</value>
+  </data>
   <data name="Expense" xml:space="preserve">
     <value>Expense</value>
   </data>

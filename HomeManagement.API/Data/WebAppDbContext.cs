@@ -20,8 +20,6 @@ namespace HomeManagement.API.Data
 
         public DbSet<UserCategory> UserCategories { get; set; }
 
-        public DbSet<DataLog> DataLogs { get; set; }
-
         public WebAppDbContext(DbContextOptions<WebAppDbContext> options)
             : base(options)
         {
@@ -45,8 +43,6 @@ namespace HomeManagement.API.Data
             modelBuilder.Entity<UserCategory>().HasOne(x => x.Category).WithMany(x => x.UserCategories).HasForeignKey(x => x.CategoryId);
 
             modelBuilder.Entity<UserCategory>().HasOne(x => x.User).WithMany(x => x.UserCategories).HasForeignKey(x => x.UserId);
-
-            modelBuilder.Entity<DataLog>().HasKey(x => x.Id);
 
             modelBuilder.Ignore<Share>();
             modelBuilder.Ignore<Role>();

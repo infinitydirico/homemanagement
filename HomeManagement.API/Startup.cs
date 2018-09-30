@@ -2,15 +2,11 @@
 using System.Text;
 using HomeManagement.API.Data;
 using HomeManagement.API.Data.Entities;
-using HomeManagement.API.Data.Repositories;
 using HomeManagement.API.Filters;
 using HomeManagement.API.Infraestructure;
-using HomeManagement.API.Throttle;
-using HomeManagement.Data;
-using HomeManagement.Mapper;
+using HomeManagement.API.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -39,6 +35,8 @@ namespace HomeManagement.API
         {
             Services = services;
 
+            services.AddLocalization(options => options.ResourcesPath = "Resource");
+
             services.AddDbContextPool<WebAppDbContext>(options =>
                 options.UseSqlite("Data Source=HomeManagement.db"));
 
@@ -65,9 +63,9 @@ namespace HomeManagement.API
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            AddRepositories(services);
-            AddMiddleware(services);
-            AddMappers(services);
+            services.AddRepositories();
+            services.AddMiddleware();
+            services.AddMappers();
 
             services.AddMvc(options =>
             {
@@ -93,25 +91,17 @@ namespace HomeManagement.API
                 c.AddSecurityRequirement(security);
             });
 
-            // ********************
-            // Setup CORS
-            // ********************
-            var corsBuilder = new CorsPolicyBuilder();
-            corsBuilder.AllowAnyHeader();
-            corsBuilder.AllowAnyMethod();
-            corsBuilder.AllowAnyOrigin(); // For anyone access.
-            //corsBuilder.WithOrigins("http://localhost:56573"); // for a specific url. Don't add a forward slash on the end!
-            corsBuilder.AllowCredentials();
-
             services.AddCors(options =>
             {
-                options.AddPolicy("SiteCorsPolicy", corsBuilder.Build());
+                options.AddPolicy("SiteCorsPolicy", options.BuildCorsPolicy());
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddProvider(new DatabaseLoggerProvider(app.ApplicationServices));
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -138,47 +128,6 @@ namespace HomeManagement.API
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            loggerFactory.AddProvider(new DatabaseLoggerProvider(app.ApplicationServices));
-
-        }
-
-        private void AddRepositories(IServiceCollection services)
-        {
-            services.AddScoped<IPlatformContext, WebAppLayerContext>();
-
-            services.AddScoped<IUserRepository, UserRepository>();
-
-            services.AddScoped<IAccountRepository, AccountRepository>();
-
-            services.AddScoped<IChargeRepository, ChargeRepository>();
-
-            services.AddScoped<ICategoryRepository, API.Data.Repositories.CategoryRepository>();
-
-            services.AddScoped<ITokenRepository, TokenRepository>();
-
-            services.AddScoped<IWebClientRepository, WebClientRepository>();
-
-            services.AddScoped<IDataLogRepository, DataLogRepository>();
-
-            //with the throttle filter with persisted repo, the requests take around 100ms to respond
-            //with memory values, it takes 30ms
-            //services.AddScoped<IWebClientRepository, MemoryWebClientRepository>();            
-        }
-
-        private void AddMappers(IServiceCollection services)
-        {
-            services.AddScoped<ICategoryMapper, CategoryMapper>();
-
-            services.AddScoped<IAccountMapper, AccountMapper>();
-
-            services.AddScoped<IUserMapper, UserMapper>();
-
-        }
-
-        private void AddMiddleware(IServiceCollection services)
-        {
-            services.AddScoped<IThrottleCore, ThrottleCore>();
         }
     }
 }

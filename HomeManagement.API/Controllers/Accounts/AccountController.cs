@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Collections.Generic;
 using HomeManagement.Core.Common;
+using Microsoft.Extensions.Localization;
 
 namespace HomeManagement.API.Controllers.Accounts
 {
@@ -26,7 +27,8 @@ namespace HomeManagement.API.Controllers.Accounts
         public AccountController(IAccountRepository accountRepository,
             IChargeRepository chargeRepository,
             IAccountMapper accountMapper,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IStringLocalizer<AccountController> localizer)
         {
             this.accountRepository = accountRepository;
             this.chargeRepository = chargeRepository;

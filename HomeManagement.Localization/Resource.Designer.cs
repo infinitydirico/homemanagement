@@ -88,6 +88,15 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pocket.
+        /// </summary>
+        public static string DefaultAccountName {
+            get {
+                return ResourceManager.GetString("DefaultAccountName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expense.
         /// </summary>
         public static string Expense {
