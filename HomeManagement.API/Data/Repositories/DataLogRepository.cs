@@ -33,6 +33,7 @@ namespace HomeManagement.API.Data.Repositories
                 {
                     await connection.OpenAsync();
 
+                    await CreateTableIfNotExists(connection);
                     using (var command = connection.CreateCommand())
                     {
                         command.CommandText = "INSERT INTO DataLogs(Name,Description,Level,TimeStamp) VALUES(@Name,@Description,@Level,@TimeStamp);";
@@ -47,6 +48,27 @@ namespace HomeManagement.API.Data.Repositories
                 finally
                 {
                     connection.Close();
+                }
+            }
+        }
+
+        private async Task CreateTableIfNotExists(SqliteConnection connection)
+        {
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=@table_name;";
+                command.Parameters.AddWithValue("@table_name", "DataLogs");
+
+                var result = (await command.ExecuteScalarAsync());
+
+                var count = int.Parse(result.ToString());
+
+                if(count <= 0)
+                {
+                    command.Parameters.Clear();
+
+                    command.CommandText = "CREATE TABLE DataLogs (Id integer PRIMARY KEY,Name text,Description text,Level integer,TimeStamp text);";
+                    await command.ExecuteNonQueryAsync();
                 }
             }
         }
