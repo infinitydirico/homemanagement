@@ -39,11 +39,7 @@ namespace HomeManagement.API.Controllers.Accounts
         [HttpGet]
         public IActionResult Get()
         {
-            var claim = HttpContext
-                .GetAuthorizationHeader()
-                .GetJwtSecurityToken()
-                .Claims
-                .FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
+            var claim = HttpContext.User.Claims.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
 
             if (claim == null) return BadRequest();
 

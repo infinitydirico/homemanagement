@@ -37,7 +37,7 @@ namespace HomeManagement.API
 
             services.AddLocalization(options => options.ResourcesPath = "Resource");
 
-            services.AddDbContextPool<WebAppDbContext>(options =>
+            services.AddDbContext<WebAppDbContext>(options =>
                 options.UseSqlite("Data Source=HomeManagement.db"));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -106,6 +106,8 @@ namespace HomeManagement.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.EnsureDatabaseCreated();
 
             app.UseStaticFiles();
 

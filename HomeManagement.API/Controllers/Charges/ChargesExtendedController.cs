@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using HomeManagement.API.Filters;
 using HomeManagement.Data;
 using HomeManagement.Domain;
@@ -12,7 +11,6 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
-using HomeManagement.API.Extensions;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace HomeManagement.API.Controllers.Charges
@@ -34,13 +32,15 @@ namespace HomeManagement.API.Controllers.Charges
             IChargeRepository chargeRepository,
             ICategoryRepository categoryRepository,
             IChargeMapper chargeMapper,
-            ICategoryMapper categoryMapper)
+            ICategoryMapper categoryMapper,
+            IUserRepository userRepository)
         {
             this.accountRepository = accountRepository;
             this.chargeRepository = chargeRepository;
             this.categoryRepository = categoryRepository;
             this.chargeMapper = chargeMapper;
             this.categoryMapper = categoryMapper;
+            this.userRepository = userRepository;
         }
 
         [HttpPost("paging")]
@@ -81,36 +81,20 @@ namespace HomeManagement.API.Controllers.Charges
         [HttpGet("getlastfive")]
         public IActionResult GetLastFive()
         {
-            var claim = HttpContext
-             .GetAuthorizationHeader()
-             .GetJwtSecurityToken()
-             .Claims
-             .FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
+            var claim = HttpContext.User.Claims.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
 
-            var user = userRepository.All.FirstOrDefault(x => x.Email.Equals(claim.Value));
+            var charges = (from user in userRepository.All
+                           join account in accountRepository.All
+                           on user.Id equals account.UserId
+                           join charge in chargeRepository.All
+                           on account.Id equals charge.AccountId
+                           where user.Email.Equals(claim.Value)
+                           orderby charge.Date descending                           
+                           select chargeMapper.ToModel(charge))
+                            .Take(5)
+                            .ToList();
 
-            var accounts = accountRepository
-                .All
-                .Where(o => o.UserId.Equals(user.Id))
-                .ToList();
-
-            List<Charge> charges = new List<Charge>();
-
-            foreach (var account in accounts)
-            {
-                charges.AddRange(
-                    chargeRepository
-                        .All
-                        .Where(o => o.AccountId.Equals(account.Id))
-                        .OrderByDescending(o => o.Date)
-                        .Take(5));
-            }
-
-            return Ok(
-                charges
-                    .Take(5)
-                    .Select(x => chargeMapper.ToModel(x))
-                    .ToList());
+            return Ok(charges);
         }
 
         [HttpPost("updateAll")]

@@ -2,11 +2,21 @@
 using System.Collections.Generic;
 using System.Globalization;
 using HomeManagement.API.Extensions;
+using System.Linq;
 
 namespace HomeManagement.API.Data
 {
     public static class CategoryInitializer
     {
+        public static void SeedCategories(this WebAppDbContext context)
+        {
+            if (context.Categories.Count() > 0) return;
+
+            context.Categories.AddRange(GetDefaultCategories());
+
+            context.SaveChanges();
+        }
+
         public static IEnumerable<Category> GetDefaultCategories(CultureInfo culture = null) => new List<Category>
         {
             new Category

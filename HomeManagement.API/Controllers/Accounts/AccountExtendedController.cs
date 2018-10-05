@@ -7,6 +7,7 @@ using HomeManagement.Mapper;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace HomeManagement.API.Controllers.Accounts
 {
@@ -72,7 +73,7 @@ namespace HomeManagement.API.Controllers.Accounts
         {
             if (model == null) return BadRequest();
 
-            var controller = new ChargesController(accountRepository, chargeRepository, categoryRepository, chargeMapper, categoryMapper);
+            var controller = new ChargesController(accountRepository, chargeRepository, categoryRepository, chargeMapper, categoryMapper, userRepository);
 
             var incomingCharge = new ChargeModel
             {

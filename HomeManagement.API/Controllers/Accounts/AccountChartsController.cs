@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using HomeManagement.API.Filters;
 using HomeManagement.Data;
@@ -53,12 +54,18 @@ namespace HomeManagement.API.Controllers.Accounts
             });
         }
 
-        [HttpGet("{userId}/accountsevolution")]
-        public IActionResult AccountsEvolution(int userId)
+        [HttpGet("accountsevolution")]
+        public IActionResult AccountsEvolution()
         {
             var model = new AccountsEvolutionModel();
 
-            var accounts = accountRepository.All.Where(c => c.UserId.Equals(userId)).ToList();
+            var claim = HttpContext.User.Claims.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
+
+            var user = userRepository.FirstOrDefault(x => x.Email.Equals(claim.Value));
+
+            if (user == null) return NotFound();
+
+            var accounts = accountRepository.All.Where(c => c.UserId.Equals(user.Id)).ToList();
 
             int low = 0;
             int high = 0;

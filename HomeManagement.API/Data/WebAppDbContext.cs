@@ -44,6 +44,8 @@ namespace HomeManagement.API.Data
 
             modelBuilder.Entity<UserCategory>().HasOne(x => x.User).WithMany(x => x.UserCategories).HasForeignKey(x => x.UserId);
 
+            modelBuilder.Entity<Category>().HasKey(x => x.Id);
+
             modelBuilder.Ignore<Share>();
             modelBuilder.Ignore<Role>();
             modelBuilder.Ignore<Tax>();

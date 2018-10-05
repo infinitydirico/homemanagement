@@ -11,6 +11,7 @@ using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace HomeManagement.API.Controllers.Charges
 {
@@ -31,23 +32,21 @@ namespace HomeManagement.API.Controllers.Charges
             IChargeRepository chargeRepository,
             ICategoryRepository categoryRepository,
             IChargeMapper chargeMapper,
-            ICategoryMapper categoryMapper) 
+            ICategoryMapper categoryMapper,
+            IUserRepository userRepository) 
         {
             this.accountRepository = accountRepository;
             this.chargeRepository = chargeRepository;
             this.categoryRepository = categoryRepository;
             this.chargeMapper = chargeMapper;
             this.categoryMapper = categoryMapper;
+            this.userRepository = userRepository;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            var claim = HttpContext
-             .GetAuthorizationHeader()
-             .GetJwtSecurityToken()
-             .Claims
-             .FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
+            var claim = HttpContext.User.Claims.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
 
             if (claim == null) return BadRequest();
 

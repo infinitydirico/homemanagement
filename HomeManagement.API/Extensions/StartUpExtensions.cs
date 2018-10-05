@@ -45,6 +45,9 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IAccountMapper, AccountMapper>();
 
             services.AddScoped<IUserMapper, UserMapper>();
+
+            services.AddScoped<IChargeMapper, ChargeMapper>();
+
         }
 
         public static CorsPolicy BuildCorsPolicy(this CorsOptions corsOptions)
