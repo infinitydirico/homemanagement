@@ -11,21 +11,19 @@ namespace HomeManagement.Data
         where T : class
     {
         protected IPlatformContext platformContext;
+        protected IWrittableRepository<T> writtableRepository;
 
-        public BaseRepository(IPlatformContext platformContext)
+        public BaseRepository(IPlatformContext platformContext, IWrittableRepository<T> writtableRepository = null)
         {
             this.platformContext = platformContext ?? throw new ArgumentNullException($"{nameof(platformContext)} is null");
+            this.writtableRepository = writtableRepository ?? new NonTransactionalRepository<T>(this.platformContext);
         }
 
         public IQueryable<T> All => platformContext.GetDbContext().Set<T>().AsQueryable<T>();
 
         public virtual void Add(T entity)
         {
-            var dbContext = platformContext.GetDbContext();
-
-            dbContext.Set<T>().Add(entity);
-
-            dbContext.SaveChanges();
+            writtableRepository.Add(entity);
         }
 
         public async Task AddAsync(T entity)
@@ -53,11 +51,7 @@ namespace HomeManagement.Data
 
         public virtual void Remove(T entity)
         {
-            var dbContext = platformContext.GetDbContext();
-
-            dbContext.Set<T>().Remove(entity);
-
-            dbContext.SaveChanges();
+            writtableRepository.Remove(entity);
         }
 
         public virtual void Remove(int id)
@@ -67,8 +61,6 @@ namespace HomeManagement.Data
             var entity = GetById(id);
 
             dbContext.Set<T>().Remove(entity);
-
-            dbContext.SaveChanges();
         }
 
         public decimal Sum(Expression<Func<T, int>> selector, Expression<Func<T, bool>> predicate = null) =>
@@ -76,11 +68,7 @@ namespace HomeManagement.Data
 
         public virtual void Update(T entity)
         {
-            var dbContext = platformContext.GetDbContext();
-
-            dbContext.Set<T>().Update(entity);
-
-            dbContext.SaveChanges();
+            writtableRepository.Update(entity);
         }
 
         public IEnumerable<T> Where(Expression<Func<T, bool>> predicate) => platformContext.GetDbContext().Set<T>().Where(predicate).ToList();

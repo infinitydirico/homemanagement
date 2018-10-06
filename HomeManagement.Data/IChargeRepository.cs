@@ -3,7 +3,7 @@ using HomeManagement.Domain;
 
 namespace HomeManagement.Data
 {
-    public interface IChargeRepository : IRepository<Charge>
+    public interface IChargeRepository : IRepository<Charge>, ITransactonalRepository
     {
     }
 }

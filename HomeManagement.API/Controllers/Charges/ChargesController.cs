@@ -86,9 +86,18 @@ namespace HomeManagement.API.Controllers.Charges
             {
                 var entity = chargeMapper.ToEntity(model);
 
-                chargeRepository.Add(entity);
+                using (var transaction = chargeRepository.BeginTransaction())
+                {
+                    chargeRepository.Add(entity);
 
-                UpdateBalance(entity);
+                    UpdateBalance(entity);
+
+                    transaction.Commit();
+                }                    
+
+                //chargeRepository.Add(entity);
+
+                //UpdateBalance(entity);
             }
             catch (Exception ex)
             {
