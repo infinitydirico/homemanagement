@@ -20,18 +20,10 @@ namespace HomeManagement.API.Data
 
         public DbSet<UserCategory> UserCategories { get; set; }
 
-        public bool Disposed { get; private set; }
-
         public WebAppDbContext(DbContextOptions<WebAppDbContext> options)
             : base(options)
         {
             Database.EnsureCreated();
-        }
-
-        public override void Dispose()
-        {
-            Disposed = true;
-            base.Dispose();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

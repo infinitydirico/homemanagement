@@ -1,13 +1,11 @@
-﻿using System.Data.Common;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 
 namespace HomeManagement.Data
 {
     public interface ITransactonalRepository
     {
-        DbTransaction BeginTransaction();
+        IDbContextTransaction BeginTransaction();
 
-        DbTransaction GetCurrentTransaction();
-
-        void CommitData();
+        void Commit();
     }
 }
