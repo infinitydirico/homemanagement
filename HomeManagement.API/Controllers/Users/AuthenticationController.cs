@@ -58,7 +58,7 @@ namespace HomeManagement.API.Controllers.Users
 
                 var readToken = jwtSecurityToken.ReadToken(tokenValue);
 
-                if (!readToken.HasExpired())
+                if (readToken.IsValid())
                 {
                     return Ok(tokenValue);
                 }
