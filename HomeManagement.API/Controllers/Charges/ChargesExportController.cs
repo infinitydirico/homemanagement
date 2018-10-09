@@ -5,32 +5,36 @@ using HomeManagement.API.Exportation;
 using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
 using HomeManagement.Data;
+using HomeManagement.Mapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeManagement.API.Controllers.Categories
+namespace HomeManagement.API.Controllers.Charges
 {
     [Authorization]
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
-    [Route("api/Category")]
-    public class CategoryExportController : Controller
+    [Route("api/Charges")]
+    public class ChargesExportController : Controller
     {
+        private readonly IAccountRepository accountRepository;
+        private readonly IChargeRepository chargeRepository;
         private readonly IUserRepository userRepository;
-        private readonly ICategoryRepository categoryRepository;
-        private readonly IUserCategoryRepository userCategoryRepository;
-        private readonly IExportableCategory exportableCategory;
+        private readonly IExportableCharge exportableCharge;
 
-        public CategoryExportController(ICategoryRepository categoryRepository,
-                                    IUserRepository userRepository,
-                                    IUserCategoryRepository userCategoryRepository,
-                                    IExportableCategory exportableCategory)
+        public ChargesExportController(IAccountRepository accountRepository,
+            IChargeRepository chargeRepository,
+            ICategoryRepository categoryRepository,
+            IChargeMapper chargeMapper,
+            ICategoryMapper categoryMapper,
+            IUserRepository userRepository,
+            IExportableCharge exportableCharge)
         {
-            this.categoryRepository = categoryRepository;
+            this.accountRepository = accountRepository;
+            this.chargeRepository = chargeRepository;
             this.userRepository = userRepository;
-            this.userCategoryRepository = userCategoryRepository;
-            this.exportableCategory = exportableCategory;
+            this.exportableCharge = exportableCharge;
         }
 
         [HttpGet("download")]
@@ -38,17 +42,17 @@ namespace HomeManagement.API.Controllers.Categories
         {
             var email = HttpContext.GetEmailClaim();
 
-            var categories = (from category in categoryRepository.All
-                              join userCategory in userCategoryRepository.All
-                              on category.Id equals userCategory.CategoryId
+            var charges = (from charge in chargeRepository.All
+                              join account in accountRepository.All
+                              on charge.AccountId equals account.Id
                               join user in userRepository.All
-                              on userCategory.UserId equals user.Id
+                              on account.UserId equals user.Id
                               where user.Email.Equals(email.Value)
-                              select category).ToList();
+                              select charge).ToList();
 
-            var csv = exportableCategory.ToCsv(categories);
+            var csv = exportableCharge.ToCsv(charges);
 
-            var filename = "categories_" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".csv";
+            var filename = "charges_" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".csv";
 
             var result = this.CreateCsvFile(csv, filename);
 
@@ -71,17 +75,17 @@ namespace HomeManagement.API.Controllers.Categories
 
                 var bytes = stream.GetBytes();
 
-                var entities = exportableCategory.ToEntities(bytes);
+                var entities = exportableCharge.ToEntities(bytes);
 
                 foreach (var entity in entities)
                 {
                     if (entity == null) continue;
 
-                    if (categoryRepository.Exists(entity)) continue;
+                    if (chargeRepository.Exists(entity)) continue;
 
                     entity.Id = 0;
 
-                    categoryRepository.Add(entity, emailClaim);
+                    chargeRepository.Add(entity);
                 }
             }
 
