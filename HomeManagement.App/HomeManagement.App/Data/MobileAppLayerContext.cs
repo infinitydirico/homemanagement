@@ -1,6 +1,5 @@
 ﻿using HomeManagement.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace HomeManagement.App.Data
 {

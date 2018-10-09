@@ -66,6 +66,7 @@ namespace HomeManagement.API
             services.AddRepositories();
             services.AddMiddleware();
             services.AddMappers();
+            services.AddExportableComponents();
 
             services.AddMvc(options =>
             {

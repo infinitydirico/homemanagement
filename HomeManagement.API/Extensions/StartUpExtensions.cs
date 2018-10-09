@@ -1,5 +1,6 @@
 ﻿using HomeManagement.API.Data;
 using HomeManagement.API.Data.Repositories;
+using HomeManagement.API.Exportation;
 using HomeManagement.API.Throttle;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
@@ -27,6 +28,8 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<ICategoryRepository, API.Data.Repositories.CategoryRepository>();
 
+            services.AddScoped<IUserCategoryRepository, UserCategoryRepository>();
+
             services.AddScoped<ITokenRepository, TokenRepository>();
 
             services.AddScoped<IWebClientRepository, WebClientRepository>();
@@ -47,7 +50,13 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IUserMapper, UserMapper>();
 
             services.AddScoped<IChargeMapper, ChargeMapper>();
+        }
 
+        public static void AddExportableComponents(this IServiceCollection services)
+        {
+            services.AddScoped<IExportableCategory, ExportableCategory>();
+
+            services.AddScoped<IExportableCharge, ExportableCharge>();
         }
 
         public static CorsPolicy BuildCorsPolicy(this CorsOptions corsOptions)
