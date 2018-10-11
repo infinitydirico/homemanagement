@@ -110,7 +110,7 @@ namespace HomeManagement.API.Controllers.Accounts
                 model.Balances.Add(accountEvoModel);
             }
 
-            model.HighestValue = high;
+            model.HighestValue = high + int.Parse((high * 0.25).ToString("F0"));
             model.LowestValue = low;
 
             return Ok(model);
@@ -129,13 +129,24 @@ namespace HomeManagement.API.Controllers.Accounts
                                                      && c.Date.Month.Equals(i));
 
                 var outgoingCharges = chargeRepository
-                                        .Sum(c => int.Parse(c.Price.ToString()), c => c.AccountId.Equals(id)
+                                        .Sum(c => decimal.Parse(c.Price.ToString()), c => c.AccountId.Equals(id)
                                                      && c.ChargeType == ChargeType.Expense
                                                      && c.Date.Month.Equals(i));
 
                 model.IncomingSeries.Add(decimal.ToInt32(incomingCharges));
                 model.OutgoingSeries.Add(decimal.ToInt32(outgoingCharges));
             }
+
+            var incomeMax = model.IncomingSeries.Max();
+            var outcomeMax = model.OutgoingSeries.Max();
+
+            model.HighestValue = incomeMax > outcomeMax ? incomeMax : outcomeMax;
+            model.HighestValue = model.HighestValue + int.Parse((model.HighestValue * 0.25).ToString("F0"));
+
+            var incomeMin = model.IncomingSeries.Min();
+            var outcomeMin = model.OutgoingSeries.Min();
+
+            model.LowestValue = incomeMin < outcomeMin ? incomeMin : outcomeMin;
 
             return Ok(model);
         }
