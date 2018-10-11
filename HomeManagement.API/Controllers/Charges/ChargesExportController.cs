@@ -59,8 +59,8 @@ namespace HomeManagement.API.Controllers.Charges
             return result;
         }
 
-        [HttpPost("upload")]
-        public IActionResult UploadCategories()
+        [HttpPost("upload/{accountId}")]
+        public IActionResult UploadCategories(int accountId)
         {
             var basePath = AppContext.BaseDirectory + "\\{0}";
             if (Request.Form == null) return BadRequest();
@@ -84,7 +84,7 @@ namespace HomeManagement.API.Controllers.Charges
                     if (chargeRepository.Exists(entity)) continue;
 
                     entity.Id = 0;
-
+                    entity.AccountId = accountId;
                     chargeRepository.Add(entity);
                 }
             }
