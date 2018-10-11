@@ -13,9 +13,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Cors;
+using HomeManagement.Contracts;
+using HomeManagement.Data;
 
 namespace HomeManagement.API.Controllers.Users
 {
+    [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Authentication")]
     public class AuthenticationController : Controller
@@ -24,17 +28,23 @@ namespace HomeManagement.API.Controllers.Users
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IConfiguration configuration;
         private readonly ITokenRepository tokenRepository;
+        private readonly ICryptography cryptography;
+        private readonly IUserRepository userRepository;
         private readonly JwtSecurityTokenHandler jwtSecurityToken = new JwtSecurityTokenHandler();
 
         public AuthenticationController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IConfiguration configuration,
-            ITokenRepository tokenRepository)
+            ITokenRepository tokenRepository,
+            ICryptography cryptography,
+            IUserRepository userRepository)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.configuration = configuration;
             this.tokenRepository = tokenRepository;
+            this.cryptography = cryptography;
+            this.userRepository = userRepository;
         }
 
         [HttpPost("signin")]
@@ -44,11 +54,15 @@ namespace HomeManagement.API.Controllers.Users
 
             string tokenValue = string.Empty;
 
-            var result = await signInManager.PasswordSignInAsync(user.Email, user.Password, true, false);
+            var password = cryptography.Decrypt(user.Password);
+
+            var result = await signInManager.PasswordSignInAsync(user.Email, password, true, false);
 
             if (!result.Succeeded) return Forbid();
 
             var appUser = await userManager.FindByEmailAsync(user.Email);
+
+            var userEntity = userRepository.FirstOrDefault(x => x.Email.Equals(user.Email));
 
             if (tokenRepository.UserHasToken(appUser.Id))
             {
@@ -60,7 +74,13 @@ namespace HomeManagement.API.Controllers.Users
 
                 if (readToken.IsValid())
                 {
-                    return Ok(tokenValue);
+                    var userModel = new UserModel
+                    {
+                        Id = userEntity.Id,
+                        Email = userEntity.Email,
+                        Token = tokenValue
+                    };
+                    return Ok(userModel);
                 }
 
                 tokenValue = CreateToken(user.Email);
@@ -82,7 +102,16 @@ namespace HomeManagement.API.Controllers.Users
                 });
             }
 
-            if (result.Succeeded) return Ok(tokenValue);
+            if (result.Succeeded)
+            {
+                var userModel = new UserModel
+                {
+                    Id = userEntity.Id,
+                    Email = userEntity.Email,
+                    Token = tokenValue
+                };
+                return Ok(userModel);
+            }
             else return BadRequest();
         }
 

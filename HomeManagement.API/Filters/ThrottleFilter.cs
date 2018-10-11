@@ -26,6 +26,9 @@ namespace HomeManagement.API.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
+#if DEBUG
+            return;
+#endif
             if (context != null)
             {
                 var connectionFeature = context.HttpContext?.Features?.Get<IHttpConnectionFeature>();

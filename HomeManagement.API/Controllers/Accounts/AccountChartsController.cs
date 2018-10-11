@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
 using HomeManagement.Data;
 using HomeManagement.Domain;
@@ -59,9 +60,9 @@ namespace HomeManagement.API.Controllers.Accounts
         {
             var model = new AccountsEvolutionModel();
 
-            var claim = HttpContext.User.Claims.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
+            var email = HttpContext.GetEmailClaim();
 
-            var user = userRepository.FirstOrDefault(x => x.Email.Equals(claim.Value));
+            var user = userRepository.FirstOrDefault(x => x.Email.Equals(email.Value));
 
             if (user == null) return NotFound();
 
@@ -135,6 +136,30 @@ namespace HomeManagement.API.Controllers.Accounts
 
             return Ok(model);
         }
+
+        //[HttpGet("topcharges/{month}")]
+        //public IActionResult AccountTopCharges(int month)
+        //{
+        //    var email = HttpContext.GetEmailClaim();
+
+        //    if (month.Equals(default(int)))
+        //    {
+        //        month = DateTime.Now.Month;
+        //    }
+
+        //    //implement a method where it gets all charges of all accounts to the authenticated user that is grouped by categories
+
+        //    var charges = chargeRepository.All.Where(c => c.AccountId.Equals(id)
+        //                                             && c.ChargeType == ChargeType.Expense
+        //                                             && c.Date.Month.Equals(month)).ToList();
+
+        //    var result = charges.GroupBy(c => c.CategoryId)
+        //                        .Select(s => new { Category = categoryRepository.GetById(s.FirstOrDefault().CategoryId), Value = s.Sum(d => d.Price) })
+        //                        .Take(10)
+        //                        .ToList();
+
+        //    return Ok(result);
+        //}
 
         [HttpGet("{id}/topcharges/{month}")]
         public IActionResult AccountTopCharges(int id, int month)

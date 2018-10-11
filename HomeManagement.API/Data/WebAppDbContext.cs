@@ -23,7 +23,7 @@ namespace HomeManagement.API.Data
         public WebAppDbContext(DbContextOptions<WebAppDbContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
