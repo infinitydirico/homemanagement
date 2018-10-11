@@ -15,17 +15,19 @@ namespace HomeManagement.Mapper
     {
         public override IEnumerable<PropertyInfo> GetEntityProperties()
         {
-            yield return typeof(Account).GetProperty(nameof(Notification.Id));
-            yield return typeof(Account).GetProperty(nameof(Notification.ReminderId));
+            yield return typeof(Notification).GetProperty(nameof(Notification.Id));
+            yield return typeof(Notification).GetProperty(nameof(Notification.ReminderId));
+            yield return typeof(Notification).GetProperty(nameof(Notification.Dismissed));
         }
 
         public override IEnumerable<PropertyInfo> GetModelProperties()
         {
-            yield return typeof(Account).GetProperty(nameof(NotificationModel.Id));
-            yield return typeof(Account).GetProperty(nameof(NotificationModel.ReminderId));
-            yield return typeof(Account).GetProperty(nameof(NotificationModel.Title));
-            yield return typeof(Account).GetProperty(nameof(NotificationModel.Description));
-            yield return typeof(Account).GetProperty(nameof(NotificationModel.DueDay));
+            yield return typeof(NotificationModel).GetProperty(nameof(NotificationModel.Id));
+            yield return typeof(NotificationModel).GetProperty(nameof(NotificationModel.ReminderId));
+            yield return typeof(NotificationModel).GetProperty(nameof(NotificationModel.Title));
+            yield return typeof(NotificationModel).GetProperty(nameof(NotificationModel.Description));
+            yield return typeof(NotificationModel).GetProperty(nameof(NotificationModel.DueDay));
+            yield return typeof(NotificationModel).GetProperty(nameof(NotificationModel.Dismissed));
         }
     }
 }

@@ -11,5 +11,7 @@
         public string Description { get; set; }
 
         public int DueDay { get; set; }
+
+        public bool Dismissed { get; set; }
     }
 }

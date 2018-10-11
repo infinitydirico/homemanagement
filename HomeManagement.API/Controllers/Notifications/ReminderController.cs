@@ -68,7 +68,7 @@ namespace HomeManagement.API.Controllers.Notifications
 
             if(reminder.UserId == 0)
             {
-                reminder.UserId = GetReminderUserId();
+                reminder.UserId = GetUserId();
             }
 
             reminderRepository.Add(reminder);
@@ -85,7 +85,7 @@ namespace HomeManagement.API.Controllers.Notifications
 
             if (reminder.UserId == 0)
             {
-                reminder.UserId = GetReminderUserId();
+                reminder.UserId = GetUserId();
             }
 
             reminderRepository.Update(reminder);
@@ -100,7 +100,7 @@ namespace HomeManagement.API.Controllers.Notifications
 
             var reminder = reminderRepository.GetById(id);
 
-            var userId = GetReminderUserId();
+            var userId = GetUserId();
 
             if (reminder.UserId != userId) return Forbid();
 
@@ -109,7 +109,7 @@ namespace HomeManagement.API.Controllers.Notifications
             return Ok();
         }
 
-        private int GetReminderUserId()
+        private int GetUserId()
         {
             var emailClaim = HttpContext.GetEmailClaim();
 
