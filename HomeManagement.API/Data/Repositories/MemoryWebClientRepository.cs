@@ -62,6 +62,11 @@ namespace HomeManagement.API.Data.Repositories
             throw new NotImplementedException();
         }
 
+        public decimal Sum(Expression<Func<WebClient, decimal>> selector, Expression<Func<WebClient, bool>> predicate = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Update(WebClient entity)
         {
             

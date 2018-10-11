@@ -74,6 +74,9 @@ namespace HomeManagement.Data
         public decimal Sum(Expression<Func<T, int>> selector, Expression<Func<T, bool>> predicate = null) =>
             predicate == null ? platformContext.GetDbContext().Set<T>().Sum(selector) : platformContext.GetDbContext().Set<T>().Where(predicate).Sum(selector);
 
+        public decimal Sum(Expression<Func<T, decimal>> selector, Expression<Func<T, bool>> predicate = null) =>
+            predicate == null ? platformContext.GetDbContext().Set<T>().Sum(selector) : platformContext.GetDbContext().Set<T>().Where(predicate).Sum(selector);
+
         public virtual void Update(T entity)
         {
             var dbContext = platformContext.GetDbContext();

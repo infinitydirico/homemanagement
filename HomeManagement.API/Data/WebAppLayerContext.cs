@@ -21,7 +21,13 @@ namespace HomeManagement.API.Data
                 var scope = serviceScopeFactory.CreateScope();
                 dbContext = scope.ServiceProvider.GetRequiredService<WebAppDbContext>();
             }
-            
+
+            if (((WebAppDbContext)dbContext).Disposed)
+            {
+                var scope = serviceScopeFactory.CreateScope();
+                dbContext = scope.ServiceProvider.GetRequiredService<WebAppDbContext>();
+            }
+
             return dbContext;
         }
     }

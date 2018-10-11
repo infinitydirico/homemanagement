@@ -34,6 +34,8 @@ namespace HomeManagement.Contracts.Repositories
 
         decimal Sum(Expression<Func<T, int>> selector, Expression<Func<T, bool>> predicate = null);
 
+        decimal Sum(Expression<Func<T, decimal>> selector, Expression<Func<T, bool>> predicate = null);
+
         int Count();
 
         int Count(Expression<Func<T, bool>> predicate);

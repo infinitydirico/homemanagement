@@ -74,15 +74,15 @@ namespace HomeManagement.API.Controllers.Accounts
 
             var user = userRepository.FirstOrDefault(x => x.Email.Equals(email.Value));
 
-            var total = chargeRepository.Sum(c => int.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(DateTime.Now.Month) && c.ChargeType == ChargeType.Income);
+            var total = chargeRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(DateTime.Now.Month) && c.ChargeType == ChargeType.Income);
 
-            var previousMonth = chargeRepository.Sum(c => int.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) && c.ChargeType == ChargeType.Income);
+            var previousMonth = chargeRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) && c.ChargeType == ChargeType.Income);
 
             var percentage = previousMonth.CalculatePercentage(total);
 
             return Ok(new MetricValueDto
             {
-                Total = int.Parse(total.ToString()),
+                Total = int.Parse(total.ToString("F0")),
                 Percentage = percentage
             });
         }
@@ -94,15 +94,15 @@ namespace HomeManagement.API.Controllers.Accounts
 
             var user = userRepository.FirstOrDefault(x => x.Email.Equals(email.Value));
 
-            var total = chargeRepository.Sum(c => int.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(DateTime.Now.Month) && c.ChargeType == ChargeType.Expense);
+            var total = chargeRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(DateTime.Now.Month) && c.ChargeType == ChargeType.Expense);
 
-            var previousMonth = chargeRepository.Sum(c => int.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) && c.ChargeType == ChargeType.Expense);
+            var previousMonth = chargeRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) && c.ChargeType == ChargeType.Expense);
 
             var percentage = previousMonth.CalculatePercentage(total);
 
             return Ok(new MetricValueDto
             {
-                Total = int.Parse(total.ToString()),
+                Total = int.Parse(total.ToString("F0")),
                 Percentage = percentage
             });
         }

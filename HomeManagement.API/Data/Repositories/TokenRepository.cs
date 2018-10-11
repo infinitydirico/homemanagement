@@ -94,6 +94,11 @@ namespace HomeManagement.API.Data.Repositories
             throw new NotImplementedException();
         }
 
+        public decimal Sum(Expression<Func<IdentityUserToken<string>, decimal>> selector, Expression<Func<IdentityUserToken<string>, bool>> predicate = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Update(IdentityUserToken<string> entity)
         {
             var dbContext = platformContext.GetDbContext();

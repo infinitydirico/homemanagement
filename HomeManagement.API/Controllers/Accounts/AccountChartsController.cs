@@ -81,12 +81,12 @@ namespace HomeManagement.API.Controllers.Accounts
                 for (int i = 1; i <= DateTime.Now.Month; i++)
                 {
                     var incomingCharges = chargeRepository
-                                       .Sum(c => int.Parse(c.Price.ToString()), c => c.AccountId.Equals(account.Id)
+                                       .Sum(c => int.Parse(c.Price.ToString("F0")), c => c.AccountId.Equals(account.Id)
                                                     && c.ChargeType == (int)ChargeType.Income
                                                     && c.Date.Month.Equals(i));
 
                     var outgoingCharges = chargeRepository
-                                        .Sum(c => int.Parse(c.Price.ToString()), c => c.AccountId.Equals(account.Id)
+                                        .Sum(c => int.Parse(c.Price.ToString("F0")), c => c.AccountId.Equals(account.Id)
                                                     && c.ChargeType == ChargeType.Expense
                                                     && c.Date.Month.Equals(i));
 
