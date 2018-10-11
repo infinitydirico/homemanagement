@@ -23,18 +23,21 @@ namespace HomeManagement.API.Controllers.Accounts
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
+        private readonly ICategoryMapper categoryMapper;
 
         public AccountChartsController(IAccountRepository accountRepository,
             IChargeRepository chargeRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository,
-            ICategoryRepository categoryRepository)
+            ICategoryRepository categoryRepository,
+            ICategoryMapper categoryMapper)
         {
             this.accountRepository = accountRepository;
             this.chargeRepository = chargeRepository;
             this.accountMapper = accountMapper;
             this.userRepository = userRepository;
             this.categoryRepository = categoryRepository;
+            this.categoryMapper = categoryMapper;
         }
 
 
@@ -137,29 +140,51 @@ namespace HomeManagement.API.Controllers.Accounts
             return Ok(model);
         }
 
-        //[HttpGet("topcharges/{month}")]
-        //public IActionResult AccountTopCharges(int month)
-        //{
-        //    var email = HttpContext.GetEmailClaim();
+        [HttpGet("topcharges/{month}")]
+        public IActionResult AccountTopCharges(int month)
+        {
+            var email = HttpContext.GetEmailClaim();
 
-        //    if (month.Equals(default(int)))
-        //    {
-        //        month = DateTime.Now.Month;
-        //    }
+            if (month.Equals(default(int)))
+            {
+                month = DateTime.Now.Month;
+            }
 
-        //    //implement a method where it gets all charges of all accounts to the authenticated user that is grouped by categories
+            //implement a method where it gets all charges of all accounts to the authenticated user that is grouped by categories
+            var query = (from charge in chargeRepository.All
+                         join account in accountRepository.All
+                         on charge.AccountId equals account.Id
+                         join user in userRepository.All
+                         on account.UserId equals user.Id
+                         where user.Email.Equals(email.Value)
+                                  && charge.ChargeType.Equals(ChargeType.Expense)
+                                  && charge.Date.Month.Equals(month)
+                         select charge);
 
-        //    var charges = chargeRepository.All.Where(c => c.AccountId.Equals(id)
-        //                                             && c.ChargeType == ChargeType.Expense
-        //                                             && c.Date.Month.Equals(month)).ToList();
+            var temp = query.ToList();
 
-        //    var result = charges.GroupBy(c => c.CategoryId)
-        //                        .Select(s => new { Category = categoryRepository.GetById(s.FirstOrDefault().CategoryId), Value = s.Sum(d => d.Price) })
-        //                        .Take(10)
-        //                        .ToList();
+            var result = query.GroupBy(x => x.CategoryId)
+                              .Select(x => new
+                              {
+                                  Category = categoryRepository.All.FirstOrDefault(c => c.Id.Equals(x.Key)),
+                                  Price = x.Sum(c => c.Price)
+                              })
+                              .Take(10)
+                              .Select(x => new OverPricedCategory
+                              {
+                                  Category = categoryMapper.ToModel(x.Category),
+                                  Price = x.Price
+                              })
+                              .ToList();
+            var model = new OverPricedCategories
+            {
+                Categories = result,
+                HighestValue = result.Max(x => x.Price),
+                LowestValue = result.Min(x => x.Price)
+            };
 
-        //    return Ok(result);
-        //}
+            return Ok(model);
+        }
 
         [HttpGet("{id}/topcharges/{month}")]
         public IActionResult AccountTopCharges(int id, int month)
