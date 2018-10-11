@@ -34,6 +34,10 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<IUserCategoryRepository, UserCategoryRepository>();
 
+            services.AddScoped<IReminderRepository, ReminderRepository>();
+
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+
             services.AddScoped<ITokenRepository, TokenRepository>();
 
             services.AddScoped<IWebClientRepository, WebClientRepository>();
@@ -54,6 +58,10 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IUserMapper, UserMapper>();
 
             services.AddScoped<IChargeMapper, ChargeMapper>();
+
+            services.AddScoped<IReminderMapper, ReminderMapper>();
+
+            services.AddScoped<INotificationMapper, NotificationMapper>();
         }
 
         public static void AddExportableComponents(this IServiceCollection services)
