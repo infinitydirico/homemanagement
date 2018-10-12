@@ -18,29 +18,6 @@ namespace HomeManagement.API.Data
             this.serviceScopeFactory = serviceScopeFactory;
         }
 
-        public DbTransaction BeginTransaction()
-        {
-            lock (Locker)
-            {
-                if(currentTransaction == null)
-                {
-                    var dbContext = GetDbContext();
-                    var connection = dbContext.Database.GetDbConnection();
-                    
-                    if (connection.State != ConnectionState.Open)
-                    {
-                        dbContext.Database.OpenConnection();
-                    }
-
-                    currentTransaction = connection.BeginTransaction();
-                }
-                
-                return currentTransaction;
-            }
-        }
-
-        public DbTransaction GetCurrentTransaction() => currentTransaction;
-
         public DbContext GetDbContext()
         {
             if(dbContext == null)
@@ -48,19 +25,8 @@ namespace HomeManagement.API.Data
                 var scope = serviceScopeFactory.CreateScope();
                 dbContext = scope.ServiceProvider.GetRequiredService<WebAppDbContext>();
             }
-
-            if(((WebAppDbContext)dbContext).Disposed)
-            {
-                var scope = serviceScopeFactory.CreateScope();
-                dbContext = scope.ServiceProvider.GetRequiredService<WebAppDbContext>();
-            }
             
             return dbContext;
-        }
-
-        public void CommitData()
-        {
-            GetDbContext().SaveChanges();
         }
     }
 }
