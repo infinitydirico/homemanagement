@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
 using HomeManagement.Data;
 using HomeManagement.Domain;
@@ -22,18 +23,21 @@ namespace HomeManagement.API.Controllers.Accounts
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
+        private readonly ICategoryMapper categoryMapper;
 
         public AccountChartsController(IAccountRepository accountRepository,
             IChargeRepository chargeRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository,
-            ICategoryRepository categoryRepository)
+            ICategoryRepository categoryRepository,
+            ICategoryMapper categoryMapper)
         {
             this.accountRepository = accountRepository;
             this.chargeRepository = chargeRepository;
             this.accountMapper = accountMapper;
             this.userRepository = userRepository;
             this.categoryRepository = categoryRepository;
+            this.categoryMapper = categoryMapper;
         }
 
 
@@ -59,9 +63,9 @@ namespace HomeManagement.API.Controllers.Accounts
         {
             var model = new AccountsEvolutionModel();
 
-            var claim = HttpContext.User.Claims.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
+            var email = HttpContext.GetEmailClaim();
 
-            var user = userRepository.FirstOrDefault(x => x.Email.Equals(claim.Value));
+            var user = userRepository.FirstOrDefault(x => x.Email.Equals(email.Value));
 
             if (user == null) return NotFound();
 
@@ -77,12 +81,12 @@ namespace HomeManagement.API.Controllers.Accounts
                 for (int i = 1; i <= DateTime.Now.Month; i++)
                 {
                     var incomingCharges = chargeRepository
-                                       .Sum(c => int.Parse(c.Price.ToString()), c => c.AccountId.Equals(account.Id)
+                                       .Sum(c => int.Parse(c.Price.ToString("F0")), c => c.AccountId.Equals(account.Id)
                                                     && c.ChargeType == (int)ChargeType.Income
                                                     && c.Date.Month.Equals(i));
 
                     var outgoingCharges = chargeRepository
-                                        .Sum(c => int.Parse(c.Price.ToString()), c => c.AccountId.Equals(account.Id)
+                                        .Sum(c => int.Parse(c.Price.ToString("F0")), c => c.AccountId.Equals(account.Id)
                                                     && c.ChargeType == ChargeType.Expense
                                                     && c.Date.Month.Equals(i));
 
@@ -106,7 +110,7 @@ namespace HomeManagement.API.Controllers.Accounts
                 model.Balances.Add(accountEvoModel);
             }
 
-            model.HighestValue = high;
+            model.HighestValue = high + int.Parse((high * 0.25).ToString("F0"));
             model.LowestValue = low;
 
             return Ok(model);
@@ -125,13 +129,70 @@ namespace HomeManagement.API.Controllers.Accounts
                                                      && c.Date.Month.Equals(i));
 
                 var outgoingCharges = chargeRepository
-                                        .Sum(c => int.Parse(c.Price.ToString()), c => c.AccountId.Equals(id)
+                                        .Sum(c => decimal.Parse(c.Price.ToString()), c => c.AccountId.Equals(id)
                                                      && c.ChargeType == ChargeType.Expense
                                                      && c.Date.Month.Equals(i));
 
                 model.IncomingSeries.Add(decimal.ToInt32(incomingCharges));
                 model.OutgoingSeries.Add(decimal.ToInt32(outgoingCharges));
             }
+
+            var incomeMax = model.IncomingSeries.Max();
+            var outcomeMax = model.OutgoingSeries.Max();
+
+            model.HighestValue = incomeMax > outcomeMax ? incomeMax : outcomeMax;
+            model.HighestValue = model.HighestValue + int.Parse((model.HighestValue * 0.25).ToString("F0"));
+
+            var incomeMin = model.IncomingSeries.Min();
+            var outcomeMin = model.OutgoingSeries.Min();
+
+            model.LowestValue = incomeMin < outcomeMin ? incomeMin : outcomeMin;
+
+            return Ok(model);
+        }
+
+        [HttpGet("topcharges/{month}")]
+        public IActionResult AccountTopCharges(int month)
+        {
+            var email = HttpContext.GetEmailClaim();
+
+            if (month.Equals(default(int)))
+            {
+                month = DateTime.Now.Month;
+            }
+
+            //implement a method where it gets all charges of all accounts to the authenticated user that is grouped by categories
+            var query = (from charge in chargeRepository.All
+                         join account in accountRepository.All
+                         on charge.AccountId equals account.Id
+                         join user in userRepository.All
+                         on account.UserId equals user.Id
+                         where user.Email.Equals(email.Value)
+                                  && charge.ChargeType.Equals(ChargeType.Expense)
+                                  && charge.Date.Month.Equals(month)
+                         select charge);
+
+            var temp = query.ToList();
+
+            var result = query.GroupBy(x => x.CategoryId)
+                              .Select(x => new
+                              {
+                                  Category = categoryRepository.All.FirstOrDefault(c => c.Id.Equals(x.Key)),
+                                  Price = x.Sum(c => c.Price)
+                              })
+                              .Take(10)
+                              .Select(x => new OverPricedCategory
+                              {
+                                  Category = categoryMapper.ToModel(x.Category),
+                                  Price = x.Price
+                              })
+                              .ToList();
+            var model = new OverPricedCategories
+            {
+                Categories = result,
+                HighestValue = result.Max(x => x.Price),
+                LowestValue = result.Min(x => x.Price)
+            };
 
             return Ok(model);
         }

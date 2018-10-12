@@ -15,6 +15,17 @@ namespace HomeManagement.Core.Extensions
             return Convert.ToInt32(percentage);
         }
 
+        public static int CalculatePercentage(this decimal currentValue, decimal previousValue)
+        {
+            var diff = currentValue - previousValue;
+
+            var percentageValue = previousValue.Equals(decimal.Zero) ? 1 : diff / previousValue;
+
+            var percentage = percentageValue * 100;
+
+            return Convert.ToInt32(percentage);
+        }
+
         public static int Fibonacci(this int n) => n > 1 ? Fibonacci(n - 1) + Fibonacci(n - 2) : 1;
     }
 }

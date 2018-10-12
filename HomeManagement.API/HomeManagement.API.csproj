@@ -42,6 +42,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HomeManagement.Core\HomeManagement.Core.csproj" />
+    <ProjectReference Include="..\HomeManagement.Data.Contracts\HomeManagement.Data.Contracts.csproj" />
     <ProjectReference Include="..\HomeManagement.Data\HomeManagement.Data.csproj" />
     <ProjectReference Include="..\HomeManagement.Domain\HomeManagement.Domain.csproj" />
     <ProjectReference Include="..\HomeManagement.Localization\HomeManagement.Localization.csproj" />

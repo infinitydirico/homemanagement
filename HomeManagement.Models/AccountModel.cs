@@ -1,9 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace HomeManagement.Models
 {
     public class AccountModel
     {
+        private double balance;
+
         public AccountModel() { }
 
         [Required]
@@ -13,7 +16,14 @@ namespace HomeManagement.Models
         [MaxLength(50)]
         public string Name { get; set; }
 
-        public int Balance { get; set; }
+        public double Balance
+        {
+            get => balance;
+            set
+            {
+                balance = Math.Round(value, 2);
+            }
+        }
 
         public bool ExcludeFromStatistics { get; set; }
 

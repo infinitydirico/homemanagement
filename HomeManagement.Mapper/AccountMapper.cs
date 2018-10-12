@@ -14,6 +14,7 @@ namespace HomeManagement.Mapper
             yield return typeof(Account).GetProperty(nameof(Account.UserId));
             yield return typeof(Account).GetProperty(nameof(Account.ExcludeFromStatistics));
             yield return typeof(Account).GetProperty(nameof(Account.IsCash));
+            yield return typeof(Account).GetProperty(nameof(Account.Balance));
         }
 
         public override IEnumerable<PropertyInfo> GetModelProperties()
@@ -23,6 +24,7 @@ namespace HomeManagement.Mapper
             yield return typeof(AccountModel).GetProperty(nameof(AccountModel.ExcludeFromStatistics));
             yield return typeof(AccountModel).GetProperty(nameof(AccountModel.IsCash));
             yield return typeof(AccountModel).GetProperty(nameof(AccountModel.UserId));
+            yield return typeof(AccountModel).GetProperty(nameof(AccountModel.Balance));
         }
     }
 }

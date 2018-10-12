@@ -25,7 +25,13 @@ namespace HomeManagement.API.Data
         public WebAppDbContext(DbContextOptions<WebAppDbContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
+        }
+
+        public override void Dispose()
+        {
+            Disposed = true;
+            base.Dispose();
         }
 
         public override void Dispose()

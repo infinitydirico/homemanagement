@@ -1,6 +1,9 @@
 ﻿using HomeManagement.API.Data;
 using HomeManagement.API.Data.Repositories;
+using HomeManagement.API.Exportation;
 using HomeManagement.API.Throttle;
+using HomeManagement.Contracts;
+using HomeManagement.Core.Cryptography;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -13,6 +16,8 @@ namespace HomeManagement.API.Extensions
         public static void AddMiddleware(this IServiceCollection services)
         {
             services.AddScoped<IThrottleCore, ThrottleCore>();
+
+            services.AddScoped<ICryptography, AesCryptographyService>();
         }
 
         public static void AddRepositories(this IServiceCollection services)
@@ -26,6 +31,12 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IChargeRepository, ChargeRepository>();
 
             services.AddScoped<ICategoryRepository, API.Data.Repositories.CategoryRepository>();
+
+            services.AddScoped<IUserCategoryRepository, UserCategoryRepository>();
+
+            services.AddScoped<IReminderRepository, ReminderRepository>();
+
+            services.AddScoped<INotificationRepository, NotificationRepository>();
 
             services.AddScoped<ITokenRepository, TokenRepository>();
 
@@ -48,6 +59,16 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<IChargeMapper, ChargeMapper>();
 
+            services.AddScoped<IReminderMapper, ReminderMapper>();
+
+            services.AddScoped<INotificationMapper, NotificationMapper>();
+        }
+
+        public static void AddExportableComponents(this IServiceCollection services)
+        {
+            services.AddScoped<IExportableCategory, ExportableCategory>();
+
+            services.AddScoped<IExportableCharge, ExportableCharge>();
         }
 
         public static CorsPolicy BuildCorsPolicy(this CorsOptions corsOptions)

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 using System.IdentityModel.Tokens.Jwt;
+using HomeManagement.API.Extensions;
 
 namespace HomeManagement.API.Controllers.Charges
 {
@@ -81,7 +82,7 @@ namespace HomeManagement.API.Controllers.Charges
         [HttpGet("getlastfive")]
         public IActionResult GetLastFive()
         {
-            var claim = HttpContext.User.Claims.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
+            var claim = HttpContext.GetEmailClaim();
 
             var charges = (from user in userRepository.All
                            join account in accountRepository.All

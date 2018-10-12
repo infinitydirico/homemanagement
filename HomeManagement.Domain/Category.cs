@@ -1,9 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using HomeManagement.Contracts;
+using System.Collections.Generic;
 
 namespace HomeManagement.Domain
 {
-    public class Category
+    public class Category : IExportable
     {
+        IList<string> exportableHeaders = new List<string>
+        {
+            nameof(Name),
+            nameof(IsActive),
+            nameof(Icon),
+            nameof(IsDefault)
+        };
+
         public Category()
         {
             UserCategories = new List<UserCategory>();
@@ -20,5 +29,7 @@ namespace HomeManagement.Domain
         public bool IsDefault { get; set; }
 
         public virtual List<UserCategory> UserCategories { get; set; }
+
+        public IList<string> GetProperties() => exportableHeaders;
     }
 }
