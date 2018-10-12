@@ -2,7 +2,7 @@
 
 namespace HomeManagement.Data
 {
-    public interface IPlatformContext : ITransactonalRepository
+    public interface IPlatformContext
     {
         DbContext GetDbContext();
     }

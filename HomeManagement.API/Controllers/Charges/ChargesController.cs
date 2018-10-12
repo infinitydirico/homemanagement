@@ -86,14 +86,16 @@ namespace HomeManagement.API.Controllers.Charges
             {
                 var entity = chargeMapper.ToEntity(model);
 
-                using (var transaction = chargeRepository.BeginTransaction())
+                var transactionalRepo = chargeRepository as ITransactonalRepository;
+
+                using (var transaction = transactionalRepo.BeginTransaction())
                 {
                     chargeRepository.Add(entity);
 
                     UpdateBalance(entity);
 
                     transaction.Commit();
-                }                    
+                }
 
                 //chargeRepository.Add(entity);
 

@@ -34,12 +34,6 @@ namespace HomeManagement.API.Data
             base.Dispose();
         }
 
-        public override void Dispose()
-        {
-            Disposed = true;
-            base.Dispose();
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

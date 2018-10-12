@@ -11,19 +11,21 @@ namespace HomeManagement.Data
         where T : class
     {
         protected IPlatformContext platformContext;
-        protected IWrittableRepository<T> writtableRepository;
 
-        public BaseRepository(IPlatformContext platformContext, IWrittableRepository<T> writtableRepository = null)
+        public BaseRepository(IPlatformContext platformContext)
         {
             this.platformContext = platformContext ?? throw new ArgumentNullException($"{nameof(platformContext)} is null");
-            this.writtableRepository = writtableRepository ?? new NonTransactionalRepository<T>(this.platformContext);
         }
 
         public IQueryable<T> All => platformContext.GetDbContext().Set<T>().AsQueryable<T>();
 
         public virtual void Add(T entity)
         {
-            writtableRepository.Add(entity);
+            var dbContext = platformContext.GetDbContext();
+
+            dbContext.Set<T>().Add(entity);
+
+            dbContext.SaveChanges();
         }
 
         public async Task AddAsync(T entity)
@@ -51,7 +53,11 @@ namespace HomeManagement.Data
 
         public virtual void Remove(T entity)
         {
-            writtableRepository.Remove(entity);
+            var dbContext = platformContext.GetDbContext();
+
+            dbContext.Set<T>().Remove(entity);
+
+            dbContext.SaveChanges();
         }
 
         public virtual void Remove(int id)
@@ -71,7 +77,11 @@ namespace HomeManagement.Data
 
         public virtual void Update(T entity)
         {
-            writtableRepository.Update(entity);
+            var dbContext = platformContext.GetDbContext();
+
+            dbContext.Set<T>().Update(entity);
+
+            dbContext.SaveChanges();
         }
 
         public IEnumerable<T> Where(Expression<Func<T, bool>> predicate) => platformContext.GetDbContext().Set<T>().Where(predicate).ToList();

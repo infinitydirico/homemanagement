@@ -5,7 +5,7 @@ namespace HomeManagement.Data
 {
     public class AccountRepository : BaseRepository<Account>, IAccountRepository
     {
-        public AccountRepository(IPlatformContext platformContext) : base(platformContext, new TransactionalRepository<Account>(platformContext))
+        public AccountRepository(IPlatformContext platformContext) : base(platformContext)
         {
         }
 
