@@ -51,6 +51,7 @@ namespace HomeManagement.API.Data.Repositories
             using (var transaction = dbContext.Database.BeginTransaction())
             {
                 dbContext.Set<Charge>().Remove(entity);
+                dbContext.Entry(entity).State = EntityState.Deleted;
 
                 UpdateBalance(entity, true);
 
@@ -58,6 +59,13 @@ namespace HomeManagement.API.Data.Repositories
 
                 transaction.Commit();
             }
+        }
+
+        public override void Remove(int id)
+        {
+            var dbCharge = GetById(id);
+
+            Remove(dbCharge);
         }
 
         private void UpdateBalance(Charge c, bool reverse = false)

@@ -22,7 +22,7 @@ namespace HomeManagement.API.Extensions
 
         public static void AddRepositories(this IServiceCollection services)
         {
-            services.AddSingleton<IPlatformContext, WebAppLayerContext>();
+            services.AddScoped<IPlatformContext, WebAppLayerContext>();
 
             services.AddScoped<IUserRepository, UserRepository>();
 
