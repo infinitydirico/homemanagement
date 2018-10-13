@@ -86,20 +86,7 @@ namespace HomeManagement.API.Controllers.Charges
             {
                 var entity = chargeMapper.ToEntity(model);
 
-                var transactionalRepo = chargeRepository as ITransactonalRepository;
-
-                using (var transaction = transactionalRepo.BeginTransaction())
-                {
-                    chargeRepository.Add(entity);
-
-                    UpdateBalance(entity);
-
-                    transaction.Commit();
-                }
-
-                //chargeRepository.Add(entity);
-
-                //UpdateBalance(entity);
+                chargeRepository.Add(entity);
             }
             catch (Exception ex)
             {
@@ -114,15 +101,9 @@ namespace HomeManagement.API.Controllers.Charges
         {
             if (model == null) return BadRequest();
 
-            var previousChargeValue = chargeRepository.GetById(model.Id);
-
             var entity = chargeMapper.ToEntity(model);
 
             chargeRepository.Update(entity);
-
-            UpdateBalance(previousChargeValue, true);
-
-            UpdateBalance(entity);
 
             return Ok();
         }
@@ -132,24 +113,9 @@ namespace HomeManagement.API.Controllers.Charges
         {
             if (id < 1) return BadRequest();
 
-            UpdateBalance(chargeRepository.GetById(id), true);
-
             chargeRepository.Remove(id);
 
             return Ok();
-        }
-
-        private void UpdateBalance(Charge c, bool reverse = false)
-        {
-            var account = accountRepository.GetById(c.AccountId);
-
-            if (reverse)
-            {
-                c.Price = -c.Price;
-            }
-
-            account.Balance = c.ChargeType.Equals(ChargeType.Income) ? account.Balance + c.Price : account.Balance - c.Price;
-            accountRepository.Update(account);
         }
     }
 }

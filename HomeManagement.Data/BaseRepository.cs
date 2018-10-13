@@ -1,4 +1,5 @@
 ﻿using HomeManagement.Contracts.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,18 +12,18 @@ namespace HomeManagement.Data
         where T : class
     {
         protected IPlatformContext platformContext;
+        protected DbContext dbContext;
 
         public BaseRepository(IPlatformContext platformContext)
         {
             this.platformContext = platformContext ?? throw new ArgumentNullException($"{nameof(platformContext)} is null");
+            dbContext = platformContext.GetDbContext();
         }
 
-        public IQueryable<T> All => platformContext.GetDbContext().Set<T>().AsQueryable<T>();
+        public IQueryable<T> All => dbContext.Set<T>().AsQueryable<T>();
 
         public virtual void Add(T entity)
         {
-            var dbContext = platformContext.GetDbContext();
-
             dbContext.Set<T>().Add(entity);
 
             dbContext.SaveChanges();
@@ -30,31 +31,27 @@ namespace HomeManagement.Data
 
         public async Task AddAsync(T entity)
         {
-            var dbContext = platformContext.GetDbContext();
-
             await dbContext.Set<T>().AddAsync(entity);
 
             await dbContext.SaveChangesAsync();
         }
 
-        public int Count() => platformContext.GetDbContext().Set<T>().Count();
+        public int Count() => dbContext.Set<T>().Count();
 
-        public int Count(Expression<Func<T, bool>> predicate) => platformContext.GetDbContext().Set<T>().Count(predicate);
+        public int Count(Expression<Func<T, bool>> predicate) => dbContext.Set<T>().Count(predicate);
 
         public abstract bool Exists(T entity);
 
-        public T FirstOrDefault() => platformContext.GetDbContext().Set<T>().FirstOrDefault();
+        public T FirstOrDefault() => dbContext.Set<T>().FirstOrDefault();
 
-        public T FirstOrDefault(Expression<Func<T, bool>> predicate) => platformContext.GetDbContext().Set<T>().FirstOrDefault(predicate);
+        public T FirstOrDefault(Expression<Func<T, bool>> predicate) => dbContext.Set<T>().FirstOrDefault(predicate);
 
-        public IEnumerable<T> GetAll() => platformContext.GetDbContext().Set<T>().ToList();
+        public IEnumerable<T> GetAll() => dbContext.Set<T>().ToList();
 
         public abstract T GetById(int id);
 
         public virtual void Remove(T entity)
         {
-            var dbContext = platformContext.GetDbContext();
-
             dbContext.Set<T>().Remove(entity);
 
             dbContext.SaveChanges();
@@ -62,28 +59,24 @@ namespace HomeManagement.Data
 
         public virtual void Remove(int id)
         {
-            var dbContext = platformContext.GetDbContext();
-
             var entity = GetById(id);
 
             dbContext.Set<T>().Remove(entity);
         }
 
         public decimal Sum(Expression<Func<T, int>> selector, Expression<Func<T, bool>> predicate = null) =>
-            predicate == null ? platformContext.GetDbContext().Set<T>().Sum(selector) : platformContext.GetDbContext().Set<T>().Where(predicate).Sum(selector);
+            predicate == null ? dbContext.Set<T>().Sum(selector) : dbContext.Set<T>().Where(predicate).Sum(selector);
 
         public decimal Sum(Expression<Func<T, decimal>> selector, Expression<Func<T, bool>> predicate = null) =>
-            predicate == null ? platformContext.GetDbContext().Set<T>().Sum(selector) : platformContext.GetDbContext().Set<T>().Where(predicate).Sum(selector);
+            predicate == null ? dbContext.Set<T>().Sum(selector) : dbContext.Set<T>().Where(predicate).Sum(selector);
 
         public virtual void Update(T entity)
         {
-            var dbContext = platformContext.GetDbContext();
-
             dbContext.Set<T>().Update(entity);
 
             dbContext.SaveChanges();
         }
 
-        public IEnumerable<T> Where(Expression<Func<T, bool>> predicate) => platformContext.GetDbContext().Set<T>().Where(predicate).ToList();
+        public IEnumerable<T> Where(Expression<Func<T, bool>> predicate) => dbContext.Set<T>().Where(predicate).ToList();
     }
 }

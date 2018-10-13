@@ -22,13 +22,13 @@ namespace HomeManagement.API.Extensions
 
         public static void AddRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IPlatformContext, WebAppLayerContext>();
+            services.AddSingleton<IPlatformContext, WebAppLayerContext>();
 
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<IAccountRepository, AccountRepository>();
 
-            services.AddScoped<IChargeRepository, ChargeRepository>();
+            services.AddScoped<IChargeRepository, Data.Repositories.ChargeRepository>();
 
             services.AddScoped<ICategoryRepository, API.Data.Repositories.CategoryRepository>();
 

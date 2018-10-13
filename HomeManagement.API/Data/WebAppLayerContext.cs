@@ -1,31 +1,41 @@
-﻿using System.Data;
-using System.Data.Common;
-using HomeManagement.Data;
+﻿using HomeManagement.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace HomeManagement.API.Data
 {
     public class WebAppLayerContext : IPlatformContext
     {
         DbContext dbContext;
-        IServiceScopeFactory serviceScopeFactory;
-        DbTransaction currentTransaction;
         private static object Locker = new object();
 
-        public WebAppLayerContext(IServiceScopeFactory serviceScopeFactory)
+        public WebAppLayerContext()
         {
-            this.serviceScopeFactory = serviceScopeFactory;
+
         }
 
         public DbContext GetDbContext()
         {
-            if(dbContext == null)
+            lock (Locker)
             {
-                var scope = serviceScopeFactory.CreateScope();
-                dbContext = scope.ServiceProvider.GetRequiredService<WebAppDbContext>();
+                if (dbContext == null)
+                {
+                    var options = new DbContextOptionsBuilder<WebAppDbContext>()
+                                    .UseSqlite("Data Source=HomeManagement.db")
+                                    .Options;
+
+                    dbContext = new WebAppDbContext(options);
+                }
+
+                if (((WebAppDbContext)dbContext).Disposed)
+                {
+                    var options = new DbContextOptionsBuilder<WebAppDbContext>()
+                                    .UseSqlite("Data Source=HomeManagement.db")
+                                    .Options;
+
+                    dbContext = new WebAppDbContext(options);
+                }
             }
-            
+
             return dbContext;
         }
     }
