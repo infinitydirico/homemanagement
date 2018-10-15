@@ -20,6 +20,10 @@ namespace HomeManagement.API.Data
 
         public DbSet<UserCategory> UserCategories { get; set; }
 
+        public DbSet<Reminder> Reminders { get; set; }
+
+        public DbSet<Notification> Notifications { get; set; }
+
         public bool Disposed { get; set; }
 
         public WebAppDbContext(DbContextOptions<WebAppDbContext> options)
@@ -52,6 +56,14 @@ namespace HomeManagement.API.Data
             modelBuilder.Entity<UserCategory>().HasOne(x => x.User).WithMany(x => x.UserCategories).HasForeignKey(x => x.UserId);
 
             modelBuilder.Entity<Category>().HasKey(x => x.Id);
+
+            modelBuilder.Entity<Reminder>().HasKey(x => x.Id);
+
+            modelBuilder.Entity<Reminder>().HasOne(x => x.User);
+
+            modelBuilder.Entity<Notification>().HasKey(x => x.Id);
+
+            modelBuilder.Entity<Notification>().HasOne(x => x.Reminder);
 
             modelBuilder.Ignore<Share>();
             modelBuilder.Ignore<Role>();

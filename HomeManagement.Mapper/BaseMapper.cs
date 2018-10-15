@@ -9,7 +9,13 @@ namespace HomeManagement.Mapper
         where TEntity : class, new()
         where TModel : class, new()
     {
-        public virtual TEntity ToEntity(TModel model) => ConvertTo<TEntity>(model);
+        private bool isEntityConversion = false;
+
+        public virtual TEntity ToEntity(TModel model)
+        {
+            isEntityConversion = true;
+            return ConvertTo<TEntity>(model);
+        }
 
         public virtual TModel ToModel(TEntity entity) => ConvertTo<TModel>(entity);
 
@@ -26,7 +32,14 @@ namespace HomeManagement.Mapper
 
             foreach (var property in properties)
             {
-                property.modelProperty.SetValue(target, property.entityProperty.GetValue(source));
+                if (isEntityConversion)
+                {
+                    property.entityProperty.SetValue(target, property.modelProperty.GetValue(source));
+                }
+                else
+                {
+                    property.modelProperty.SetValue(target, property.entityProperty.GetValue(source));
+                }
             }
 
             return target;

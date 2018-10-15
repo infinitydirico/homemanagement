@@ -14,20 +14,20 @@ namespace HomeManagement.Mapper
     {
         public override IEnumerable<PropertyInfo> GetEntityProperties()
         {
-            yield return typeof(Account).GetProperty(nameof(Reminder.Id));
-            yield return typeof(Account).GetProperty(nameof(Reminder.Title));
-            yield return typeof(Account).GetProperty(nameof(Reminder.Description));
-            yield return typeof(Account).GetProperty(nameof(Reminder.DueDay));
-            yield return typeof(Account).GetProperty(nameof(Reminder.Active));
+            yield return typeof(Reminder).GetProperty(nameof(Reminder.Id));
+            yield return typeof(Reminder).GetProperty(nameof(Reminder.Title));
+            yield return typeof(Reminder).GetProperty(nameof(Reminder.Description));
+            yield return typeof(Reminder).GetProperty(nameof(Reminder.DueDay));
+            yield return typeof(Reminder).GetProperty(nameof(Reminder.Active));
         }
 
         public override IEnumerable<PropertyInfo> GetModelProperties()
         {
-            yield return typeof(Account).GetProperty(nameof(ReminderModel.Id));
-            yield return typeof(Account).GetProperty(nameof(ReminderModel.Title));
-            yield return typeof(Account).GetProperty(nameof(ReminderModel.Description));
-            yield return typeof(Account).GetProperty(nameof(ReminderModel.DueDay));
-            yield return typeof(Account).GetProperty(nameof(ReminderModel.Active));
+            yield return typeof(ReminderModel).GetProperty(nameof(ReminderModel.Id));
+            yield return typeof(ReminderModel).GetProperty(nameof(ReminderModel.Title));
+            yield return typeof(ReminderModel).GetProperty(nameof(ReminderModel.Description));
+            yield return typeof(ReminderModel).GetProperty(nameof(ReminderModel.DueDay));
+            yield return typeof(ReminderModel).GetProperty(nameof(ReminderModel.Active));
         }
     }
 }
