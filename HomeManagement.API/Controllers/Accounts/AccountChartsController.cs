@@ -190,8 +190,8 @@ namespace HomeManagement.API.Controllers.Accounts
             var model = new OverPricedCategories
             {
                 Categories = result,
-                HighestValue = result.Max(x => x.Price),
-                LowestValue = result.Min(x => x.Price)
+                HighestValue = result.Count > 0 ? result.Max(x => x.Price) : 0,
+                LowestValue = result.Count > 0 ? result.Min(x => x.Price) : 0
             };
 
             return Ok(model);
