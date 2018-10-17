@@ -38,6 +38,8 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<INotificationRepository, NotificationRepository>();
 
+            services.AddScoped<IPreferencesRepository, PreferencesRepository>();
+            
             services.AddScoped<ITokenRepository, TokenRepository>();
 
             services.AddScoped<IWebClientRepository, WebClientRepository>();
