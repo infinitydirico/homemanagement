@@ -93,7 +93,7 @@ namespace HomeManagement.API.Controllers.Notifications
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             if (id <= 0) return BadRequest();
