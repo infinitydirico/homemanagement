@@ -7,19 +7,22 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
 namespace HomeManagement.App.Services.Rest
 {
-
     public abstract class BaseService
     {
-        public virtual async Task<T> Get<T>(string api)
+        private const string AuthorizationHeader = "Authorization";
+
+        public virtual async Task<T> Get<T>(string api, bool requiresAuthentication = false)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Constants.Endpoints.BASEURL);
-                client.DefaultRequestHeaders.Add("authentication", GetToken());
+                if (requiresAuthentication)
+                {
+                    client.DefaultRequestHeaders.Add(AuthorizationHeader, GetToken());
+                }
                 var response = await client.GetAsync(api);
 
                 if (response.StatusCode.Equals(HttpStatusCode.OK))
@@ -33,14 +36,16 @@ namespace HomeManagement.App.Services.Rest
             }
         }
 
-        public virtual async Task<T> Post<T>(T data, string api)
+        public virtual async Task<T> Post<T>(T data, string api, bool requiresAuthentication = false)
         {
             using (var client = new HttpClient())
             {
                 var json = JsonConvert.SerializeObject(data);
                 client.BaseAddress = new Uri(Constants.Endpoints.BASEURL);
-                client.DefaultRequestHeaders.Add("authentication", GetToken());
-
+                if (requiresAuthentication)
+                {
+                    client.DefaultRequestHeaders.Add(AuthorizationHeader, GetToken());
+                }
                 var response = await client.PostAsync(api, new StringContent(json, Encoding.UTF8, "application/json"));
 
                 if (response.StatusCode.Equals(HttpStatusCode.OK))
@@ -54,13 +59,16 @@ namespace HomeManagement.App.Services.Rest
             }
         }
 
-        public virtual async Task<TResult> Post<TPost, TResult>(TPost data, string api)
+        public virtual async Task<TResult> Post<TPost, TResult>(TPost data, string api, bool requiresAuthentication = false)
         {
             using (var client = new HttpClient())
             {
                 var json = JsonConvert.SerializeObject(data);
                 client.BaseAddress = new Uri(Constants.Endpoints.BASEURL);
-                client.DefaultRequestHeaders.Add("authentication", GetToken());
+                if (requiresAuthentication)
+                {
+                    client.DefaultRequestHeaders.Add(AuthorizationHeader, GetToken());
+                }
                 var response = await client.PostAsync(api, new StringContent(json, Encoding.UTF8, "application/json"));
 
                 if (response.StatusCode.Equals(HttpStatusCode.OK))
@@ -74,13 +82,16 @@ namespace HomeManagement.App.Services.Rest
             }
         }
 
-        public virtual async Task<T> Put<T>(T data, string api)
+        public virtual async Task<T> Put<T>(T data, string api, bool requiresAuthentication = false)
         {
             using (var client = new HttpClient())
             {
                 var json = JsonConvert.SerializeObject(data);
                 client.BaseAddress = new Uri(Constants.Endpoints.BASEURL);
-                client.DefaultRequestHeaders.Add("authentication", GetToken());
+                if (requiresAuthentication)
+                {
+                    client.DefaultRequestHeaders.Add(AuthorizationHeader, GetToken());
+                }
                 var response = await client.PutAsync(api, new StringContent(json, Encoding.UTF8, "application/json"));
 
                 if (response.StatusCode.Equals(HttpStatusCode.OK))
@@ -94,20 +105,23 @@ namespace HomeManagement.App.Services.Rest
             }
         }
 
-        public virtual async Task Delete(int id, string api)
+        public virtual async Task Delete(int id, string api, bool requiresAuthentication = false)
         {
             using (var client = new HttpClient())
             {
                 var json = JsonConvert.SerializeObject(id);
                 client.BaseAddress = new Uri(Constants.Endpoints.BASEURL);
-                client.DefaultRequestHeaders.Add("authentication", GetToken());
+                if (requiresAuthentication)
+                {
+                    client.DefaultRequestHeaders.Add(AuthorizationHeader, GetToken());
+                }
                 var response = await client.DeleteAsync(api + "/?id=" + id.ToString());
             }
         }
 
         protected string GetToken()
         {
-            return App._container.Resolve<IMetadataHandler>().GetValue("header");
+            return App._container.Resolve<IApplicationValues>().Get("header");
         }
     }
 }

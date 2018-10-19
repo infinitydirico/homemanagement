@@ -14,19 +14,26 @@ namespace HomeManagement.App.Services.Rest
 
         public async Task<User> Login(User user)
         {
-            var result = await Post(user, Constants.Endpoints.Auth.LOGIN);
+            try
+            {
+                var result = await Post(user, Constants.Endpoints.Auth.LOGIN);
 
-            App._container.Resolve<IMetadataHandler>().StoreValue("header", result.Token.Value);
+                App._container.Resolve<IApplicationValues>().Store("header", result.Token.Value);
 
-            User = result;
+                User = result;
 
-            return result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task Logout(User user)
         {
             await Post(user, Constants.Endpoints.Auth.LOGOUT);
-            App._container.Resolve<IMetadataHandler>().Remove("header");
+            App._container.Resolve<IApplicationValues>().Remove("header");
         }
 
         public Task Logout()

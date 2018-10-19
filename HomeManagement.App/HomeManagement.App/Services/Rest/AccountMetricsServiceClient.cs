@@ -8,27 +8,28 @@ namespace HomeManagement.App.Services.Rest
     {
         public async Task<AccountEvolutionModel> GetAccountEvolution(int accountId)
         {
-            return await Get<AccountEvolutionModel>($"{Constants.Endpoints.AccountMetric.AccountEvolution}/{accountId}");
+            return await Get<AccountEvolutionModel>($"{Constants.Endpoints.Accounts.ACCOUNT}/{accountId}/{Constants.Endpoints.Accounts.AccountEvolution}");
         }
 
         public async Task<AccountsEvolutionModel> GetAccountsBalances()
         {
-            return await Get<AccountsEvolutionModel>(Constants.Endpoints.AccountMetric.AccountsEvolution);
+            return await Get<AccountsEvolutionModel>(Constants.Endpoints.Accounts.AccountsEvolution);
         }
 
         public async Task<OverPricedCategories> GetMostExpensiveCategories()
         {
-            return await Get<OverPricedCategories>(Constants.Endpoints.AccountMetric.Overalloutgoing);
+            return new OverPricedCategories { Categories = new System.Collections.Generic.List<OverPricedCategory>() };
+            //return await Get<OverPricedCategories>($"{Constants.Endpoints.Accounts.ACCOUNT}//{Constants.Endpoints.Accounts.AccountTopCharges}");
         }
 
         public async Task<MetricValueDto> GetTotalIncome()
         {
-            return await Get<MetricValueDto>(Constants.Endpoints.AccountMetric.TotalIncome);
+            return await Get<MetricValueDto>(Constants.Endpoints.Accounts.TotalIncome);
         }
 
         public async Task<MetricValueDto> GetTotalOutcome()
         {
-            return await Get<MetricValueDto>(Constants.Endpoints.AccountMetric.TotalOutcome);
+            return await Get<MetricValueDto>(Constants.Endpoints.Accounts.TotalOutcome);
         }
     }
 

@@ -2,11 +2,11 @@
 
 namespace HomeManagement.App.Services.Components
 {
-    public class MetadataHandler : IMetadataHandler
+    public class ApplicationValues : IApplicationValues
     {
         Dictionary<string, string> values = new Dictionary<string, string>();
 
-        public string GetValue(string key)
+        public string Get(string key)
         {
             return values.ContainsKey(key) ? values[key] : string.Empty;
         }
@@ -16,17 +16,17 @@ namespace HomeManagement.App.Services.Components
             values.Remove(key);
         }
 
-        public void StoreValue(string key, string value)
+        public void Store(string key, string value)
         {
             values.Add(key, value);
         }
     }
 
-    public interface IMetadataHandler
+    public interface IApplicationValues
     {
-        string GetValue(string key);
+        string Get(string key);
 
-        void StoreValue(string key, string value);
+        void Store(string key, string value);
 
         void Remove(string key);
     }

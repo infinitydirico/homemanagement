@@ -1,5 +1,4 @@
 ﻿using HomeManagement.App.Common;
-using HomeManagement.Domain;
 using HomeManagement.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,14 +9,14 @@ namespace HomeManagement.App.Services.Rest
     {
         public async Task<IEnumerable<OverPricedCategory>> GetAccountTopCharges(int accountId, int month)
         {
-            var result = await this.Get<IEnumerable<OverPricedCategory>>($"{Constants.Endpoints.Accounts.AccountTopCharges}/{accountId}/{month}");
+            var result = await Get<IEnumerable<OverPricedCategory>>($"{accountId}/{Constants.Endpoints.Accounts.AccountTopCharges}/{month}");
 
             return result;
         }
 
         public async Task<AccountPageModel> Page(AccountPageModel dto)
         {
-            var result = await this.Post<AccountPageModel>(dto, Constants.Endpoints.Accounts.PAGE);
+            var result = await Post(dto, Constants.Endpoints.Accounts.PAGE);
 
             return result;
         }

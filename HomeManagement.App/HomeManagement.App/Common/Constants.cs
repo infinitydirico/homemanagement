@@ -1,30 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace HomeManagement.App.Common
+﻿namespace HomeManagement.App.Common
 {
     public class Constants
     {
         public class Endpoints
         {
-            public const string BASEURL = "http://homemanagement-api.azurewebsites.net/";
+            public const string BASEURL = "http://localhost:60424/";
+            //public const string BASEURL = "http://homemanagement-api.azurewebsites.net/";
             public const string API = "api/";
 
             public class Auth
             {
-                private const string AUTH = API + "auth/";
-                public const string LOGIN = AUTH + "login";
-                public const string LOGOUT = AUTH + "logout";
+                private const string AUTH = API + "authentication/";
+                public const string LOGIN = AUTH + "signin";
+                public const string LOGOUT = AUTH + "signout";
             }
 
             public class Accounts
             {
-                private const string ACCOUNT = API + "account/";
+                public const string ACCOUNT = API + "account/";
 
                 public const string PAGE = ACCOUNT + "paging";
 
-                public const string AccountTopCharges = ACCOUNT + "accounttopchargers/";
+                public const string AccountTopCharges = "/topcharges/";
+                
+                public const string TotalIncome = ACCOUNT + "incomes";
+
+                public const string TotalOutcome = ACCOUNT + "outcomes";
+
+                public const string Overalloutgoing = "overall";
+
+                public const string AccountsEvolution = ACCOUNT + "accountsevolution";
+
+                public const string AccountEvolution = "accountevolution";
+
+                public const string Metric = "chartbychargetype";
             }
 
             public class Charge
@@ -37,21 +46,6 @@ namespace HomeManagement.App.Common
             public class Category
             {
                 public const string CATEGORY = API + "category";
-            }
-
-            public class AccountMetric
-            {
-                public const string Metric = API + "accountmetric/";
-
-                public const string Overalloutgoing = Metric + "overalloutgoing";
-
-                public const string AccountsEvolution = Metric + "accountsevolution";
-
-                public const string AccountEvolution = Metric + "accountevolution";
-
-                public const string TotalIncome = Metric + "incomings";
-
-                public const string TotalOutcome = Metric + "outgoings";
             }
         }
 

@@ -51,7 +51,7 @@ namespace HomeManagement.App
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterType<MetadataHandler>().As<IMetadataHandler>().SingleInstance();
+            builder.RegisterType<ApplicationValues>().As<IApplicationValues>().SingleInstance();
             builder.RegisterType<AesCryptographyService>().As<ICryptography>();
 
             builder.RegisterType<LocalizationLanguage>().As<ILocalization>().SingleInstance();
