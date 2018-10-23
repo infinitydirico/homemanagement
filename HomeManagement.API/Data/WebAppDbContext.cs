@@ -43,6 +43,8 @@ namespace HomeManagement.API.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<User>().Ignore(x => x.Token);
+
             modelBuilder.Entity<WebClient>().HasKey(x => x.Id);
 
             modelBuilder.Entity<Account>().HasOne(x => x.User).WithMany(x => x.Accounts).HasForeignKey(x => x.UserId);

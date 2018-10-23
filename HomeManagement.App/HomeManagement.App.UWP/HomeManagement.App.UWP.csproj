@@ -103,10 +103,13 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="add.png" />
+    <Content Include="arrow_left.png" />
+    <Content Include="arrow_right.png" />
+    <Content Include="Assets\icon.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-200.png" />
     <Content Include="Assets\LargeTile.scale-400.png" />
-    <Content Include="Assets\SmallTile.scale-100.png" />
     <Content Include="Assets\SmallTile.scale-200.png" />
     <Content Include="Assets\SmallTile.scale-400.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />
@@ -130,7 +133,29 @@
     <Content Include="Assets\Wide310x150Logo.scale-100.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
+    <Content Include="Assets\xamarin_logo.png" />
+    <Content Include="bar_chart.png" />
+    <Content Include="check.png" />
+    <Content Include="check_green.png" />
+    <Content Include="check_green_circle.png" />
+    <Content Include="dashboard.png" />
+    <Content Include="date.png" />
+    <Content Include="edit.png" />
+    <Content Include="english_flag.png" />
+    <Content Include="exit.png" />
+    <Content Include="label.png" />
+    <Content Include="login.png" />
+    <Content Include="money.png" />
+    <Content Include="money_green.png" />
+    <Content Include="money_red.png" />
+    <Content Include="perc_down.png" />
+    <Content Include="perc_up.png" />
     <Content Include="Properties\Default.rd.xml" />
+    <Content Include="red_trash.png" />
+    <Content Include="settings.png" />
+    <Content Include="SmallTile.scale-100.png" />
+    <Content Include="spanish_flag.png" />
+    <Content Include="trash.png" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -144,7 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="3.0.0.561731" />
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.1"/>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HomeManagement.App\HomeManagement.App.csproj">

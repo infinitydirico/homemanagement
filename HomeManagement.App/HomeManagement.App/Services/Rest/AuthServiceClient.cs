@@ -18,7 +18,7 @@ namespace HomeManagement.App.Services.Rest
             {
                 var result = await Post(user, Constants.Endpoints.Auth.LOGIN);
 
-                App._container.Resolve<IApplicationValues>().Store("header", result.Token.Value);
+                App._container.Resolve<IApplicationValues>().Store("header", result.Token);
 
                 User = result;
 

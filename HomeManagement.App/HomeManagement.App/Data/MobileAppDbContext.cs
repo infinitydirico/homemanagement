@@ -9,16 +9,14 @@ namespace HomeManagement.App.Data
     {
         public DbSet<User> Users { get; set; }
 
-        public MobileAppDbContext()
-        {
-            Database.EnsureCreated();
-        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "HomeManagement.db");
+            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HomeManagement.db");
 
             optionsBuilder.UseSqlite($"Filename={dbPath}");
+
+            Database.EnsureCreated();
         }
 
 

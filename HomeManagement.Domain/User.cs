@@ -19,7 +19,7 @@ namespace HomeManagement.Domain
 
         public virtual List<Account> Accounts { get; set; }
 
-        public Token Token { get; set; }
+        public string Token { get; set; }
 
         public virtual List<UserInRole> UsersInRoles { get; set; }
 
