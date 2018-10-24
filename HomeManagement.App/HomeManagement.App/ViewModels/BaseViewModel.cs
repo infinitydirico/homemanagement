@@ -2,11 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace HomeManagement.App.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
+        public BaseViewModel()
+        {
+            Initialize();
+        }
+
         bool isBusy = false;
         public bool IsBusy
         {
@@ -19,6 +25,29 @@ namespace HomeManagement.App.ViewModels
         {
             get { return title; }
             set { SetProperty(ref title, value); }
+        }
+
+        public event EventHandler OnError;
+
+        private void Initialize()
+        {
+            Task.Run(async () =>
+            {
+                await Task.Delay(250);
+                try
+                {
+                    await InitializeAsync();
+                }
+                catch (Exception ex)
+                {
+                    OnError?.Invoke(this, EventArgs.Empty);
+                }
+            });
+        }
+
+        protected virtual async Task InitializeAsync()
+        {
+            await Task.Yield();
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value,

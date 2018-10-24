@@ -9,39 +9,31 @@ namespace HomeManagement.App.ViewModels
     {
         IAccountMetricsServiceClient metricClient = App._container.Resolve<IAccountMetricsServiceClient>();
 
-        public DashboardViewModel()
-        {
-            Initialize();
-        }
-
         public int IncomePercentage { get; private set; }
         public int TotalIncome { get; private set; }
 
         public int OutcomePercentage { get; private set; }
         public int TotalOutcome { get; private set; }
 
-        private void Initialize()
+        protected override async Task InitializeAsync()
         {
-            Task.Run(async () =>
-            {
-                var income = await metricClient.GetTotalIncome();
+            var income = await metricClient.GetTotalIncome();
 
-                var outcome = await metricClient.GetTotalOutcome();
+            var outcome = await metricClient.GetTotalOutcome();
 
-                IncomePercentage = income.Percentage;
-                TotalIncome = income.Total;
+            IncomePercentage = income.Percentage;
+            TotalIncome = income.Total;
 
-                OutcomePercentage = outcome.Percentage;
-                TotalOutcome = outcome.Total;
+            OutcomePercentage = outcome.Percentage;
+            TotalOutcome = outcome.Total;
 
-                OnPropertyChanged(nameof(IncomePercentage));
-                OnPropertyChanged(nameof(OutcomePercentage));
-                OnPropertyChanged(nameof(TotalIncome));
-                OnPropertyChanged(nameof(TotalOutcome));
+            OnPropertyChanged(nameof(IncomePercentage));
+            OnPropertyChanged(nameof(OutcomePercentage));
+            OnPropertyChanged(nameof(TotalIncome));
+            OnPropertyChanged(nameof(TotalOutcome));
 
-                await Task.Delay(7000);
-                localization.ChangeCulture(new System.Globalization.CultureInfo("es"));
-            });
+            await Task.Delay(7000);
+            localization.ChangeCulture(new System.Globalization.CultureInfo("es"));
         }
 
         

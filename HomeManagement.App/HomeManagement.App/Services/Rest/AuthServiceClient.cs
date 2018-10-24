@@ -36,9 +36,9 @@ namespace HomeManagement.App.Services.Rest
             App._container.Resolve<IApplicationValues>().Remove("header");
         }
 
-        public Task Logout()
+        public async Task Logout()
         {
-            throw new NotImplementedException();
+            await Task.Yield();
         }
     }
 
