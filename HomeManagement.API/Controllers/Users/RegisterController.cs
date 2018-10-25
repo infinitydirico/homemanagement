@@ -7,6 +7,7 @@ using HomeManagement.API.Extensions;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace HomeManagement.API.Controllers.Users
 {
+    [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Register")]
     public class RegisterController : Controller
@@ -27,6 +29,7 @@ namespace HomeManagement.API.Controllers.Users
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly IServiceScopeFactory serviceScopeFactory;
+        private readonly IPreferencesRepository preferencesRepository;
 
         public RegisterController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -34,7 +37,8 @@ namespace HomeManagement.API.Controllers.Users
             IAccountRepository accountRepository,
             ICategoryRepository categoryRepository,
             IUserRepository userRepository,
-            IServiceScopeFactory serviceScopeFactory)
+            IServiceScopeFactory serviceScopeFactory,
+            IPreferencesRepository preferencesRepository)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -43,6 +47,7 @@ namespace HomeManagement.API.Controllers.Users
             this.categoryRepository = categoryRepository;
             this.userRepository = userRepository;
             this.serviceScopeFactory = serviceScopeFactory;
+            this.preferencesRepository = preferencesRepository;
         }
 
         [HttpPost]
@@ -84,6 +89,12 @@ namespace HomeManagement.API.Controllers.Users
                 {
                     categoryRepository.Add(category, userEntity);
                 }
+
+                preferencesRepository.Add(new Preferences
+                {
+                    UserId = userEntity.Id,
+                    Language = user.Language
+                });
 #pragma warning restore 4014
 
                 return Ok();
