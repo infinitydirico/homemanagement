@@ -108,7 +108,7 @@ namespace HomeManagement.API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.EnsureDatabaseCreated();
+            //app.EnsureDatabaseCreated();
 
             app.UseStaticFiles();
 
