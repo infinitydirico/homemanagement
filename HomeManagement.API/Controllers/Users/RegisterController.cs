@@ -80,7 +80,7 @@ namespace HomeManagement.API.Controllers.Users
                 {
                     UserId = userEntity.Id,
                     Name = cultureFeature?.RequestCulture?.Culture != null ? cultureFeature.RequestCulture.Culture.IsEnglish() ? "Cash" : "Efectivo" : "Cash",
-                    IsCash = true
+                    AccountType = Domain.AccountType.Cash                 
                 });
 
                 var defaultCategories = CategoryInitializer.GetDefaultCategories(cultureFeature?.RequestCulture?.Culture);

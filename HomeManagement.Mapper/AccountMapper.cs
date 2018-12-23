@@ -13,7 +13,8 @@ namespace HomeManagement.Mapper
             yield return typeof(Account).GetProperty(nameof(Account.Name));
             yield return typeof(Account).GetProperty(nameof(Account.UserId));
             yield return typeof(Account).GetProperty(nameof(Account.ExcludeFromStatistics));
-            yield return typeof(Account).GetProperty(nameof(Account.IsCash));
+            yield return typeof(Account).GetProperty(nameof(Account.AccountType));
+            yield return typeof(Account).GetProperty(nameof(Account.Money));
             yield return typeof(Account).GetProperty(nameof(Account.Balance));
         }
 
@@ -22,7 +23,8 @@ namespace HomeManagement.Mapper
             yield return typeof(AccountModel).GetProperty(nameof(AccountModel.Id));
             yield return typeof(AccountModel).GetProperty(nameof(AccountModel.Name));
             yield return typeof(AccountModel).GetProperty(nameof(AccountModel.ExcludeFromStatistics));
-            yield return typeof(AccountModel).GetProperty(nameof(AccountModel.IsCash));
+            yield return typeof(AccountModel).GetProperty(nameof(AccountModel.AccountType));
+            yield return typeof(AccountModel).GetProperty(nameof(AccountModel.Money));
             yield return typeof(AccountModel).GetProperty(nameof(AccountModel.UserId));
             yield return typeof(AccountModel).GetProperty(nameof(AccountModel.Balance));
         }

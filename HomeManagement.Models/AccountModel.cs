@@ -27,9 +27,25 @@ namespace HomeManagement.Models
 
         public bool ExcludeFromStatistics { get; set; }
 
-        public bool IsCash { get; set; }
+        public AccountType AccountType { get; set; }
+
+        public Money Money { get; set; }
 
         [Required]
         public int UserId { get; set; }
+    }
+
+    public enum AccountType
+    {
+        Cash,
+        Bank,
+        CreditCard
+    }
+
+    public enum Money
+    {
+        UsDollars,
+        ArgentinePeso,
+        Euro
     }
 }

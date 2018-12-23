@@ -18,7 +18,9 @@ namespace HomeManagement.Domain
 
         public bool ExcludeFromStatistics { get; set; }
 
-        public bool IsCash { get; set; }
+        public AccountType AccountType { get; set; }
+
+        public Money Money { get; set; }
 
         public int UserId { get; set; }
 
@@ -27,5 +29,19 @@ namespace HomeManagement.Domain
         public virtual List<Charge> Charges { get; set; }
 
         public virtual List<Tax> Taxes { get; set; }
+    }
+
+    public enum AccountType
+    {
+        Cash,
+        Bank,
+        CreditCard
+    }
+
+    public enum Money
+    {
+        UsDollars,
+        ArgentinePeso,
+        Euro
     }
 }
