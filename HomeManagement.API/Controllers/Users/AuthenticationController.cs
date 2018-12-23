@@ -55,8 +55,8 @@ namespace HomeManagement.API.Controllers.Users
             string tokenValue = string.Empty;
 
             var password = cryptography.Decrypt(user.Password);
-
-            var result = await signInManager.PasswordSignInAsync(user.Email, password, true, false);
+            
+            var result = await signInManager.PasswordSignInAsync(user.Email, user.Password, true, false);
 
             if (!result.Succeeded) return Forbid();
 

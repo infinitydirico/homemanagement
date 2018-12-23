@@ -1,9 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HomeManagement.Domain;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HomeManagement.Mapper.Tests
 {
@@ -22,7 +18,7 @@ namespace HomeManagement.Mapper.Tests
                 Id = 1,
                 Balance = 6354,
                 ExcludeFromStatistics = false,
-                IsCash = true,
+                AccountType = Models.AccountType.Cash,
                 Name = "HSBC",
                 UserId = 1
             });
@@ -43,7 +39,7 @@ namespace HomeManagement.Mapper.Tests
                 Id = 1,
                 Balance = 6354,
                 ExcludeFromStatistics = false,
-                IsCash = true,
+                AccountType = AccountType.Cash,
                 Name = "HSBC",
                 UserId = 1
             });
