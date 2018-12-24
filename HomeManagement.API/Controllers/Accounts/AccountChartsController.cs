@@ -162,31 +162,26 @@ namespace HomeManagement.API.Controllers.Accounts
             }
 
             //implement a method where it gets all charges of all accounts to the authenticated user that is grouped by categories
-            var query = (from charge in chargeRepository.All
+            var result = (from charge in chargeRepository.All
                          join account in accountRepository.All
                          on charge.AccountId equals account.Id
                          join user in userRepository.All
                          on account.UserId equals user.Id
+                         join category in categoryRepository.All
+                         on charge.CategoryId equals category.Id
                          where user.Email.Equals(email.Value)
                                   && charge.ChargeType.Equals(ChargeType.Expense)
                                   && charge.Date.Month.Equals(month)
-                         select charge);
+                         select new { Charge = charge, Category = category })
+                         .Take(10)
+                         .GroupBy(x => x.Category.Id)
+                         .Select(x => new OverPricedCategory
+                         {
+                             Category = categoryMapper.ToModel(x.FirstOrDefault().Category),
+                             Price = x.Sum(c => c.Charge.Price)
+                         })
+                         .ToList();
 
-            var temp = query.ToList();
-
-            var result = query.GroupBy(x => x.CategoryId)
-                              .Select(x => new
-                              {
-                                  Category = categoryRepository.All.FirstOrDefault(c => c.Id.Equals(x.Key)),
-                                  Price = x.Sum(c => c.Price)
-                              })
-                              .Take(10)
-                              .Select(x => new OverPricedCategory
-                              {
-                                  Category = categoryMapper.ToModel(x.Category),
-                                  Price = x.Price
-                              })
-                              .ToList();
             var model = new OverPricedCategories
             {
                 Categories = result,
