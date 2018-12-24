@@ -20,7 +20,7 @@ namespace HomeManagement.Domain
 
         public AccountType AccountType { get; set; }
 
-        public Money Money { get; set; }
+        public Currency Currency { get; set; }
 
         public int UserId { get; set; }
 
@@ -38,10 +38,10 @@ namespace HomeManagement.Domain
         CreditCard
     }
 
-    public enum Money
+    public enum Currency
     {
-        UsDollars,
-        ArgentinePeso,
-        Euro
+        USD,
+        ARS,
+        EUR
     }
 }
