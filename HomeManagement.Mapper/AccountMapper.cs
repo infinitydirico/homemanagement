@@ -1,4 +1,5 @@
-﻿using HomeManagement.Domain;
+﻿using HomeManagement.Core.Extensions;
+using HomeManagement.Domain;
 using HomeManagement.Models;
 using System.Collections.Generic;
 using System.Reflection;
@@ -7,6 +8,20 @@ namespace HomeManagement.Mapper
 {
     public class AccountMapper : BaseMapper<Account, AccountModel>, IAccountMapper
     {
+        public override Account ToEntity(AccountModel model)
+        {
+            return new Account
+            {
+                Id = model.Id,
+                Name = model.Name,
+                AccountType = model.AccountType.ToString().ToEnum<HomeManagement.Domain.AccountType>(),
+                Balance = model.Balance,
+                Money = model.Money.ToString().ToEnum<HomeManagement.Domain.Money>(),
+                ExcludeFromStatistics = model.ExcludeFromStatistics,
+                UserId = model.UserId
+            };
+        }
+
         public override IEnumerable<PropertyInfo> GetEntityProperties()
         {
             yield return typeof(Account).GetProperty(nameof(Account.Id));
