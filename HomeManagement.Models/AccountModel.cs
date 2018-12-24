@@ -29,7 +29,9 @@ namespace HomeManagement.Models
 
         public AccountType AccountType { get; set; }
 
-        public Currency Currency { get; set; }
+        public int CurrencyId { get; set; }
+
+        public CurrencyModel Currency { get; set; }
 
         [Required]
         public int UserId { get; set; }
@@ -40,12 +42,5 @@ namespace HomeManagement.Models
         Cash,
         Bank,
         CreditCard
-    }
-
-    public enum Currency
-    {
-        USD,
-        ARS,
-        EUR
     }
 }

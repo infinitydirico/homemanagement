@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
+using HomeManagement.API.Services;
 
 namespace HomeManagement.API
 {
@@ -67,6 +68,8 @@ namespace HomeManagement.API
             services.AddMiddleware();
             services.AddMappers();
             services.AddExportableComponents();
+
+            services.AddScoped<ICurrencyService, CurrencyService>();
 
             services.AddMvc(options =>
             {

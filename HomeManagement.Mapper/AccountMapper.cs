@@ -18,7 +18,8 @@ namespace HomeManagement.Mapper
                 Balance = model.Balance,
                 Currency = model.Currency.ToString().ToEnum<Domain.Currency>(),
                 ExcludeFromStatistics = model.ExcludeFromStatistics,
-                UserId = model.UserId
+                UserId = model.UserId,
+                CurrencyId = model.CurrencyId
             };
         }
 
@@ -30,9 +31,9 @@ namespace HomeManagement.Mapper
                 Name = entity.Name,
                 AccountType = entity.AccountType.ToString().ToEnum<Models.AccountType>(),
                 Balance = entity.Balance,
-                Currency = entity.Currency.ToString().ToEnum<Models.Currency>(),
                 ExcludeFromStatistics = entity.ExcludeFromStatistics,
-                UserId = entity.UserId
+                UserId = entity.UserId,
+                CurrencyId = entity.CurrencyId
             };
         }
 

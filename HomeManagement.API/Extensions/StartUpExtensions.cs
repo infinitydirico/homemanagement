@@ -46,6 +46,8 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<IDataLogRepository, DataLogRepository>();
 
+            services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+
             //with the throttle filter with persisted repo, the requests take around 100ms to respond
             //with memory values, it takes 30ms
             //services.AddScoped<IWebClientRepository, MemoryWebClientRepository>();            
@@ -64,6 +66,8 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IReminderMapper, ReminderMapper>();
 
             services.AddScoped<INotificationMapper, NotificationMapper>();
+
+            services.AddScoped<ICurrencyMapper, CurrencyMapper>();
         }
 
         public static void AddExportableComponents(this IServiceCollection services)
