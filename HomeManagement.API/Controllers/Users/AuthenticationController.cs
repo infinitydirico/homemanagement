@@ -31,13 +31,15 @@ namespace HomeManagement.API.Controllers.Users
         private readonly ICryptography cryptography;
         private readonly IUserRepository userRepository;
         private readonly JwtSecurityTokenHandler jwtSecurityToken = new JwtSecurityTokenHandler();
+        private readonly IPreferencesRepository preferencesRepository;
 
         public AuthenticationController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IConfiguration configuration,
             ITokenRepository tokenRepository,
             ICryptography cryptography,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IPreferencesRepository preferencesRepository)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -45,6 +47,7 @@ namespace HomeManagement.API.Controllers.Users
             this.tokenRepository = tokenRepository;
             this.cryptography = cryptography;
             this.userRepository = userRepository;
+            this.preferencesRepository = preferencesRepository;
         }
 
         [HttpPost("signin")]
@@ -64,6 +67,8 @@ namespace HomeManagement.API.Controllers.Users
 
             var userEntity = userRepository.FirstOrDefault(x => x.Email.Equals(user.Email));
 
+            var preferences = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(userEntity.Id));
+
             if (tokenRepository.UserHasToken(appUser.Id))
             {
                 var dbToken = tokenRepository.FirstOrDefault(x => x.UserId.Equals(appUser.Id));
@@ -78,7 +83,8 @@ namespace HomeManagement.API.Controllers.Users
                     {
                         Id = userEntity.Id,
                         Email = userEntity.Email,
-                        Token = tokenValue
+                        Token = tokenValue,
+                        Language = preferences.Language
                     };
                     return Ok(userModel);
                 }
@@ -108,7 +114,8 @@ namespace HomeManagement.API.Controllers.Users
                 {
                     Id = userEntity.Id,
                     Email = userEntity.Email,
-                    Token = tokenValue
+                    Token = tokenValue,
+                    Language = preferences.Language
                 };
                 return Ok(userModel);
             }

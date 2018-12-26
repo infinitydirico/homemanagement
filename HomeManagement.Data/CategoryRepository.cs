@@ -67,6 +67,8 @@ namespace HomeManagement.Data
 
             var entity = GetById(categoryId);
 
+            if (userCategorySet.Any(x => x.CategoryId.Equals(entity.Id))) return;
+
             set.Remove(entity);
 
             context.SaveChanges();

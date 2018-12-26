@@ -6,7 +6,7 @@ namespace HomeManagement.Localization
 {
     public class LocalizationLanguage : ILocalization
     {
-        private static readonly string[] supportedLanguages = new string[2] { "en-US", "es" };
+        private static readonly string[] supportedLanguages = new string[2] { "en", "es" };
 
         private CultureInfo currentCulture;
 
