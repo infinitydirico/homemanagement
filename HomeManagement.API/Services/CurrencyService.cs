@@ -21,7 +21,7 @@ namespace HomeManagement.API.Services
     {
         private readonly ICurrencyRepository currencyRepository;
         private readonly IConfiguration configuration;
-    
+
         public CurrencyService(ICurrencyRepository currencyRepository, IConfiguration configuration)
         {
             this.currencyRepository = currencyRepository;
@@ -52,7 +52,7 @@ namespace HomeManagement.API.Services
         {
             var currencies = currencyRepository.All.ToList();
 
-            return currencies.All(x => (DateTime.Now - x.ChangeStamp).TotalDays > 1.0);
+            return currencies.All(x => (DateTime.Now - x.ChangeStamp).TotalDays < 1.0);
         }
 
         private void UpdateCurrencies()
@@ -62,26 +62,21 @@ namespace HomeManagement.API.Services
                 .GetAwaiter()
                 .GetResult();
 
-            var currencies = (from dbCurrency in currencyRepository.All
-                              join c in apiCurrencies
-                              on dbCurrency.Name equals c.Name
-                              select new Currency
-                              {
-                                  Id = dbCurrency.Id,
-                                  Name = dbCurrency.Name,
-                                  Value = c.Value,
-                                  ChangeStamp = c.ChangeStamp
-                              }).ToList();
+            var currencies = currencyRepository.All.ToList();
 
             foreach (var currency in currencies)
             {
+                var currenctApiValue = apiCurrencies.FirstOrDefault(x => x.Name.Equals(currency.Name));
+                currency.ChangeStamp = DateTime.Now;
+                currency.Value = currenctApiValue.Value;
+
                 currencyRepository.Update(currency);
             }
         }
 
         private async Task<List<Currency>> GetApiCurrencies()
         {
-            using(var httpClient = new HttpClient())
+            using (var httpClient = new HttpClient())
             {
                 var baseUrl = configuration
                     .GetSection("CurrenciesSettings")
@@ -97,13 +92,16 @@ namespace HomeManagement.API.Services
 
                 response.EnsureSuccessStatusCode();
 
-                var values = JsonConvert.DeserializeObject<Latest>(await response.Content.ReadAsStringAsync());
+                var content = (await response.Content.ReadAsStringAsync()).Replace(@"\n", "");
+
+                var values = JsonConvert.DeserializeObject<Latest>(content);
+
                 return values
                     .Rates
-                    .Where(x => x.Name.Equals("USD") || x.Name.Equals("ARS") || x.Name.Equals("EUR"))
+                    .Where(x => x.Key.Equals("USD") || x.Key.Equals("ARS") || x.Key.Equals("EUR"))
                     .Select(x => new Currency
                     {
-                        Name = x.Name,
+                        Name = x.Key,
                         Value = x.Value,
                         ChangeStamp = DateTime.Now
                     })
@@ -114,13 +112,16 @@ namespace HomeManagement.API.Services
 
     public class Latest
     {
-        public List<Rate> Rates { get; set; }
+        [JsonProperty("rates")]
+        public Dictionary<string, double> Rates { get; set; }
     }
 
     public class Rate
     {
+        [JsonProperty("name")]
         public string Name { get; set; }
 
+        [JsonProperty("name")]
         public double Value { get; set; }
     }
 }

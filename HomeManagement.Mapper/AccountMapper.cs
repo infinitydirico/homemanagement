@@ -16,7 +16,6 @@ namespace HomeManagement.Mapper
                 Name = model.Name,
                 AccountType = model.AccountType.ToString().ToEnum<Domain.AccountType>(),
                 Balance = model.Balance,
-                Currency = model.Currency.ToString().ToEnum<Domain.Currency>(),
                 ExcludeFromStatistics = model.ExcludeFromStatistics,
                 UserId = model.UserId,
                 CurrencyId = model.CurrencyId
