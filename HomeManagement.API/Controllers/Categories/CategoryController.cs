@@ -46,10 +46,15 @@ namespace HomeManagement.API.Controllers.Categories
         [HttpGet]
         public IActionResult Get()
         {
-            var categories = categoryRepository
-                .All
-                .Select(x => categoryMapper.ToModel(x))
-                .ToList();
+            var email = HttpContext.GetEmailClaim();
+
+            var categories = (from category in categoryRepository.All
+                              join userCategory in userCategoryRepository.All
+                              on category.Id equals userCategory.CategoryId
+                              join user in userRepository.All
+                              on userCategory.UserId equals user.Id
+                              where user.Email.Equals(email.Value)
+                              select categoryMapper.ToModel(category)).ToList();
 
             return Ok(categories);
         }
@@ -64,7 +69,7 @@ namespace HomeManagement.API.Controllers.Categories
                               on category.Id equals userCategory.CategoryId
                               join user in userRepository.All
                               on userCategory.UserId equals user.Id
-                              where user.Email.Equals(email.Value)
+                              where user.Email.Equals(email.Value) && category.IsActive
                               select categoryMapper.ToModel(category)).ToList();
 
             return Ok(categories);
