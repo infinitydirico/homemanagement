@@ -1,11 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Dropbox.Api" Version="4.9.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HomeManagement.Data.Contracts\HomeManagement.Data.Contracts.csproj" />
+    <ProjectReference Include="..\HomeManagement.Domain\HomeManagement.Domain.csproj" />
   </ItemGroup>
 
 </Project>
