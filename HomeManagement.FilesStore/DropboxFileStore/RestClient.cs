@@ -45,11 +45,18 @@ namespace HomeManagement.FilesStore.DropboxFileStore
 
         public async Task Authorize(int userId, string code, string state)
         {
+            var existingState = preferenceRepository.FirstOrDefault(x => x.UserId.Equals(userId) && x.Key.Equals(Constants.DropboxState));
+
+            if (existingState == null)
+            {
+                throw new Exception("Missing accesso token for dropbox.");
+            }
+
             var response = await DropboxOAuth2Helper.ProcessCodeFlowAsync(
-                    code,
-                    configuration.AppId,
-                    configuration.AppSecret,
-                    RedirectUri);
+                code,
+                configuration.AppId,
+                configuration.AppSecret,
+                RedirectUri);
 
             preferenceRepository.Add(new Domain.Preferences
             {
@@ -75,6 +82,13 @@ namespace HomeManagement.FilesStore.DropboxFileStore
         public Uri GetAccessToken(int userId)
         {
             var state = Guid.NewGuid().ToString("N");
+
+            var existingState = preferenceRepository.FirstOrDefault(x => x.UserId.Equals(userId) && x.Key.Equals(Constants.DropboxState));
+
+            if (existingState != null)
+            {
+                preferenceRepository.Remove(existingState);
+            }
 
             preferenceRepository.Add(new Domain.Preferences
             {
@@ -183,7 +197,44 @@ namespace HomeManagement.FilesStore.DropboxFileStore
             }
         }
 
-        public bool IsAuthorized(int userId) 
+        public async Task<Stream> Download(int userId, string path)
+        {
+            DropboxCertHelper.InitializeCertPinning();
+
+            var accessToken = preferenceRepository.FirstOrDefault(x => x.UserId.Equals(userId) && x.Key.Equals(Constants.DropboxAccessToken));
+
+            using (var dropboxClient = new DropboxClient(accessToken.Value))
+            {
+                var result = await dropboxClient.Files.DownloadAsync(path);
+
+                return await result.GetContentAsStreamAsync();
+            }
+        }
+
+        public bool IsAuthorized(int userId)
             => preferenceRepository.FirstOrDefault(x => x.UserId.Equals(userId) && x.Key.Equals(Constants.DropboxAccessToken)) != null;
+
+        public async Task<StorageItem> Upload(int userId, string filename, string accountName, string chargeName, Stream stream)
+        {
+            DropboxCertHelper.InitializeCertPinning();
+
+            var accessToken = preferenceRepository.FirstOrDefault(x => x.UserId.Equals(userId) && x.Key.Equals(Constants.DropboxAccessToken));
+
+            using (var dropboxClient = new DropboxClient(accessToken.Value))
+            {
+                var result = await dropboxClient.Files.UploadAsync(new Dropbox.Api.Files.CommitInfo($"/Homemanagement/{accountName}/{chargeName}/{filename}"), stream);
+
+                var file = result.AsFile;
+
+                return new StorageItem
+                {
+                    ExternalId = file.Id,
+                    IsFolder = false,
+                    Name = file.Name,
+                    Path = file.PathDisplay,
+                    Size = file.Size
+                };
+            }
+        }
     }
 }

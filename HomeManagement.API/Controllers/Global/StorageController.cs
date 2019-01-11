@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HomeManagement.API.Extensions;
+﻿using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
 using HomeManagement.Data;
+using HomeManagement.Domain;
 using HomeManagement.FilesStore;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace HomeManagement.API.Controllers.Global
 {
@@ -54,22 +54,38 @@ namespace HomeManagement.API.Controllers.Global
 
             var clientFiles = await storageClient.Get(user.Id);
 
-            var storageItems = (from storageItem in storageItemRepository.All
-                                join charge in chargeRepository.All
-                                on storageItem.ChargeId equals charge.Id
-                                join account in accountRepository.All
-                                on charge.AccountId equals account.Id
-                                where account.UserId.Equals(user.Id)
-                                select storageItem).ToList();
+            var storageItems = GetRepoItems(user.Id);
 
             if (clientFiles.All(x => storageItems.Exists(s => s.Name.Equals(x.Name))))
             {
-                return Ok(storageItems);
+                return Ok(storageItems.Select(x => storageItemMapper.ToModel(x)));
             }
 
             //try to create missing files on repo
 
             return Ok();
+        }
+
+        [HttpGet("getitems")]
+        public IActionResult GetItems()
+        {
+            var user = userRepository.GetByEmail(HttpContext.GetEmailClaim().Value);
+
+            if (!storageClient.IsAuthorized(user.Id)) return Forbid();
+
+            return Ok(GetRepoItems(user.Id).Select(x => storageItemMapper.ToModel(x)));
+        }
+        
+        [HttpGet("getchargefiles/{chargeId}")]
+        public IActionResult GetChargeFles(int chargeId)
+        {
+            var user = userRepository.GetByEmail(HttpContext.GetEmailClaim().Value);
+
+            if (!storageClient.IsAuthorized(user.Id)) return Forbid();
+
+            return Ok(GetRepoItems(user.Id)
+                .Where(x => x.ChargeId.Equals(chargeId))
+                .Select(x => storageItemMapper.ToModel(x)));
         }
 
         [HttpGet("connect")]
@@ -94,19 +110,64 @@ namespace HomeManagement.API.Controllers.Global
             return Ok();
         }
 
-        [HttpPost("upload")]
-        [DisableRequestSizeLimit]
-        public async Task<IActionResult> Upload()
+        [HttpGet("download/{id}")]
+        public async Task<IActionResult> Download(int id)
         {
             var claim = HttpContext.GetEmailClaim();
 
             var user = userRepository.GetByEmail(claim.Value);
 
+            var item = storageItemRepository.GetById(id);
+
+            var fileStream = await storageClient.Download(user.Id, item.Path);
+
+            var file = new FileModel
+            {
+                Name = item.Name,
+            };
+            return new FileStreamResult(fileStream, file.ContentType);
+        }
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> Upload()
+        {
+            int chargeId = 0;
+            Account account = null;
+            Charge charge = null;
+
+            var claim = HttpContext.GetEmailClaim();
+
+            var user = userRepository.GetByEmail(claim.Value);
+
+            if (!storageClient.IsAuthorized(user.Id)) return Forbid();
+
             var filename = HttpContext.GetHeader("filename");
 
-            await storageClient.Upload(user.Id, filename, Request.Body);
+            if (HttpContext.HasHeader("chargeId"))
+            {
+                chargeId = int.Parse(HttpContext.GetHeader("chargeId"));
+                charge = chargeRepository.GetById(chargeId);
+                account = accountRepository.GetById(charge.AccountId);
+            }
 
-            return Ok();
+            var storageItem = await storageClient.Upload(user.Id, filename,account.Name, charge.Name, Request.Body);
+
+            storageItem.ChargeId = chargeId;
+
+            storageItemRepository.Add(storageItem);
+
+            return Ok(storageItem);
+        }
+
+        private List<StorageItem> GetRepoItems(int userId)
+        {
+            return (from storageItem in storageItemRepository.All
+                    join charge in chargeRepository.All
+                    on storageItem.ChargeId equals charge.Id
+                    join account in accountRepository.All
+                    on charge.AccountId equals account.Id
+                    where account.UserId.Equals(userId)
+                    select storageItem).ToList();
         }
     }
 }

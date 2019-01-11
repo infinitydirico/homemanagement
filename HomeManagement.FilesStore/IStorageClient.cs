@@ -17,5 +17,9 @@ namespace HomeManagement.FilesStore
         Uri GetAccessToken(int userId);
 
         Task<StorageItem> Upload(int userId, string filename, Stream stream);
+
+        Task<StorageItem> Upload(int userId, string filename,string accountName, string chargeName, Stream stream);
+
+        Task<Stream> Download(int userId, string path);
     }
 }

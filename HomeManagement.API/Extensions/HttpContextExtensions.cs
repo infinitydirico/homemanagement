@@ -7,6 +7,8 @@ namespace HomeManagement.API.Extensions
 {
     public static class HttpContextExtensions
     {
+        public static bool HasHeader(this HttpContext httpContext, string key) => httpContext.Request.Headers.ContainsKey(key);
+
         public static string GetHeader(this HttpContext httpContext, string key) => httpContext?.Request?.Headers?[key].FirstOrDefault();
 
         public static string GetAuthorizationHeader(this HttpContext httpContext) => httpContext?.Request?.Headers?["Authorization"].FirstOrDefault();

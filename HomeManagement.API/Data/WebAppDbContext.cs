@@ -28,6 +28,8 @@ namespace HomeManagement.API.Data
 
         public DbSet<Currency> Currencies { get; set; }
 
+        public DbSet<StorageItem> StorageItems { get; set; }
+
         public bool Disposed { get; set; }
 
         public WebAppDbContext(DbContextOptions<WebAppDbContext> options)
@@ -72,6 +74,8 @@ namespace HomeManagement.API.Data
             modelBuilder.Entity<Notification>().HasOne(x => x.Reminder);
 
             modelBuilder.Entity<Preferences>().HasOne(x => x.User);
+
+            //modelBuilder.Entity<StorageItem>().has
 
             modelBuilder.Ignore<Share>();
             modelBuilder.Ignore<Role>();
