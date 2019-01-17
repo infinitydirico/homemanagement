@@ -19,12 +19,12 @@ namespace HomeManagement.API.Controllers.Charges
     public class ChargesExportController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly IChargeRepository chargeRepository;
+        private readonly Data.Repositories.IChargeRepository chargeRepository;
         private readonly IUserRepository userRepository;
         private readonly IExportableCharge exportableCharge;
 
         public ChargesExportController(IAccountRepository accountRepository,
-            IChargeRepository chargeRepository,
+            Data.Repositories.IChargeRepository chargeRepository,
             ICategoryRepository categoryRepository,
             IChargeMapper chargeMapper,
             ICategoryMapper categoryMapper,
@@ -85,7 +85,7 @@ namespace HomeManagement.API.Controllers.Charges
 
                     entity.Id = 0;
                     entity.AccountId = accountId;
-                    chargeRepository.Add(entity);
+                    chargeRepository.Add(entity, true);
                 }
             }
 

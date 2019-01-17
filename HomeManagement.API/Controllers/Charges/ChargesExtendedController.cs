@@ -23,14 +23,14 @@ namespace HomeManagement.API.Controllers.Charges
     public class ChargesExtendedController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly IChargeRepository chargeRepository;
+        private readonly Data.Repositories.IChargeRepository chargeRepository;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly IChargeMapper chargeMapper;
         private readonly ICategoryMapper categoryMapper;
 
         public ChargesExtendedController(IAccountRepository accountRepository,
-            IChargeRepository chargeRepository,
+            Data.Repositories.IChargeRepository chargeRepository,
             ICategoryRepository categoryRepository,
             IChargeMapper chargeMapper,
             ICategoryMapper categoryMapper,
@@ -105,7 +105,7 @@ namespace HomeManagement.API.Controllers.Charges
 
             foreach (var charge in models)
             {
-                chargeRepository.Update(chargeMapper.ToEntity(charge));
+                chargeRepository.Update(chargeMapper.ToEntity(charge), true);
             }
 
             return Ok();
@@ -123,8 +123,8 @@ namespace HomeManagement.API.Controllers.Charges
 
             foreach (var charge in charges)
             {
-                chargeRepository.Remove(charge.Id);
-                UpdateBalance(charge, true);
+                chargeRepository.Remove(charge, true);
+                //UpdateBalance(charge, true);
 
             }
             return Ok();

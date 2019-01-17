@@ -18,7 +18,7 @@ namespace HomeManagement.API.Controllers.Accounts
     public class AccountExtendedController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly IChargeRepository chargeRepository;
+        private readonly Data.Repositories.IChargeRepository chargeRepository;
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
         private readonly IChargeMapper chargeMapper;
@@ -26,7 +26,7 @@ namespace HomeManagement.API.Controllers.Accounts
         private readonly ICategoryRepository categoryRepository;
 
         public AccountExtendedController(IAccountRepository accountRepository,
-            IChargeRepository chargeRepository,
+            Data.Repositories.IChargeRepository chargeRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository,
             IChargeMapper chargeMapper,

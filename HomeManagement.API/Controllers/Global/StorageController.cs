@@ -24,7 +24,7 @@ namespace HomeManagement.API.Controllers.Global
         private readonly IStorageItemRepository storageItemRepository;
         private readonly IStorageClient storageClient;
         private readonly IUserRepository userRepository;
-        private readonly IChargeRepository chargeRepository;
+        private readonly Data.Repositories.IChargeRepository chargeRepository;
         private readonly IAccountRepository accountRepository;
         private readonly IPreferencesRepository preferencesRepository;
 
@@ -32,7 +32,7 @@ namespace HomeManagement.API.Controllers.Global
             IStorageItemRepository storageItemRepository,
             IStorageClient storageClient,
             IUserRepository userRepository,
-            IChargeRepository chargeRepository,
+            Data.Repositories.IChargeRepository chargeRepository,
             IAccountRepository accountRepository,
             IPreferencesRepository preferencesRepository)
         {

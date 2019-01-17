@@ -22,14 +22,14 @@ namespace HomeManagement.API.Controllers.Charges
     public class ChargesController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly IChargeRepository chargeRepository;
+        private readonly Data.Repositories.IChargeRepository chargeRepository;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly IChargeMapper chargeMapper;
         private readonly ICategoryMapper categoryMapper;
 
         public ChargesController(IAccountRepository accountRepository,
-            IChargeRepository chargeRepository,
+            Data.Repositories.IChargeRepository chargeRepository,
             ICategoryRepository categoryRepository,
             IChargeMapper chargeMapper,
             ICategoryMapper categoryMapper,
@@ -86,7 +86,7 @@ namespace HomeManagement.API.Controllers.Charges
             {
                 var entity = chargeMapper.ToEntity(model);
 
-                chargeRepository.Add(entity);
+                chargeRepository.Add(entity, true);
             }
             catch (Exception ex)
             {
@@ -103,7 +103,7 @@ namespace HomeManagement.API.Controllers.Charges
 
             var entity = chargeMapper.ToEntity(model);
 
-            chargeRepository.Update(entity);
+            chargeRepository.Update(entity, true);
 
             return Ok();
         }
@@ -113,7 +113,7 @@ namespace HomeManagement.API.Controllers.Charges
         {
             if (id < 1) return BadRequest();
 
-            chargeRepository.Remove(id);
+            chargeRepository.Remove(chargeRepository.GetById(id), true);
 
             return Ok();
         }

@@ -21,16 +21,22 @@ namespace HomeManagement.API.Controllers.Users
         private readonly IPreferencesRepository preferencesRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly IUserCategoryRepository userCategoryRepository;
+        private readonly Data.Repositories.IChargeRepository chargeRepository;
+        private readonly IAccountRepository accountRepository;
 
         public PreferencesController(IUserRepository userRepository,
             IPreferencesRepository preferencesRepository,
             ICategoryRepository categoryRepository,
-            IUserCategoryRepository userCategoryRepository)
+            IUserCategoryRepository userCategoryRepository,
+            Data.Repositories.IChargeRepository chargeRepository,
+            IAccountRepository accountRepository)
         {
             this.userRepository = userRepository;
             this.preferencesRepository = preferencesRepository;
             this.categoryRepository = categoryRepository;
             this.userCategoryRepository = userCategoryRepository;
+            this.chargeRepository = chargeRepository;
+            this.accountRepository = accountRepository;
         }
 
         [HttpPost("changelanguage/{language}")]
@@ -49,6 +55,8 @@ namespace HomeManagement.API.Controllers.Users
             preferencesRepository.Update(userPreference);
 
             UpdateUserCategories(user, language);
+
+            UpdateCharges(user, language);
 
             return Ok();
         }
@@ -71,6 +79,32 @@ namespace HomeManagement.API.Controllers.Users
             foreach (var category in defaultCategories)
             {
                 categoryRepository.Add(category, user);
+            }
+        }
+
+        private void UpdateCharges(User user, string language)
+        {
+            var chargesWithOldCategories = (from charge in chargeRepository.All
+                                            join account in accountRepository.All
+                                            on charge.AccountId equals account.Id
+                                            where account.UserId.Equals(user.Id) &&
+                                                    userCategoryRepository.All.Any(x => x.CategoryId != charge.CategoryId)
+                                            select charge);
+
+            foreach (var charge in chargesWithOldCategories)
+            {
+                var oldCategory = categoryRepository.FirstOrDefault(x => x.Id.Equals(charge.CategoryId));
+
+                var newCategory = (from userCategory in userCategoryRepository.All
+                                   join category in categoryRepository.All
+                                   on userCategory.CategoryId equals category.Id
+                                   where userCategory.UserId.Equals(user.Id) &&
+                                            category.Icon.Equals(oldCategory.Icon)
+                                   select category).FirstOrDefault();
+
+                charge.CategoryId = newCategory.Id;
+
+                chargeRepository.Update(charge);
             }
         }
     }

@@ -19,12 +19,12 @@ namespace HomeManagement.API.Controllers.Accounts
     public class AccountStatisticsController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly IChargeRepository chargeRepository;
+        private readonly Data.Repositories.IChargeRepository chargeRepository;
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
 
         public AccountStatisticsController(IAccountRepository accountRepository,
-            IChargeRepository chargeRepository,
+            Data.Repositories.IChargeRepository chargeRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository)
         {

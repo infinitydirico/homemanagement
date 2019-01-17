@@ -29,7 +29,7 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<IAccountRepository, AccountRepository>();
 
-            services.AddScoped<IChargeRepository, Data.Repositories.ChargeRepository>();
+            services.AddScoped<Data.Repositories.IChargeRepository, Data.Repositories.ChargeRepository>();
 
             services.AddScoped<ICategoryRepository, API.Data.Repositories.CategoryRepository>();
 
