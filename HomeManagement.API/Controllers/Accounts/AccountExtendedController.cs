@@ -1,13 +1,12 @@
-﻿using System;
-using System.Linq;
-using HomeManagement.API.Controllers.Charges;
+﻿using HomeManagement.API.Controllers.Charges;
 using HomeManagement.API.Filters;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
 
 namespace HomeManagement.API.Controllers.Accounts
 {

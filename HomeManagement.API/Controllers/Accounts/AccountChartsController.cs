@@ -41,21 +41,12 @@ namespace HomeManagement.API.Controllers.Accounts
 
 
         [HttpGet("{id}/chartbychargetype")]
-        public IActionResult ChartData(int id)
+        public IActionResult ChartData(int id) => Ok(new AccountOverviewModel
         {
-            var totalCharges = chargeRepository.Count(c => c.AccountId.Equals(id));
-
-            var incomingCharges = chargeRepository.Count(c => c.AccountId.Equals(id) && c.ChargeType == (int)ChargeType.Income);
-
-            var outgoingCharges = chargeRepository.Count(c => c.AccountId.Equals(id) && c.ChargeType == ChargeType.Expense);
-
-            return Ok(new AccountOverviewModel
-            {
-                TotalCharges = totalCharges,
-                ExpneseCharges = outgoingCharges,
-                IncomeCharges = incomingCharges
-            });
-        }
+            TotalCharges = chargeRepository.Count(c => c.AccountId.Equals(id)),
+            ExpneseCharges = chargeRepository.Count(c => c.AccountId.Equals(id) && c.ChargeType == ChargeType.Expense),
+            IncomeCharges = chargeRepository.Count(c => c.AccountId.Equals(id) && c.ChargeType == (int)ChargeType.Income)
+        });
 
         [HttpGet("accountsevolution")]
         public IActionResult AccountsEvolution()
@@ -162,16 +153,16 @@ namespace HomeManagement.API.Controllers.Accounts
 
             //implement a method where it gets all charges of all accounts to the authenticated user that is grouped by categories
             var result = (from charge in chargeRepository.All
-                         join account in accountRepository.All
-                         on charge.AccountId equals account.Id
-                         join user in userRepository.All
-                         on account.UserId equals user.Id
-                         join category in categoryRepository.All
-                         on charge.CategoryId equals category.Id
-                         where user.Email.Equals(email.Value)
-                                  && charge.ChargeType.Equals(ChargeType.Expense)
-                                  && charge.Date.Month.Equals(month)
-                         select new { Charge = charge, Category = category })
+                          join account in accountRepository.All
+                          on charge.AccountId equals account.Id
+                          join user in userRepository.All
+                          on account.UserId equals user.Id
+                          join category in categoryRepository.All
+                          on charge.CategoryId equals category.Id
+                          where user.Email.Equals(email.Value)
+                                   && charge.ChargeType.Equals(ChargeType.Expense)
+                                   && charge.Date.Month.Equals(month)
+                          select new { Charge = charge, Category = category })
                          .Take(10)
                          .GroupBy(x => x.Category.Id)
                          .Select(x => new OverPricedCategory

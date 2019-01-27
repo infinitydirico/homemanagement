@@ -1,14 +1,14 @@
-﻿using System;
-using System.Linq;
-using HomeManagement.API.Extensions;
+﻿using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
+using HomeManagement.Core.Extensions;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using HomeManagement.Core.Extensions;
+using System;
+using System.Linq;
 
 namespace HomeManagement.API.Controllers.Accounts
 {
@@ -41,17 +41,11 @@ namespace HomeManagement.API.Controllers.Accounts
 
             if (accountRepository.GetById(id) == null) return NotFound();
 
-            var totalCharges = chargeRepository.All.Count(c => c.AccountId.Equals(id));
-
-            var incomeCharges = chargeRepository.All.Count(c => c.AccountId.Equals(id) && c.ChargeType == (int)ChargeType.Income);
-
-            var expensesCharges = chargeRepository.All.Count(c => c.AccountId.Equals(id) && c.ChargeType == ChargeType.Expense);
-
             return Ok(new AccountOverviewModel
             {
-                TotalCharges = totalCharges,
-                ExpneseCharges = expensesCharges,
-                IncomeCharges = incomeCharges
+                TotalCharges = chargeRepository.All.Count(c => c.AccountId.Equals(id)),
+                ExpneseCharges = chargeRepository.All.Count(c => c.AccountId.Equals(id) && c.ChargeType == ChargeType.Expense),
+                IncomeCharges = chargeRepository.All.Count(c => c.AccountId.Equals(id) && c.ChargeType == (int)ChargeType.Income)
             });
         }
 
@@ -62,9 +56,7 @@ namespace HomeManagement.API.Controllers.Accounts
 
             var user = userRepository.FirstOrDefault(x => x.Email.Equals(email.Value));
 
-            var total = accountRepository.Sum(o => int.Parse(o.Balance.ToString()), o => o.UserId.Equals(user.Id));
-
-            return Ok(total);
+            return Ok(accountRepository.Sum(o => int.Parse(o.Balance.ToString()), o => o.UserId.Equals(user.Id)));
         }
 
         [HttpGet("incomes")]

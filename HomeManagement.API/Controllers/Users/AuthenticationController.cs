@@ -1,21 +1,20 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using HomeManagement.API.Extensions;
-using HomeManagement.API.Data.Entities;
+﻿using HomeManagement.API.Data.Entities;
 using HomeManagement.API.Data.Repositories;
+using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
+using HomeManagement.Contracts;
+using HomeManagement.Data;
 using HomeManagement.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Cors;
-using HomeManagement.Contracts;
-using HomeManagement.Data;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace HomeManagement.API.Controllers.Users
 {

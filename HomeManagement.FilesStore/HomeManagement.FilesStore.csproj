@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HomeManagement.Core\HomeManagement.Core.csproj" />
     <ProjectReference Include="..\HomeManagement.Data.Contracts\HomeManagement.Data.Contracts.csproj" />
     <ProjectReference Include="..\HomeManagement.Domain\HomeManagement.Domain.csproj" />
   </ItemGroup>

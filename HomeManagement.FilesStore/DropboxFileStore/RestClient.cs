@@ -1,11 +1,13 @@
 ﻿using Dropbox.Api;
 using HomeManagement.Data;
 using HomeManagement.Domain;
+using HomeManagement.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Dropbox.Api.Files;
 
 namespace HomeManagement.FilesStore.DropboxFileStore
 {
@@ -32,24 +34,13 @@ namespace HomeManagement.FilesStore.DropboxFileStore
 
         public string RedirectUri { get; set; } = "http://localhost:60424/api/storage/authorize";
 
-        public async void GetFiles()
-        {
-            DropboxCertHelper.InitializeCertPinning();
-
-            var root = await dropboxClient.Files.ListFolderAsync("/");
-
-            var rootFolder = root.Entries.FirstOrDefault();
-
-            var filesMetadata = await dropboxClient.Files.GetPreviewAsync(rootFolder.AsFolder.PathLower);
-        }
-
         public async Task Authorize(int userId, string code, string state)
         {
             var existingState = preferenceRepository.FirstOrDefault(x => x.UserId.Equals(userId) && x.Key.Equals(Constants.DropboxState));
 
             if (existingState == null)
             {
-                throw new Exception("Missing accesso token for dropbox.");
+                throw new Exception("Missing access token for dropbox.");
             }
 
             var response = await DropboxOAuth2Helper.ProcessCodeFlowAsync(
@@ -81,7 +72,7 @@ namespace HomeManagement.FilesStore.DropboxFileStore
 
         public Uri GetAccessToken(int userId)
         {
-            var state = Guid.NewGuid().ToString("N");
+            var state = this.CreateGuid();
 
             var existingState = preferenceRepository.FirstOrDefault(x => x.UserId.Equals(userId) && x.Key.Equals(Constants.DropboxState));
 
@@ -90,7 +81,7 @@ namespace HomeManagement.FilesStore.DropboxFileStore
                 preferenceRepository.Remove(existingState);
             }
 
-            preferenceRepository.Add(new Domain.Preferences
+            preferenceRepository.Add(new Preferences
             {
                 UserId = userId,
                 Key = Constants.DropboxState,
@@ -108,27 +99,6 @@ namespace HomeManagement.FilesStore.DropboxFileStore
             }
         }
 
-        public async Task<StorageItem> GetRoot(int userId)
-        {
-            DropboxCertHelper.InitializeCertPinning();
-
-            var accessToken = preferenceRepository.FirstOrDefault(x => x.UserId.Equals(userId) && x.Key.Equals(Constants.DropboxAccessToken));
-
-            using (var dropboxClient = new DropboxClient(accessToken.Value))
-            {
-                var result = await dropboxClient.Files.ListFolderAsync("/");
-
-                if (result.Entries.Count.Equals(0)) return null;
-
-                return result.Entries.Select(x => new StorageItem
-                {
-                    IsFolder = true,
-                    Name = x.Name,
-                    Path = x.PathDisplay
-                }).First(x => x.Name.Equals("Homemanagement"));
-            }
-        }
-
         public async Task<IEnumerable<StorageItem>> Get(int userId)
         {
             DropboxCertHelper.InitializeCertPinning();
@@ -143,35 +113,40 @@ namespace HomeManagement.FilesStore.DropboxFileStore
 
                 foreach (var item in result.Entries.OrderBy(x => x.IsFile).ThenBy(x => x.Name))
                 {
-                    if (item.IsFile)
-                    {
-                        var file = item.AsFile;
-
-                        list.Add(new StorageItem
-                        {
-                            ExternalId = file.Id,
-                            IsFolder = false,
-                            Name = file.Name,
-                            Path = file.PathDisplay,
-                            Size = file.Size
-                        });
-                    }
-                    else
-                    {
-                        var folder = item.AsFolder;
-
-                        list.Add(new StorageItem
-                        {
-                            ExternalId = folder.Id,
-                            IsFolder = true,
-                            Name = folder.Name,
-                            Path = folder.PathDisplay,
-                        });
-                    }
+                    list.Add(ParseStorageItem(item));
                 }
             }
 
             return list;
+        }
+
+        private StorageItem ParseStorageItem(Metadata metadata)
+        {
+            if (metadata.IsFile)
+            {
+                var file = metadata.AsFile;
+
+                return new StorageItem
+                {
+                    ExternalId = file.Id,
+                    IsFolder = false,
+                    Name = file.Name,
+                    Path = file.PathDisplay,
+                    Size = file.Size
+                };
+            }
+            else
+            {
+                var folder = metadata.AsFolder;
+
+                return new StorageItem
+                {
+                    ExternalId = folder.Id,
+                    IsFolder = true,
+                    Name = folder.Name,
+                    Path = folder.PathDisplay,
+                };
+            }
         }
 
         public async Task<StorageItem> Upload(int userId, string filename, Stream stream)

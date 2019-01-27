@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using HomeManagement.API.Exportation;
+﻿using HomeManagement.API.Exportation;
 using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
 using HomeManagement.Data;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HomeManagement.API.Controllers.Categories
 {
@@ -63,17 +63,9 @@ namespace HomeManagement.API.Controllers.Categories
 
             var emailClaim = userRepository.FirstOrDefault(x => x.Email.Equals(HttpContext.GetEmailClaim().Value));
 
-            foreach (var f in Request.Form.Files)
+            foreach (IFormFile formFile in Request.Form.Files)
             {
-                var formFile = f as IFormFile;
-
-                var stream = formFile.OpenReadStream();
-
-                var bytes = stream.GetBytes();
-
-                var entities = exportableCategory.ToEntities(bytes);
-
-                foreach (var entity in entities)
+                foreach (var entity in exportableCategory.ToEntities(formFile.OpenReadStream().GetBytes()))
                 {
                     if (entity == null) continue;
 

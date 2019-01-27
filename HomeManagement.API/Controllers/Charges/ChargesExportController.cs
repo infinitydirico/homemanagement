@@ -67,17 +67,9 @@ namespace HomeManagement.API.Controllers.Charges
 
             var emailClaim = userRepository.FirstOrDefault(x => x.Email.Equals(HttpContext.GetEmailClaim().Value));
 
-            foreach (var f in Request.Form.Files)
+            foreach (IFormFile formFile in Request.Form.Files)
             {
-                var formFile = f as IFormFile;
-
-                var stream = formFile.OpenReadStream();
-
-                var bytes = stream.GetBytes();
-
-                var entities = exportableCharge.ToEntities(bytes);
-
-                foreach (var entity in entities)
+                foreach (var entity in exportableCharge.ToEntities(formFile.OpenReadStream().GetBytes()))
                 {
                     if (entity == null) continue;
 

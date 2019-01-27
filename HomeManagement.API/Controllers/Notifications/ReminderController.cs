@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using HomeManagement.API.Extensions;
+﻿using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
@@ -8,6 +6,8 @@ using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HomeManagement.API.Controllers.Notifications
 {
