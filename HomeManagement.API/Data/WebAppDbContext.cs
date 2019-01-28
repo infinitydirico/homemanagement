@@ -2,6 +2,7 @@
 using HomeManagement.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace HomeManagement.API.Data
 {
@@ -34,11 +35,7 @@ namespace HomeManagement.API.Data
 
         public WebAppDbContext(DbContextOptions<WebAppDbContext> options)
             : base(options)
-        {
-            if (!Database.EnsureCreated())
-            {
-                Database.Migrate();
-            }
+        {            
         }
 
         public override void Dispose()

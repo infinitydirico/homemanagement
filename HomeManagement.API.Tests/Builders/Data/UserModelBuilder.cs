@@ -1,12 +1,30 @@
-﻿namespace HomeManagement.API.Tests.Builders.Data
+﻿using HomeManagement.Models;
+using System;
+using System.Linq;
+
+namespace HomeManagement.API.Tests.Builders.Data
 {
-    public static class UserModelBuilder
+    public class UserModelBuilder
     {
-        public static TestContext SetAuthenticationUser(this TestContext context, string email, string password)
+        public UserModel CreateUserModel(string email, string password, string language = "en") => new UserModel
         {
-            context.User.Email = email;
-            context.User.Password = context.aesCryptographyService.Encrypt(password);
-            return context;
+            Email = email,
+            Password = password,
+            Language = language
+        };
+
+        public UserModel CreateRandomUserModel()
+        {
+            var values = Guid.NewGuid().ToString("N");
+            var username = string.Concat(values.Take(6));
+            var password = "4430598Q#$q"; //"4h5UHGckxny7Lux9A1g0mA==";//string.Concat(values.Skip(6).Take(6), values.First().ToString().ToUpper());
+            var userModel = CreateUserModel(username, password);
+            return userModel;
         }
+    }
+
+    public static class UserModelBuilderExtensions
+    {
+
     }
 }
