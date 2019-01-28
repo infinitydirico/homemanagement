@@ -34,7 +34,11 @@ namespace HomeManagement.API.Data
 
         public WebAppDbContext(DbContextOptions<WebAppDbContext> options)
             : base(options)
-        {            
+        {
+            if (!Database.EnsureCreated())
+            {
+                Database.Migrate();
+            }
         }
 
         public override void Dispose()

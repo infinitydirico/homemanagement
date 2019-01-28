@@ -41,8 +41,8 @@ namespace HomeManagement.API
 
             services.AddLocalization(options => options.ResourcesPath = "Resource");
 
-            services.AddDbContextPool<WebAppDbContext>(options =>
-                options.UseSqlite("Data Source=HomeManagement.db"));
+            services.AddDbContextPool<WebAppDbContext>(options => options.UseInMemoryDatabase());
+                //options.UseSqlite("Data Source=HomeManagement.db"));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<WebAppDbContext>()
@@ -149,6 +149,8 @@ namespace HomeManagement.API
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Idnetity API V1");
             });
+
+            app.UseCors("SiteCorsPolicy");
 
             app.UseMvc(routes =>
             {
