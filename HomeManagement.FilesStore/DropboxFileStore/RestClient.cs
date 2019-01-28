@@ -1,13 +1,13 @@
 ﻿using Dropbox.Api;
+using Dropbox.Api.Files;
+using HomeManagement.Core.Extensions;
 using HomeManagement.Data;
 using HomeManagement.Domain;
-using HomeManagement.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Dropbox.Api.Files;
 
 namespace HomeManagement.FilesStore.DropboxFileStore
 {
@@ -120,35 +120,6 @@ namespace HomeManagement.FilesStore.DropboxFileStore
             return list;
         }
 
-        private StorageItem ParseStorageItem(Metadata metadata)
-        {
-            if (metadata.IsFile)
-            {
-                var file = metadata.AsFile;
-
-                return new StorageItem
-                {
-                    ExternalId = file.Id,
-                    IsFolder = false,
-                    Name = file.Name,
-                    Path = file.PathDisplay,
-                    Size = file.Size
-                };
-            }
-            else
-            {
-                var folder = metadata.AsFolder;
-
-                return new StorageItem
-                {
-                    ExternalId = folder.Id,
-                    IsFolder = true,
-                    Name = folder.Name,
-                    Path = folder.PathDisplay,
-                };
-            }
-        }
-
         public async Task<StorageItem> Upload(int userId, string filename, Stream stream)
         {
             DropboxCertHelper.InitializeCertPinning();
@@ -159,16 +130,17 @@ namespace HomeManagement.FilesStore.DropboxFileStore
             {
                 var result = await dropboxClient.Files.UploadAsync(new Dropbox.Api.Files.CommitInfo($"/Homemanagement/{filename}"), stream);
 
-                var file = result.AsFile;
+                return ParseStorageItem(result);
+                //var file = result.AsFile;
 
-                return new StorageItem
-                {
-                    ExternalId = file.Id,
-                    IsFolder = false,
-                    Name = file.Name,
-                    Path = file.PathDisplay,
-                    Size = file.Size
-                };
+                //return new StorageItem
+                //{
+                //    ExternalId = file.Id,
+                //    IsFolder = false,
+                //    Name = file.Name,
+                //    Path = file.PathDisplay,
+                //    Size = file.Size
+                //};
             }
         }
 
@@ -197,9 +169,27 @@ namespace HomeManagement.FilesStore.DropboxFileStore
 
             using (var dropboxClient = new DropboxClient(accessToken.Value))
             {
-                var result = await dropboxClient.Files.UploadAsync(new Dropbox.Api.Files.CommitInfo($"/Homemanagement/{accountName}/{chargeName}/{filename}"), stream);
+                var result = await dropboxClient.Files.UploadAsync(new CommitInfo($"/Homemanagement/{accountName}/{chargeName}/{filename}"), stream);
 
-                var file = result.AsFile;
+                return ParseStorageItem(result);
+                //var file = result.AsFile;
+
+                //return new StorageItem
+                //{
+                //    ExternalId = file.Id,
+                //    IsFolder = false,
+                //    Name = file.Name,
+                //    Path = file.PathDisplay,
+                //    Size = file.Size
+                //};
+            }
+        }
+
+        private StorageItem ParseStorageItem(Metadata metadata)
+        {
+            if (metadata.IsFile)
+            {
+                var file = metadata.AsFile;
 
                 return new StorageItem
                 {
@@ -208,6 +198,18 @@ namespace HomeManagement.FilesStore.DropboxFileStore
                     Name = file.Name,
                     Path = file.PathDisplay,
                     Size = file.Size
+                };
+            }
+            else
+            {
+                var folder = metadata.AsFolder;
+
+                return new StorageItem
+                {
+                    ExternalId = folder.Id,
+                    IsFolder = true,
+                    Name = folder.Name,
+                    Path = folder.PathDisplay,
                 };
             }
         }
