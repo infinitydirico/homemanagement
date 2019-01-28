@@ -11,6 +11,8 @@ namespace HomeManagement.Data
 
         public override bool Exists(User entity) => GetById(entity.Id) != null;
 
+        public User GetByEmail(string email) => FirstOrDefault(x => x.Email.Equals(email));
+
         public override User GetById(int id) => platformContext.GetDbContext().Set<User>().FirstOrDefault(x => x.Id.Equals(id));
     }
 }

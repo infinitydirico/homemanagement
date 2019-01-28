@@ -13,10 +13,7 @@ namespace HomeManagement.Data
 
         public override Account GetById(int id)
         {
-            using(var dbContext = platformContext.GetDbContext())
-            {
-                return dbContext.Set<Account>().FirstOrDefault(x => x.Id.Equals(id));
-            }
+            return platformContext.GetDbContext().Set<Account>().FirstOrDefault(x => x.Id.Equals(id));
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using HomeManagement.API.Extensions;
+﻿using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
 using HomeManagement.Data;
 using HomeManagement.Domain;
@@ -9,6 +6,8 @@ using HomeManagement.Mapper;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 
 namespace HomeManagement.API.Controllers.Accounts
 {
@@ -19,14 +18,14 @@ namespace HomeManagement.API.Controllers.Accounts
     public class AccountChartsController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly IChargeRepository chargeRepository;
+        private readonly Data.Repositories.IChargeRepository chargeRepository;
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly ICategoryMapper categoryMapper;
 
         public AccountChartsController(IAccountRepository accountRepository,
-            IChargeRepository chargeRepository,
+            Data.Repositories.IChargeRepository chargeRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository,
             ICategoryRepository categoryRepository,
@@ -42,21 +41,12 @@ namespace HomeManagement.API.Controllers.Accounts
 
 
         [HttpGet("{id}/chartbychargetype")]
-        public IActionResult ChartData(int id)
+        public IActionResult ChartData(int id) => Ok(new AccountOverviewModel
         {
-            var totalCharges = chargeRepository.Count(c => c.AccountId.Equals(id));
-
-            var incomingCharges = chargeRepository.Count(c => c.AccountId.Equals(id) && c.ChargeType == (int)ChargeType.Income);
-
-            var outgoingCharges = chargeRepository.Count(c => c.AccountId.Equals(id) && c.ChargeType == ChargeType.Expense);
-
-            return Ok(new AccountOverviewModel
-            {
-                TotalCharges = totalCharges,
-                ExpneseCharges = outgoingCharges,
-                IncomeCharges = incomingCharges
-            });
-        }
+            TotalCharges = chargeRepository.Count(c => c.AccountId.Equals(id)),
+            ExpneseCharges = chargeRepository.Count(c => c.AccountId.Equals(id) && c.ChargeType == ChargeType.Expense),
+            IncomeCharges = chargeRepository.Count(c => c.AccountId.Equals(id) && c.ChargeType == (int)ChargeType.Income)
+        });
 
         [HttpGet("accountsevolution")]
         public IActionResult AccountsEvolution()
@@ -162,31 +152,26 @@ namespace HomeManagement.API.Controllers.Accounts
             }
 
             //implement a method where it gets all charges of all accounts to the authenticated user that is grouped by categories
-            var query = (from charge in chargeRepository.All
-                         join account in accountRepository.All
-                         on charge.AccountId equals account.Id
-                         join user in userRepository.All
-                         on account.UserId equals user.Id
-                         where user.Email.Equals(email.Value)
-                                  && charge.ChargeType.Equals(ChargeType.Expense)
-                                  && charge.Date.Month.Equals(month)
-                         select charge);
+            var result = (from charge in chargeRepository.All
+                          join account in accountRepository.All
+                          on charge.AccountId equals account.Id
+                          join user in userRepository.All
+                          on account.UserId equals user.Id
+                          join category in categoryRepository.All
+                          on charge.CategoryId equals category.Id
+                          where user.Email.Equals(email.Value)
+                                   && charge.ChargeType.Equals(ChargeType.Expense)
+                                   && charge.Date.Month.Equals(month)
+                          select new { Charge = charge, Category = category })
+                         .Take(10)
+                         .GroupBy(x => x.Category.Id)
+                         .Select(x => new OverPricedCategory
+                         {
+                             Category = categoryMapper.ToModel(x.FirstOrDefault().Category),
+                             Price = x.Sum(c => c.Charge.Price)
+                         })
+                         .ToList();
 
-            var temp = query.ToList();
-
-            var result = query.GroupBy(x => x.CategoryId)
-                              .Select(x => new
-                              {
-                                  Category = categoryRepository.All.FirstOrDefault(c => c.Id.Equals(x.Key)),
-                                  Price = x.Sum(c => c.Price)
-                              })
-                              .Take(10)
-                              .Select(x => new OverPricedCategory
-                              {
-                                  Category = categoryMapper.ToModel(x.Category),
-                                  Price = x.Price
-                              })
-                              .ToList();
             var model = new OverPricedCategories
             {
                 Categories = result,

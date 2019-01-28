@@ -26,6 +26,10 @@ namespace HomeManagement.API.Data
 
         public DbSet<Preferences> Preferences { get; set; }
 
+        public DbSet<Currency> Currencies { get; set; }
+
+        public DbSet<StorageItem> StorageItems { get; set; }
+
         public bool Disposed { get; set; }
 
         public WebAppDbContext(DbContextOptions<WebAppDbContext> options)
@@ -48,7 +52,7 @@ namespace HomeManagement.API.Data
             modelBuilder.Entity<WebClient>().HasKey(x => x.Id);
 
             modelBuilder.Entity<Account>().HasOne(x => x.User).WithMany(x => x.Accounts).HasForeignKey(x => x.UserId);
-            
+
             modelBuilder.Entity<Charge>().HasOne(x => x.Account).WithMany(x => x.Charges).HasForeignKey(x => x.AccountId);
 
             modelBuilder.Entity<Charge>().HasOne(x => x.Category);
@@ -70,6 +74,8 @@ namespace HomeManagement.API.Data
             modelBuilder.Entity<Notification>().HasOne(x => x.Reminder);
 
             modelBuilder.Entity<Preferences>().HasOne(x => x.User);
+
+            //modelBuilder.Entity<StorageItem>().has
 
             modelBuilder.Ignore<Share>();
             modelBuilder.Ignore<Role>();

@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
+using HomeManagement.Core.Extensions;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
-using HomeManagement.Core.Extensions;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
-using System.IdentityModel.Tokens.Jwt;
-using HomeManagement.API.Extensions;
 
 namespace HomeManagement.API.Controllers.Charges
 {
@@ -23,14 +22,14 @@ namespace HomeManagement.API.Controllers.Charges
     public class ChargesExtendedController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly IChargeRepository chargeRepository;
+        private readonly Data.Repositories.IChargeRepository chargeRepository;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly IChargeMapper chargeMapper;
         private readonly ICategoryMapper categoryMapper;
 
         public ChargesExtendedController(IAccountRepository accountRepository,
-            IChargeRepository chargeRepository,
+            Data.Repositories.IChargeRepository chargeRepository,
             ICategoryRepository categoryRepository,
             IChargeMapper chargeMapper,
             ICategoryMapper categoryMapper,
@@ -105,7 +104,7 @@ namespace HomeManagement.API.Controllers.Charges
 
             foreach (var charge in models)
             {
-                chargeRepository.Update(chargeMapper.ToEntity(charge));
+                chargeRepository.Update(chargeMapper.ToEntity(charge), true);
             }
 
             return Ok();
@@ -123,25 +122,9 @@ namespace HomeManagement.API.Controllers.Charges
 
             foreach (var charge in charges)
             {
-                chargeRepository.Remove(charge.Id);
-                UpdateBalance(charge, true);
-
+                chargeRepository.Remove(charge, true);
             }
             return Ok();
-        }
-
-
-        private void UpdateBalance(Charge c, bool reverse = false)
-        {
-            var account = accountRepository.GetById(c.AccountId);
-
-            if (reverse)
-            {
-                c.Price = -c.Price;
-            }
-
-            account.Balance = c.ChargeType.Equals(ChargeType.Income) ? account.Balance + c.Price : account.Balance - c.Price;
-            accountRepository.Update(account);
         }
     }
 }

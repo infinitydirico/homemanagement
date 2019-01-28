@@ -3,8 +3,7 @@ using HomeManagement.Domain;
 
 namespace HomeManagement.Data
 {
-    public interface IUserRepository : IRepository<User>
+    public interface ICurrencyRepository : IRepository<Currency>
     {
-        User GetByEmail(string email);
     }
 }

@@ -14,5 +14,10 @@ namespace HomeManagement.Core.Extensions
             byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(value));
             return new Guid(data);
         }
+
+        public static string CreateGuid(this object value)
+        {
+            return Guid.NewGuid().ToString("N");
+        }
     }
 }

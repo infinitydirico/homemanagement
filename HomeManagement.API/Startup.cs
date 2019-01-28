@@ -16,6 +16,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
+using HomeManagement.API.Services;
+using HomeManagement.FilesStore;
+using HomeManagement.Data;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace HomeManagement.API
 {
@@ -63,10 +67,23 @@ namespace HomeManagement.API
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+            services.AddScoped<IStorageClient, FilesStore.DropboxFileStore.RestClient>((serviceProvider) =>
+            {
+                var section = Configuration.GetSection("Dropbox");
+
+                return new FilesStore.DropboxFileStore.RestClient(new FilesStore.DropboxFileStore.Configuration
+                {
+                    AppId = section.GetValue<string>("AppKey"),
+                    AppSecret = section.GetValue<string>("AppSecret")
+                }, serviceProvider.GetRequiredService<IPreferencesRepository>());
+            });
+
             services.AddRepositories();
             services.AddMiddleware();
             services.AddMappers();
             services.AddExportableComponents();
+
+            services.AddScoped<ICurrencyService, CurrencyService>();
 
             services.AddMvc(options =>
             {
@@ -95,6 +112,14 @@ namespace HomeManagement.API
             services.AddCors(options =>
             {
                 options.AddPolicy("SiteCorsPolicy", options.BuildCorsPolicy());
+            });
+
+            services.Configure<FormOptions>(x =>
+            {
+                x.ValueLengthLimit = int.MaxValue;
+                x.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
+                x.MemoryBufferThreshold = int.MaxValue;
+                
             });
         }
 

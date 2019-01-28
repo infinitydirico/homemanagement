@@ -1,15 +1,14 @@
 ﻿using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
+using HomeManagement.Core.Common;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Collections.Generic;
-using HomeManagement.Core.Common;
 using Microsoft.Extensions.Localization;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HomeManagement.API.Controllers.Accounts
 {
@@ -20,12 +19,12 @@ namespace HomeManagement.API.Controllers.Accounts
     public class AccountController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly IChargeRepository chargeRepository;
+        private readonly Data.Repositories.IChargeRepository chargeRepository;
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
 
         public AccountController(IAccountRepository accountRepository,
-            IChargeRepository chargeRepository,
+            Data.Repositories.IChargeRepository chargeRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository,
             IStringLocalizer<AccountController> localizer)
@@ -92,7 +91,7 @@ namespace HomeManagement.API.Controllers.Accounts
         {
             if (id < 1) return BadRequest();
 
-            var charge = this.chargeRepository.FirstOrDefault(c => c.AccountId.Equals(id));
+            var charge = chargeRepository.FirstOrDefault(c => c.AccountId.Equals(id));
             if (charge != null) return BadRequest(Constants.ErrorCode.AccountHasCharges);
 
             accountRepository.Remove(id);

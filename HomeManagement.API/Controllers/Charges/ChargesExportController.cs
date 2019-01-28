@@ -19,12 +19,12 @@ namespace HomeManagement.API.Controllers.Charges
     public class ChargesExportController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly IChargeRepository chargeRepository;
+        private readonly Data.Repositories.IChargeRepository chargeRepository;
         private readonly IUserRepository userRepository;
         private readonly IExportableCharge exportableCharge;
 
         public ChargesExportController(IAccountRepository accountRepository,
-            IChargeRepository chargeRepository,
+            Data.Repositories.IChargeRepository chargeRepository,
             ICategoryRepository categoryRepository,
             IChargeMapper chargeMapper,
             ICategoryMapper categoryMapper,
@@ -67,17 +67,9 @@ namespace HomeManagement.API.Controllers.Charges
 
             var emailClaim = userRepository.FirstOrDefault(x => x.Email.Equals(HttpContext.GetEmailClaim().Value));
 
-            foreach (var f in Request.Form.Files)
+            foreach (IFormFile formFile in Request.Form.Files)
             {
-                var formFile = f as IFormFile;
-
-                var stream = formFile.OpenReadStream();
-
-                var bytes = stream.GetBytes();
-
-                var entities = exportableCharge.ToEntities(bytes);
-
-                foreach (var entity in entities)
+                foreach (var entity in exportableCharge.ToEntities(formFile.OpenReadStream().GetBytes()))
                 {
                     if (entity == null) continue;
 
@@ -85,7 +77,7 @@ namespace HomeManagement.API.Controllers.Charges
 
                     entity.Id = 0;
                     entity.AccountId = accountId;
-                    chargeRepository.Add(entity);
+                    chargeRepository.Add(entity, true);
                 }
             }
 

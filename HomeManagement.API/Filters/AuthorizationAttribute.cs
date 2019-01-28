@@ -1,16 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HomeManagement.API.Data.Entities;
+using HomeManagement.API.Extensions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
-using HomeManagement.API.Extensions;
-using System.IdentityModel.Tokens.Jwt;
-using HomeManagement.API.Data.Repositories;
-using Microsoft.AspNetCore.Identity;
-using HomeManagement.API.Data.Entities;
-using System.Security.Principal;
 using System.Security.Claims;
+using System.Security.Principal;
+using System.Threading.Tasks;
 
 namespace HomeManagement.API.Filters
 {
@@ -20,6 +20,12 @@ namespace HomeManagement.API.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
+            if (IsDropboxRequest(context.HttpContext.Request.QueryString))
+            {
+                await next();
+                return;
+            }
+
             var header = context.HttpContext.GetAuthorizationHeader();
 
             if (string.IsNullOrEmpty(header))
@@ -55,5 +61,10 @@ namespace HomeManagement.API.Filters
 
             await next();
         }
+
+        private bool IsDropboxRequest(QueryString queryString)
+            => queryString.HasValue &&
+            queryString.Value.Contains("code") &&
+            queryString.Value.Contains("state");
     }
 }

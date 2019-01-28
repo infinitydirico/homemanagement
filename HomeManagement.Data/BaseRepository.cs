@@ -62,6 +62,8 @@ namespace HomeManagement.Data
             var entity = GetById(id);
 
             dbContext.Set<T>().Remove(entity);
+
+            dbContext.SaveChanges();
         }
 
         public decimal Sum(Expression<Func<T, int>> selector, Expression<Func<T, bool>> predicate = null) =>

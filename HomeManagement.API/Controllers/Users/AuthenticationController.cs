@@ -1,21 +1,20 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using HomeManagement.API.Extensions;
-using HomeManagement.API.Data.Entities;
+﻿using HomeManagement.API.Data.Entities;
 using HomeManagement.API.Data.Repositories;
+using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
+using HomeManagement.Contracts;
+using HomeManagement.Data;
 using HomeManagement.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Cors;
-using HomeManagement.Contracts;
-using HomeManagement.Data;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace HomeManagement.API.Controllers.Users
 {
@@ -31,13 +30,15 @@ namespace HomeManagement.API.Controllers.Users
         private readonly ICryptography cryptography;
         private readonly IUserRepository userRepository;
         private readonly JwtSecurityTokenHandler jwtSecurityToken = new JwtSecurityTokenHandler();
+        private readonly IPreferencesRepository preferencesRepository;
 
         public AuthenticationController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IConfiguration configuration,
             ITokenRepository tokenRepository,
             ICryptography cryptography,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IPreferencesRepository preferencesRepository)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -45,6 +46,7 @@ namespace HomeManagement.API.Controllers.Users
             this.tokenRepository = tokenRepository;
             this.cryptography = cryptography;
             this.userRepository = userRepository;
+            this.preferencesRepository = preferencesRepository;
         }
 
         [HttpPost("signin")]
@@ -56,13 +58,15 @@ namespace HomeManagement.API.Controllers.Users
 
             var password = cryptography.Decrypt(user.Password);
             
-            var result = await signInManager.PasswordSignInAsync(user.Email, user.Password, true, false);
+            var result = await signInManager.PasswordSignInAsync(user.Email, password, true, false);
 
             if (!result.Succeeded) return Forbid();
 
             var appUser = await userManager.FindByEmailAsync(user.Email);
 
             var userEntity = userRepository.FirstOrDefault(x => x.Email.Equals(user.Email));
+
+            var preferences = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(userEntity.Id));
 
             if (tokenRepository.UserHasToken(appUser.Id))
             {
@@ -78,7 +82,8 @@ namespace HomeManagement.API.Controllers.Users
                     {
                         Id = userEntity.Id,
                         Email = userEntity.Email,
-                        Token = tokenValue
+                        Token = tokenValue,
+                        Language = preferences.Language
                     };
                     return Ok(userModel);
                 }
@@ -108,7 +113,8 @@ namespace HomeManagement.API.Controllers.Users
                 {
                     Id = userEntity.Id,
                     Email = userEntity.Email,
-                    Token = tokenValue
+                    Token = tokenValue,
+                    Language = preferences.Language
                 };
                 return Ok(userModel);
             }

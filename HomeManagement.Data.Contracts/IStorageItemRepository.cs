@@ -3,8 +3,7 @@ using HomeManagement.Domain;
 
 namespace HomeManagement.Data
 {
-    public interface IUserRepository : IRepository<User>
+    public interface IStorageItemRepository : IRepository<StorageItem>
     {
-        User GetByEmail(string email);
     }
 }

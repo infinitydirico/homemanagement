@@ -5,19 +5,28 @@ using System.Linq;
 
 namespace HomeManagement.API.Data.Repositories
 {
+    public interface IChargeRepository : HomeManagement.Data.IChargeRepository
+    {
+        void Add(Charge charge, bool affectsBalance);
+
+        void Update(Charge charge, bool affectsBalance);
+
+        void Remove(Charge charge, bool affectsBalance);
+    }
+
     public class ChargeRepository : HomeManagement.Data.ChargeRepository, IChargeRepository
     {
         public ChargeRepository(IPlatformContext platformContext) : base(platformContext)
         {
         }
 
-        public override void Add(Charge entity)
+        public void Add(Charge charge, bool affectsBalance)
         {
             using(var transaction = dbContext.Database.BeginTransaction())
             {
-                dbContext.Set<Charge>().Add(entity);
+                dbContext.Set<Charge>().Add(charge);
 
-                UpdateBalance(entity);
+                UpdateBalance(charge);
 
                 dbContext.SaveChanges();
 
@@ -25,20 +34,20 @@ namespace HomeManagement.API.Data.Repositories
             }
         }
 
-        public override void Update(Charge entity)
+        public void Update(Charge charge, bool affectsBalance)
         {
             using (var transaction = dbContext.Database.BeginTransaction())
             {
-                var previousCharge = GetById(entity.Id);
+                var previousCharge = GetById(charge.Id);
 
                 dbContext.Entry(previousCharge).State = EntityState.Detached;
-                dbContext.Attach(entity);
-                dbContext.Entry(entity).State = EntityState.Modified;
-                dbContext.Set<Charge>().Update(entity);
+                dbContext.Attach(charge);
+                dbContext.Entry(charge).State = EntityState.Modified;
+                dbContext.Set<Charge>().Update(charge);
 
                 UpdateBalance(previousCharge, true);
 
-                UpdateBalance(entity);
+                UpdateBalance(charge);
 
                 dbContext.SaveChanges();
 
@@ -46,26 +55,19 @@ namespace HomeManagement.API.Data.Repositories
             }
         }
 
-        public override void Remove(Charge entity)
+        public void Remove(Charge charge, bool affectsBalance)
         {
             using (var transaction = dbContext.Database.BeginTransaction())
             {
-                dbContext.Set<Charge>().Remove(entity);
-                dbContext.Entry(entity).State = EntityState.Deleted;
+                dbContext.Set<Charge>().Remove(charge);
+                dbContext.Entry(charge).State = EntityState.Deleted;
 
-                UpdateBalance(entity, true);
+                UpdateBalance(charge, true);
 
                 dbContext.SaveChanges();
 
                 transaction.Commit();
             }
-        }
-
-        public override void Remove(int id)
-        {
-            var dbCharge = GetById(id);
-
-            Remove(dbCharge);
         }
 
         private void UpdateBalance(Charge c, bool reverse = false)

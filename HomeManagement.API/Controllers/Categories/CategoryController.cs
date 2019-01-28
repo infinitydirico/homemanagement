@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using HomeManagement.API.Extensions;
+﻿using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
@@ -9,6 +6,8 @@ using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HomeManagement.API.Controllers.Categories
 {
@@ -19,7 +18,7 @@ namespace HomeManagement.API.Controllers.Categories
     public class CategoryController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly IChargeRepository chargeRepository;
+        private readonly Data.Repositories.IChargeRepository chargeRepository;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly IChargeMapper chargeMapper;
@@ -27,7 +26,7 @@ namespace HomeManagement.API.Controllers.Categories
         private readonly IUserCategoryRepository userCategoryRepository;
 
         public CategoryController(IAccountRepository accountRepository,
-                                    IChargeRepository chargeRepository,
+                                    Data.Repositories.IChargeRepository chargeRepository,
                                     ICategoryRepository categoryRepository,
                                     IChargeMapper chargeMapper,
                                     ICategoryMapper categoryMapper,
@@ -46,10 +45,15 @@ namespace HomeManagement.API.Controllers.Categories
         [HttpGet]
         public IActionResult Get()
         {
-            var categories = categoryRepository
-                .All
-                .Select(x => categoryMapper.ToModel(x))
-                .ToList();
+            var email = HttpContext.GetEmailClaim();
+
+            var categories = (from category in categoryRepository.All
+                              join userCategory in userCategoryRepository.All
+                              on category.Id equals userCategory.CategoryId
+                              join user in userRepository.All
+                              on userCategory.UserId equals user.Id
+                              where user.Email.Equals(email.Value)
+                              select categoryMapper.ToModel(category)).ToList();
 
             return Ok(categories);
         }
@@ -64,7 +68,7 @@ namespace HomeManagement.API.Controllers.Categories
                               on category.Id equals userCategory.CategoryId
                               join user in userRepository.All
                               on userCategory.UserId equals user.Id
-                              where user.Email.Equals(email.Value)
+                              where user.Email.Equals(email.Value) && category.IsActive
                               select categoryMapper.ToModel(category)).ToList();
 
             return Ok(categories);
@@ -87,7 +91,7 @@ namespace HomeManagement.API.Controllers.Categories
 
             if (!(category.Id > 0)) return BadRequest();
 
-            this.categoryRepository.Update(categoryMapper.ToEntity(category));
+            categoryRepository.Update(categoryMapper.ToEntity(category));
 
             return Ok();
         }
