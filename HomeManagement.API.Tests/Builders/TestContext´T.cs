@@ -38,7 +38,17 @@ namespace HomeManagement.API.Tests.Builders
 
         public TContext ProvideAuthorizationToken(string token)
         {
-            Token = token;
+            if (string.IsNullOrEmpty(Token))
+            {
+                Token = token;
+            }
+
+            if (!fixture.Client.DefaultRequestHeaders.Contains("Authorization"))
+            {
+                fixture
+                    .Client
+                    .DefaultRequestHeaders.Add("Authorization", Token);
+            }
 
             return this as TContext;
         }
@@ -53,11 +63,6 @@ namespace HomeManagement.API.Tests.Builders
 
         public TContext GetAsync(string uri)
         {
-            //
-            //fixture
-            //    .Client
-            //    .DefaultRequestHeaders.Add("Authorization", Token);
-
             Response =
                 fixture
                 .Client
@@ -77,11 +82,31 @@ namespace HomeManagement.API.Tests.Builders
             return this as TContext;
         }
 
+        public TContext PutAsync(string uri)
+        {
+            Response = fixture
+                .Client
+                .PutAsync(uri, new StringContent(RequestBody, Encoding.UTF8, "application/json"))
+                .Result;
+
+            return this as TContext;
+        }
+
+        public TContext DeleteAsync(string uri)
+        {
+            Response = fixture
+                .Client
+                .DeleteAsync(uri)
+                .Result;
+
+            return this as TContext;
+        }        
+
+        public TEntity GetResponseValues<TEntity>() => (TEntity)modelObject;
+
         protected void ReadResponse<TEntity>()
         {
             modelObject = JsonConvert.DeserializeObject<TEntity>(Response.Content.ReadAsStringAsync().Result);
         }
-
-
     }
 }
