@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.PlatformAbstractions;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Text;
 
 namespace HomeManagement.API.Tests
 {
@@ -16,10 +15,10 @@ namespace HomeManagement.API.Tests
 
         public TestServerFixture()
         {
-            var builder = new WebHostBuilder()
+            var builder = WebHost.CreateDefaultBuilder()
                    .UseContentRoot(GetContentRootPath())
-                   //.UseEnvironment("Development")
-                   .UseStartup<Startup>();  // Uses Start up class from your API Host project to configure the test server
+                   .UseEnvironment("Development")
+                   .UseStartup<Startup>();
 
             _testServer = new TestServer(builder);
             _testServer.BaseAddress = new Uri("http://localhost:60424/");

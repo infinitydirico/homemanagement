@@ -23,8 +23,4 @@
     <ProjectReference Include="..\HomeManagement.Models\HomeManagement.Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Builders\Controllers\" />
-  </ItemGroup>
-
 </Project>

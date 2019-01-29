@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using HomeManagement.API.Data;
 using HomeManagement.API.Data.Entities;
 using HomeManagement.API.Extensions;
+using HomeManagement.Contracts;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Models;
@@ -30,6 +31,7 @@ namespace HomeManagement.API.Controllers.Users
         private readonly ICategoryRepository categoryRepository;
         private readonly IServiceScopeFactory serviceScopeFactory;
         private readonly IPreferencesRepository preferencesRepository;
+        private readonly ICryptography cryptography;
 
         public RegisterController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -38,7 +40,8 @@ namespace HomeManagement.API.Controllers.Users
             ICategoryRepository categoryRepository,
             IUserRepository userRepository,
             IServiceScopeFactory serviceScopeFactory,
-            IPreferencesRepository preferencesRepository)
+            IPreferencesRepository preferencesRepository,
+            ICryptography cryptography)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -48,6 +51,7 @@ namespace HomeManagement.API.Controllers.Users
             this.userRepository = userRepository;
             this.serviceScopeFactory = serviceScopeFactory;
             this.preferencesRepository = preferencesRepository;
+            this.cryptography = cryptography;
         }
 
         [HttpPost]
@@ -59,7 +63,7 @@ namespace HomeManagement.API.Controllers.Users
             {
                 Email = user.Email,
                 UserName = user.Email
-            }, user.Password);
+            }, cryptography.Decrypt(user.Password));
 
             if (result.Succeeded)
             {
