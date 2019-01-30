@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.API", "HomeManagement.API\HomeManagement.API.csproj", "{E59051A9-B41F-4006-8C8A-5BEDFF11CA6A}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeManagement.App.Android", "HomeManagement.App\HomeManagement.App.Android\HomeManagement.App.Android.csproj", "{959101D9-D7C1-415F-88B6-5DC9CF9CB03F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeManagement.App.UWP", "HomeManagement.App\HomeManagement.App.UWP\HomeManagement.App.UWP.csproj", "{4D318AB1-720B-47DA-BB01-3A3643B09778}"
@@ -33,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.Data.Contrac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.API.Tests", "HomeManagement.API.Tests\HomeManagement.API.Tests.csproj", "{303F5C26-3F68-4E3E-BAA0-D792ABEB382D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeManagement.FilesStore", "HomeManagement.FilesStore\HomeManagement.FilesStore.csproj", "{DC732431-BE0E-44F4-BCA5-F8902F72DD11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.FilesStore", "HomeManagement.FilesStore\HomeManagement.FilesStore.csproj", "{DC732431-BE0E-44F4-BCA5-F8902F72DD11}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,22 +61,6 @@ Global
 		{E59051A9-B41F-4006-8C8A-5BEDFF11CA6A}.Release|x64.Build.0 = Release|Any CPU
 		{E59051A9-B41F-4006-8C8A-5BEDFF11CA6A}.Release|x86.ActiveCfg = Release|Any CPU
 		{E59051A9-B41F-4006-8C8A-5BEDFF11CA6A}.Release|x86.Build.0 = Release|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Debug|ARM.Build.0 = Debug|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Debug|x64.Build.0 = Debug|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Debug|x86.Build.0 = Debug|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Release|ARM.ActiveCfg = Release|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Release|ARM.Build.0 = Release|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Release|x64.ActiveCfg = Release|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Release|x64.Build.0 = Release|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Release|x86.ActiveCfg = Release|Any CPU
-		{20B7AF61-B242-42B2-9BCC-2FC552DBC94D}.Release|x86.Build.0 = Release|Any CPU
 		{959101D9-D7C1-415F-88B6-5DC9CF9CB03F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{959101D9-D7C1-415F-88B6-5DC9CF9CB03F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{959101D9-D7C1-415F-88B6-5DC9CF9CB03F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU

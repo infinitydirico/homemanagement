@@ -2,10 +2,10 @@
 
 eg.: cd .\HomeManagement.API
 
-2 -> run first migration with dotnet ef migrations add 'migration name'"
+2 -> run first migration with "dotnet ef migrations add InitialCreate" OR "Add-Migration InitialCreate""
 
 3 -> Done. To undo this action, use 'ef migrations remove'
 
-4 -> to apply database update -> "dotnet ef database update"
+4 -> to apply database update -> "dotnet ef database update" "OR Update-Database""
 
 5 -> Release "dotnet build -c release"
