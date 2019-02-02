@@ -29,8 +29,7 @@ namespace HomeManagement.API.Tests.Builders
 
         public TContext ContainsToken()
         {
-            Assert.NotNull(modelObject);
-            Assert.IsType<UserModel>(modelObject);
+            var modelObject = ReadResponse<UserModel>();
             Assert.NotNull((modelObject as UserModel).Token);
 
             return this as TContext;
@@ -53,7 +52,7 @@ namespace HomeManagement.API.Tests.Builders
             return this as TContext;
         }
 
-        public string GetAuthorizationToken() => (modelObject as UserModel).Token;
+        public string GetAuthorizationToken() => ReadResponse<UserModel>().Token;
 
         public TContext EnsureSuccessResponse()
         {
@@ -100,13 +99,11 @@ namespace HomeManagement.API.Tests.Builders
                 .Result;
 
             return this as TContext;
-        }        
+        }
 
-        public TEntity GetResponseValues<TEntity>() => (TEntity)modelObject;
-
-        protected void ReadResponse<TEntity>()
+        public TEntity ReadResponse<TEntity>()
         {
-            modelObject = JsonConvert.DeserializeObject<TEntity>(Response.Content.ReadAsStringAsync().Result);
+            return JsonConvert.DeserializeObject<TEntity>(Response.Content.ReadAsStringAsync().Result);
         }
     }
 }

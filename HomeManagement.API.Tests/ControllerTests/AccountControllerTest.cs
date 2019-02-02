@@ -59,9 +59,9 @@ namespace HomeManagement.API.Tests.ControllerTests
                 .ProvideAuthorizationToken(registrationTestContext.GetAuthorizationToken())
                 .GetAccounts()
                 .EnsureSuccessResponse()
-                .GetAccount(accountControllerContext.GetResponseValues<List<AccountModel>>().First().Id)
+                .GetAccount(accountControllerContext.ReadResponse<List<AccountModel>>().First().Id)
                 .EnsureSuccessResponse()
-                .AssertCondition(() => Assert.NotNull(accountControllerContext.GetResponseValues<AccountModel>()));
+                .AssertCondition(() => Assert.NotNull(accountControllerContext.ReadResponse<AccountModel>()));
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace HomeManagement.API.Tests.ControllerTests
                 .Register()
                 .SignIn();
 
-            var account = accountModelBuilder.CreateDefaultAccount(registrationTestContext.GetResponseValues<UserModel>().Id);
+            var account = accountModelBuilder.CreateDefaultAccount(registrationTestContext.ReadResponse<UserModel>().Id);
 
             //Act % Assert
             //Then test
@@ -87,7 +87,7 @@ namespace HomeManagement.API.Tests.ControllerTests
                 .EnsureSuccessResponse()
                 .AssertCondition(() => 
                     Assert.Contains(
-                        accountControllerContext.GetResponseValues<List<AccountModel>>(),
+                        accountControllerContext.ReadResponse<List<AccountModel>>(),
                         x => x.Name.Equals(account.Name)));
         }
 
@@ -101,17 +101,17 @@ namespace HomeManagement.API.Tests.ControllerTests
                 .Register()
                 .SignIn();
 
-            var account = accountModelBuilder.CreateDefaultAccount(registrationTestContext.GetResponseValues<UserModel>().Id);
+            var account = accountModelBuilder.CreateDefaultAccount(registrationTestContext.ReadResponse<UserModel>().Id);
 
             //Act % Assert
             //Then test
-            accountControllerContext
-                .ProvideAuthorizationToken(registrationTestContext.GetAuthorizationToken())
-                .Serialize(account)
-                .CreateAccount()
-                .GetAccounts();
-
-            var createdAccount = accountControllerContext.GetResponseValues<List<AccountModel>>().Last();
+            var createdAccount = accountControllerContext
+                                    .ProvideAuthorizationToken(registrationTestContext.GetAuthorizationToken())
+                                    .Serialize(account)
+                                    .CreateAccount()
+                                    .GetAccounts()
+                                    .ReadResponse<List<AccountModel>>()
+                                    .Last();
 
             account.Id = createdAccount.Id;
             account.Name = string.Concat(Guid.NewGuid().ToString("N").Take(6));
@@ -132,17 +132,17 @@ namespace HomeManagement.API.Tests.ControllerTests
                 .Register()
                 .SignIn();
 
-            var account = accountModelBuilder.CreateDefaultAccount(registrationTestContext.GetResponseValues<UserModel>().Id);
+            var account = accountModelBuilder.CreateDefaultAccount(registrationTestContext.ReadResponse<UserModel>().Id);
 
             //Act % Assert
             //Then test
-            accountControllerContext
-                .ProvideAuthorizationToken(registrationTestContext.GetAuthorizationToken())
-                .Serialize(account)
-                .CreateAccount()
-                .GetAccounts();
-
-            account = accountControllerContext.GetResponseValues<List<AccountModel>>().Last();
+            account = accountControllerContext
+                        .ProvideAuthorizationToken(registrationTestContext.GetAuthorizationToken())
+                        .Serialize(account)
+                        .CreateAccount()
+                        .GetAccounts()
+                        .ReadResponse<List<AccountModel>>()
+                        .Last();
 
             accountControllerContext
                 .DeleteAccount(account.Id)

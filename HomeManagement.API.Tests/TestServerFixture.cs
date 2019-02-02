@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.PlatformAbstractions;
 using System;
-using System.IO;
 using System.Net.Http;
+using System.Reflection;
 
 namespace HomeManagement.API.Tests
 {
     public class TestServerFixture : IDisposable
     {
+        private const string HomeManagamentProjPath = "HomeManagement.API";
         private readonly TestServer _testServer;
         public HttpClient Client { get; }
 
@@ -28,10 +28,9 @@ namespace HomeManagement.API.Tests
 
         private string GetContentRootPath()
         {
-            return @"C:\Users\Adriana\Documents\ramiro\projects\HomeManagementMultiPlatform\homemanagement\HomeManagement.API";
-            var testProjectPath = PlatformServices.Default.Application.ApplicationBasePath;
-            var relativePathToHostProject = @"..\..\..\..\..\..\HomeManagement.API";
-            return Path.Combine(testProjectPath, relativePathToHostProject);
+            var value = Assembly.GetExecutingAssembly().Location.Replace(".Tests", string.Empty);
+
+            return value.Substring(0, value.IndexOf(HomeManagamentProjPath) + HomeManagamentProjPath.Length);
         }
 
         public void Dispose()

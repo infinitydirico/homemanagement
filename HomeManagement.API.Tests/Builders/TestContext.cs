@@ -7,7 +7,6 @@ namespace HomeManagement.API.Tests.Builders
     {
         protected readonly AesCryptographyService aesCryptographyService = new AesCryptographyService();
         protected readonly TestServerFixture fixture;
-        protected object modelObject;
 
         public TestContext(TestServerFixture fixture)
         {

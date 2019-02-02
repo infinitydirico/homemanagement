@@ -1,8 +1,4 @@
-﻿using HomeManagement.Models;
-using System;
-using System.Collections.Generic;
-
-namespace HomeManagement.API.Tests.Builders.Controllers
+﻿namespace HomeManagement.API.Tests.Builders.Controllers
 {
     public class AccountControllerContext : TestContext<AccountControllerContext>
     {
@@ -15,21 +11,18 @@ namespace HomeManagement.API.Tests.Builders.Controllers
         public AccountControllerContext GetAccounts()
         {
             GetAsync(controllerApiUri);
-            ReadResponse<List<AccountModel>>();
             return this;
         }
 
         public AccountControllerContext GetAccount(int id)
         {
             GetAsync(controllerApiUri + "/" + id);
-            ReadResponse<AccountModel>();
             return this;
         }
 
         public AccountControllerContext CreateAccount()
         {
             PostAsync(controllerApiUri);
-            ReadResponse<AccountModel>();
             return this;
         }
 

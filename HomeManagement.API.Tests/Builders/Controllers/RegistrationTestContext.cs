@@ -17,7 +17,6 @@ namespace HomeManagement.API.Tests.Builders.Controllers
         public RegistrationTestContext SignIn()
         {
             PostAsync("/api/Authentication/signin");
-            ReadResponse<UserModel>();
             return this;
         }
     }
