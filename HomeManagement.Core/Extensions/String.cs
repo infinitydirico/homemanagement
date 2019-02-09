@@ -19,5 +19,7 @@ namespace HomeManagement.Core.Extensions
         {
             return Guid.NewGuid().ToString("N");
         }
+
+        public static string RemoveEmptySpaces(this string value) => value.Replace(" ", string.Empty);
     }
 }
