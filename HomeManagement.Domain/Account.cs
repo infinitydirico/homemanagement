@@ -16,7 +16,7 @@ namespace HomeManagement.Domain
 
         public double Balance { get; set; }
 
-        public bool ExcludeFromStatistics { get; set; }
+        public bool Measurable { get; set; }
 
         public AccountType AccountType { get; set; }
 
@@ -39,11 +39,4 @@ namespace HomeManagement.Domain
         Bank,
         CreditCard
     }
-
-    //public enum Currency
-    //{
-    //    USD,
-    //    ARS,
-    //    EUR
-    //}
 }

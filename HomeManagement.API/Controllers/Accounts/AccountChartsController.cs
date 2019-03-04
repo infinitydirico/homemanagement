@@ -41,12 +41,21 @@ namespace HomeManagement.API.Controllers.Accounts
 
 
         [HttpGet("{id}/chartbychargetype")]
-        public IActionResult ChartData(int id) => Ok(new AccountOverviewModel
+        public IActionResult ChartData(int id)
         {
-            TotalCharges = chargeRepository.Count(c => c.AccountId.Equals(id)),
-            ExpneseCharges = chargeRepository.Count(c => c.AccountId.Equals(id) && c.ChargeType == ChargeType.Expense),
-            IncomeCharges = chargeRepository.Count(c => c.AccountId.Equals(id) && c.ChargeType == (int)ChargeType.Income)
-        });
+            var accountCharges = (from c in chargeRepository.All
+                                  join a in accountRepository.All
+                                  on c.AccountId equals a.Id
+                                  where a.Measurable && a.Id.Equals(id)
+                                  select c);
+
+            return Ok(new AccountOverviewModel
+            {
+                TotalCharges = accountCharges.Count(),
+                ExpneseCharges = accountCharges.Count(c => c.ChargeType == ChargeType.Expense),
+                IncomeCharges = accountCharges.Count(c => c.ChargeType == (int)ChargeType.Income)
+            });
+        }
 
         [HttpGet("accountsevolution")]
         public IActionResult AccountsEvolution()

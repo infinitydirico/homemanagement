@@ -16,7 +16,7 @@ namespace HomeManagement.Mapper
                 Name = model.Name,
                 AccountType = model.AccountType.ToString().ToEnum<Domain.AccountType>(),
                 Balance = model.Balance,
-                ExcludeFromStatistics = model.ExcludeFromStatistics,
+                Measurable = model.Measurable,
                 UserId = model.UserId,
                 CurrencyId = model.CurrencyId
             };
@@ -30,7 +30,7 @@ namespace HomeManagement.Mapper
                 Name = entity.Name,
                 AccountType = entity.AccountType.ToString().ToEnum<Models.AccountType>(),
                 Balance = entity.Balance,
-                ExcludeFromStatistics = entity.ExcludeFromStatistics,
+                Measurable = entity.Measurable,
                 UserId = entity.UserId,
                 CurrencyId = entity.CurrencyId
             };
@@ -41,7 +41,7 @@ namespace HomeManagement.Mapper
             yield return typeof(Account).GetProperty(nameof(Account.Id));
             yield return typeof(Account).GetProperty(nameof(Account.Name));
             yield return typeof(Account).GetProperty(nameof(Account.UserId));
-            yield return typeof(Account).GetProperty(nameof(Account.ExcludeFromStatistics));
+            yield return typeof(Account).GetProperty(nameof(Account.Measurable));
             yield return typeof(Account).GetProperty(nameof(Account.AccountType));
             yield return typeof(Account).GetProperty(nameof(Account.Currency));
             yield return typeof(Account).GetProperty(nameof(Account.Balance));
@@ -51,7 +51,7 @@ namespace HomeManagement.Mapper
         {
             yield return typeof(AccountModel).GetProperty(nameof(AccountModel.Id));
             yield return typeof(AccountModel).GetProperty(nameof(AccountModel.Name));
-            yield return typeof(AccountModel).GetProperty(nameof(AccountModel.ExcludeFromStatistics));
+            yield return typeof(AccountModel).GetProperty(nameof(AccountModel.Measurable));
             yield return typeof(AccountModel).GetProperty(nameof(AccountModel.AccountType));
             yield return typeof(AccountModel).GetProperty(nameof(AccountModel.Currency));
             yield return typeof(AccountModel).GetProperty(nameof(AccountModel.UserId));

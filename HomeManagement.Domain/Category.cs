@@ -22,6 +22,8 @@ namespace HomeManagement.Domain
 
         public string Name { get; set; }
 
+        public bool Measurable { get; set; }
+
         public bool IsActive { get; set; }
 
         public string Icon { get; set; }

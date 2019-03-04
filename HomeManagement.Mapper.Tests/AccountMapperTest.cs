@@ -17,7 +17,7 @@ namespace HomeManagement.Mapper.Tests
             {
                 Id = 1,
                 Balance = 6354,
-                ExcludeFromStatistics = false,
+                Measurable = false,
                 AccountType = Models.AccountType.Cash,
                 Name = "HSBC",
                 UserId = 1
@@ -38,7 +38,7 @@ namespace HomeManagement.Mapper.Tests
             {
                 Id = 1,
                 Balance = 6354,
-                ExcludeFromStatistics = false,
+                Measurable = false,
                 AccountType = AccountType.Cash,
                 Name = "HSBC",
                 UserId = 1
