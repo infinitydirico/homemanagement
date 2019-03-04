@@ -1,10 +1,12 @@
-﻿namespace HomeManagement.AI.Vision.Analysis
+﻿using HomeManagement.AI.Vision.Analysis.Criterias;
+
+namespace HomeManagement.AI.Vision.Analysis
 {
     public class WordLookUp
     {
         public string Template { get; set; }
 
-        public LookUpCriteria Criteria { get; set; }
+        public ILookUpCriteria Criteria { get; set; }
 
         public double GetMatch(string word)
         {
@@ -21,7 +23,7 @@
                 char wordCharacter = word[i];
                 char templateCharacter = Template[a];
 
-                if (Criteria.Match(wordCharacter, templateCharacter))
+                if (Criteria.IsMatch(wordCharacter))
                 {
                     percentage += 100 / word.Length;
                 }

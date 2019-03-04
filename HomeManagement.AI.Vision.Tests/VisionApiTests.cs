@@ -6,6 +6,8 @@ using HomeManagement.Core.Extensions;
 using System.Linq;
 using System.Text;
 using System.IO;
+using HomeManagement.AI.Vision.Analysis.Criterias;
+using System.Collections.Generic;
 
 namespace HomeManagement.AI.Vision.Tests
 {
@@ -17,22 +19,35 @@ namespace HomeManagement.AI.Vision.Tests
         {
             var vision = ReadMock();
 
-            var engine = new Engine();
+            var engine = new Engine
+            {
+                Criterias = new List<ILookUpCriteria>()
+                {
+                    new TextLookUpCriteria()
+                }
+            };
 
-            var text = engine.GetAllMatches(vision.RecognitionResult, new WordLookUp { Template = "sampletext", Criteria = new TextLookUpCriteria() }).ToList();
+            var text = engine.GetAllMatches(vision.RecognitionResult).ToList();
 
             Assert.IsNotNull(text);
         }
 
         [TestMethod]
-        public void GivenVisionApiMock_WhenSearchingForNumbers_GetPosibleNumbers()
+        public void GivenVisionApiMock_WhenSearchingForNumbers_GetPosibleMoney()
         {
             double realPrice = 0.0;
             var vision = ReadMock();
 
-            var engine = new Engine();
+            var engine = new Engine
+            {
+                Criterias = new List<ILookUpCriteria>()
+                {
+                    new MoneyLookUpCriteria()
+                }
+            };
+
             var moneyCriteria = new MoneyLookUpCriteria();
-            var numbers = engine.GetAllMatches(vision.RecognitionResult, new WordLookUp { Template = "1234,41", Criteria = moneyCriteria }).ToList();
+            var numbers = engine.GetAllMatches(vision.RecognitionResult).ToList();
 
             var moneyLine = vision.RecognitionResult.Lines.FirstOrDefault(x => x.Text.Any(c => char.GetUnicodeCategory(c).Equals(System.Globalization.UnicodeCategory.CurrencySymbol)));
 
@@ -55,9 +70,15 @@ namespace HomeManagement.AI.Vision.Tests
             DateTime realDate;
             var vision = ReadMock();
 
-            var engine = new Engine();
+            var engine = new Engine
+            {
+                Criterias = new List<ILookUpCriteria>()
+                {
+                    new DateLookUpCriteria()
+                }
+            };
 
-            var dates = engine.GetAllMatches(vision.RecognitionResult, new WordLookUp { Template = "00/00/0000", Criteria = new DateLookUpCriteria() }).ToList();
+            var dates = engine.GetAllMatches(vision.RecognitionResult).ToList();
 
             foreach (var date in dates)
             {

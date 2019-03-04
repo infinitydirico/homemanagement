@@ -20,6 +20,28 @@ namespace HomeManagement.AI.Vision.Entities
         public int BottomRightX => BoundingBox.Length > 0 ? int.Parse(BoundingBox[6]) : default(int);
         public int BottomRightY => BoundingBox.Length > 0 ? int.Parse(BoundingBox[7]) : default(int);
 
+        public override bool Equals(object obj)
+        {
+            if (obj is Box)
+            {
+                var b = obj as Box;
+                return b.TopLeftX.Equals(TopLeftX) &&
+                    b.TopLeftY.Equals(TopLeftY) &&
+                    b.TopRightX.Equals(TopRightX) &&
+                    b.TopRightY.Equals(TopRightY) &&
+                    b.BottomLeftX.Equals(BottomLeftX) &&
+                    b.BottomLeftY.Equals(BottomLeftY) &&
+                    b.BottomRightX.Equals(BottomRightX) &&
+                    b.BottomRightY.Equals(BottomRightY);
+            }
+            else return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         public bool IsOnSameColumn(Box box)
         {
             var topLeftXDiff = Math.Abs(TopLeftX - box.TopLeftX);
