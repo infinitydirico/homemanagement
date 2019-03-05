@@ -187,6 +187,7 @@ namespace HomeManagement.API.Controllers.Accounts
                                    && charge.ChargeType.Equals(ChargeType.Expense)
                                    && charge.Date.Month.Equals(month)
                                    && account.Measurable
+                                   && category.Measurable
                           select new { Charge = charge, Category = category })
                          .Take(10)
                          .GroupBy(x => x.Category.Id)
@@ -223,7 +224,8 @@ namespace HomeManagement.API.Controllers.Accounts
                      where a.Measurable &&
                            a.Id.Equals(id) &&
                            c.Date.Month.Equals(month) &&
-                           c.ChargeType == ChargeType.Expense
+                           c.ChargeType == ChargeType.Expense &&
+                           ca.Measurable
                      select new { c, ca })
                      .GroupBy(x => x.c.CategoryId)
                      .Select(x => new { Category = x.FirstOrDefault().ca, Value = x.Sum(d => d.c.Price) })

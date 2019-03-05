@@ -38,6 +38,11 @@ namespace HomeManagement.API
         public void ConfigureServices(IServiceCollection services)
         {
             Services = services;
+            
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new ExceptionFilter());
+            });
 
             services.AddLocalization(options => options.ResourcesPath = "Resource");
 

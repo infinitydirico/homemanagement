@@ -14,6 +14,7 @@ namespace HomeManagement.Mapper
             yield return typeof(Category).GetProperty(nameof(Category.IsActive));
             yield return typeof(Category).GetProperty(nameof(Category.IsDefault));
             yield return typeof(Category).GetProperty(nameof(Category.Icon));
+            yield return typeof(Category).GetProperty(nameof(Category.Measurable));
         }
 
         public override IEnumerable<PropertyInfo> GetModelProperties()
@@ -23,6 +24,7 @@ namespace HomeManagement.Mapper
             yield return typeof(CategoryModel).GetProperty(nameof(CategoryModel.IsActive));
             yield return typeof(CategoryModel).GetProperty(nameof(CategoryModel.IsDefault));
             yield return typeof(CategoryModel).GetProperty(nameof(CategoryModel.Icon));
+            yield return typeof(CategoryModel).GetProperty(nameof(CategoryModel.Measurable));
         }
     }
 }
