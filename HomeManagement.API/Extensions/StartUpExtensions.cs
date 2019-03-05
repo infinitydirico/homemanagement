@@ -5,7 +5,6 @@ using HomeManagement.API.Throttle;
 using HomeManagement.Contracts;
 using HomeManagement.Core.Cryptography;
 using HomeManagement.Data;
-using HomeManagement.FilesStore;
 using HomeManagement.Mapper;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +26,7 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<IUserRepository, UserRepository>();
 
-            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IAccountRepository, AccountTransactionalRepository>();
 
             services.AddScoped<Data.Repositories.IChargeRepository, Data.Repositories.ChargeRepository>();
 

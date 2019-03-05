@@ -13,6 +13,17 @@ namespace HomeManagement.API.Data
 
         }
 
+        public DbContext CreateContext()
+        {
+            var options = new DbContextOptionsBuilder<WebAppDbContext>()
+                                    .UseSqlite("Data Source=HomeManagement.db")
+                                    .Options;
+
+            dbContext = new WebAppDbContext(options);
+
+            return dbContext;
+        }
+
         public DbContext GetDbContext()
         {
             lock (Locker)
