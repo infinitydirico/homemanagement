@@ -1,5 +1,6 @@
 ﻿using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
+using HomeManagement.Core.Extensions;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
@@ -75,19 +76,27 @@ namespace HomeManagement.API.Controllers.Accounts
 
             foreach (var account in accounts)
             {
+                if (!account.Measurable) continue;
+
                 var accountEvoModel = new AccountBalanceModel();
 
                 for (int i = 1; i <= DateTime.Now.Month; i++)
                 {
-                    var incomingCharges = chargeRepository
-                                       .Sum(c => int.Parse(c.Price.ToString("F0")), c => c.AccountId.Equals(account.Id)
-                                                    && c.ChargeType == (int)ChargeType.Income
-                                                    && c.Date.Month.Equals(i));
+                    var accountCharges = (from c in chargeRepository.All
+                                          join a in accountRepository.All
+                                          on c.AccountId equals a.Id
+                                          where a.Measurable && 
+                                                a.Id.Equals(account.Id) &&
+                                                c.Date.Month.Equals(i)
+                                          select c);
 
-                    var outgoingCharges = chargeRepository
-                                        .Sum(c => int.Parse(c.Price.ToString("F0")), c => c.AccountId.Equals(account.Id)
-                                                    && c.ChargeType == ChargeType.Expense
-                                                    && c.Date.Month.Equals(i));
+                    var incomingCharges = accountCharges
+                        .Where(x => x.ChargeType == ChargeType.Income)
+                        .Sum(x => x.Price.ParseNoDecimals());
+
+                    var outgoingCharges = accountCharges
+                        .Where(x => x.ChargeType == ChargeType.Expense)
+                        .Sum(x => x.Price.ParseNoDecimals());
 
                     accountEvoModel.AccountId = account.Id;
                     accountEvoModel.AccountName = account.Name;
@@ -122,15 +131,21 @@ namespace HomeManagement.API.Controllers.Accounts
 
             for (int i = 1; i <= DateTime.Now.Month; i++)
             {
-                var incomingCharges = chargeRepository
-                                        .Sum(c => int.Parse(c.Price.ToString()), c => c.AccountId.Equals(id)
-                                                     && c.ChargeType == (int)ChargeType.Income
-                                                     && c.Date.Month.Equals(i));
+                var accountCharges = (from c in chargeRepository.All
+                                      join a in accountRepository.All
+                                      on c.AccountId equals a.Id
+                                      where a.Measurable &&
+                                            a.Id.Equals(id) &&
+                                            c.Date.Month.Equals(i)
+                                      select c);
 
-                var outgoingCharges = chargeRepository
-                                        .Sum(c => decimal.Parse(c.Price.ToString()), c => c.AccountId.Equals(id)
-                                                     && c.ChargeType == ChargeType.Expense
-                                                     && c.Date.Month.Equals(i));
+                var incomingCharges = accountCharges
+                    .Where(x => x.ChargeType == ChargeType.Income)
+                    .Sum(x => x.Price.ParseNoDecimals());
+
+                var outgoingCharges = accountCharges
+                    .Where(x => x.ChargeType == ChargeType.Expense)
+                    .Sum(x => x.Price.ParseNoDecimals());
 
                 model.IncomingSeries.Add(decimal.ToInt32(incomingCharges));
                 model.OutgoingSeries.Add(decimal.ToInt32(outgoingCharges));
@@ -171,6 +186,7 @@ namespace HomeManagement.API.Controllers.Accounts
                           where user.Email.Equals(email.Value)
                                    && charge.ChargeType.Equals(ChargeType.Expense)
                                    && charge.Date.Month.Equals(month)
+                                   && account.Measurable
                           select new { Charge = charge, Category = category })
                          .Take(10)
                          .GroupBy(x => x.Category.Id)
@@ -199,14 +215,20 @@ namespace HomeManagement.API.Controllers.Accounts
                 month = DateTime.Now.Month;
             }
 
-            var charges = chargeRepository.All.Where(c => c.AccountId.Equals(id)
-                                                     && c.ChargeType == ChargeType.Expense
-                                                     && c.Date.Month.Equals(month)).ToList();
-
-            var result = charges.GroupBy(c => c.CategoryId)
-                                .Select(s => new { Category = categoryRepository.GetById(s.FirstOrDefault().CategoryId), Value = s.Sum(d => d.Price) })
-                                .Take(10)
-                                .ToList();
+            var result = (from c in chargeRepository.All
+                     join a in accountRepository.All
+                     on c.AccountId equals a.Id
+                     join ca in categoryRepository.All
+                     on c.CategoryId equals ca.Id
+                     where a.Measurable &&
+                           a.Id.Equals(id) &&
+                           c.Date.Month.Equals(month) &&
+                           c.ChargeType == ChargeType.Expense
+                     select new { c, ca })
+                     .GroupBy(x => x.c.CategoryId)
+                     .Select(x => new { Category = x.FirstOrDefault().ca, Value = x.Sum(d => d.c.Price) })
+                     .Take(10)
+                     .ToList();
 
             return Ok(result);
         }
