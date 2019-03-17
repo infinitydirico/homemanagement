@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -134,6 +135,16 @@ namespace HomeManagement.API.Data.Repositories
         }
 
         public decimal Sum(Expression<Func<DataLog, decimal>> selector, Expression<Func<DataLog, bool>> predicate = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDbTransaction CreateTransaction()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Commit()
         {
             throw new NotImplementedException();
         }

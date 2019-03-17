@@ -26,7 +26,7 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<IUserRepository, UserRepository>();
 
-            services.AddScoped<IAccountRepository, AccountTransactionalRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
 
             services.AddScoped<Data.Repositories.IChargeRepository, Data.Repositories.ChargeRepository>();
 

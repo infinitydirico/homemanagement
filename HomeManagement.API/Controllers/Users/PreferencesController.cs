@@ -57,6 +57,7 @@ namespace HomeManagement.API.Controllers.Users
             UpdateUserCategories(user, language);
 
             UpdateCharges(user, language);
+            chargeRepository.Commit();
 
             return Ok();
         }

@@ -85,6 +85,7 @@ namespace HomeManagement.API.Controllers.Users
                         Token = tokenValue,
                         Language = preferences.Language
                     };
+                    tokenRepository.Commit();
                     return Ok(userModel);
                 }
 
@@ -116,6 +117,7 @@ namespace HomeManagement.API.Controllers.Users
                     Token = tokenValue,
                     Language = preferences.Language
                 };
+                tokenRepository.Commit();
                 return Ok(userModel);
             }
             else return BadRequest();

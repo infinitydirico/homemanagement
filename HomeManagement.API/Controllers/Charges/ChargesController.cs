@@ -31,7 +31,7 @@ namespace HomeManagement.API.Controllers.Charges
             ICategoryRepository categoryRepository,
             IChargeMapper chargeMapper,
             ICategoryMapper categoryMapper,
-            IUserRepository userRepository) 
+            IUserRepository userRepository)
         {
             this.accountRepository = accountRepository;
             this.chargeRepository = chargeRepository;
@@ -84,7 +84,9 @@ namespace HomeManagement.API.Controllers.Charges
             {
                 var entity = chargeMapper.ToEntity(model);
 
-                chargeRepository.Add(entity, true);
+                chargeRepository.Add(entity);
+                UpdateBalance(entity);
+                chargeRepository.Commit();
             }
             catch (Exception ex)
             {
@@ -102,6 +104,7 @@ namespace HomeManagement.API.Controllers.Charges
             var entity = chargeMapper.ToEntity(model);
 
             chargeRepository.Update(entity, true);
+            chargeRepository.Commit();
 
             return Ok();
         }
@@ -112,8 +115,22 @@ namespace HomeManagement.API.Controllers.Charges
             if (id < 1) return BadRequest();
 
             chargeRepository.Remove(chargeRepository.GetById(id), true);
+            chargeRepository.Commit();
 
             return Ok();
+        }
+
+        private void UpdateBalance(Charge c, bool reverse = false)
+        {
+            var account = accountRepository.FirstOrDefault(x => x.Id.Equals(c.AccountId));
+
+            if (reverse)
+            {
+                c.Price = -c.Price;
+            }
+
+            account.Balance = c.ChargeType.Equals(ChargeType.Income) ? account.Balance + c.Price : account.Balance - c.Price;
+            accountRepository.Update(account);
         }
     }
 }

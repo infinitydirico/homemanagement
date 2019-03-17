@@ -5,6 +5,7 @@ using HomeManagement.API.Exportation;
 using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
 using HomeManagement.Data;
+using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -69,6 +70,8 @@ namespace HomeManagement.API.Controllers.Charges
 
             foreach (IFormFile formFile in Request.Form.Files)
             {
+                var account = accountRepository.FirstOrDefault(x => x.Id.Equals(accountId));
+
                 foreach (var entity in exportableCharge.ToEntities(formFile.OpenReadStream().GetBytes()))
                 {
                     if (entity == null) continue;
@@ -77,11 +80,28 @@ namespace HomeManagement.API.Controllers.Charges
 
                     entity.Id = 0;
                     entity.AccountId = accountId;
-                    chargeRepository.Add(entity, true);
+                    chargeRepository.Add(entity);
+
+                    account.Balance = entity.ChargeType.Equals(ChargeType.Income) ? account.Balance + entity.Price : account.Balance - entity.Price;
+                    accountRepository.Update(account);
                 }
+                chargeRepository.Commit();
             }
 
             return Ok();
+        }
+
+        private void UpdateBalance(Charge c, bool reverse = false)
+        {
+            var account = accountRepository.FirstOrDefault(x => x.Id.Equals(c.AccountId));
+
+            if (reverse)
+            {
+                c.Price = -c.Price;
+            }
+
+            account.Balance = c.ChargeType.Equals(ChargeType.Income) ? account.Balance + c.Price : account.Balance - c.Price;
+            accountRepository.Update(account);
         }
     }
 }

@@ -80,6 +80,7 @@ namespace HomeManagement.API.Controllers.Categories
             if (category == null) return BadRequest();
 
             categoryRepository.Add(categoryMapper.ToEntity(category), userRepository.FirstOrDefault(x => x.Email.Equals(HttpContext.GetEmailClaim().Value)));
+            categoryRepository.Commit();
 
             return Ok();
         }
@@ -92,6 +93,7 @@ namespace HomeManagement.API.Controllers.Categories
             if (!(category.Id > 0)) return BadRequest();
 
             categoryRepository.Update(categoryMapper.ToEntity(category));
+            categoryRepository.Commit();
 
             return Ok();
         }
@@ -108,6 +110,7 @@ namespace HomeManagement.API.Controllers.Categories
             if (chargesWithThisCategory > default(int)) return BadRequest();
 
             categoryRepository.Remove(id, userRepository.FirstOrDefault(x => x.Email.Equals(HttpContext.GetEmailClaim().Value)));
+            categoryRepository.Commit();
 
             return Ok();
         }

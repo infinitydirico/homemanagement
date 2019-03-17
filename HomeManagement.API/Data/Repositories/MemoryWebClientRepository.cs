@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -24,12 +25,22 @@ namespace HomeManagement.API.Data.Repositories
             throw new NotImplementedException();
         }
 
+        public void Commit()
+        {
+            throw new NotImplementedException();
+        }
+
         public int Count()
         {
             throw new NotImplementedException();
         }
 
         public int Count(Expression<Func<WebClient, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDbTransaction CreateTransaction()
         {
             throw new NotImplementedException();
         }

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace HomeManagement.Contracts.Repositories
 {
-    public interface IRepository<T>
+    public interface IRepository<T> : IUnitOfWork
     {
         IQueryable<T> All { get; }
 
@@ -39,5 +40,7 @@ namespace HomeManagement.Contracts.Repositories
         int Count();
 
         int Count(Expression<Func<T, bool>> predicate);
+
+        IDbTransaction CreateTransaction();
     }
 }

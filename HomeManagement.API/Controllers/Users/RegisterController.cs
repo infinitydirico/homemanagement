@@ -102,6 +102,8 @@ namespace HomeManagement.API.Controllers.Users
                 });
 #pragma warning restore 4014
 
+                userRepository.Commit();
+
                 return Ok();
             }
 

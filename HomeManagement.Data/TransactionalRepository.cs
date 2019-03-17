@@ -1,6 +1,8 @@
 ﻿using HomeManagement.Contracts.Repositories;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -140,6 +142,11 @@ namespace HomeManagement.Data
             }
         }
 
+        public IDbTransaction CreateTransaction()
+        {
+            return platformContext.CreateContext().Database.BeginTransaction().GetDbTransaction();
+        }
+
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
@@ -173,6 +180,11 @@ namespace HomeManagement.Data
             Dispose(true);
             // TODO: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
+        }
+
+        public void Commit()
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

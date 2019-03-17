@@ -1,7 +1,9 @@
 ﻿using HomeManagement.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -25,8 +27,6 @@ namespace HomeManagement.Data
         public virtual void Add(T entity)
         {
             dbContext.Set<T>().Add(entity);
-
-            dbContext.SaveChanges();
         }
 
         public async Task AddAsync(T entity)
@@ -62,8 +62,6 @@ namespace HomeManagement.Data
             var entity = GetById(id);
 
             dbContext.Set<T>().Remove(entity);
-
-            dbContext.SaveChanges();
         }
 
         public decimal Sum(Expression<Func<T, int>> selector, Expression<Func<T, bool>> predicate = null) =>
@@ -75,10 +73,18 @@ namespace HomeManagement.Data
         public virtual void Update(T entity)
         {
             dbContext.Set<T>().Update(entity);
-
-            dbContext.SaveChanges();
         }
 
         public IEnumerable<T> Where(Expression<Func<T, bool>> predicate) => dbContext.Set<T>().Where(predicate).ToList();
+
+        public IDbTransaction CreateTransaction()
+        {
+            return dbContext.Database.BeginTransaction().GetDbTransaction();
+        }
+
+        public void Commit()
+        {
+            dbContext.SaveChanges();
+        }
     }
 }

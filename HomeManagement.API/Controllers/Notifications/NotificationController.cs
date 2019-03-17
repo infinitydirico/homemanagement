@@ -72,6 +72,8 @@ namespace HomeManagement.API.Controllers.Notifications
             notification.Dismissed = model.Dismissed;
 
             notificationRepository.Update(notification);
+            notificationRepository.Commit();
+
         }
 
         private void GenerateNotifications()
