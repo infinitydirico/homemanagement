@@ -17,6 +17,7 @@ namespace HomeManagement.API.Controllers.Charges
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Charges")]
+    [Persistable]
     public class ChargesExportController : Controller
     {
         private readonly IAccountRepository accountRepository;
@@ -85,7 +86,6 @@ namespace HomeManagement.API.Controllers.Charges
                     account.Balance = entity.ChargeType.Equals(ChargeType.Income) ? account.Balance + entity.Price : account.Balance - entity.Price;
                     accountRepository.Update(account);
                 }
-                chargeRepository.Commit();
             }
 
             return Ok();

@@ -15,6 +15,7 @@ namespace HomeManagement.API.Controllers.Categories
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Category")]
+    [Persistable]
     public class CategoryController : Controller
     {
         private readonly IAccountRepository accountRepository;

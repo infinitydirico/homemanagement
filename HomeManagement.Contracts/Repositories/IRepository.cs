@@ -7,7 +7,16 @@ using System.Threading.Tasks;
 
 namespace HomeManagement.Contracts.Repositories
 {
-    public interface IRepository<T> : IUnitOfWork
+    public interface IRepository : IUnitOfWork
+    {
+        int Count();
+
+        void Remove(int id);
+
+        IDbTransaction CreateTransaction();
+    }
+
+    public interface IRepository<T> : IRepository
     {
         IQueryable<T> All { get; }
 
@@ -16,8 +25,6 @@ namespace HomeManagement.Contracts.Repositories
         Task AddAsync(T entity);
 
         void Remove(T entity);
-
-        void Remove(int id);
 
         void Update(T entity);
 
@@ -37,10 +44,6 @@ namespace HomeManagement.Contracts.Repositories
 
         decimal Sum(Expression<Func<T, decimal>> selector, Expression<Func<T, bool>> predicate = null);
 
-        int Count();
-
         int Count(Expression<Func<T, bool>> predicate);
-
-        IDbTransaction CreateTransaction();
     }
 }

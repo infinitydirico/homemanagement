@@ -17,6 +17,7 @@ namespace HomeManagement.API.Controllers.Notifications
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Notification")]
+    [Persistable]
     public class NotificationController : Controller
     {
         private readonly IReminderRepository reminderRepository;
@@ -72,8 +73,6 @@ namespace HomeManagement.API.Controllers.Notifications
             notification.Dismissed = model.Dismissed;
 
             notificationRepository.Update(notification);
-            notificationRepository.Commit();
-
         }
 
         private void GenerateNotifications()

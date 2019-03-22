@@ -16,6 +16,7 @@ namespace HomeManagement.API.Controllers.Accounts
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Account")]
+    [Persistable]
     public class AccountController : Controller
     {
         private readonly IAccountRepository accountRepository;
@@ -70,7 +71,6 @@ namespace HomeManagement.API.Controllers.Accounts
             var entity = accountMapper.ToEntity(model);
 
             accountRepository.Add(entity);
-            accountRepository.Commit();
 
             return Ok();
         }
@@ -83,7 +83,6 @@ namespace HomeManagement.API.Controllers.Accounts
             var entity = accountMapper.ToEntity(model);
 
             accountRepository.Update(entity);
-            accountRepository.Commit();
 
             return Ok();
         }
@@ -97,7 +96,6 @@ namespace HomeManagement.API.Controllers.Accounts
             if (charge != null) return BadRequest(Constants.ErrorCode.AccountHasCharges);
 
             accountRepository.Remove(id);
-            accountRepository.Commit();
 
             return Ok();
         }

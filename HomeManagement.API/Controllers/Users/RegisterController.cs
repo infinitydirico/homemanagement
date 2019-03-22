@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using HomeManagement.API.Data;
 using HomeManagement.API.Data.Entities;
 using HomeManagement.API.Extensions;
+using HomeManagement.API.Filters;
 using HomeManagement.Contracts;
 using HomeManagement.Data;
 using HomeManagement.Domain;
@@ -20,6 +21,7 @@ namespace HomeManagement.API.Controllers.Users
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Register")]
+    [Persistable]
     public class RegisterController : Controller
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -101,8 +103,6 @@ namespace HomeManagement.API.Controllers.Users
                     Language = user.Language
                 });
 #pragma warning restore 4014
-
-                userRepository.Commit();
 
                 return Ok();
             }

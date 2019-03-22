@@ -53,8 +53,6 @@ namespace HomeManagement.Data
         public virtual void Remove(T entity)
         {
             dbContext.Set<T>().Remove(entity);
-
-            dbContext.SaveChanges();
         }
 
         public virtual void Remove(int id)
@@ -84,7 +82,10 @@ namespace HomeManagement.Data
 
         public void Commit()
         {
-            dbContext.SaveChanges();
+            if (dbContext.ChangeTracker.HasChanges())
+            {
+                dbContext.SaveChanges();
+            }
         }
     }
 }

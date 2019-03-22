@@ -18,6 +18,7 @@ namespace HomeManagement.API.Controllers.Global
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Storage")]
+    [Persistable]
     public class StorageController : Controller
     {
         private readonly IStorageItemMapper storageItemMapper;

@@ -15,6 +15,7 @@ namespace HomeManagement.API.Controllers.Notifications
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Reminder")]
+    [Persistable]
     public class ReminderController : Controller
     {
         private readonly IReminderRepository reminderRepository;
@@ -89,7 +90,6 @@ namespace HomeManagement.API.Controllers.Notifications
             }
 
             reminderRepository.Update(reminder);
-            reminderRepository.Commit();
 
             return Ok();
         }
@@ -106,7 +106,6 @@ namespace HomeManagement.API.Controllers.Notifications
             if (reminder.UserId != userId) return Forbid();
 
             reminderRepository.Remove(reminder);
-            reminderRepository.Commit();
 
             return Ok();
         }
