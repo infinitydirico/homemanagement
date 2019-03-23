@@ -1,25 +1,30 @@
-﻿using System;
+﻿using HomeManagement.API.Filters;
 using HomeManagement.Data;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace HomeManagement.API.Controllers
 {
     [Route("api/[controller]")]
+    [Persistable]
     public class ValuesController : Controller
     {
         private readonly IUserRepository userRepository;
+        private readonly Data.Repositories.IChargeRepository chargeRepository;
 
-        public ValuesController(IUserRepository userRepository)
+        public ValuesController(IUserRepository userRepository, Data.Repositories.IChargeRepository chargeRepository)
         {
             this.userRepository = userRepository;
+            this.chargeRepository = chargeRepository;
         }
 
         // GET api/values
         [HttpGet]
         public IActionResult Get()
         {
-            
+            var firstCharge = chargeRepository.FirstOrDefault();
+            firstCharge.Date = DateTime.Now;
+            chargeRepository.Update(firstCharge);
             return Ok();
         }
 

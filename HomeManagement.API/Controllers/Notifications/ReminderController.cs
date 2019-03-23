@@ -15,6 +15,7 @@ namespace HomeManagement.API.Controllers.Notifications
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Reminder")]
+    [Persistable]
     public class ReminderController : Controller
     {
         private readonly IReminderRepository reminderRepository;

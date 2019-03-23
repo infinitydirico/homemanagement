@@ -56,7 +56,7 @@ namespace HomeManagement.API.Controllers.Accounts
 
             var user = userRepository.FirstOrDefault(x => x.Email.Equals(email.Value));
 
-            return Ok(accountRepository.Sum(o => int.Parse(o.Balance.ToString()), o => o.UserId.Equals(user.Id)));
+            return Ok(accountRepository.Sum(o => o.Balance.ParseNoDecimals(), o => o.UserId.Equals(user.Id)));
         }
 
         [HttpGet("incomes")]

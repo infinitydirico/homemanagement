@@ -21,6 +21,7 @@ namespace HomeManagement.API.Controllers.Users
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Authentication")]
+    [Persistable]
     public class AuthenticationController : Controller
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -85,6 +86,7 @@ namespace HomeManagement.API.Controllers.Users
                         Token = tokenValue,
                         Language = preferences.Language
                     };
+
                     return Ok(userModel);
                 }
 
@@ -116,6 +118,7 @@ namespace HomeManagement.API.Controllers.Users
                     Token = tokenValue,
                     Language = preferences.Language
                 };
+
                 return Ok(userModel);
             }
             else return BadRequest();

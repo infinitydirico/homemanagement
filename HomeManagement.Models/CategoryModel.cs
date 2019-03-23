@@ -11,5 +11,7 @@
         public string Icon { get; set; }
 
         public bool IsDefault { get; set; }
+
+        public bool Measurable { get; set; }
     }
 }

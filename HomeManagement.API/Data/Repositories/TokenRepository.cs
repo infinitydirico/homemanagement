@@ -3,6 +3,7 @@ using HomeManagement.Data;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -41,8 +42,11 @@ namespace HomeManagement.API.Data.Repositories
             var dbContext = platformContext.GetDbContext();
 
             await dbContext.Set<IdentityUserToken<string>>().AddAsync(entity);
+        }
 
-            dbContext.SaveChanges();
+        public void Commit()
+        {
+            platformContext.GetDbContext().SaveChanges();
         }
 
         public int Count()
@@ -51,6 +55,11 @@ namespace HomeManagement.API.Data.Repositories
         }
 
         public int Count(Expression<Func<IdentityUserToken<string>, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDbTransaction CreateTransaction()
         {
             throw new NotImplementedException();
         }
@@ -71,8 +80,6 @@ namespace HomeManagement.API.Data.Repositories
             var dbContext = platformContext.GetDbContext();
 
             dbContext.Set<IdentityUserToken<string>>().Remove(entity);
-
-            dbContext.SaveChanges();
         }
 
         public void Remove(int id)
@@ -103,7 +110,6 @@ namespace HomeManagement.API.Data.Repositories
         {
             var dbContext = platformContext.GetDbContext();
             dbContext.Set<IdentityUserToken<string>>().Update(entity);
-            dbContext.SaveChanges();
         }
 
         public bool UserHasToken(string appId) => FirstOrDefault(x => x.UserId.Equals(appId)) != null;

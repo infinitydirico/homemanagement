@@ -115,6 +115,8 @@ namespace HomeManagement.API.Controllers.Charges
         {
             if (accountId < 1) return BadRequest();
 
+            var account = accountRepository.FirstOrDefault(x => x.Id.Equals(accountId));
+
             var charges = chargeRepository
                 .All
                 .Where(o => o.AccountId.Equals(accountId))
@@ -122,8 +124,13 @@ namespace HomeManagement.API.Controllers.Charges
 
             foreach (var charge in charges)
             {
-                chargeRepository.Remove(charge, true);
+                chargeRepository.Remove(charge);
+
+                account.Balance = charge.ChargeType.Equals(ChargeType.Income) ? account.Balance - charge.Price : account.Balance + charge.Price; //it's a reverse.
+                accountRepository.Update(account);
             }
+            chargeRepository.Commit();
+
             return Ok();
         }
     }

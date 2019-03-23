@@ -4,7 +4,6 @@ using HomeManagement.API.Filters;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Localization;
-using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -15,6 +14,7 @@ namespace HomeManagement.API.Controllers.Users
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Preferences")]
+    [Persistable]
     public class PreferencesController : Controller
     {
         private readonly IUserRepository userRepository;

@@ -25,7 +25,7 @@ namespace HomeManagement.Models
             }
         }
 
-        public bool ExcludeFromStatistics { get; set; }
+        public bool Measurable { get; set; }
 
         public AccountType AccountType { get; set; }
 

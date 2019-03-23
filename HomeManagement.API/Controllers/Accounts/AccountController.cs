@@ -16,6 +16,7 @@ namespace HomeManagement.API.Controllers.Accounts
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Account")]
+    [Persistable]
     public class AccountController : Controller
     {
         private readonly IAccountRepository accountRepository;

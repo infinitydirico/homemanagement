@@ -1,6 +1,7 @@
 ﻿using HomeManagement.API.Data;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace HomeManagement.API
 {
@@ -16,6 +17,11 @@ namespace HomeManagement.API
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .ConfigureLogging((context, logging) => 
+                {
+                    logging.ClearProviders();
+                    logging.AddConsole();
+                })
                 .Build();
     }
 }
