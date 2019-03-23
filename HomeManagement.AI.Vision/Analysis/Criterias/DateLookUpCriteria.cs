@@ -1,9 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 namespace HomeManagement.AI.Vision.Analysis.Criterias
 {
     public class DateLookUpCriteria : ILookUpCriteria
     {
-        public bool IsMatch(char c1) => true;//char.GetUnicodeCategory(c1).Equals(char.GetUnicodeCategory(c2));
+        public bool SearchNearRows { get; set; }
+
+        public bool TryDeepParsing => true;
+
+        public bool IsMatch(char c1) => false;
+
+        public bool IsParseable(string value) => DateTime.TryParse(value, out DateTime date) || TimeSpan.TryParse(value, out TimeSpan timeSpan);
     }
 }

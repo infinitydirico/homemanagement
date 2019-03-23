@@ -4,9 +4,13 @@ namespace HomeManagement.AI.Vision.Analysis.Criterias
 {
     public class MoneyLookUpCriteria : ILookUpCriteria
     {
-        public bool IsMatch(char c1) => 
-            char.IsNumber(c1) ||
-            char.IsPunctuation(c1) || 
+        public bool SearchNearRows { get; set; }
+
+        public bool TryDeepParsing => false;
+
+        public bool IsMatch(char c1) =>
             char.GetUnicodeCategory(c1).Equals(UnicodeCategory.CurrencySymbol);
+
+        public bool IsParseable(string value) => false;
     }
 }

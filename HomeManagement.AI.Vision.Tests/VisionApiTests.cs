@@ -1,13 +1,11 @@
 ﻿using HomeManagement.AI.Vision.Analysis;
+using HomeManagement.AI.Vision.Analysis.Criterias;
 using HomeManagement.AI.Vision.Entities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using HomeManagement.Core.Extensions;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
-using HomeManagement.AI.Vision.Analysis.Criterias;
-using System.Collections.Generic;
 
 namespace HomeManagement.AI.Vision.Tests
 {
@@ -35,31 +33,18 @@ namespace HomeManagement.AI.Vision.Tests
         [TestMethod]
         public void GivenVisionApiMock_WhenSearchingForNumbers_GetPosibleMoney()
         {
-            double realPrice = 0.0;
             var vision = ReadMock();
 
             var engine = new Engine
             {
                 Criterias = new List<ILookUpCriteria>()
                 {
-                    new MoneyLookUpCriteria()
+                    new NumberLookUpCriteria(),
+                    new MoneyLookUpCriteria { SearchNearRows = true}
                 }
             };
 
-            var moneyCriteria = new MoneyLookUpCriteria();
             var numbers = engine.GetAllMatches(vision.RecognitionResult).ToList();
-
-            var moneyLine = vision.RecognitionResult.Lines.FirstOrDefault(x => x.Text.Any(c => char.GetUnicodeCategory(c).Equals(System.Globalization.UnicodeCategory.CurrencySymbol)));
-
-            foreach (var number in numbers)
-            {
-                var line = vision.RecognitionResult.Lines.FirstOrDefault(x => x.Text.Equals(number));
-
-                if(moneyLine.IsOnSameColumn(line) || moneyLine.IsOnSameRow(line))
-                {
-                    realPrice = double.Parse(line.Text.RemoveEmptySpaces());
-                }
-            }
 
             Assert.IsNotNull(numbers);
         }
@@ -67,7 +52,6 @@ namespace HomeManagement.AI.Vision.Tests
         [TestMethod]
         public void GivenVisionApiMock_WhenSearchingForDates_GetPosibleDates()
         {
-            DateTime realDate;
             var vision = ReadMock();
 
             var engine = new Engine
@@ -79,15 +63,6 @@ namespace HomeManagement.AI.Vision.Tests
             };
 
             var dates = engine.GetAllMatches(vision.RecognitionResult).ToList();
-
-            foreach (var date in dates)
-            {
-                TimeSpan result;
-                if(!TimeSpan.TryParse(date, out result))
-                {
-                    realDate = DateTime.Parse(date);
-                }
-            }            
 
             Assert.IsNotNull(dates);
         }
