@@ -72,6 +72,8 @@ namespace HomeManagement.API.Services
 
                 currencyRepository.Update(currency);
             }
+
+            currencyRepository.Commit();
         }
 
         private async Task<List<Currency>> GetApiCurrencies()
