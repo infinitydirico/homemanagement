@@ -16,7 +16,7 @@ namespace HomeManagement.App.Views.Main
 
             BindingContext = dashboardViewModel;
 
-            dashboardViewModel.OnError += DashboardViewModel_OnError;
+            dashboardViewModel.OnInitializationError += DashboardViewModel_OnError;
         }
 
         private void DashboardViewModel_OnError(object sender, System.EventArgs e)

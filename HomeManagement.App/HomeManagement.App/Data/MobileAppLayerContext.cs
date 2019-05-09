@@ -26,6 +26,11 @@ namespace HomeManagement.App.Data
             throw new NotImplementedException();
         }
 
+        public DbContext CreateContext()
+        {
+            throw new NotImplementedException();
+        }
+
         public DbTransaction GetCurrentTransaction()
         {
             throw new NotImplementedException();

@@ -4,8 +4,8 @@
     {
         public class Endpoints
         {
-            public const string BASEURL = "http://localhost:60424/";
-            //public const string BASEURL = "http://homemanagement-api.azurewebsites.net/";
+            //public const string BASEURL = "http://localhost:60424/";
+            public const string BASEURL = "http://homemanagement-api.azurewebsites.net/";
             public const string API = "api/";
 
             public class Auth

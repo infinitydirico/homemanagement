@@ -27,7 +27,7 @@ namespace HomeManagement.App.ViewModels
             set { SetProperty(ref title, value); }
         }
 
-        public event EventHandler OnError;
+        public event EventHandler OnInitializationError;
 
         private void Initialize()
         {
@@ -40,7 +40,7 @@ namespace HomeManagement.App.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    OnError?.Invoke(this, EventArgs.Empty);
+                    OnInitializationError?.Invoke(this, EventArgs.Empty);
                 }
             });
         }

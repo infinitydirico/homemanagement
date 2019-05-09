@@ -17,12 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Migrations\20190304142303_InitialCreate.cs" />
-    <Compile Include="Migrations\20190304142303_InitialCreate.Designer.cs" />
-    <Compile Include="Migrations\WebAppDbContextModelSnapshot.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

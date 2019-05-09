@@ -14,6 +14,7 @@ namespace HomeManagement.App.ViewModels
 
         public int OutcomePercentage { get; private set; }
         public int TotalOutcome { get; private set; }
+        public string OverallIncomeText { get; set; } = "OverallIncome";
 
         protected override async Task InitializeAsync()
         {
@@ -31,11 +32,6 @@ namespace HomeManagement.App.ViewModels
             OnPropertyChanged(nameof(OutcomePercentage));
             OnPropertyChanged(nameof(TotalIncome));
             OnPropertyChanged(nameof(TotalOutcome));
-
-            await Task.Delay(7000);
-            localization.ChangeCulture(new System.Globalization.CultureInfo("es"));
-        }
-
-        
+        }       
     }
 }

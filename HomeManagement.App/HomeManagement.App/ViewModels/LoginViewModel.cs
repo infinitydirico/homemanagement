@@ -1,8 +1,11 @@
-﻿using HomeManagement.App.Services.Rest;
+﻿using Autofac;
+using HomeManagement.App.Services.Rest;
 using HomeManagement.Contracts;
-using Autofac;
-using System.Threading.Tasks;
 using HomeManagement.Data;
+using System;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Xamarin.Forms;
 
 namespace HomeManagement.App.ViewModels
 {
@@ -14,6 +17,16 @@ namespace HomeManagement.App.ViewModels
         private readonly IAuthServiceClient authServiceClient = App._container.Resolve<IAuthServiceClient>();
         private readonly ICryptography crypto = App._container.Resolve<ICryptography>();
         private readonly IUserRepository userRepository = App._container.Resolve<IUserRepository>();
+
+        public LoginViewModel()
+        {
+            LoginCommand = new Command(async () => await LoginAsync());
+        }
+
+        public event EventHandler OnLoginError;
+        public event EventHandler OnLoginSuccess;
+
+        public ICommand LoginCommand { get; }
 
         public string Username
         {
@@ -39,11 +52,21 @@ namespace HomeManagement.App.ViewModels
         {
             IsBusy = true;
 
-            await authServiceClient.Login(new Domain.User
+            try
             {
-                Email = username,
-                Password = crypto.Encrypt(password)
-            });
+                await authServiceClient.Login(new Domain.User
+                {
+                    Email = username,
+                    Password = crypto.Encrypt(password)
+                });
+
+                OnLoginSuccess?.Invoke(this, EventArgs.Empty);
+            }
+            catch (Exception ex)
+            {
+                var message = ex.Message;
+                OnLoginError?.Invoke(this, EventArgs.Empty);
+            }
 
             IsBusy = false;
         }

@@ -13,7 +13,7 @@ namespace HomeManagement.App.Views.Abstract
         {
             BindingContext = viewModel;
 
-            viewModel.OnError += ViewModel_OnError; ;
+            viewModel.OnInitializationError += ViewModel_OnError; ;
         }
 
         private void ViewModel_OnError(object sender, EventArgs e)

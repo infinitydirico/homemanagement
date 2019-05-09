@@ -15,7 +15,26 @@ namespace HomeManagement.App.Views.Login
         {
             InitializeComponent();
 
+            viewModel.OnLoginError += ViewModel_OnLoginError;
+            viewModel.OnLoginSuccess += ViewModel_OnLoginSuccess;
             BindingContext = viewModel;
+        }
+
+        private void ViewModel_OnLoginSuccess(object sender, EventArgs e)
+        {
+            var page = new MainPage();
+
+            NavigationPage.SetHasBackButton(page, false);
+
+            NavigationPage.SetHasNavigationBar(page, true);
+
+            Navigation.PushAsync(page);
+            Navigation.RemovePage(this);
+        }
+
+        private void ViewModel_OnLoginError(object sender, EventArgs e)
+        {
+            DisplayAlert("Error", "An error occur during Login", "Ok");
         }
 
         async void OnLoginButtonClicked(object sender, EventArgs e)

@@ -24,12 +24,12 @@ namespace HomeManagement.App.Services.Rest
 
         public async Task<MetricValueDto> GetTotalIncome()
         {
-            return await Get<MetricValueDto>(Constants.Endpoints.Accounts.TotalIncome);
+            return await Get<MetricValueDto>(Constants.Endpoints.Accounts.TotalIncome, true);
         }
 
         public async Task<MetricValueDto> GetTotalOutcome()
         {
-            return await Get<MetricValueDto>(Constants.Endpoints.Accounts.TotalOutcome);
+            return await Get<MetricValueDto>(Constants.Endpoints.Accounts.TotalOutcome, true);
         }
     }
 
