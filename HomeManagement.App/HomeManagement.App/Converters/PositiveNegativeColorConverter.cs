@@ -8,7 +8,8 @@ namespace HomeManagement.App.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (int)value > 0 ? Color.FromHex("#388E3C") : Color.FromHex("#ef5350");
+            var realValue = (int)System.Convert.ChangeType(value, typeof(int));
+            return realValue > 0 ? Color.FromHex("#388E3C") : Color.FromHex("#ef5350");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

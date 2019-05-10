@@ -15,6 +15,7 @@ namespace HomeManagement.App.ViewModels
         public int OutcomePercentage { get; private set; }
         public int TotalOutcome { get; private set; }
         public string OverallIncomeText { get; set; } = "OverallIncome";
+        public string OverallOutcomeText { get; set; } = "OverallOutcome";
 
         protected override async Task InitializeAsync()
         {

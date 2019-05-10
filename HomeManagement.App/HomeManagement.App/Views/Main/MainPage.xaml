@@ -17,4 +17,5 @@
     
     <mainPages:DashboardPage />
     <mainPages:StatisticsPage />
+    <mainPages:Settings />
 </TabbedPage>

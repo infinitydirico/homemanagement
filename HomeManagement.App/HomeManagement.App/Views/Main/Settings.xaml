@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HomeManagement.App.Views.Main.Settings"
+             xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
+             BackgroundColor="{StaticResource TabBarColor}"
+             Icon="dashboard.png">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Conv:TranslationConverter x:Key="Translation" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="{Binding CurrentLanguage, Converter={StaticResource Translation}}" TextColor="White"/>
+            <Button Command="{Binding ChangeLanguageCommand}" Text="{Binding ChangeLanguageText}"
+                    HorizontalOptions="CenterAndExpand" VerticalOptions="Start"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

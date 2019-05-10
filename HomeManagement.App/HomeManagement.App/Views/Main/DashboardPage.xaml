@@ -18,7 +18,6 @@
         <ScrollView>
             <StackLayout Orientation="Vertical">
                 <StackLayout Orientation="Vertical" Margin="0,10,0,0">
-                    <Label Text="{Binding CurrentLanguage, Converter={StaticResource Translation}}" />
                     <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
                         <StackLayout Orientation="Horizontal">
                             <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand">
@@ -41,7 +40,7 @@
                     <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
                         <StackLayout Orientation="Horizontal">
                             <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand">
-                                <Label Text="Egresos totales" FontSize="Large" TextColor="White" />
+                                <Label Text="{Binding OverallOutcomeText, Converter={StaticResource Translation}}" FontSize="Large" TextColor="White" />
                             </StackLayout>
                             <StackLayout Orientation="Vertical" HorizontalOptions="EndAndExpand">
                                 <Label Text="{Binding TotalOutcome}" FontSize="Large" TextColor="White" />

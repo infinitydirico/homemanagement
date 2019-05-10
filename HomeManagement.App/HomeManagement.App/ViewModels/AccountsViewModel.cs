@@ -1,15 +1,13 @@
-﻿using HomeManagement.App.Services.Rest;
-using HomeManagement.Contracts.Mapper;
-using HomeManagement.Mapper;
+﻿using Autofac;
+using HomeManagement.App.Services.Rest;
 using HomeManagement.Domain;
+using HomeManagement.Mapper;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Xamarin.Forms;
-using Autofac;
 
 namespace HomeManagement.App.ViewModels
 {
-    public class AccountsViewModel : BaseViewModel
+    public class AccountsViewModel : LocalizationBaseViewModel
     {
         private readonly IAccountServiceClient serviceClient = App._container.Resolve<IAccountServiceClient>();
         private readonly IAuthServiceClient authServiceClient = App._container.Resolve<IAuthServiceClient>();
@@ -17,22 +15,18 @@ namespace HomeManagement.App.ViewModels
 
         IEnumerable<Account> accounts;
 
-        public AccountsViewModel()
+        protected override async Task InitializeAsync()
         {
-            Task.Run(async () =>
+            var user = authServiceClient.User;
+
+            var page = await serviceClient.Page(new Models.AccountPageModel
             {
-                var user = authServiceClient.User;
-
-                var page = await serviceClient.Page(new Models.AccountPageModel
-                {
-                    UserId = user.Id,
-                    PageCount = 10,
-                    CurrentPage = 1
-                });
-
-                Accounts = accountMapper.ToEntities(page.Accounts);
+                UserId = user.Id,
+                PageCount = 10,
+                CurrentPage = 1
             });
-                        
+
+            Accounts = accountMapper.ToEntities(page.Accounts);
         }
 
         public IEnumerable<Account> Accounts
@@ -45,6 +39,6 @@ namespace HomeManagement.App.ViewModels
             }
         }
 
-        public string AccountLabelText => "";// language.CurrentLanguage.AccountsText;
+        public string AccountLabelText => "Accounts";
     }
 }

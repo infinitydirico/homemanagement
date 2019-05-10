@@ -36,19 +36,5 @@ namespace HomeManagement.App.Views.Login
         {
             DisplayAlert("Error", "An error occur during Login", "Ok");
         }
-
-        async void OnLoginButtonClicked(object sender, EventArgs e)
-        {
-            await viewModel.LoginAsync();
-
-            var page = new MainPage();
-
-            NavigationPage.SetHasBackButton(page, false);
-
-            NavigationPage.SetHasNavigationBar(page, true);
-
-            await Navigation.PushAsync(page);
-            Navigation.RemovePage(this);
-        }
     }
 }

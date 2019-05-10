@@ -16,7 +16,7 @@ namespace HomeManagement.App.Services.Rest
 
         public async Task<AccountPageModel> Page(AccountPageModel dto)
         {
-            var result = await Post(dto, Constants.Endpoints.Accounts.PAGE);
+            var result = await Post(dto, Constants.Endpoints.Accounts.PAGE, true);
 
             return result;
         }

@@ -1,9 +1,6 @@
 ﻿using Autofac;
 using HomeManagement.Localization;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
+using System.Linq;
 
 namespace HomeManagement.App.ViewModels
 {
@@ -14,15 +11,18 @@ namespace HomeManagement.App.ViewModels
         public LocalizationBaseViewModel()
         {
             localization = App._container.Resolve<ILocalization>();
-            localization.OnCultureChanged += LocalizationBaseViewModel_OnCultureChanged; ;
+            localization.OnCultureChanged += LocalizationBaseViewModel_OnCultureChanged;
         }
 
         public string CurrentLanguage { get; set; } = "Language";
 
         protected virtual void LocalizationBaseViewModel_OnCultureChanged(object sender, CultureChangeEventArgs e)
         {
+            foreach (var property in GetType().GetProperties().Where(x => x.Name.Contains("Text")))
+            {
+                OnPropertyChanged(property.Name);
+            }
             OnPropertyChanged(nameof(CurrentLanguage));
         }
-
     }
 }

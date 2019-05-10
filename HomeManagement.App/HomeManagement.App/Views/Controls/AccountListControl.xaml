@@ -9,9 +9,10 @@
     <StackLayout.Resources>
         <ResourceDictionary>
             <Conv:PositiveNegativeColorConverter x:Key="PositiveNegative" />
+            <Conv:TranslationConverter x:Key="Translation" />
         </ResourceDictionary>
     </StackLayout.Resources>
-    <Label Text="{Binding AccountLabelText}" FontSize="Large" TextColor="{StaticResource LightBlue}" Margin="0,20,0,20"/>
+    <Label Text="{Binding AccountLabelText, Converter={StaticResource Translation}}" FontSize="Large" TextColor="{StaticResource LightBlue}" Margin="0,20,0,20"/>
     <ListView x:Name="accountsList" ItemTapped="EditCharge" ItemsSource="{Binding Accounts}">
         <ListView.ItemTemplate>
             <DataTemplate>
