@@ -20,22 +20,22 @@ namespace HomeManagement.App.Services.Rest
     {
         public Task Delete(int id)
         {
-            return this.Delete(id, Constants.Endpoints.Charge.CHARGE);
+            return this.Delete(id, Constants.Endpoints.Charge.CHARGE, true);
         }
 
         public Task<ChargePageModel> Page(ChargePageModel dto)
         {
-            return this.Post(dto, Constants.Endpoints.Charge.PAGE);
+            return this.Post(dto, Constants.Endpoints.Charge.PAGE, true);
         }
 
         public Task Post(Charge charge)
         {
-            return this.Post(charge, Constants.Endpoints.Charge.CHARGE);
+            return this.Post(charge, Constants.Endpoints.Charge.CHARGE, true);
         }
 
         public Task Put(Charge charge)
         {
-            return this.Put(charge, Constants.Endpoints.Charge.CHARGE);
+            return this.Put(charge, Constants.Endpoints.Charge.CHARGE, true);
         }
     }
 }

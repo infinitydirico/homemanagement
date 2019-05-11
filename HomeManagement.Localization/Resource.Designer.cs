@@ -106,6 +106,24 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Go to my Accounts.
+        /// </summary>
+        public static string GoToAccounts {
+            get {
+                return ResourceManager.GetString("GoToAccounts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Home.
+        /// </summary>
+        public static string Home {
+            get {
+                return ResourceManager.GetString("Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Income.
         /// </summary>
         public static string Income {

@@ -23,5 +23,10 @@ namespace HomeManagement.App.Views.Main
         {
             DisplayAlert("Error", "Something went worng....", string.Empty);
         }
+
+        private void Button_Clicked(object sender, System.EventArgs e)
+        {
+            Navigation.PushAsync(new AccountPages.AccountPage());
+        }
     }
 }

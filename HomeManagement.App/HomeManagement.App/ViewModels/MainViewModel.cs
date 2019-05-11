@@ -19,6 +19,8 @@ namespace HomeManagement.App.ViewModels
 
         public ICommand LogoutCommand { get; }
 
+        public string TitleText => "Home";
+
         public async void Logout()
         {
             await authController.Logout();

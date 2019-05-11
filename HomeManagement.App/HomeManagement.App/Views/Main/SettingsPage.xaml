@@ -11,10 +11,14 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="{Binding CurrentLanguage, Converter={StaticResource Translation}}" TextColor="White"/>
-            <Button Command="{Binding ChangeLanguageCommand}" Text="{Binding ChangeLanguageText}"
-                    HorizontalOptions="CenterAndExpand" VerticalOptions="Start"/>
+        <StackLayout Orientation="Vertical">
+            <StackLayout Orientation="Horizontal" Margin="10,10,10,10">
+                <Button Command="{Binding ChangeLanguageCommand}" Text="{Binding ChangeLanguageText}"
+                    HorizontalOptions="Start" VerticalOptions="Start"/>
+                
+                <Label Text="{Binding CurrentLanguage, Converter={StaticResource Translation}}" TextColor="White"
+                       VerticalOptions="Center" HorizontalOptions="EndAndExpand" FontSize="Large"/>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

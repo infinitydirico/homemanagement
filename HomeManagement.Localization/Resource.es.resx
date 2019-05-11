@@ -132,6 +132,12 @@
   <data name="Expense" xml:space="preserve">
     <value>Gastos</value>
   </data>
+  <data name="GoToAccounts" xml:space="preserve">
+    <value>Ir a mis cuentas</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Inicio</value>
+  </data>
   <data name="Income" xml:space="preserve">
     <value>Ingresos</value>
   </data>

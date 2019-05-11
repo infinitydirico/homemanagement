@@ -38,9 +38,9 @@
 
             public class Charge
             {
-                public const string CHARGE = API + "charge/";
+                public const string CHARGE = API + "charges/";
 
-                public const string PAGE = CHARGE + "paging/";
+                public const string PAGE = CHARGE + "paging";
             }
 
             public class Category

@@ -28,11 +28,6 @@ namespace HomeManagement.App.ViewModels
             NextPageCommand = new Command(async () => await NextPage());
             PreviousPageCommand = new Command(async () => await PreviousPage());
             DeleteCommand = new Command<Charge>(Delete);
-
-            Task.Run(async () =>
-            {
-                Charges = (await chargeManager.Load(this.account.Id)).ToObservableCollection();
-            });
         }
 
         public ObservableCollection<Charge> Charges
@@ -88,6 +83,11 @@ namespace HomeManagement.App.ViewModels
                 //chargeServiceClient.Delete(charge.Id);
                 //Paginate();
             }
+        }
+
+        protected override async Task InitializeAsync()
+        {
+            Charges = (await chargeManager.Load(account.Id)).ToObservableCollection();
         }
     }
 }

@@ -132,6 +132,12 @@
   <data name="Expense" xml:space="preserve">
     <value>Expense</value>
   </data>
+  <data name="GoToAccounts" xml:space="preserve">
+    <value>Go to my Accounts</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
   <data name="Income" xml:space="preserve">
     <value>Income</value>
   </data>

@@ -9,7 +9,7 @@ namespace HomeManagement.App.Services.Rest
     {
         public async Task<IEnumerable<Category>> GetCategories()
         {
-            return await this.Get<IEnumerable<Category>>(Constants.Endpoints.Category.CATEGORY);
+            return await this.Get<IEnumerable<Category>>(Constants.Endpoints.Category.CATEGORY, true);
         }
     }
 
