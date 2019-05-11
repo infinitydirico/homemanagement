@@ -4,16 +4,17 @@
              x:Class="HomeManagement.App.Views.Main.StatisticsPage"
              BackgroundColor="{StaticResource TabBarColor}"
              Icon="bar_chart.png"
-             xmlns:viewModels="clr-namespace:HomeManagement.App.ViewModels"
-             xmlns:microcharts="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms">
+             xmlns:charts="clr-namespace:Nightingale.Charts;assembly=Nightingale">
     <ContentPage.Content>
         <StackLayout HorizontalOptions="FillAndExpand">
             <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,10,10,10" HeightRequest="220">
-                <microcharts:ChartView x:Name="firstChart" Chart="{Binding AccountBalances}" />
+                <charts:BarChart x:Name="barChart" Values="{Binding ChartValues}" 
+                                 TextSize="30" BackgroundColor="#303030" HeightRequest="190" Margin="10,10,10,10" />
             </Frame>
 
             <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,10,10,10" HeightRequest="220">
-                <microcharts:ChartView x:Name="secondChart" Chart="{Binding ExpensivesCategories}" />
+                <charts:PieChart x:Name="pieChart" Values="{Binding ChartValues}" 
+                                 TextSize="30" BackgroundColor="#303030" HeightRequest="190" Margin="10,10,10,10" />
             </Frame>
         </StackLayout>
     </ContentPage.Content>

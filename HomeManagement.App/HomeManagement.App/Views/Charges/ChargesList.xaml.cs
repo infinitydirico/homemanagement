@@ -62,5 +62,10 @@ namespace HomeManagement.App.Views.Charges
         {
             ((ListView)sender).SelectedItem = null;
         }
+
+        private void ToolbarItem_Clicked(object sender, EventArgs e)
+        {
+            OnAddChargeCommand(sender, e);
+        }
     }
 }

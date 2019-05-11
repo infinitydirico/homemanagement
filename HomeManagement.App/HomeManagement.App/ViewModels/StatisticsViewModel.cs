@@ -1,9 +1,9 @@
-﻿using HomeManagement.App.Services.Components;
+﻿using Autofac;
 using HomeManagement.App.Services.Rest;
-using Microcharts;
+using HomeManagement.Models;
+using Nightingale;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac;
 using System.Threading.Tasks;
 
 namespace HomeManagement.App.ViewModels
@@ -11,8 +11,6 @@ namespace HomeManagement.App.ViewModels
     public class StatisticsViewModel : BaseViewModel
     {
         IAccountMetricsServiceClient accountMetricsServiceClient;
-        private Chart accountBalances;
-        private Chart expensivesCategories;
 
         public StatisticsViewModel()
         {
@@ -20,50 +18,38 @@ namespace HomeManagement.App.ViewModels
 
             Task.Run(async () =>
             {
-                await RetrieveAccountBalances();
-
-                await RetrieveExpensiveCategories();
+                await LoadMostExpensiveCategories();
             });
         }
 
-        private async Task RetrieveExpensiveCategories()
+        public OverPricedCategories TopCategories { get; private set; }
+
+        private async Task LoadMostExpensiveCategories()
         {
             var categories = await accountMetricsServiceClient.GetMostExpensiveCategories();
 
-            ExpensivesCategories = ChartsFactory.CreatePointChart(categories.ToDictionary());
+            TopCategories = categories;
+
+
+            ChartValues.AddRange(from value in TopCategories.Categories
+                                  select new ChartValue
+                                  {
+                                      Label = value.Category.Name,
+                                      Value = float.Parse(value.Price.ToString())
+                                  });
+
+            OnPropertyChanged(nameof(ChartValues));
         }
 
         private async Task RetrieveAccountBalances()
         {
             var balances = await accountMetricsServiceClient.GetAccountsBalances();
-            var tempEntries = new List<Microcharts.Entry>();
 
             var values = balances.ToDictionary();
-
-            AccountBalances = ChartsFactory.CreateLineChart(values.First());
         }
 
-        public Chart AccountBalances
-        {
-            get => accountBalances;
-            set
-            {
-                accountBalances = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public Chart ExpensivesCategories
-        {
-            get => expensivesCategories;
-            set
-            {
-                expensivesCategories = value;
-                OnPropertyChanged();
-            }
-        }
+        public List<ChartValue> ChartValues { get; private set; } = new List<ChartValue>();
 
         public string OverviewText => "";//language.CurrentLanguage.OverviewText;
-
     }
 }

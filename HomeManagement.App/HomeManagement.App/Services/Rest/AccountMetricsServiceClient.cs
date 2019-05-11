@@ -1,35 +1,50 @@
 ﻿using HomeManagement.App.Common;
 using HomeManagement.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace HomeManagement.App.Services.Rest
 {
-    public class AccountMetricsServiceClient : BaseService, IAccountMetricsServiceClient
+    public class AccountMetricsServiceClient : IAccountMetricsServiceClient
     {
         public async Task<AccountEvolutionModel> GetAccountEvolution(int accountId)
         {
-            return await Get<AccountEvolutionModel>($"{Constants.Endpoints.Accounts.ACCOUNT}/{accountId}/{Constants.Endpoints.Accounts.AccountEvolution}");
+            return await RestClientFactory
+                .CreateAuthenticatedClient()
+                .GetAsync($"{Constants.Endpoints.Accounts.ACCOUNT}/{accountId}/{Constants.Endpoints.Accounts.AccountEvolution}")
+                .ReadContent<AccountEvolutionModel>();
         }
 
         public async Task<AccountsEvolutionModel> GetAccountsBalances()
         {
-            return await Get<AccountsEvolutionModel>(Constants.Endpoints.Accounts.AccountsEvolution);
+            return await RestClientFactory
+                .CreateAuthenticatedClient()
+                .GetAsync(Constants.Endpoints.Accounts.AccountsEvolution)
+                .ReadContent<AccountsEvolutionModel>();
         }
 
         public async Task<OverPricedCategories> GetMostExpensiveCategories()
         {
-            return new OverPricedCategories { Categories = new System.Collections.Generic.List<OverPricedCategory>() };
-            //return await Get<OverPricedCategories>($"{Constants.Endpoints.Accounts.ACCOUNT}//{Constants.Endpoints.Accounts.AccountTopCharges}");
+            return await RestClientFactory
+                .CreateAuthenticatedClient()
+                .GetAsync($"{Constants.Endpoints.Accounts.ACCOUNT}/{Constants.Endpoints.Accounts.AccountTopCharges}/{DateTime.Now.Month}")
+                .ReadContent<OverPricedCategories>();
         }
 
         public async Task<MetricValueDto> GetTotalIncome()
         {
-            return await Get<MetricValueDto>(Constants.Endpoints.Accounts.TotalIncome, true);
+            return await RestClientFactory
+                .CreateAuthenticatedClient()
+                .GetAsync(Constants.Endpoints.Accounts.TotalIncome)
+                .ReadContent<MetricValueDto>();
         }
 
         public async Task<MetricValueDto> GetTotalOutcome()
         {
-            return await Get<MetricValueDto>(Constants.Endpoints.Accounts.TotalOutcome, true);
+            return await RestClientFactory
+                .CreateAuthenticatedClient()
+                .GetAsync(Constants.Endpoints.Accounts.TotalOutcome)
+                .ReadContent<MetricValueDto>();
         }
     }
 
