@@ -65,9 +65,9 @@
                     </StackLayout>
                 </Frame>
 
-                <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
+                <!--<Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
                     <local:NewChargeControl></local:NewChargeControl>
-                </Frame>
+                </Frame>-->
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

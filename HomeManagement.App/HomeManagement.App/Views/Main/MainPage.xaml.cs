@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
+using HomeManagement.App.ViewModels;
+using HomeManagement.App.Views.Login;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -15,6 +12,12 @@ namespace HomeManagement.App.Views.Main
         public MainPage ()
         {
             InitializeComponent();
+
+            ((MainViewModel)BindingContext).OnLogout += (s,e) =>
+            {
+                Navigation.PushAsync(new LoginPage());
+                Navigation.RemovePage(this);
+            };
         }
     }
 }

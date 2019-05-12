@@ -35,7 +35,7 @@ namespace HomeManagement.App.Services.Rest
         public async Task Logout(User user)
         {
             await RestClientFactory
-                    .CreateClient()
+                    .CreateAuthenticatedClient()
                     .PostAsync(Constants.Endpoints.Auth.LOGOUT, user.SerializeToJson())
                     .ReadContent<User>();
 
@@ -44,7 +44,7 @@ namespace HomeManagement.App.Services.Rest
 
         public async Task Logout()
         {
-            await Task.Yield();
+            await Logout(User);
         }
     }
 
