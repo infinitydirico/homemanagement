@@ -4,6 +4,7 @@ using HomeManagement.App.Services.Components;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace HomeManagement.App.Services.Rest
@@ -34,6 +35,9 @@ namespace HomeManagement.App.Services.Rest
             var objectResult = JsonConvert.DeserializeObject<TValue>(content);
             return objectResult;
         }
+
+        public static StringContent SerializeToJson(this object data)
+            => new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
 
         private static string GetToken() => App._container.Resolve<IApplicationValues>().Get("header");
     }

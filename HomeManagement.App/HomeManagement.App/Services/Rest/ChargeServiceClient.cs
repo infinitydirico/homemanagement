@@ -16,26 +16,41 @@ namespace HomeManagement.App.Services.Rest
         Task Put(Charge charge);
     }
 
-    public class ChargeServiceClient : BaseService, IChargeServiceClient
+    public class ChargeServiceClient : IChargeServiceClient
     {
-        public Task Delete(int id)
+        public async Task Delete(int id)
         {
-            return this.Delete(id, Constants.Endpoints.Charge.CHARGE, true);
+            var response = await RestClientFactory
+                .CreateAuthenticatedClient()
+                .DeleteAsync($"{Constants.Endpoints.Charge.CHARGE}/?id={id.ToString()}");
+
+            response.EnsureSuccessStatusCode();
         }
 
-        public Task<ChargePageModel> Page(ChargePageModel dto)
+        public async Task<ChargePageModel> Page(ChargePageModel dto)
         {
-            return this.Post(dto, Constants.Endpoints.Charge.PAGE, true);
+            return await RestClientFactory
+                .CreateAuthenticatedClient()
+                .PostAsync(Constants.Endpoints.Charge.PAGE, dto.SerializeToJson())
+                .ReadContent<ChargePageModel>();
         }
 
-        public Task Post(Charge charge)
+        public async Task Post(Charge charge)
         {
-            return this.Post(charge, Constants.Endpoints.Charge.CHARGE, true);
+            var response = await RestClientFactory
+                .CreateAuthenticatedClient()
+                .PostAsync(Constants.Endpoints.Charge.CHARGE, charge.SerializeToJson());
+
+            response.EnsureSuccessStatusCode();
         }
 
-        public Task Put(Charge charge)
+        public async Task Put(Charge charge)
         {
-            return this.Put(charge, Constants.Endpoints.Charge.CHARGE, true);
+            var response = await RestClientFactory
+                .CreateAuthenticatedClient()
+                .PutAsync(Constants.Endpoints.Charge.CHARGE, charge.SerializeToJson());
+
+            response.EnsureSuccessStatusCode();
         }
     }
 }

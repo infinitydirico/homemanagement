@@ -26,7 +26,7 @@ namespace HomeManagement.App.ViewModels
         {
             if (HasInvalidValues()) return;
 
-            chargeServiceClient.Post(Charge);
+            chargeServiceClient.Put(Charge);
 
             OnChargeUpdated?.Invoke(this, EventArgs.Empty);
         }

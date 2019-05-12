@@ -1,14 +1,13 @@
-﻿using HomeManagement.App.Common;
+﻿using Autofac;
+using HomeManagement.App.Common;
 using HomeManagement.App.Services.Components;
 using HomeManagement.Domain;
 using System;
 using System.Threading.Tasks;
-using Xamarin.Forms;
-using Autofac;
 
 namespace HomeManagement.App.Services.Rest
 {
-    public class AuthServiceClient : BaseService, IAuthServiceClient
+    public class AuthServiceClient : IAuthServiceClient
     {
         public User User { get; private set; }
 
@@ -16,7 +15,10 @@ namespace HomeManagement.App.Services.Rest
         {
             try
             {
-                var result = await Post(user, Constants.Endpoints.Auth.LOGIN);
+                var result = await RestClientFactory
+                    .CreateClient()
+                    .PostAsync(Constants.Endpoints.Auth.LOGIN, user.SerializeToJson())
+                    .ReadContent<User>();
 
                 App._container.Resolve<IApplicationValues>().Store("header", result.Token);
 
@@ -32,7 +34,11 @@ namespace HomeManagement.App.Services.Rest
 
         public async Task Logout(User user)
         {
-            await Post(user, Constants.Endpoints.Auth.LOGOUT);
+            await RestClientFactory
+                    .CreateClient()
+                    .PostAsync(Constants.Endpoints.Auth.LOGOUT, user.SerializeToJson())
+                    .ReadContent<User>();
+
             App._container.Resolve<IApplicationValues>().Remove("header");
         }
 

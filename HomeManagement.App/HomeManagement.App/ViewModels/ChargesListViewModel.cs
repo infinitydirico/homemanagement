@@ -15,6 +15,7 @@ namespace HomeManagement.App.ViewModels
     public class ChargesListViewModel : BaseViewModel
     {
         private readonly IChargeManager chargeManager = App._container.Resolve<IChargeManager>();
+        private readonly IChargeServiceClient chargeServiceClient = App._container.Resolve<IChargeServiceClient>();
 
         ObservableCollection<Charge> charges;
 
@@ -27,7 +28,7 @@ namespace HomeManagement.App.ViewModels
 
             NextPageCommand = new Command(async () => await NextPage());
             PreviousPageCommand = new Command(async () => await PreviousPage());
-            DeleteCommand = new Command<Charge>(Delete);
+            DeleteCommand = new Command<Charge>(async (charge) => await DeleteAsync(charge));
         }
 
         public ObservableCollection<Charge> Charges
@@ -76,13 +77,17 @@ namespace HomeManagement.App.ViewModels
             IsBusy = false;
         }
 
-        private void Delete(Charge charge)
+        private async Task DeleteAsync(Charge charge)
         {
+            IsBusy = true;
+
             if (charge != null)
             {
-                //chargeServiceClient.Delete(charge.Id);
-                //Paginate();
+                await chargeServiceClient.Delete(charge.Id);
+                Charges = (await chargeManager.Load(account.Id)).ToObservableCollection();
             }
+
+            IsBusy = false;
         }
 
         protected override async Task InitializeAsync()
