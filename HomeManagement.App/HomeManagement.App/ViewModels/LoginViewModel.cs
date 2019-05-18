@@ -12,7 +12,7 @@ namespace HomeManagement.App.ViewModels
     public class LoginViewModel : BaseViewModel
     {
         string username = "ramiro.di.rico@gmail.com";
-        string password = "4430598Q#$q";
+        string password = "4h5UHGckxny7Lux9A1g0mA==";
 
         private readonly IAuthServiceClient authServiceClient = App._container.Resolve<IAuthServiceClient>();
         private readonly ICryptography crypto = App._container.Resolve<ICryptography>();
@@ -54,11 +54,17 @@ namespace HomeManagement.App.ViewModels
 
             try
             {
+                //for testing purposes.
                 await authServiceClient.Login(new Domain.User
                 {
                     Email = username,
-                    Password = crypto.Encrypt(password)
+                    Password = password
                 });
+                //await authServiceClient.Login(new Domain.User
+                //{
+                //    Email = username,
+                //    Password = crypto.Encrypt(password)
+                //});
 
                 OnLoginSuccess?.Invoke(this, EventArgs.Empty);
             }
