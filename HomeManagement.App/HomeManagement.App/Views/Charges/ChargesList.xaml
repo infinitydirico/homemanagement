@@ -40,11 +40,13 @@
 
             <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="Center">
                 <StackLayout>
-                    <Button Image="arrow_left.png" BackgroundColor="{StaticResource ControlLight}" VerticalOptions="Center" Command="{Binding PreviousPageCommand}" />
+                    <Button Image="arrow_left.png" BackgroundColor="{StaticResource ControlLight}" 
+                            VerticalOptions="Center" Command="{Binding PreviousPageCommand}" IsEnabled="{Binding NotBusy}" />
                 </StackLayout>
 
                 <StackLayout>
-                    <Button Image="arrow_right.png" BackgroundColor="{StaticResource ControlLight}" VerticalOptions="Center" Command="{Binding NextPageCommand}" />
+                    <Button Image="arrow_right.png" BackgroundColor="{StaticResource ControlLight}" 
+                            VerticalOptions="Center" Command="{Binding NextPageCommand}" IsEnabled="{Binding NotBusy}" />
                 </StackLayout>
             </StackLayout>
         </StackLayout>

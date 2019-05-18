@@ -1,14 +1,11 @@
-﻿using HomeManagement.App.Services.Rest;
-using HomeManagement.Contracts.Mapper;
+﻿using Autofac;
+using HomeManagement.App.Common;
+using HomeManagement.App.Managers;
+using HomeManagement.App.Services.Rest;
 using HomeManagement.Domain;
-using HomeManagement.Mapper;
-using HomeManagement.Models;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using Autofac;
-using HomeManagement.App.Managers;
-using HomeManagement.App.Common;
 
 namespace HomeManagement.App.ViewModels
 {
@@ -59,35 +56,21 @@ namespace HomeManagement.App.ViewModels
 
         public int CurrentPage => chargeManager.CurrentPage;
 
-        async Task NextPage()
-        {
-            IsBusy = true;
+        async Task NextPage() =>       
+            await HandleSafeExecution(async () => Charges = (await chargeManager.NextPage()).ToObservableCollection());
+        
 
-            Charges = (await chargeManager.NextPage()).ToObservableCollection();
-
-            IsBusy = false;
-        }
-
-        async Task PreviousPage()
-        {
-            IsBusy = true;
-
-            Charges = (await chargeManager.PreviousPage()).ToObservableCollection();
-
-            IsBusy = false;
-        }
+        async Task PreviousPage() =>        
+            await HandleSafeExecution(async () => Charges = (await chargeManager.PreviousPage()).ToObservableCollection());
+        
 
         private async Task DeleteAsync(Charge charge)
         {
-            IsBusy = true;
-
-            if (charge != null)
+            await HandleSafeExecution(async () =>
             {
                 await chargeServiceClient.Delete(charge.Id);
                 Charges = (await chargeManager.Load(account.Id)).ToObservableCollection();
-            }
-
-            IsBusy = false;
+            });
         }
 
         protected override async Task InitializeAsync()

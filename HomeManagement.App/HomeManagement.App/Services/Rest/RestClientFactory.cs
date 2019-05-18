@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using HomeManagement.App.Common;
-using HomeManagement.App.Services.Components;
+using HomeManagement.Core.Caching;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
@@ -39,6 +39,6 @@ namespace HomeManagement.App.Services.Rest
         public static StringContent SerializeToJson(this object data)
             => new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
 
-        private static string GetToken() => App._container.Resolve<IApplicationValues>().Get("header");
+        private static string GetToken() => App._container.Resolve<ICachingService>().Get<string>("header");
     }
 }

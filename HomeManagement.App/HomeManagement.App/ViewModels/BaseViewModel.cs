@@ -17,7 +17,17 @@ namespace HomeManagement.App.ViewModels
         public bool IsBusy
         {
             get { return isBusy; }
-            set { SetProperty(ref isBusy, value); }
+            set
+            {
+                isBusy = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(NotBusy));
+            }
+        }
+
+        public bool NotBusy
+        {
+            get => !isBusy;
         }
 
         string title = string.Empty;
@@ -28,6 +38,7 @@ namespace HomeManagement.App.ViewModels
         }
 
         public event EventHandler OnInitializationError;
+        public event EventHandler OnError;
 
         private void Initialize()
         {
@@ -48,6 +59,20 @@ namespace HomeManagement.App.ViewModels
         protected virtual async Task InitializeAsync()
         {
             await Task.Yield();
+        }
+
+        protected async Task HandleSafeExecution(Func<Task> action)
+        {
+            IsBusy = true;
+            try
+            {
+                await action();
+            }
+            catch (Exception ex)
+            {
+                OnError?.Invoke(this, EventArgs.Empty);
+            }
+            IsBusy = false;
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value,

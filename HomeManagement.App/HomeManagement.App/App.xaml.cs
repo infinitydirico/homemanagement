@@ -1,14 +1,11 @@
-using System;
 using Autofac;
 using Autofac.Core;
 using HomeManagement.App.Data;
 using HomeManagement.App.Managers;
-using HomeManagement.App.Services.Components;
 using HomeManagement.App.Services.Rest;
 using HomeManagement.App.Views.Login;
 using HomeManagement.Contracts;
-using HomeManagement.Contracts.Mapper;
-using HomeManagement.Contracts.Repositories;
+using HomeManagement.Core.Caching;
 using HomeManagement.Core.Cryptography;
 using HomeManagement.Data;
 using HomeManagement.Localization;
@@ -51,7 +48,7 @@ namespace HomeManagement.App
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterType<ApplicationValues>().As<IApplicationValues>().SingleInstance();
+            builder.RegisterType<MemoryCache>().As<ICachingService>().SingleInstance();
             builder.RegisterType<AesCryptographyService>().As<ICryptography>();
 
             builder.RegisterType<LocalizationLanguage>().As<ILocalization>().SingleInstance();
@@ -103,44 +100,5 @@ namespace HomeManagement.App
             builder.RegisterType<AccountMetricsServiceClient>().As<IAccountMetricsServiceClient>();
             builder.RegisterType<CategoryServiceClient>().As<ICategoryServiceClient>();
         }
-
-
-        //private void InitializeDependencies()
-        //{
-        //    RegisterServiceClients();
-
-        //    RegisterMappers();
-
-        //    RegisterRepositories();
-
-        //    DependencyService.Register<IMetadataHandler, MetadataHandler>();
-        //    DependencyService.Register<ILanguageFactory, LanguageFactory>();
-        //    DependencyService.Register<ICryptography, AesCryptographyService>();
-        //}
-
-        //private void RegisterServiceClients()
-        //{
-        //    DependencyService.Register<IAccountServiceClient, AccountServiceClient>();
-        //    DependencyService.Register<IAuthServiceClient, AuthServiceClient>();
-        //    DependencyService.Register<IChargeServiceClient, ChargeServiceClient>();
-        //    DependencyService.Register<IAccountMetricsServiceClient, AccountMetricsServiceClient>();
-        //    DependencyService.Register<ICategoryServiceClient, CategoryServiceClient>();
-        //}
-
-        //private void RegisterMappers()
-        //{
-        //    DependencyService.Register<IAccountMapper, AccountMapper>();
-        //    DependencyService.Register<ICategoryMapper, CategoryMapper>();
-        //    DependencyService.Register<IChargeMapper, ChargeMapper>();
-        //    DependencyService.Register<IUserMapper, UserMapper>();
-        //}
-
-        //private void RegisterRepositories()
-        //{
-        //    DependencyService.Register<IPlatformContext, MobileAppLayerContext>();
-
-        //    //DependencyService.Register<IUserRepository, UserRepository>();
-
-        //}
     }
 }
