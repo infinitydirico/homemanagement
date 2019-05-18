@@ -31,13 +31,10 @@ namespace HomeManagement.App.ViewModels
             OnChargeUpdated?.Invoke(this, EventArgs.Empty);
         }
 
-        protected override void InitializeData()
+        protected override async Task InitializeAsync()
         {
-            Task.Run(async () =>
-            {
-                await LoadCategories();
-                SelectedCategory = Categories.FirstOrDefault(x => x.Id.Equals(Charge.CategoryId));
-            });
+            await LoadCategories();
+            SelectedCategory = Categories.FirstOrDefault(x => x.Id.Equals(Charge.CategoryId));
         }
     }
 }

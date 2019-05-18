@@ -1,11 +1,10 @@
-﻿using HomeManagement.App.Services.Rest;
-using HomeManagement.Contracts.Mapper;
+﻿using Autofac;
+using HomeManagement.App.Services.Rest;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
 
 namespace HomeManagement.App.ViewModels
 {
@@ -38,21 +37,18 @@ namespace HomeManagement.App.ViewModels
             }
         }
 
-        protected override void InitializeData()
+        protected override async Task InitializeAsync()
         {
-            Task.Run(async () =>
+            var page = await accountServiceClient.Page(new Models.AccountPageModel
             {
-                var page = await accountServiceClient.Page(new Models.AccountPageModel
-                {
-                    UserId = authServiceClient.User.Id,
-                    PageCount = 10,
-                    CurrentPage = 1
-                });
-
-                accounts = accountMapper.ToEntities(page.Accounts);
+                UserId = authServiceClient.User.Id,
+                PageCount = 10,
+                CurrentPage = 1
             });
 
-            base.InitializeData();
+            accounts = accountMapper.ToEntities(page.Accounts);
+
+            await base.InitializeAsync();
         }
 
         public override void AddCharge()

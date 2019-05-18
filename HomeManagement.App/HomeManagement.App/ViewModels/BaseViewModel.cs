@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HomeManagement.App.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -38,7 +39,7 @@ namespace HomeManagement.App.ViewModels
         }
 
         public event EventHandler OnInitializationError;
-        public event EventHandler OnError;
+        public event EventHandler<ErrorEventArgs> OnError;
 
         private void Initialize()
         {
@@ -68,9 +69,13 @@ namespace HomeManagement.App.ViewModels
             {
                 await action();
             }
+            catch(AppException aex)
+            {
+                OnError?.Invoke(this, new ErrorEventArgs(aex.Message));
+            }
             catch (Exception ex)
             {
-                OnError?.Invoke(this, EventArgs.Empty);
+                OnError?.Invoke(this, new ErrorEventArgs("An error ocurred."));
             }
             IsBusy = false;
         }

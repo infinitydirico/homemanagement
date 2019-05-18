@@ -26,8 +26,6 @@ namespace HomeManagement.App.ViewModels
 
             CancelCommand = new Command(Cancel);
 
-            InitializeData();
-
             ChargeType = false;
         }
 
@@ -95,13 +93,7 @@ namespace HomeManagement.App.ViewModels
             }
         }
 
-        protected virtual void InitializeData()
-        {
-            Task.Run(async () =>
-            {
-                await LoadCategories();
-            });
-        }
+        protected override async Task InitializeAsync() => await LoadCategories();        
 
         protected async Task LoadCategories()
         {

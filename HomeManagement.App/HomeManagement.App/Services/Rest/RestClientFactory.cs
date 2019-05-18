@@ -2,6 +2,7 @@
 using HomeManagement.App.Common;
 using HomeManagement.Core.Caching;
 using Newtonsoft.Json;
+using Plugin.Connectivity;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -15,6 +16,8 @@ namespace HomeManagement.App.Services.Rest
 
         public static HttpClient CreateClient()
         {
+            CheckForInternetConnection();
+
             var client = new HttpClient();
             client.BaseAddress = new Uri(Constants.Endpoints.BASEURL);
             return client;
@@ -40,5 +43,10 @@ namespace HomeManagement.App.Services.Rest
             => new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
 
         private static string GetToken() => App._container.Resolve<ICachingService>().Get<string>("header");
+
+        private static void CheckForInternetConnection()
+        {
+            if (!CrossConnectivity.Current.IsConnected) throw new AppException($"No internet connection detected.");
+        }
     }
 }

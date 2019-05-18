@@ -10,6 +10,7 @@ using HomeManagement.Core.Cryptography;
 using HomeManagement.Data;
 using HomeManagement.Localization;
 using HomeManagement.Mapper;
+using Plugin.Connectivity;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -27,6 +28,14 @@ namespace HomeManagement.App
             InitializeDependencies();
 
             MainPage = new NavigationPage(new LoginPage());
+
+            CrossConnectivity.Current.ConnectivityTypeChanged += (sender, args) =>
+            {
+                if(!args.IsConnected)
+                {
+                    MainPage.DisplayAlert("Info", "Lost internet connection", "Ok");
+                }
+            };
         }
 
         protected override void OnStart()
