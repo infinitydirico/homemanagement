@@ -120,11 +120,20 @@
   <data name="AccountHasCharges" xml:space="preserve">
     <value>Unable to remove an account that has charges</value>
   </data>
+  <data name="AccountName" xml:space="preserve">
+    <value>Name for the new Account</value>
+  </data>
   <data name="Accounts" xml:space="preserve">
     <value>Accounts</value>
   </data>
+  <data name="AccountType" xml:space="preserve">
+    <value>Account Type</value>
+  </data>
   <data name="ChangeLanguage" xml:space="preserve">
     <value>Change Language</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>Currency</value>
   </data>
   <data name="DefaultAccountName" xml:space="preserve">
     <value>Pocket</value>

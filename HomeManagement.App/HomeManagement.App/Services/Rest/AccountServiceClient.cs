@@ -22,6 +22,13 @@ namespace HomeManagement.App.Services.Rest
                 .PostAsync(Constants.Endpoints.Accounts.PAGE, dto.SerializeToJson())
                 .ReadContent<AccountPageModel>();
         }
+
+        public async Task Update(AccountModel account)
+        {
+            await RestClientFactory
+                .CreateAuthenticatedClient()
+                .PostAsync(Constants.Endpoints.Accounts.ACCOUNT, account.SerializeToJson());
+        }
     }
 
     public interface IAccountServiceClient
@@ -29,5 +36,7 @@ namespace HomeManagement.App.Services.Rest
         Task<IEnumerable<OverPricedCategory>> GetAccountTopCharges(int accountId, int month);
 
         Task<AccountPageModel> Page(AccountPageModel dto);
+
+        Task Update(AccountModel account);
     }
 }

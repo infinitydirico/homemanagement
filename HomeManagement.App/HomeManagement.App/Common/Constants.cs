@@ -47,6 +47,11 @@
             {
                 public const string CATEGORY = API + "category";
             }
+
+            public class Currency
+            {
+                public const string CURRENCY = API + "currency";
+            }
         }
 
         public class Keys

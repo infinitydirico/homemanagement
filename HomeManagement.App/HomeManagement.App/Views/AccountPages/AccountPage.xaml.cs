@@ -25,5 +25,10 @@ namespace HomeManagement.App.Views.AccountPages
 
             ((ListView)sender).SelectedItem = null;
         }
+
+        private void NavigateToAddAccount(object sender, System.EventArgs e)
+        {
+            Navigation.PushAsync(new AddAccountPage());
+        }
     }
 }

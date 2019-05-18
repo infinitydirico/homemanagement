@@ -99,6 +99,7 @@ namespace HomeManagement.App
             builder.RegisterType<CategoryMapper>().As<ICategoryMapper>();
             builder.RegisterType<ChargeMapper>().As<IChargeMapper>();
             builder.RegisterType<UserMapper>().As<IUserMapper>();
+            builder.RegisterType<CurrencyMapper>().As<ICurrencyMapper>();
         }
 
         private void RegisterServiceClients(ContainerBuilder builder)
@@ -108,6 +109,7 @@ namespace HomeManagement.App
             builder.RegisterType<ChargeServiceClient>().As<IChargeServiceClient>();
             builder.RegisterType<AccountMetricsServiceClient>().As<IAccountMetricsServiceClient>();
             builder.RegisterType<CategoryServiceClient>().As<ICategoryServiceClient>();
+            builder.RegisterType<CurrencyServiceClient>().As<ICurrencyServiceClient>();
         }
     }
 }

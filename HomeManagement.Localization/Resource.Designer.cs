@@ -70,6 +70,15 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name for the new Account.
+        /// </summary>
+        public static string AccountName {
+            get {
+                return ResourceManager.GetString("AccountName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accounts.
         /// </summary>
         public static string Accounts {
@@ -79,11 +88,29 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Account Type.
+        /// </summary>
+        public static string AccountType {
+            get {
+                return ResourceManager.GetString("AccountType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change Language.
         /// </summary>
         public static string ChangeLanguage {
             get {
                 return ResourceManager.GetString("ChangeLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Currency.
+        /// </summary>
+        public static string Currency {
+            get {
+                return ResourceManager.GetString("Currency", resourceCulture);
             }
         }
         

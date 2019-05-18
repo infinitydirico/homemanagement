@@ -4,6 +4,7 @@ using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace HomeManagement.App.ViewModels
 {
@@ -17,16 +18,19 @@ namespace HomeManagement.App.ViewModels
 
         protected override async Task InitializeAsync()
         {
-            var user = authServiceClient.User;
-
-            var page = await serviceClient.Page(new Models.AccountPageModel
+            await HandleSafeExecution(async () =>
             {
-                UserId = user.Id,
-                PageCount = 10,
-                CurrentPage = 1
-            });
+                var user = authServiceClient.User;
 
-            Accounts = accountMapper.ToEntities(page.Accounts);
+                var page = await serviceClient.Page(new Models.AccountPageModel
+                {
+                    UserId = user.Id,
+                    PageCount = 10,
+                    CurrentPage = 1
+                });
+
+                Accounts = accountMapper.ToEntities(page.Accounts);
+            });
         }
 
         public IEnumerable<Account> Accounts

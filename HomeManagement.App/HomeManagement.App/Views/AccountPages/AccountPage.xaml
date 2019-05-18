@@ -12,6 +12,9 @@
             <Conv:TranslationConverter x:Key="Translation" />
         </ResourceDictionary>
     </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Icon="add.png" Clicked="NavigateToAddAccount" />
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <ListView x:Name="accountsList" ItemTapped="EditCharge" ItemsSource="{Binding Accounts}" Margin="10,10,10,10">
             <ListView.ItemTemplate>

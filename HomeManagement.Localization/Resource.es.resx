@@ -120,11 +120,20 @@
   <data name="AccountHasCharges" xml:space="preserve">
     <value>No se puede eliminar una cuenta que tiene movimientos</value>
   </data>
+  <data name="AccountName" xml:space="preserve">
+    <value>Nombre de la nueva Cuenta</value>
+  </data>
   <data name="Accounts" xml:space="preserve">
     <value>Cuentas</value>
   </data>
+  <data name="AccountType" xml:space="preserve">
+    <value>Tipo de Cuenta</value>
+  </data>
   <data name="ChangeLanguage" xml:space="preserve">
     <value>Cambiar Lenguaje</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>Moneda</value>
   </data>
   <data name="DefaultAccountName" xml:space="preserve">
     <value>Dinero de Bolsillo</value>
