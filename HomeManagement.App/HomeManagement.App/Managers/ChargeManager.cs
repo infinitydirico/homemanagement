@@ -1,7 +1,6 @@
 ﻿using Autofac;
+using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Services.Rest;
-using HomeManagement.Domain;
-using HomeManagement.Mapper;
 using HomeManagement.Models;
 using System;
 using System.Collections.Generic;
@@ -27,8 +26,6 @@ namespace HomeManagement.App.Managers
 
     public class ChargeManager : IChargeManager
     {
-        private readonly IChargeMapper chargeMapper = App._container.Resolve<IChargeMapper>();
-
         private readonly IChargeServiceClient chargeServiceClient = App._container.Resolve<IChargeServiceClient>();
 
         private IEnumerable<Charge> charges = new List<Charge>();
@@ -96,7 +93,16 @@ namespace HomeManagement.App.Managers
 
             page = await chargeServiceClient.Page(page);
 
-            var chargesResult = chargeMapper.ToEntities(page.Charges);
+            var chargesResult = from charge in page.Charges select new Charge
+            {
+                Id = charge.Id,
+                AccountId = charge.AccountId,
+                CategoryId = charge.CategoryId,
+                ChargeType = (ChargeType)Enum.Parse(typeof(ChargeType),charge.ChargeType.ToString()),
+                Date = charge.Date,
+                Name = charge.Name,
+                Price = charge.Price
+            };
 
             ((List<Charge>)charges).AddRange(chargesResult);
 

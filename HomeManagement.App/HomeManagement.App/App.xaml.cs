@@ -1,15 +1,11 @@
 using Autofac;
-using Autofac.Core;
-using HomeManagement.App.Data;
 using HomeManagement.App.Managers;
 using HomeManagement.App.Services.Rest;
 using HomeManagement.App.Views.Login;
 using HomeManagement.Contracts;
 using HomeManagement.Core.Caching;
 using HomeManagement.Core.Cryptography;
-using HomeManagement.Data;
 using HomeManagement.Localization;
-using HomeManagement.Mapper;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -64,10 +60,6 @@ namespace HomeManagement.App
 
             RegisterServiceClients(builder);
 
-            RegisterMappers(builder);
-
-            RegisterRepositories(builder);
-
             RegisterManagers(builder);
 
             _container = builder.Build();
@@ -76,30 +68,7 @@ namespace HomeManagement.App
         private void RegisterManagers(ContainerBuilder builder)
         {
             builder.RegisterType<ChargeManager>().As<IChargeManager>();
-        }
-
-        private void RegisterRepositories(ContainerBuilder builder)
-        {
-            builder.RegisterType<MobileAppLayerContext>().As<IPlatformContext>();
-
-            builder
-                .RegisterType<UserRepository>()
-                .As<IUserRepository>()
-                .WithParameter(
-                    new ResolvedParameter(
-                        (pi, ctx) => pi.ParameterType == typeof(IPlatformContext) && pi.Name.Equals("platformContext"),
-                        (pi, ctx) => _container.Resolve<IPlatformContext>()
-                     )
-                 );
-        }
-
-        private void RegisterMappers(ContainerBuilder builder)
-        {
-            builder.RegisterType<AccountMapper>().As<IAccountMapper>();
-            builder.RegisterType<CategoryMapper>().As<ICategoryMapper>();
-            builder.RegisterType<ChargeMapper>().As<IChargeMapper>();
-            builder.RegisterType<UserMapper>().As<IUserMapper>();
-            builder.RegisterType<CurrencyMapper>().As<ICurrencyMapper>();
+            builder.RegisterType<AuthenticationManager>().As<IAuthenticationManager>().SingleInstance();
         }
 
         private void RegisterServiceClients(ContainerBuilder builder)

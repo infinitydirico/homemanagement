@@ -1,8 +1,7 @@
 ﻿using Autofac;
 using HomeManagement.App.Common;
+using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Services.Rest;
-using HomeManagement.Domain;
-using HomeManagement.Mapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +16,6 @@ namespace HomeManagement.App.ViewModels
         private readonly ICurrencyServiceClient currencyService = App._container.Resolve<ICurrencyServiceClient>();
         private readonly IAccountServiceClient accountServiceClient = App._container.Resolve<IAccountServiceClient>();
         private readonly IAuthServiceClient authServiceClient = App._container.Resolve<IAuthServiceClient>();
-        private readonly IAccountMapper accountMapper = App._container.Resolve<IAccountMapper>();
-        private readonly ICurrencyMapper currencyMapper = App._container.Resolve<ICurrencyMapper>();
         private readonly IAuthServiceClient authService = App._container.Resolve<IAuthServiceClient>();
 
         Currency selectedCurrency;
@@ -77,7 +74,13 @@ namespace HomeManagement.App.ViewModels
 
         protected override async Task InitializeAsync()
         {
-            Currencies = currencyMapper.ToEntities(await currencyService.GetCurrencies());
+            Currencies = from c in await currencyService.GetCurrencies()
+                         select new Currency
+                         {
+                             Id = c.Id,
+                             Name = c.Name,
+                             Value = c.Value                                                                     
+                         };
 
             OnPropertyChanged(nameof(Currencies));
 
@@ -90,7 +93,18 @@ namespace HomeManagement.App.ViewModels
             {
                 if (string.IsNullOrEmpty(Account.Name)) throw new AppException($"The Account does not have a name.");
 
-                await accountServiceClient.Update(accountMapper.ToModel(Account));
+                var accountModel = new Models.AccountModel
+                {
+                    Id = Account.Id,
+                    UserId = Account.UserId,
+                    AccountType = (Models.AccountType)Enum.Parse(typeof(Models.AccountType), Account.AccountType.ToString()),
+                    Balance = Account.Balance,
+                    CurrencyId = Account.CurrencyId,
+                    Name = Account.Name,
+                    Measurable = Account.Measurable
+                };
+
+                await accountServiceClient.Update(accountModel);
 
                 OnAccountCreated?.Invoke(this, EventArgs.Empty);
             });

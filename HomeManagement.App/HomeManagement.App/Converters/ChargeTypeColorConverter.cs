@@ -1,4 +1,4 @@
-﻿using HomeManagement.Domain;
+﻿using HomeManagement.App.Data.Entities;
 using System;
 using System.Globalization;
 using Xamarin.Forms;

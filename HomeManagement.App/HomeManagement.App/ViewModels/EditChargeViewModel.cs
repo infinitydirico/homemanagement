@@ -1,4 +1,4 @@
-﻿using HomeManagement.Domain;
+﻿using HomeManagement.App.Data.Entities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,7 +15,7 @@ namespace HomeManagement.App.ViewModels
 
             UpdateChargeCommand = new Command(UpdateCharge);
 
-            ChargeType = charge.ChargeType.Equals(HomeManagement.Domain.ChargeType.Income) ? true : false;
+            ChargeType = charge.ChargeType.Equals(Data.Entities.ChargeType.Income) ? true : false;
         }
 
         public ICommand UpdateChargeCommand { get; }

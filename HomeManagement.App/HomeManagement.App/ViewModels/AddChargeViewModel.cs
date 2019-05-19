@@ -1,4 +1,4 @@
-﻿using HomeManagement.Domain;
+﻿using HomeManagement.App.Data.Entities;
 using System;
 using System.Windows.Input;
 using Xamarin.Forms;

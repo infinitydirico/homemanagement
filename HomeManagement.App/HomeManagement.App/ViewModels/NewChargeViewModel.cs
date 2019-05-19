@@ -1,7 +1,7 @@
 ﻿using Autofac;
+using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Services.Rest;
-using HomeManagement.Domain;
-using HomeManagement.Mapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +12,6 @@ namespace HomeManagement.App.ViewModels
     {
         private readonly IAccountServiceClient accountServiceClient = App._container.Resolve<IAccountServiceClient>();
         private readonly IAuthServiceClient authServiceClient = App._container.Resolve<IAuthServiceClient>();
-        private readonly IAccountMapper accountMapper = App._container.Resolve<IAccountMapper>();
 
         protected IEnumerable<Account> accounts = Enumerable.Empty<Account>();
 
@@ -46,7 +45,16 @@ namespace HomeManagement.App.ViewModels
                 CurrentPage = 1
             });
 
-            accounts = accountMapper.ToEntities(page.Accounts);
+            accounts = from a in page.Accounts
+                       select new Account
+                       {
+                           Id = a.Id,
+                           Name = a.Name,
+                           AccountType = (AccountType)Enum.Parse(typeof(AccountType), a.AccountType.ToString()),
+                           Balance = a.Balance,
+                           Measurable = a.Measurable,
+                           CurrencyId = a.CurrencyId
+                       };
 
             await base.InitializeAsync();
         }

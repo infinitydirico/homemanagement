@@ -1,11 +1,11 @@
-﻿using HomeManagement.App.Services.Rest;
-using HomeManagement.Domain;
+﻿using Autofac;
+using HomeManagement.App.Data.Entities;
+using HomeManagement.App.Services.Rest;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
-using Autofac;
 
 namespace HomeManagement.App.ViewModels
 {
@@ -83,11 +83,11 @@ namespace HomeManagement.App.ViewModels
                 chargeType = value;
                 if (chargeType)
                 {
-                    Charge.ChargeType = HomeManagement.Domain.ChargeType.Income;
+                    Charge.ChargeType = Data.Entities.ChargeType.Income;
                 }
                 else
                 {
-                    Charge.ChargeType = HomeManagement.Domain.ChargeType.Expense;
+                    Charge.ChargeType = Data.Entities.ChargeType.Expense;
                 }
                 OnPropertyChanged(nameof(ChargeType));
             }

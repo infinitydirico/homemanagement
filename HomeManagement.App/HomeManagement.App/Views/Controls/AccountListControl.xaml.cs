@@ -1,6 +1,6 @@
-﻿using HomeManagement.App.ViewModels;
+﻿using HomeManagement.App.Data.Entities;
+using HomeManagement.App.ViewModels;
 using HomeManagement.App.Views.Charges;
-using HomeManagement.Domain;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;

@@ -1,8 +1,8 @@
 ﻿using Autofac;
 using HomeManagement.App.Common;
+using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
 using HomeManagement.App.Services.Rest;
-using HomeManagement.Domain;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Xamarin.Forms;

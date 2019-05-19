@@ -1,5 +1,5 @@
-﻿using HomeManagement.App.ViewModels;
-using HomeManagement.Domain;
+﻿using HomeManagement.App.Data.Entities;
+using HomeManagement.App.ViewModels;
 using System;
 
 using Xamarin.Forms;
