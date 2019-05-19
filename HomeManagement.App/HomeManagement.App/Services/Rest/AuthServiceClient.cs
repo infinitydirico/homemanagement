@@ -20,7 +20,7 @@ namespace HomeManagement.App.Services.Rest
                     .PostAsync(Constants.Endpoints.Auth.LOGIN, user.SerializeToJson())
                     .ReadContent<UserModel>();
 
-                App._container.Resolve<ICachingService>().Store("header", result.Token);
+                //App._container.Resolve<ICachingService>().Store("header", result.Token);
 
                 User = result;
 
@@ -39,7 +39,7 @@ namespace HomeManagement.App.Services.Rest
                     .PostAsync(Constants.Endpoints.Auth.LOGOUT, user.SerializeToJson())
                     .ReadContent<UserModel>();
 
-            App._container.Resolve<ICachingService>().Remove("header");
+            //App._container.Resolve<ICachingService>().Remove("header");
         }
 
         public async Task Logout()

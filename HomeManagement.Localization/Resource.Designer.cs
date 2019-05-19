@@ -106,6 +106,15 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cloud Sync.
+        /// </summary>
+        public static string CloudSync {
+            get {
+                return ResourceManager.GetString("CloudSync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Currency.
         /// </summary>
         public static string Currency {
@@ -115,11 +124,38 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Current Language.
+        /// </summary>
+        public static string CurrentLanguage {
+            get {
+                return ResourceManager.GetString("CurrentLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pocket.
         /// </summary>
         public static string DefaultAccountName {
             get {
                 return ResourceManager.GetString("DefaultAccountName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disabled.
+        /// </summary>
+        public static string Disabled {
+            get {
+                return ResourceManager.GetString("Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabled.
+        /// </summary>
+        public static string Enabled {
+            get {
+                return ResourceManager.GetString("Enabled", resourceCulture);
             }
         }
         

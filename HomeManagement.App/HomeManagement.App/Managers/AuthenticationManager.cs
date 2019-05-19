@@ -16,6 +16,8 @@ namespace HomeManagement.App.Managers
         Task<User> AuthenticateAsync(string username, string password);
 
         User GetAuthenticatedUser();
+
+        Task Logout();
     }
 
     public class AuthenticationManager : IAuthenticationManager
@@ -24,6 +26,7 @@ namespace HomeManagement.App.Managers
         private readonly IAuthServiceClient authServiceClient = App._container.Resolve<IAuthServiceClient>();
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
         private readonly GenericRepository<User> userRepository = new GenericRepository<User>();
+        private readonly GenericRepository<AppSettings> appSettingsRepository = new GenericRepository<AppSettings>();
 
         private User user;
 
@@ -31,11 +34,11 @@ namespace HomeManagement.App.Managers
         {
             var encryptedPassword = crypto.Encrypt(password);
 
-            user = userRepository.All.FirstOrDefault(x => x.Email.Equals(username));// && x.Password.Equals(password));
+            user = userRepository.FirstOrDefault(x => x.Email.Equals(username));
 
-            if (user != null)
+            if (user != null && user.Password.Equals(encryptedPassword) && (DateTime.Now - user.LastApiCall).Hours < 1)
             {
-                cachingService.Store("header", user.Token);
+                CacheUserAndToken(user);
                 return user;
             }
 
@@ -43,21 +46,95 @@ namespace HomeManagement.App.Managers
 
             user = new User
             {
-                Id = userModel.Id,
+                Id = user == null ? userModel.Id : user.Id,
                 Email = userModel.Email,
                 Password = encryptedPassword,
                 ChangeStamp = DateTime.Now,
                 LastApiCall = DateTime.Now,
-                Token = userModel.Token               
+                Token = userModel.Token
             };
 
-            userRepository.Add(user);
+            SaveOrUpdateUser(user);
 
-            userRepository.Commit();
+            CreateSettingsIfNotExits();
+
+            CacheUserAndToken(user);
 
             return user;
         }
 
-        public User GetAuthenticatedUser() => user;
+        public User GetAuthenticatedUser() => cachingService.Get<User>("user");
+
+        public async Task Logout()
+        {
+            //await authServiceClient.Logout();
+            if (cachingService.Exists("header"))
+            {
+                cachingService.Remove("header");
+            }
+
+            if (cachingService.Exists("user"))
+            {
+                cachingService.Remove("user");
+            }
+        }
+
+        private void CacheUserAndToken(User user)
+        {
+            SaveHttpHeader(user.Token);
+            SaveUser(user);
+        }
+
+        private void SaveUser(User user)
+        {
+            if (!cachingService.Exists("user"))
+            {
+                cachingService.Store("user", user);
+            }
+            else
+            {
+                cachingService.Remove("user");
+                cachingService.Store("user", user);
+            }
+        }
+
+        private void SaveHttpHeader(string token)
+        {
+            if (!cachingService.Exists("header"))
+            {
+                cachingService.Store("header", token);
+            }
+            else
+            {
+                cachingService.Remove("header");
+                cachingService.Store("header", token);
+            }
+        }
+
+        private void SaveOrUpdateUser(User user)
+        {
+            if(userRepository.Any(x => x.Email.Equals(user.Email)))
+            {
+                userRepository.Update(user);
+            }
+            else
+            {
+                userRepository.Add(user);
+            }            
+
+            userRepository.Commit();
+        }
+
+        private void CreateSettingsIfNotExits()
+        {
+            var cloudSyncName = AppSettings.GetCloudSyncSetting();
+            var settings = appSettingsRepository.FirstOrDefault(x => x.Name.Equals(cloudSyncName.Name));
+
+            if (settings == null)
+            {
+                appSettingsRepository.Add(cloudSyncName);
+                appSettingsRepository.Commit();
+            }
+        }
     }
 }

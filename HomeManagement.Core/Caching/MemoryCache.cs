@@ -7,6 +7,8 @@ namespace HomeManagement.Core.Caching
     {
         Dictionary<string, object> cachedVaues = new Dictionary<string, object>();
 
+        public bool Exists(string key) => cachedVaues.ContainsKey(key);
+
         public object Get(string key)
         {
             if (!cachedVaues.ContainsKey(key)) throw new ArgumentException($"No cached value found for: {key}");

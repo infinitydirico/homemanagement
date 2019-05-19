@@ -68,7 +68,7 @@ namespace HomeManagement.App
         private void RegisterManagers(ContainerBuilder builder)
         {
             builder.RegisterType<ChargeManager>().As<IChargeManager>();
-            builder.RegisterType<AuthenticationManager>().As<IAuthenticationManager>().SingleInstance();
+            builder.RegisterType<AuthenticationManager>().As<IAuthenticationManager>();
         }
 
         private void RegisterServiceClients(ContainerBuilder builder)

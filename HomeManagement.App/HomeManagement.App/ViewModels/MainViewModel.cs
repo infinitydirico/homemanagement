@@ -1,14 +1,14 @@
-﻿using HomeManagement.App.Services.Rest;
+﻿using Autofac;
+using HomeManagement.App.Managers;
 using System;
 using System.Windows.Input;
 using Xamarin.Forms;
-using Autofac;
 
 namespace HomeManagement.App.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-        private readonly IAuthServiceClient authController = App._container.Resolve<IAuthServiceClient>();
+        private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
 
         public MainViewModel()
         {
@@ -23,7 +23,7 @@ namespace HomeManagement.App.ViewModels
 
         public async void Logout()
         {
-            await authController.Logout();
+            await authenticationManager.Logout();
 
             OnLogout?.Invoke(this, EventArgs.Empty);
         }

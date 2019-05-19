@@ -9,6 +9,7 @@ namespace HomeManagement.App.Data
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<AppSettings> AppSettings { get; set; }
 
         public MobileAppDbContext()
         {
@@ -20,6 +21,8 @@ namespace HomeManagement.App.Data
             var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HomeManagement.db");
 
             optionsBuilder.UseSqlite($"Filename={dbPath}");
+
+            optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
 
 
@@ -29,7 +32,9 @@ namespace HomeManagement.App.Data
 
             BuildUserEntity(modelBuilder);
 
-            //BuildAccountEntity(modelBuilder);
+            BuildAccountEntity(modelBuilder);
+
+            BuildAppSettingsEntity(modelBuilder);
         }
 
         private void BuildUserEntity(ModelBuilder modelBuilder)
@@ -52,9 +57,13 @@ namespace HomeManagement.App.Data
             modelBuilder.Entity<Account>().Property(x => x.UserId);
             modelBuilder.Entity<Account>().Property(x => x.ChangeStamp);
             modelBuilder.Entity<Account>().Property(x => x.LastApiCall);
+        }
 
-            modelBuilder.Entity<Account>().Ignore("Charges");
-            modelBuilder.Entity<Account>().Ignore("Taxes");
+        private void BuildAppSettingsEntity(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<AppSettings>().HasKey(x => x.Id);
+            modelBuilder.Entity<AppSettings>().Property(x => x.Name).HasMaxLength(80);
+            modelBuilder.Entity<AppSettings>().Property(x => x.Enabled);
         }
     }
 }

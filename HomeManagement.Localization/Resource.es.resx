@@ -189,4 +189,16 @@
   <data name="Username" xml:space="preserve">
     <value>Nombre de usuario</value>
   </data>
+  <data name="CloudSync" xml:space="preserve">
+    <value>Sincronizacion con la Nube</value>
+  </data>
+  <data name="CurrentLanguage" xml:space="preserve">
+    <value>Lenguaje</value>
+  </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>Deshabilitado</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>Habilitado</value>
+  </data>
 </root>

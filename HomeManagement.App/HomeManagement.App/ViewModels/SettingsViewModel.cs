@@ -1,27 +1,82 @@
-﻿using System.Globalization;
+﻿using HomeManagement.App.Data;
+using HomeManagement.App.Data.Entities;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
-using System.Linq;
 
 namespace HomeManagement.App.ViewModels
 {
     public class SettingsViewModel : LocalizationBaseViewModel
     {
         CultureInfo[] cultures = new CultureInfo[] { new CultureInfo("es"), new CultureInfo("en") };
+        private readonly GenericRepository<AppSettings> appSettingsRepository = new GenericRepository<AppSettings>();
+        private readonly GenericRepository<User> userRepository = new GenericRepository<User>();
+        AppSettings coudSyncSetting;
+        bool coudSyncEnabled;
 
         public SettingsViewModel()
         {
             ChangeLanguageCommand = new Command(ChangeLanguage);
+            ClearCacheCommand = new Command(ClearCache);
+        }
+
+        protected override async Task InitializeAsync()
+        {
+            coudSyncSetting = appSettingsRepository.FirstOrDefault(x => x.Name.Equals(AppSettings.GetCloudSyncSetting().Name));
+            coudSyncEnabled = coudSyncSetting.Enabled;
+            OnPropertyChanged(nameof(CoudSyncEnabled));
+            await Task.Yield();
         }
 
         public ICommand ChangeLanguageCommand { get; set; }
 
+        public ICommand ClearCacheCommand { get; }
+
         public string ChangeLanguageText { get; set; } = "ChangeLanguage";
+
+        public string CloudSyncText { get; set; } = "CloudSync";
+
+        public string CloudSyncStatusText { get; private set; } = "Disabled";
+
+        public bool CoudSyncEnabled
+        {
+            get
+            {
+                return coudSyncEnabled;
+            }
+            set
+            {
+                coudSyncEnabled = value;
+                coudSyncSetting.Enabled = coudSyncEnabled;
+                CloudSyncStatusText = GetCloudSyncLabel(coudSyncEnabled);
+
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CloudSyncStatusText));
+
+                SaveCloudSyncSetting();
+            }
+        }
+
+        private void ClearCache(object obj)
+        {
+            userRepository.RemoveAll();
+            userRepository.Commit();
+        }
 
         private void ChangeLanguage()
         {
             var nextCulture = cultures.FirstOrDefault(x => !x.Name.Equals(localization.GetCurrentCulture().Name));
             localization.ChangeCulture(nextCulture);
         }
+
+        private void SaveCloudSyncSetting()
+        {
+            appSettingsRepository.Update(coudSyncSetting);
+            appSettingsRepository.Commit();
+        }
+
+        private string GetCloudSyncLabel(bool sync) => sync ? "Enabled" : "Disabled";
     }
 }

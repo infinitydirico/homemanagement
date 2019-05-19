@@ -9,5 +9,7 @@
         void Store(string key, object value);
 
         void Remove(string key);
+
+        bool Exists(string key);
     }
 }
