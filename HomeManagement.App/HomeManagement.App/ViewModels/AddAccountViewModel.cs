@@ -89,7 +89,7 @@ namespace HomeManagement.App.ViewModels
 
         public async Task AddAccount()
         {
-            await HandleSafeExecution(async () =>
+            await HandleSafeExecutionAsync(async () =>
             {
                 if (string.IsNullOrEmpty(Account.Name)) throw new AppException($"The Account does not have a name.");
 

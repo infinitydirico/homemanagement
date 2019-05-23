@@ -12,7 +12,15 @@ namespace HomeManagement.App.Views.Main
 		{
 			InitializeComponent ();
 
-            BindingContext = new SettingsViewModel();
+            ((SettingsViewModel)BindingContext).OnError += (s,e) =>
+            {
+                DisplayAlert("Error", e.ErrorMessage, "Ok");
+            };
+
+            ((SettingsViewModel)BindingContext).OnClearSuccess += (s, e) =>
+            {
+                DisplayAlert("Info", "The cache has been cleared out.", "Ok");
+            };
 		}
 	}
 }

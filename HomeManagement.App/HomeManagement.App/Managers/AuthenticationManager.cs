@@ -6,7 +6,6 @@ using HomeManagement.Contracts;
 using HomeManagement.Core.Caching;
 using HomeManagement.Models;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace HomeManagement.App.Managers
@@ -44,15 +43,24 @@ namespace HomeManagement.App.Managers
 
             var userModel = await authServiceClient.Login(new UserModel { Email = username, Password = encryptedPassword });
 
-            user = new User
+            if (user == null)
             {
-                Id = user == null ? userModel.Id : user.Id,
-                Email = userModel.Email,
-                Password = encryptedPassword,
-                ChangeStamp = DateTime.Now,
-                LastApiCall = DateTime.Now,
-                Token = userModel.Token
-            };
+                user = new User
+                {
+                    Id = userModel.Id,
+                    Email = userModel.Email,
+                    Password = encryptedPassword,
+                    ChangeStamp = DateTime.Now,
+                    LastApiCall = DateTime.Now,
+                    Token = userModel.Token
+                };
+            }
+            else
+            {
+                user.Token = userModel.Token;
+                user.LastApiCall = DateTime.Now;
+            }
+
 
             SaveOrUpdateUser(user);
 

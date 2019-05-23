@@ -57,25 +57,30 @@ namespace HomeManagement.App.ViewModels
         public int CurrentPage => chargeManager.CurrentPage;
 
         async Task NextPage() =>       
-            await HandleSafeExecution(async () => Charges = (await chargeManager.NextPage()).ToObservableCollection());
+            await HandleSafeExecutionAsync(async () => Charges = (await chargeManager.NextPage()).ToObservableCollection());
         
 
         async Task PreviousPage() =>        
-            await HandleSafeExecution(async () => Charges = (await chargeManager.PreviousPage()).ToObservableCollection());
+            await HandleSafeExecutionAsync(async () => Charges = (await chargeManager.PreviousPage()).ToObservableCollection());
         
 
         private async Task DeleteAsync(Charge charge)
         {
-            await HandleSafeExecution(async () =>
+            await HandleSafeExecutionAsync(async () =>
             {
                 await chargeServiceClient.Delete(charge.Id);
-                Charges = (await chargeManager.Load(account.Id)).ToObservableCollection();
+                Charges = (await chargeManager.Load(account.Id, true)).ToObservableCollection();
             });
         }
 
         protected override async Task InitializeAsync()
         {
             Charges = (await chargeManager.Load(account.Id)).ToObservableCollection();
+        }
+
+        public override async void Refresh()
+        {
+            Charges = (await chargeManager.Load(account.Id, true)).ToObservableCollection();
         }
     }
 }

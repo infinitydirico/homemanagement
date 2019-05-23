@@ -2,7 +2,7 @@
 
 namespace HomeManagement.App.Data.Entities
 {
-    public class Charge
+    public class Charge : IOfflineEntity
     {
         public int Id { get; set; }
 
@@ -17,6 +17,12 @@ namespace HomeManagement.App.Data.Entities
         public int CategoryId { get; set; }
 
         public int AccountId { get; set; }
+
+        public DateTime ChangeStamp { get; set; }
+
+        public DateTime LastApiCall { get; set; }
+
+        public bool NeedsUpdate { get; set; }
     }
 
     public enum ChargeType

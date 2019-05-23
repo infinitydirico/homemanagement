@@ -10,6 +10,12 @@ namespace HomeManagement.Core.Extensions
             var castedEnum = (TEnum)enumValue;
             return castedEnum;
         }
+
+        public static TEnum To<TEnum>(this Enum value)
+        {
+            return ToEnum<TEnum>(value.ToString());
+        }
+
         public static ComparingOperators IntToOperator(this int value) => ToEnum<ComparingOperators>(value.ToString());
     }
 }

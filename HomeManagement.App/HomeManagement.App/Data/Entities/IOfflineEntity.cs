@@ -7,5 +7,7 @@ namespace HomeManagement.App.Data.Entities
         DateTime ChangeStamp { get; set; }
 
         DateTime LastApiCall { get; set; }
+
+        bool NeedsUpdate { get; set; }
     }
 }

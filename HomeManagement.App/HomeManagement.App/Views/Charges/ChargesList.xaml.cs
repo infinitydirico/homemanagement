@@ -47,6 +47,13 @@ namespace HomeManagement.App.Views.Charges
             NavigationPage.SetHasNavigationBar(page, true);
 
             Navigation.PushAsync(page);
+
+            page.Disappearing += AddChargePageDisappearing;
+        }
+
+        private void AddChargePageDisappearing(object sender, EventArgs e)
+        {
+            viewModel.Refresh();
         }
 
         private void OnRemove(object sender, EventArgs e)

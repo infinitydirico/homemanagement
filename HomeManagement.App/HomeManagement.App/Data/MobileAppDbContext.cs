@@ -10,6 +10,7 @@ namespace HomeManagement.App.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<AppSettings> AppSettings { get; set; }
+        public DbSet<Charge> Charges { get; set; }
 
         public MobileAppDbContext()
         {
@@ -21,8 +22,6 @@ namespace HomeManagement.App.Data
             var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HomeManagement.db");
 
             optionsBuilder.UseSqlite($"Filename={dbPath}");
-
-            optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
 
 
@@ -35,6 +34,8 @@ namespace HomeManagement.App.Data
             BuildAccountEntity(modelBuilder);
 
             BuildAppSettingsEntity(modelBuilder);
+
+            BuildChargesEntity(modelBuilder);
         }
 
         private void BuildUserEntity(ModelBuilder modelBuilder)
@@ -57,6 +58,7 @@ namespace HomeManagement.App.Data
             modelBuilder.Entity<Account>().Property(x => x.UserId);
             modelBuilder.Entity<Account>().Property(x => x.ChangeStamp);
             modelBuilder.Entity<Account>().Property(x => x.LastApiCall);
+            modelBuilder.Entity<Account>().Property(x => x.NeedsUpdate);
         }
 
         private void BuildAppSettingsEntity(ModelBuilder modelBuilder)
@@ -64,6 +66,21 @@ namespace HomeManagement.App.Data
             modelBuilder.Entity<AppSettings>().HasKey(x => x.Id);
             modelBuilder.Entity<AppSettings>().Property(x => x.Name).HasMaxLength(80);
             modelBuilder.Entity<AppSettings>().Property(x => x.Enabled);
+        }
+
+        private void BuildChargesEntity(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Charge>().HasKey(x => x.Id);
+            modelBuilder.Entity<Charge>().Property(x => x.Name).HasMaxLength(80);
+            modelBuilder.Entity<Charge>().Property(x => x.ChangeStamp);
+            modelBuilder.Entity<Charge>().Property(x => x.LastApiCall);
+            modelBuilder.Entity<Charge>().Property(x => x.NeedsUpdate);
+            modelBuilder.Entity<Charge>().Property(x => x.Name);
+            modelBuilder.Entity<Charge>().Property(x => x.Price);
+            modelBuilder.Entity<Charge>().Property(x => x.Date);
+            modelBuilder.Entity<Charge>().Property(x => x.ChargeType);
+            modelBuilder.Entity<Charge>().Property(x => x.CategoryId);
+            modelBuilder.Entity<Charge>().Property(x => x.AccountId);
         }
     }
 }

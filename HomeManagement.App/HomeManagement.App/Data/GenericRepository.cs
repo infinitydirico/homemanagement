@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -15,6 +16,21 @@ namespace HomeManagement.App.Data
 
         public bool Any(Expression<Func<T, bool>> predicate)
             => dbContext.Set<T>().Any(predicate);
+
+        public int Count() => dbContext.Set<T>().Count();
+
+        public int Count(Expression<Func<T, bool>> predicate) => dbContext.Set<T>().Count(predicate);
+
+        public bool HasRecords() => Count() > 0;
+
+        public IEnumerable<T> Skip(int skip) => dbContext.Set<T>().Skip(skip);
+
+        public IEnumerable<T> Take(int take) => dbContext.Set<T>().Take(take);
+
+        public IEnumerable<T> Where(Func<T, bool> predicate) => dbContext.Set<T>().Where(predicate);
+
+        public IOrderedEnumerable<T> OrderByDescending<TKey>(Func<T, TKey> keySelector) 
+            => dbContext.Set<T>().OrderByDescending(keySelector);
 
         public virtual void Add(T entity)
         {
@@ -38,7 +54,6 @@ namespace HomeManagement.App.Data
         {
             foreach (var item in dbContext.Set<T>().ToList())
             {
-                //dbContext.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
                 Remove(item);
             }
         }

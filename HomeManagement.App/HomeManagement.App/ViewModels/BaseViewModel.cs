@@ -62,7 +62,27 @@ namespace HomeManagement.App.ViewModels
             await Task.Yield();
         }
 
-        protected async Task HandleSafeExecution(Func<Task> action)
+        public virtual void Refresh() => Initialize();
+
+        protected void HandleSafeExecution(Action action)
+        {
+            IsBusy = true;
+            try
+            {
+                action();
+            }
+            catch (AppException aex)
+            {
+                OnError?.Invoke(this, new ErrorEventArgs(aex.Message));
+            }
+            catch (Exception ex)
+            {
+                OnError?.Invoke(this, new ErrorEventArgs("An error ocurred."));
+            }
+            IsBusy = false;
+        }
+
+        protected async Task HandleSafeExecutionAsync(Func<Task> action)
         {
             IsBusy = true;
             try

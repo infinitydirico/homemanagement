@@ -7,6 +7,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <Conv:ChargeTypeColorConverter x:Key="ChargeTypeColor" />
+            <Conv:DateConverter x:Key="DateConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
@@ -27,8 +28,8 @@
                                     <Label Text = "{Binding Name}" FontSize="Large" TextColor="White" HorizontalOptions="StartAndExpand" />
                                     <Label Text = "{Binding Price}" TextColor="{Binding ChargeType, Converter={StaticResource ChargeTypeColor}}" FontSize="Medium" HorizontalOptions="EndAndExpand"/>
                                 </StackLayout>
-                                <StackLayout Padding="0,5,0,0">
-                                    <Label Text = "{Binding CurrentDate}" Grid.Column="0" Grid.Row="1" FontSize="Medium" TextColor="White"/>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text = "{Binding Date, Converter={StaticResource DateConverter}}" FontSize="Medium" TextColor="White"/>
                                 </StackLayout>
                             </StackLayout>
                         </ViewCell>

@@ -1,5 +1,6 @@
 ﻿using HomeManagement.App.Data;
 using HomeManagement.App.Data.Entities;
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,9 @@ namespace HomeManagement.App.ViewModels
         CultureInfo[] cultures = new CultureInfo[] { new CultureInfo("es"), new CultureInfo("en") };
         private readonly GenericRepository<AppSettings> appSettingsRepository = new GenericRepository<AppSettings>();
         private readonly GenericRepository<User> userRepository = new GenericRepository<User>();
+        private readonly GenericRepository<Account> accountRepository = new GenericRepository<Account>();
+        private readonly GenericRepository<Charge> chargeRepository = new GenericRepository<Charge>();
+
         AppSettings coudSyncSetting;
         bool coudSyncEnabled;
 
@@ -29,6 +33,8 @@ namespace HomeManagement.App.ViewModels
             OnPropertyChanged(nameof(CoudSyncEnabled));
             await Task.Yield();
         }
+
+        public event EventHandler OnClearSuccess;
 
         public ICommand ChangeLanguageCommand { get; set; }
 
@@ -61,8 +67,19 @@ namespace HomeManagement.App.ViewModels
 
         private void ClearCache(object obj)
         {
-            userRepository.RemoveAll();
-            userRepository.Commit();
+            HandleSafeExecution(() =>
+            {
+                userRepository.RemoveAll();
+                userRepository.Commit();
+
+                accountRepository.RemoveAll();
+                accountRepository.Commit();
+
+                chargeRepository.RemoveAll();
+                chargeRepository.Commit();                
+
+                OnClearSuccess?.Invoke(this, EventArgs.Empty);
+            });
         }
 
         private void ChangeLanguage()
