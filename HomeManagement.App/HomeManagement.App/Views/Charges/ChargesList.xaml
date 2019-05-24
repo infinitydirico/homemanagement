@@ -15,7 +15,9 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Margin="20,20,20,20">
-            <ListView x:Name="chargesList" ItemTapped="chargesList_ItemTapped" ItemsSource="{Binding Charges}" IsVisible="{Binding !IsBusy}" SelectedItem="{Binding SelectedCharge}" RowHeight="70">
+            <ListView x:Name="chargesList" ItemTapped="chargesList_ItemTapped" ItemsSource="{Binding Charges}" 
+                      IsVisible="{Binding !IsBusy}" SelectedItem="{Binding SelectedCharge}" RowHeight="70"
+                      IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -37,9 +39,10 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <ActivityIndicator x:Name="indicator" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="White" />
+            <ActivityIndicator x:Name="indicator" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="White"
+                               VerticalOptions="Center" HorizontalOptions="Center"/>
 
-            <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="Center">
+            <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" HorizontalOptions="Center">
                 <StackLayout>
                     <Button Image="arrow_left.png" BackgroundColor="{StaticResource ControlLight}" 
                             VerticalOptions="Center" Command="{Binding PreviousPageCommand}" IsEnabled="{Binding NotBusy}" />

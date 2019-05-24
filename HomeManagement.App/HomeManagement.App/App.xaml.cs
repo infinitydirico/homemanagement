@@ -23,6 +23,8 @@ namespace HomeManagement.App
 
             InitializeDependencies();
 
+            InitializeDefaultValues();
+
             MainPage = new NavigationPage(new LoginPage());
 
             CrossConnectivity.Current.ConnectivityTypeChanged += (sender, args) =>
@@ -80,6 +82,11 @@ namespace HomeManagement.App
             builder.RegisterType<AccountMetricsServiceClient>().As<IAccountMetricsServiceClient>();
             builder.RegisterType<CategoryServiceClient>().As<ICategoryServiceClient>();
             builder.RegisterType<CurrencyServiceClient>().As<ICurrencyServiceClient>();
+        }
+
+        private void InitializeDefaultValues()
+        {
+            _container.Resolve<ICachingService>().Store("ForceApiCall", false);
         }
     }
 }

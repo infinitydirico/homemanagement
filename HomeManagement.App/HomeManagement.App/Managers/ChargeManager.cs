@@ -2,6 +2,7 @@
 using HomeManagement.App.Data;
 using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Services.Rest;
+using HomeManagement.Core.Caching;
 using HomeManagement.Models;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace HomeManagement.App.Managers
 
         int CurrentPage { get; }
 
-        Task<IEnumerable<Charge>> Load(int accountId, bool hardRefresh = false);
+        Task<IEnumerable<Charge>> Load(int accountId);
 
         Task<IEnumerable<Charge>> NextPage();
 
@@ -33,6 +34,7 @@ namespace HomeManagement.App.Managers
     {
         private readonly IChargeServiceClient chargeServiceClient = App._container.Resolve<IChargeServiceClient>();
         private readonly GenericRepository<Charge> chargeRepository = new GenericRepository<Charge>();
+        private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
         //private IEnumerable<Charge> charges = new List<Charge>();
 
         private ChargePageModel page = new ChargePageModel
@@ -47,15 +49,23 @@ namespace HomeManagement.App.Managers
 
         public int CurrentPage => page.CurrentPage;
 
-        public async Task AddChargeAsync(Charge charge) => await chargeServiceClient.Post(charge);
+        public async Task AddChargeAsync(Charge charge)
+        {
+            await chargeServiceClient.Post(charge);
+            cachingService.StoreOrUpdate("ForceApiCall", true);
+        }
 
-        public async Task DeleteChargeAsync(Charge charge) => await chargeServiceClient.Delete(charge.Id);
+        public async Task DeleteChargeAsync(Charge charge)
+        {
+            await chargeServiceClient.Delete(charge.Id);
+            cachingService.StoreOrUpdate("ForceApiCall", true);
+        }
 
-        public async Task<IEnumerable<Charge>> Load(int accountId, bool hardRefresh = false)
+        public async Task<IEnumerable<Charge>> Load(int accountId)
         {
             page.AccountId = accountId;
 
-            return await Paginate(hardRefresh);
+            return await Paginate();
         }
 
         public async Task<IEnumerable<Charge>> NextPage()
@@ -84,9 +94,9 @@ namespace HomeManagement.App.Managers
             return await Paginate();
         }
 
-        private async Task<IEnumerable<Charge>> Paginate(bool hardRefresh = false)
+        private async Task<IEnumerable<Charge>> Paginate()
         {
-            if (!hardRefresh)
+            if (!cachingService.Get<bool>("ForceApiCall"))
             {
                 var skip = (page.CurrentPage - 1) * page.PageCount;
 
@@ -98,6 +108,8 @@ namespace HomeManagement.App.Managers
             }
 
             page.Charges.Clear();
+
+            await Task.Delay(500);
 
             page = await chargeServiceClient.Page(page);
 
@@ -116,19 +128,24 @@ namespace HomeManagement.App.Managers
                                     NeedsUpdate = false
                                 };
 
+            UpdateCachedCharges(chargesResult);
+
+            return chargesResult;
+        }
+
+        private void UpdateCachedCharges(IEnumerable<Charge> charges)
+        {
             Task.Run(() =>
             {
-                foreach (var item in chargesResult)
+                foreach (var item in charges)
                 {
                     if (!chargeRepository.Any(x => x.Id.Equals(item.Id)))
                     {
                         chargeRepository.Add(item);
-                    }                    
+                    }
                 }
                 chargeRepository.Commit();
             });
-
-            return chargesResult;
         }
 
         private IEnumerable<Charge> GetCachedFilteredCharges(int skip)

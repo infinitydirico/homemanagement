@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using HomeManagement.App.Data.Entities;
+using HomeManagement.App.Managers;
 using HomeManagement.App.Services.Rest;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace HomeManagement.App.ViewModels
         protected Category selectedCategory;
         protected ICategoryServiceClient categoryServiceClient;
         protected IChargeServiceClient chargeServiceClient;
+        protected readonly IChargeManager chargeManager = App._container.Resolve<IChargeManager>();
         protected IEnumerable<Category> categories;
         protected bool chargeType = false;
 

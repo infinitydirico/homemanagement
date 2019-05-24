@@ -36,7 +36,28 @@ namespace HomeManagement.Core.Caching
 
         public void Store(string key, object value)
         {
+            if (Exists(key)) throw new ArgumentNullException($"The {key} is already cached.");
+
             cachedVaues.Add(key, value);
+        }
+
+        public void Update(string key, object value)
+        {
+            if (!Exists(key)) throw new ArgumentNullException($"No cached value found for: {key}");
+
+            cachedVaues[key] = value;
+        }
+
+        public void StoreOrUpdate(string key, object value)
+        {
+            if (Exists(key))
+            {
+                Update(key, value);
+            }
+            else
+            {
+                Store(key, value);
+            }
         }
     }
 }

@@ -11,5 +11,9 @@
         void Remove(string key);
 
         bool Exists(string key);
+
+        void Update(string key, object value);
+
+        void StoreOrUpdate(string key, object value);
     }
 }

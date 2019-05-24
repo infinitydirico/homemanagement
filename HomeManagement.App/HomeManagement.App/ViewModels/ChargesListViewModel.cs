@@ -3,6 +3,7 @@ using HomeManagement.App.Common;
 using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
 using HomeManagement.App.Services.Rest;
+using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -18,6 +19,7 @@ namespace HomeManagement.App.ViewModels
 
         Account account;
         Charge selectedCharge;
+        bool isRefreshing;
 
         public ChargesListViewModel(Account account)
         {
@@ -26,6 +28,7 @@ namespace HomeManagement.App.ViewModels
             NextPageCommand = new Command(async () => await NextPage());
             PreviousPageCommand = new Command(async () => await PreviousPage());
             DeleteCommand = new Command<Charge>(async (charge) => await DeleteAsync(charge));
+            RefreshCommand = new Command(Refresh);
         }
 
         public ObservableCollection<Charge> Charges
@@ -37,6 +40,8 @@ namespace HomeManagement.App.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        public Command RefreshCommand { get; }
 
         public Command NextPageCommand { get; }
 
@@ -54,33 +59,40 @@ namespace HomeManagement.App.ViewModels
             }
         }
 
+        public bool IsRefreshing
+        {
+            get => isRefreshing;
+            set
+            {
+                isRefreshing = value;
+                OnPropertyChanged();
+            }
+        }
+
         public int CurrentPage => chargeManager.CurrentPage;
 
-        async Task NextPage() =>       
+        async Task NextPage() =>
             await HandleSafeExecutionAsync(async () => Charges = (await chargeManager.NextPage()).ToObservableCollection());
-        
 
-        async Task PreviousPage() =>        
+
+        async Task PreviousPage() =>
             await HandleSafeExecutionAsync(async () => Charges = (await chargeManager.PreviousPage()).ToObservableCollection());
-        
+
 
         private async Task DeleteAsync(Charge charge)
         {
             await HandleSafeExecutionAsync(async () =>
             {
-                await chargeServiceClient.Delete(charge.Id);
-                Charges = (await chargeManager.Load(account.Id, true)).ToObservableCollection();
+                await chargeManager.DeleteChargeAsync(charge);
+                Charges = (await chargeManager.Load(account.Id)).ToObservableCollection();
             });
         }
 
         protected override async Task InitializeAsync()
         {
+            IsRefreshing = true;
             Charges = (await chargeManager.Load(account.Id)).ToObservableCollection();
-        }
-
-        public override async void Refresh()
-        {
-            Charges = (await chargeManager.Load(account.Id, true)).ToObservableCollection();
+            IsRefreshing = false;
         }
     }
 }
