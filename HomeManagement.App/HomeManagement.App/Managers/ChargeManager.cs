@@ -21,27 +21,26 @@ namespace HomeManagement.App.Managers
 
         Task<IEnumerable<Charge>> Load(int accountId);
 
-        Task<IEnumerable<Charge>> NextPage();
+        Task<IEnumerable<Charge>> NextPageAsync();
 
-        Task<IEnumerable<Charge>> PreviousPage();
+        Task<IEnumerable<Charge>> PreviousPageAsync();
 
         Task AddChargeAsync(Charge charge);
 
         Task DeleteChargeAsync(Charge charge);
     }
 
-    public class ChargeManager : IChargeManager
+    public class ChargeManager : BaseManager<Charge, ChargePageModel>, IChargeManager
     {
-        private readonly IChargeServiceClient chargeServiceClient = App._container.Resolve<IChargeServiceClient>();
+        protected readonly IChargeServiceClient chargeServiceClient = App._container.Resolve<IChargeServiceClient>();
         private readonly GenericRepository<Charge> chargeRepository = new GenericRepository<Charge>();
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
-        //private IEnumerable<Charge> charges = new List<Charge>();
 
-        private ChargePageModel page = new ChargePageModel
+        public ChargeManager()
         {
-            PageCount = 6,
-            CurrentPage = 1
-        };
+            page.PageCount = 10;
+            page.CurrentPage = 1;
+        }
 
         public int PageCount => page.PageCount;
 
@@ -49,26 +48,34 @@ namespace HomeManagement.App.Managers
 
         public int CurrentPage => page.CurrentPage;
 
-        public async Task AddChargeAsync(Charge charge)
+        public virtual async Task AddChargeAsync(Charge charge)
         {
             await chargeServiceClient.Post(charge);
-            cachingService.StoreOrUpdate("ForceApiCall", true);
+
+            if (coudSyncSetting.Enabled)
+            {
+                cachingService.StoreOrUpdate("ForceApiCall", true);
+            }
         }
 
-        public async Task DeleteChargeAsync(Charge charge)
+        public virtual async Task DeleteChargeAsync(Charge charge)
         {
             await chargeServiceClient.Delete(charge.Id);
-            cachingService.StoreOrUpdate("ForceApiCall", true);
+
+            if (coudSyncSetting.Enabled)
+            {
+                cachingService.StoreOrUpdate("ForceApiCall", true);
+            }
         }
 
-        public async Task<IEnumerable<Charge>> Load(int accountId)
+        public virtual async Task<IEnumerable<Charge>> Load(int accountId)
         {
             page.AccountId = accountId;
 
             return await Paginate();
         }
 
-        public async Task<IEnumerable<Charge>> NextPage()
+        public override async Task<IEnumerable<Charge>> NextPageAsync()
         {
             if (page.CurrentPage.Equals(page.TotalPages))
             {
@@ -76,12 +83,10 @@ namespace HomeManagement.App.Managers
                 return GetCachedFilteredCharges(skip);
             }
 
-            page.CurrentPage++;
-
-            return await Paginate();
+            return await base.NextPageAsync();
         }
 
-        public async Task<IEnumerable<Charge>> PreviousPage()
+        public override async Task<IEnumerable<Charge>> PreviousPageAsync()
         {
             if (page.CurrentPage == 1)
             {
@@ -89,14 +94,12 @@ namespace HomeManagement.App.Managers
                 return GetCachedFilteredCharges(skip);
             }
 
-            page.CurrentPage--;
-
-            return await Paginate();
+            return await base.PreviousPageAsync();
         }
 
-        private async Task<IEnumerable<Charge>> Paginate()
+        protected override async Task<IEnumerable<Charge>> Paginate()
         {
-            if (!cachingService.Get<bool>("ForceApiCall"))
+            if (!cachingService.Get<bool>("ForceApiCall") || coudSyncSetting.Enabled)
             {
                 var skip = (page.CurrentPage - 1) * page.PageCount;
 
@@ -113,20 +116,7 @@ namespace HomeManagement.App.Managers
 
             page = await chargeServiceClient.Page(page);
 
-            var chargesResult = from charge in page.Charges
-                                select new Charge
-                                {
-                                    Id = charge.Id,
-                                    AccountId = charge.AccountId,
-                                    CategoryId = charge.CategoryId,
-                                    ChargeType = (ChargeType)Enum.Parse(typeof(ChargeType), charge.ChargeType.ToString()),
-                                    Date = charge.Date,
-                                    Name = charge.Name,
-                                    Price = charge.Price,
-                                    ChangeStamp = DateTime.Now,
-                                    LastApiCall = DateTime.Now,
-                                    NeedsUpdate = false
-                                };
+            var chargesResult = MapPageToEntity(page);
 
             UpdateCachedCharges(chargesResult);
 
@@ -135,6 +125,8 @@ namespace HomeManagement.App.Managers
 
         private void UpdateCachedCharges(IEnumerable<Charge> charges)
         {
+            if (!coudSyncSetting.Enabled) return;
+
             Task.Run(() =>
             {
                 foreach (var item in charges)
@@ -145,6 +137,8 @@ namespace HomeManagement.App.Managers
                     }
                 }
                 chargeRepository.Commit();
+
+                cachingService.StoreOrUpdate("ForceApiCall", false);
             });
         }
 
@@ -155,5 +149,21 @@ namespace HomeManagement.App.Managers
             .Skip(skip)
             .Take(page.PageCount)
             .ToList();
+
+        private IEnumerable<Charge> MapPageToEntity(ChargePageModel page) 
+            => from charge in page.Charges
+               select new Charge
+               {
+                   Id = charge.Id,
+                   AccountId = charge.AccountId,
+                   CategoryId = charge.CategoryId,
+                   ChargeType = (ChargeType)Enum.Parse(typeof(ChargeType), charge.ChargeType.ToString()),
+                   Date = charge.Date,
+                   Name = charge.Name,
+                   Price = charge.Price,
+                   ChangeStamp = DateTime.Now,
+                   LastApiCall = DateTime.Now,
+                   NeedsUpdate = false
+               };
     }
 }

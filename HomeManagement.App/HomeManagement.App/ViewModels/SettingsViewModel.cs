@@ -1,5 +1,6 @@
 ﻿using HomeManagement.App.Data;
 using HomeManagement.App.Data.Entities;
+using HomeManagement.App.Managers;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -90,6 +91,11 @@ namespace HomeManagement.App.ViewModels
 
         private void SaveCloudSyncSetting()
         {
+            if (!coudSyncEnabled)
+            {
+                ClearCache(null);
+            }
+
             appSettingsRepository.Update(coudSyncSetting);
             appSettingsRepository.Commit();
         }

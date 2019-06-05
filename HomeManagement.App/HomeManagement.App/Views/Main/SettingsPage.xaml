@@ -39,7 +39,8 @@
                        VerticalOptions="Center" HorizontalOptions="End" FontSize="Large"/>
                     </StackLayout>
                     <Button Text="Clear Cache" Command="{Binding ClearCacheCommand}"
-                            HorizontalOptions="Start" VerticalOptions="Center"/>
+                            HorizontalOptions="Start" VerticalOptions="Center"
+                            IsEnabled="{Binding CoudSyncEnabled}"/>
                 </StackLayout>                
             </Frame>
         </StackLayout>

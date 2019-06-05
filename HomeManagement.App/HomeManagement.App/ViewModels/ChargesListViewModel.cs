@@ -72,11 +72,11 @@ namespace HomeManagement.App.ViewModels
         public int CurrentPage => chargeManager.CurrentPage;
 
         async Task NextPage() =>
-            await HandleSafeExecutionAsync(async () => Charges = (await chargeManager.NextPage()).ToObservableCollection());
+            await HandleSafeExecutionAsync(async () => Charges = (await chargeManager.NextPageAsync()).ToObservableCollection());
 
 
         async Task PreviousPage() =>
-            await HandleSafeExecutionAsync(async () => Charges = (await chargeManager.PreviousPage()).ToObservableCollection());
+            await HandleSafeExecutionAsync(async () => Charges = (await chargeManager.PreviousPageAsync()).ToObservableCollection());
 
 
         private async Task DeleteAsync(Charge charge)

@@ -190,7 +190,7 @@
     <value>Nombre de usuario</value>
   </data>
   <data name="CloudSync" xml:space="preserve">
-    <value>Sincronizacion con la Nube</value>
+    <value>Sincronizacion</value>
   </data>
   <data name="CurrentLanguage" xml:space="preserve">
     <value>Lenguaje</value>

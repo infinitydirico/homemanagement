@@ -18,20 +18,17 @@ namespace HomeManagement.App.Managers
         Task<IEnumerable<Account>> NextPageAsync();
     }
 
-    public class AccountManager : IAccountManager
+    public class AccountManager : BaseManager<Account, AccountPageModel> , IAccountManager
     {        
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
         private readonly IAccountServiceClient accountServiceClient = App._container.Resolve<IAccountServiceClient>();
-        private readonly GenericRepository<Account> accountRepository = new GenericRepository<Account>();
-        private AccountPageModel page = new AccountPageModel
-        {
-            PageCount = 10,
-            CurrentPage = 1
-        };
 
         public AccountManager()
         {
             page.UserId = authenticationManager.GetAuthenticatedUser().Id;
+
+            page.PageCount = 10;
+            page.CurrentPage = 1;
         }
 
         public async Task<IEnumerable<Account>> LoadAsync()
@@ -39,14 +36,7 @@ namespace HomeManagement.App.Managers
             return await Paginate();
         }
 
-        public async Task<IEnumerable<Account>> NextPageAsync()
-        {
-            page.CurrentPage++;
-
-            return await Paginate();
-        }
-
-        private async Task<IEnumerable<Account>> Paginate()
+        protected override async Task<IEnumerable<Account>> Paginate()
         {
             var skip = (page.CurrentPage - 1) * page.PageCount;
 
