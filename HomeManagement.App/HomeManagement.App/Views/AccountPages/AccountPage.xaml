@@ -16,10 +16,15 @@
         <ToolbarItem Icon="add.png" Clicked="NavigateToAddAccount" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <ListView x:Name="accountsList" ItemTapped="EditCharge" ItemsSource="{Binding Accounts}" Margin="10,10,10,10">
+        <ListView x:Name="accountsList" ItemTapped="EditCharge" ItemsSource="{Binding Accounts}" Margin="10,10,10,10"
+                  IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
+                        <ViewCell.ContextActions>
+                            <MenuItem Clicked="OnEdit" Icon="edit.png" />
+                            <MenuItem Clicked="OnRemove" Icon="red_trash.png" IsDestructive="True"/>
+                        </ViewCell.ContextActions>
                         <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
                             <Label Text = "{Binding Name}" FontSize="Medium" TextColor="White"/>
                             <Label Text = "{Binding Balance}" FontSize="Medium" TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" HorizontalOptions="EndAndExpand"/>

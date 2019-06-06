@@ -2,6 +2,7 @@
 using HomeManagement.App.Data.Entities;
 using HomeManagement.App.ViewModels;
 using HomeManagement.App.Views.Charges;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -29,6 +30,16 @@ namespace HomeManagement.App.Views.AccountPages
         private void NavigateToAddAccount(object sender, System.EventArgs e)
         {
             Navigation.PushAsync(new AddAccountPage());
+        }
+
+        private void OnEdit(object sender, EventArgs e)
+        {
+            DisplayAlert("Edit", "Edit", "ok");
+        }
+
+        private void OnRemove(object sender, EventArgs e)
+        {
+            DisplayAlert("Remove", "Remove", "ok");
         }
     }
 }
