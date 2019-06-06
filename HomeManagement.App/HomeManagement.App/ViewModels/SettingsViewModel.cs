@@ -47,6 +47,10 @@ namespace HomeManagement.App.ViewModels
 
         public string CloudSyncStatusText { get; private set; } = "Disabled";
 
+        public string LanguageTitleText { get; set; } = "LanguageOptions";
+
+        public string SyncTitleText { get; set; } = "SyncOptions";
+
         public bool CoudSyncEnabled
         {
             get

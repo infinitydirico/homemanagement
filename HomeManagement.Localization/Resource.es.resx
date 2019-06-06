@@ -201,4 +201,10 @@
   <data name="Enabled" xml:space="preserve">
     <value>Habilitado</value>
   </data>
+  <data name="LanguageOptions" xml:space="preserve">
+    <value>Opciones de Lenguaje</value>
+  </data>
+  <data name="SyncOptions" xml:space="preserve">
+    <value>Opciones de sincronizacion</value>
+  </data>
 </root>
