@@ -12,6 +12,7 @@ namespace HomeManagement.App.Views.Charges
     {
         Account account;
         ChargesListViewModel viewModel;
+        private ToolbarItem editToolItem;
 
         public ChargesList(Account account)
         {
@@ -24,7 +25,7 @@ namespace HomeManagement.App.Views.Charges
             BindingContext = viewModel;
 
             Title = account.Name;
-
+            ShowAddChargeToolbar();
             InitializeComponent();
         }
 
@@ -49,19 +50,9 @@ namespace HomeManagement.App.Views.Charges
             Navigation.PushAsync(page);
         }
 
-        private void OnRemove(object sender, EventArgs e)
-        {
-            MenuItem menuItem = sender as MenuItem;
-
-            viewModel.DeleteCommand.Execute(menuItem.CommandParameter);
-        }
-
         private void OnEdit(object sender, EventArgs e)
         {
-            MenuItem menuItem = sender as MenuItem;
-            var charge = menuItem.CommandParameter as Charge;
-
-            var editChargePage = new EditCharge(account, charge)
+            var editChargePage = new EditCharge(account, chargesList.SelectedItem as Charge)
             {
                 Title = "Editar Movimiento"
             };
@@ -70,9 +61,52 @@ namespace HomeManagement.App.Views.Charges
             Navigation.PushAsync(editChargePage);
         }
 
-        private void chargesList_ItemTapped(object sender, ItemTappedEventArgs e)
+        private void ShowAddChargeToolbar()
         {
-            ((ListView)sender).SelectedItem = null;
+            ToolbarItems.Clear();
+
+            var toolItem = new ToolbarItem
+            {
+                Icon = "add.png"
+            };
+
+            toolItem.Clicked += OnAddChargeCommand;
+            ToolbarItems.Add(toolItem);
+        }
+
+        private void ShowEditionToolbar(object sender, ItemTappedEventArgs e)
+        {
+            ToolbarItems.Clear();
+
+            var cancelToolbarItem = new ToolbarItem
+            {
+                Icon = "close.png"
+            };
+            cancelToolbarItem.Clicked += (s, ev) =>
+            {
+                chargesList.SelectedItem = null;
+                ShowAddChargeToolbar();
+            };
+            ToolbarItems.Add(cancelToolbarItem);
+
+            var editToolItem = new ToolbarItem
+            {
+                Icon = "edit.png"
+            };
+
+            editToolItem.Clicked += OnEdit;
+            ToolbarItems.Add(editToolItem);
+
+            var deleteItem = new ToolbarItem
+            {
+                Icon = "red_trash.png",
+                IsDestructive = true
+            };
+            deleteItem.Clicked += (s, ev) =>
+            {
+                viewModel.DeleteCommand.Execute(chargesList.SelectedItem);
+            };
+            ToolbarItems.Add(deleteItem);
         }
     }
 }

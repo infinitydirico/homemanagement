@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HomeManagement.App.Views.Charges.ChargesList"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
+             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              BackgroundColor="{StaticResource LayoutDark}">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -10,30 +11,28 @@
             <Conv:DateConverter x:Key="DateConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Icon="add.png" Clicked="OnAddChargeCommand" />
-    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Margin="20,20,20,20">
-            <ListView x:Name="chargesList" ItemTapped="chargesList_ItemTapped" ItemsSource="{Binding Charges}" 
+            <ListView x:Name="chargesList" ItemTapped="ShowEditionToolbar" ItemsSource="{Binding Charges}" 
                       IsVisible="{Binding !IsBusy}" SelectedItem="{Binding SelectedCharge}" RowHeight="70"
                       IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
+                <ListView.Behaviors>
+                    <Beh:ListViewSelectedItemBehaviour x:Name="ChangeColour" />
+                </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <ViewCell.ContextActions>
-                                <MenuItem Clicked="OnEdit" CommandParameter="{Binding .}" Icon="edit.png" />
-                                <MenuItem Clicked="OnRemove" CommandParameter="{Binding .}" Icon="red_trash.png" IsDestructive="True"/>
-                            </ViewCell.ContextActions>
-                            <StackLayout Orientation="Vertical">
-                                <StackLayout Orientation="Horizontal">
-                                    <Label Text = "{Binding Name}" FontSize="Large" TextColor="White" HorizontalOptions="StartAndExpand" />
-                                    <Label Text = "{Binding Price}" TextColor="{Binding ChargeType, Converter={StaticResource ChargeTypeColor}}" FontSize="Medium" HorizontalOptions="EndAndExpand"/>
+                            <ViewCell.View BackgroundColor="{StaticResource LayoutDark}">
+                                <StackLayout Orientation="Vertical">
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text = "{Binding Name}" FontSize="Large" TextColor="White" HorizontalOptions="StartAndExpand" />
+                                        <Label Text = "{Binding Price}" TextColor="{Binding ChargeType, Converter={StaticResource ChargeTypeColor}}" FontSize="Medium" HorizontalOptions="EndAndExpand"/>
+                                    </StackLayout>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text = "{Binding Date, Converter={StaticResource DateConverter}}" FontSize="Medium" TextColor="White"/>
+                                    </StackLayout>
                                 </StackLayout>
-                                <StackLayout Orientation="Horizontal">
-                                    <Label Text = "{Binding Date, Converter={StaticResource DateConverter}}" FontSize="Medium" TextColor="White"/>
-                                </StackLayout>
-                            </StackLayout>
+                            </ViewCell.View>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>

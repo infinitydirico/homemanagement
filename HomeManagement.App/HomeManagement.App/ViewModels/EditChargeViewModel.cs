@@ -11,7 +11,7 @@ namespace HomeManagement.App.ViewModels
     {
         public EditChargeViewModel(Account account, Charge charge) : base(account)
         {
-            this.Charge = charge;
+            Charge = charge;
 
             UpdateChargeCommand = new Command(UpdateCharge);
 
