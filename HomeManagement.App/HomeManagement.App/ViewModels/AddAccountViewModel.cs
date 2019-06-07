@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using HomeManagement.App.Common;
 using HomeManagement.App.Data.Entities;
+using HomeManagement.App.Managers;
 using HomeManagement.App.Services.Rest;
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,7 @@ namespace HomeManagement.App.ViewModels
     {
         private readonly ICurrencyServiceClient currencyService = App._container.Resolve<ICurrencyServiceClient>();
         private readonly IAccountServiceClient accountServiceClient = App._container.Resolve<IAccountServiceClient>();
-        private readonly IAuthServiceClient authServiceClient = App._container.Resolve<IAuthServiceClient>();
-        private readonly IAuthServiceClient authService = App._container.Resolve<IAuthServiceClient>();
+        private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
 
         Currency selectedCurrency;
         AccountType selectedAccountType;
@@ -26,7 +26,7 @@ namespace HomeManagement.App.ViewModels
             Account = new Account();
             AddAccountCommand = new Command(async () => await AddAccount());
             SelectedAccountType = AccountType.Cash;
-            Account.UserId = authService.User.Id;
+            Account.UserId = authenticationManager.GetAuthenticatedUser().Id;
         }
 
         public event EventHandler OnAccountCreated;

@@ -12,7 +12,6 @@ namespace HomeManagement.App.Behaviours
             listView = bindable;
             bindable.ItemTapped += Bindable_ItemTapped;
             bindable.ItemSelected += Bindable_ItemSelected;
-
             base.OnAttachedTo(bindable);
         }
 
@@ -22,7 +21,7 @@ namespace HomeManagement.App.Behaviours
             {
                 foreach (ViewCell cell in listView.GetCells() as ITemplatedItemsList<Cell>)
                 {
-                    cell.View.BackgroundColor = Color.FromHex("#303030");
+                    cell.View.BackgroundColor = Color.FromHex("#212121");
                 }
             }
         }
@@ -31,13 +30,9 @@ namespace HomeManagement.App.Behaviours
         {
             foreach (ViewCell cell in listView.GetCells() as ITemplatedItemsList<Cell>)
             {
-                if (cell.BindingContext != null && cell.BindingContext.Equals(e.Item))
+                if (cell.BindingContext != null)
                 {
-                    cell.View.BackgroundColor = Color.FromHex("#212121");
-                }
-                else
-                {
-                    cell.View.BackgroundColor = Color.FromHex("#303030");
+                    cell.View.BackgroundColor = Color.FromHex(cell.BindingContext.Equals(e.Item) ? "#303030" : "#212121");
                 }
             }
         }

@@ -4,7 +4,6 @@ using HomeManagement.App.Managers;
 using HomeManagement.App.Services.Rest;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
 namespace HomeManagement.App.ViewModels
 {
@@ -15,12 +14,6 @@ namespace HomeManagement.App.ViewModels
         private readonly IAccountManager accountManager = App._container.Resolve<IAccountManager>();
 
         IEnumerable<Account> accounts;
-        bool isRefreshing;
-
-        public AccountsViewModel()
-        {
-            RefreshCommand = new Command(Refresh);
-        }
 
         protected override async Task InitializeAsync()
         {
@@ -30,24 +23,12 @@ namespace HomeManagement.App.ViewModels
             });
         }
 
-        public Command RefreshCommand { get; }
-
         public IEnumerable<Account> Accounts
         {
             get => accounts;
             set
             {
                 accounts = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool IsRefreshing
-        {
-            get => isRefreshing;
-            set
-            {
-                isRefreshing = value;
                 OnPropertyChanged();
             }
         }

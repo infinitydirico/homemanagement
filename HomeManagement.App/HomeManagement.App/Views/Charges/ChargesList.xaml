@@ -4,7 +4,7 @@
              x:Class="HomeManagement.App.Views.Charges.ChargesList"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
-             BackgroundColor="{StaticResource LayoutDark}">
+             BackgroundColor="{StaticResource TabBarColor}">
     <ContentPage.Resources>
         <ResourceDictionary>
             <Conv:ChargeTypeColorConverter x:Key="ChargeTypeColor" />
@@ -44,12 +44,14 @@
             <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" HorizontalOptions="Center">
                 <StackLayout>
                     <Button Image="arrow_left.png" BackgroundColor="{StaticResource ControlLight}" 
-                            VerticalOptions="Center" Command="{Binding PreviousPageCommand}" IsEnabled="{Binding NotBusy}" />
+                            VerticalOptions="Center" Command="{Binding PreviousPageCommand}" IsEnabled="{Binding NotBusy}" 
+                            WidthRequest="75" HeightRequest="75" />
                 </StackLayout>
 
                 <StackLayout>
                     <Button Image="arrow_right.png" BackgroundColor="{StaticResource ControlLight}" 
-                            VerticalOptions="Center" Command="{Binding NextPageCommand}" IsEnabled="{Binding NotBusy}" />
+                            VerticalOptions="Center" Command="{Binding NextPageCommand}" IsEnabled="{Binding NotBusy}"
+                            WidthRequest="75" HeightRequest="75" />
                 </StackLayout>
             </StackLayout>
         </StackLayout>

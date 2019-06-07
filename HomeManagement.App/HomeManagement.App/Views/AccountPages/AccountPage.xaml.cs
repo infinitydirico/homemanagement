@@ -18,7 +18,7 @@ namespace HomeManagement.App.Views.AccountPages
             BindingContext = new AccountsViewModel();
 		}
 
-        private void EditCharge(object sender, ItemTappedEventArgs e)
+        private void ViewChargesList(object sender, ItemTappedEventArgs e)
         {
             var account = e.Item as Account;
 
@@ -30,16 +30,6 @@ namespace HomeManagement.App.Views.AccountPages
         private void NavigateToAddAccount(object sender, System.EventArgs e)
         {
             Navigation.PushAsync(new AddAccountPage());
-        }
-
-        private void OnEdit(object sender, EventArgs e)
-        {
-            DisplayAlert("Edit", "Edit", "ok");
-        }
-
-        private void OnRemove(object sender, EventArgs e)
-        {
-            DisplayAlert("Remove", "Remove", "ok");
         }
     }
 }
