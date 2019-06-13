@@ -7,14 +7,14 @@
              xmlns:charts="clr-namespace:Nightingale.Charts;assembly=Nightingale">
     <ContentPage.Content>
         <StackLayout HorizontalOptions="FillAndExpand">
-            <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,10,10,10" HeightRequest="220">
+            <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,10,10,10">
                 <charts:BarChart x:Name="barChart" Values="{Binding ChartValues}" 
-                                 TextSize="30" BackgroundColor="#303030" HeightRequest="190" Margin="10,10,10,10" />
+                                 TextSize="30" BackgroundColor="#303030" HeightRequest="150" Margin="10,10,10,10" />
             </Frame>
 
-            <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,10,10,10" HeightRequest="220">
+            <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,10,10,10">
                 <charts:PieChart x:Name="pieChart" Values="{Binding ChartValues}" 
-                                 TextSize="30" BackgroundColor="#303030" HeightRequest="190" Margin="10,10,10,10" />
+                                 TextSize="30" BackgroundColor="#303030" HeightRequest="150" Margin="10,10,10,10" />
             </Frame>
         </StackLayout>
     </ContentPage.Content>

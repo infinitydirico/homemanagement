@@ -19,7 +19,7 @@
             <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
                 <StackLayout Orientation="Vertical">
                     <StackLayout>
-                        <Label Text="{Binding LanguageTitleText, Converter={StaticResource Translation}}" TextColor="White" FontSize="Large" />
+                        <Label Text="{Binding LanguageTitleText, Converter={StaticResource Translation}}" TextColor="White" FontSize="Medium" />
                     </StackLayout>
                     <StackLayout Orientation="Horizontal" Margin="10,10,10,10">
                         <Button Command="{Binding ChangeLanguageCommand}" Text="{Binding ChangeLanguageText, Converter={StaticResource Translation}}"
