@@ -14,6 +14,15 @@ namespace HomeManagement.App.Views.Main
             InitializeComponent();
 
             BindingContext = viewModel;
+
+            viewModel.OnInitializationFinished += (s, e) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    pieChart.InvalidateSurface();
+                    barChart.InvalidateSurface();
+                });
+            };
         }
     }
 }

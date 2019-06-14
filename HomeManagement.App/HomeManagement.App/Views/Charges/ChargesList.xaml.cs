@@ -1,5 +1,6 @@
 ﻿using HomeManagement.App.Data.Entities;
 using HomeManagement.App.ViewModels;
+using HomeManagement.App.Views.AccountPages;
 using System;
 
 using Xamarin.Forms;
@@ -107,6 +108,13 @@ namespace HomeManagement.App.Views.Charges
                 viewModel.DeleteCommand.Execute(chargesList.SelectedItem);
             };
             ToolbarItems.Add(deleteItem);
+        }
+
+        private void OnViewAccountStatistics(object sender, EventArgs e)
+        {
+            var accountStatisticsPage = new AccountStatisticsPage(account);
+            NavigationPage.SetHasBackButton(accountStatisticsPage, true);
+            Navigation.PushAsync(accountStatisticsPage);
         }
     }
 }

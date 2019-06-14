@@ -1,6 +1,7 @@
 ﻿using HomeManagement.App.Common;
 using HomeManagement.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace HomeManagement.App.Services.Rest
@@ -31,6 +32,14 @@ namespace HomeManagement.App.Services.Rest
                 .ReadContent<OverPricedCategories>();
         }
 
+        public async Task<IEnumerable<OverPricedCategory2>> GetMostExpensiveCategories(int accountId)
+        {
+            return await RestClientFactory
+                .CreateAuthenticatedClient()
+                .GetAsync($"{Constants.Endpoints.Accounts.ACCOUNT}/{accountId}/{Constants.Endpoints.Accounts.AccountTopCharges}/{DateTime.Now.Month}")
+                .ReadContent<IEnumerable<OverPricedCategory2>>();
+        }
+
         public async Task<MetricValueDto> GetTotalIncome()
         {
             return await RestClientFactory
@@ -51,6 +60,8 @@ namespace HomeManagement.App.Services.Rest
     public interface IAccountMetricsServiceClient
     {
         Task<OverPricedCategories> GetMostExpensiveCategories();
+
+        Task<IEnumerable<OverPricedCategory2>> GetMostExpensiveCategories(int accountId);
 
         Task<AccountsEvolutionModel> GetAccountsBalances();
 

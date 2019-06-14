@@ -14,6 +14,8 @@ namespace HomeManagement.App.Data
         public T FirstOrDefault(Expression<Func<T, bool>> predicate)
             => dbContext.Set<T>().FirstOrDefault(predicate);
 
+        public bool Any() => dbContext.Set<T>().Any();
+
         public bool Any(Expression<Func<T, bool>> predicate)
             => dbContext.Set<T>().Any(predicate);
 

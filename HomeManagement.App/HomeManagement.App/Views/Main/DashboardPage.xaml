@@ -21,13 +21,13 @@
                     <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
                         <StackLayout Orientation="Horizontal">
                             <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand">
-                                <Label Text="{Binding OverallIncomeText, Converter={StaticResource Translation}}" FontSize="Large" TextColor="White" />
+                                <Label Text="{Binding OverallIncomeText, Converter={StaticResource Translation}}" TextColor="White" />
                             </StackLayout>
                             <StackLayout Orientation="Vertical" HorizontalOptions="EndAndExpand">
-                                <Label Text="{Binding TotalIncome}" FontSize="Large" TextColor="White" />
+                                <Label Text="{Binding TotalIncome}" TextColor="White" />
 
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="{Binding IncomePercentage}" FontSize="Medium" TextColor="{Binding IncomePercentage, Converter={StaticResource PercentageColor}}" />
+                                    <Label Text="{Binding IncomePercentage}" TextColor="{Binding IncomePercentage, Converter={StaticResource PercentageColor}}" />
 
                                     <Image Source="perc_down.png" IsVisible="{Binding IncomePercentage, Converter={StaticResource LessThan}}" HeightRequest="25" />
                                     <Image Source="perc_up.png" IsVisible="{Binding IncomePercentage, Converter={StaticResource GreaterThan}}" HeightRequest="25"/>
@@ -40,13 +40,13 @@
                     <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
                         <StackLayout Orientation="Horizontal">
                             <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand">
-                                <Label Text="{Binding OverallOutcomeText, Converter={StaticResource Translation}}" FontSize="Large" TextColor="White" />
+                                <Label Text="{Binding OverallOutcomeText, Converter={StaticResource Translation}}" TextColor="White" />
                             </StackLayout>
                             <StackLayout Orientation="Vertical" HorizontalOptions="EndAndExpand">
-                                <Label Text="{Binding TotalOutcome}" FontSize="Large" TextColor="White" />
+                                <Label Text="{Binding TotalOutcome}" TextColor="White" />
 
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="{Binding OutcomePercentage}" FontSize="Medium" TextColor="{Binding OutcomePercentage, Converter={StaticResource PercentageColor}}" />
+                                    <Label Text="{Binding OutcomePercentage}" TextColor="{Binding OutcomePercentage, Converter={StaticResource PercentageColor}}" />
 
                                     <Image Source="perc_down.png" IsVisible="{Binding OutcomePercentage, Converter={StaticResource LessThan}}" HeightRequest="25" />
                                     <Image Source="perc_up.png" IsVisible="{Binding OutcomePercentage, Converter={StaticResource GreaterThan}}" HeightRequest="25"/>

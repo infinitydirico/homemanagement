@@ -19,14 +19,14 @@
             <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
                 <StackLayout Orientation="Vertical">
                     <StackLayout>
-                        <Label Text="{Binding LanguageTitleText, Converter={StaticResource Translation}}" TextColor="White" FontSize="Medium" />
+                        <Label Text="{Binding LanguageTitleText, Converter={StaticResource Translation}}" TextColor="White" />
                     </StackLayout>
                     <StackLayout Orientation="Horizontal" Margin="10,10,10,10">
                         <Button Command="{Binding ChangeLanguageCommand}" Text="{Binding ChangeLanguageText, Converter={StaticResource Translation}}"
                     HorizontalOptions="Start" VerticalOptions="Center" />
 
                         <Label Text="{Binding CurrentLanguage, Converter={StaticResource Translation}}" TextColor="White"
-                       VerticalOptions="Center" HorizontalOptions="End" FontSize="Large" />
+                       VerticalOptions="Center" HorizontalOptions="End" />
 
                     </StackLayout>
                 </StackLayout>
@@ -34,7 +34,7 @@
             <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
                 <StackLayout Orientation="Vertical">
                     <StackLayout>
-                        <Label Text="{Binding SyncTitleText, Converter={StaticResource Translation}}" TextColor="White" FontSize="Large" />
+                        <Label Text="{Binding SyncTitleText, Converter={StaticResource Translation}}" TextColor="White" />
                     </StackLayout>
                     <StackLayout Orientation="Vertical" Margin="10,10,10,10">
                         <StackLayout Orientation="Horizontal">
@@ -42,10 +42,10 @@
                                     IsToggled="{Binding CoudSyncEnabled}"/>
 
                             <Label Text="{Binding CloudSyncText, Converter={StaticResource Translation}}" TextColor="White"
-                                    VerticalOptions="Center" HorizontalOptions="Start" FontSize="Large"/>
+                                    VerticalOptions="Center" HorizontalOptions="Start" />
 
                             <Label Text="{Binding CloudSyncStatusText, Converter={StaticResource Translation}}" TextColor="White"
-                                    VerticalOptions="Center" HorizontalOptions="End" FontSize="Large"/>
+                                    VerticalOptions="Center" HorizontalOptions="End" />
                         </StackLayout>
                         <Button Text="Clear Cache" Command="{Binding ClearCacheCommand}"
                             HorizontalOptions="Start" VerticalOptions="Center"

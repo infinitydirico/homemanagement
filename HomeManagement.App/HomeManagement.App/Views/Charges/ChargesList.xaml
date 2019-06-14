@@ -25,11 +25,11 @@
                             <ViewCell.View BackgroundColor="{StaticResource LayoutDark}">
                                 <StackLayout Orientation="Vertical">
                                     <StackLayout Orientation="Horizontal">
-                                        <Label Text = "{Binding Name}" FontSize="Large" TextColor="White" HorizontalOptions="StartAndExpand" />
-                                        <Label Text = "{Binding Price}" TextColor="{Binding ChargeType, Converter={StaticResource ChargeTypeColor}}" FontSize="Medium" HorizontalOptions="EndAndExpand"/>
+                                        <Label Text = "{Binding Name}" TextColor="White" HorizontalOptions="StartAndExpand" />
+                                        <Label Text = "{Binding Price}" TextColor="{Binding ChargeType, Converter={StaticResource ChargeTypeColor}}" FontSize="Small" HorizontalOptions="EndAndExpand"/>
                                     </StackLayout>
                                     <StackLayout Orientation="Horizontal">
-                                        <Label Text = "{Binding Date, Converter={StaticResource DateConverter}}" FontSize="Medium" TextColor="White"/>
+                                        <Label Text = "{Binding Date, Converter={StaticResource DateConverter}}" TextColor="White"/>
                                     </StackLayout>
                                 </StackLayout>
                             </ViewCell.View>
@@ -41,17 +41,26 @@
             <ActivityIndicator x:Name="indicator" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="White"
                                VerticalOptions="Center" HorizontalOptions="Center"/>
 
-            <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" HorizontalOptions="Center">
-                <StackLayout>
-                    <Button Image="arrow_left.png" BackgroundColor="{StaticResource ControlLight}" 
-                            VerticalOptions="Center" Command="{Binding PreviousPageCommand}" IsEnabled="{Binding NotBusy}" 
-                            WidthRequest="75" HeightRequest="75" />
+            <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
+                <StackLayout HorizontalOptions="Start">
+                    <Button Image="barchart.png" BackgroundColor="{StaticResource ControlLight}" 
+                            VerticalOptions="Center" 
+                            WidthRequest="75" HeightRequest="75"
+                            Clicked="OnViewAccountStatistics"/>
                 </StackLayout>
 
-                <StackLayout>
-                    <Button Image="arrow_right.png" BackgroundColor="{StaticResource ControlLight}" 
+                <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                    <StackLayout>
+                        <Button Image="arrow_left.png" BackgroundColor="{StaticResource ControlLight}" 
+                            VerticalOptions="Center" Command="{Binding PreviousPageCommand}" IsEnabled="{Binding NotBusy}" 
+                            WidthRequest="75" HeightRequest="75" />
+                    </StackLayout>
+
+                    <StackLayout>
+                        <Button Image="arrow_right.png" BackgroundColor="{StaticResource ControlLight}" 
                             VerticalOptions="Center" Command="{Binding NextPageCommand}" IsEnabled="{Binding NotBusy}"
                             WidthRequest="75" HeightRequest="75" />
+                    </StackLayout>
                 </StackLayout>
             </StackLayout>
         </StackLayout>

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HomeManagement.App.Views.Charges.AddCharge"
              BackgroundColor="{StaticResource LayoutDark}"
+             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -18,9 +19,9 @@
         <StackLayout Orientation="Vertical">
 
             <StackLayout Orientation="Vertical" Padding="20,20,20,20">
-                <Label Text="Nombre del movimiento" TextColor="White" FontSize="Large" />
+                <Label Text="Nombre del movimiento" TextColor="White" />
 
-                <Entry TextColor="White" Text="{Binding Charge.Name}" FontSize="Large" BackgroundColor="{StaticResource LayoutDark}" />
+                <Entry TextColor="White" Text="{Binding Charge.Name}" BackgroundColor="{StaticResource LayoutDark}" />
             </StackLayout>
 
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">

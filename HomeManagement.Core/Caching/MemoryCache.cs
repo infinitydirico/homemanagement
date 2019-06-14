@@ -22,7 +22,9 @@ namespace HomeManagement.Core.Caching
 
             var cachedValue = cachedVaues[key];
 
-            if (cachedValue.GetType() == typeof(T)) return (T)cachedValue;
+            var cachedValueType = cachedValue.GetType();
+
+            if (cachedValueType.GetType() == typeof(T) || typeof(T).IsAssignableFrom(cachedValueType)) return (T)cachedValue;
 
             throw new ArgumentException($"Cannot cast type {cachedValue.GetType().Name} to type {typeof(T).Name}");
         }

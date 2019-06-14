@@ -16,6 +16,8 @@ namespace HomeManagement.App.Managers
 
         User GetAuthenticatedUser();
 
+        bool AreCredentialsAvaible();
+
         Task Logout();
     }
 
@@ -144,5 +146,7 @@ namespace HomeManagement.App.Managers
                 appSettingsRepository.Commit();
             }
         }
+
+        public bool AreCredentialsAvaible() => userRepository.Any();
     }
 }

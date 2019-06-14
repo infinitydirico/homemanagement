@@ -18,8 +18,8 @@
             <DataTemplate>
                 <ViewCell>
                     <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                        <Label Text = "{Binding Name}" FontSize="Medium" TextColor="White"/>
-                        <Label Text = "{Binding Balance}" FontSize="Medium" TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" HorizontalOptions="EndAndExpand"/>
+                        <Label Text = "{Binding Name}" TextColor="White"/>
+                        <Label Text = "{Binding Balance}" TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" HorizontalOptions="EndAndExpand"/>
                     </StackLayout>
                 </ViewCell>
             </DataTemplate>

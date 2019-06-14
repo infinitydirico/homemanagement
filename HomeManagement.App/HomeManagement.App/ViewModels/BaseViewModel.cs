@@ -40,6 +40,7 @@ namespace HomeManagement.App.ViewModels
             set { SetProperty(ref title, value); }
         }
 
+        public event EventHandler OnInitializationFinished;
         public event EventHandler OnInitializationError;
         public event EventHandler<ErrorEventArgs> OnError;
 
@@ -51,6 +52,7 @@ namespace HomeManagement.App.ViewModels
                 try
                 {
                     await InitializeAsync();
+                    OnInitializationFinished?.Invoke(this, EventArgs.Empty);
                 }
                 catch (Exception ex)
                 {
