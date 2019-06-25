@@ -57,11 +57,10 @@
                     </Frame>
                 </StackLayout>
 
-                <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
+                <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0" VerticalOptions="FillAndExpand">
                     <StackLayout>
-                        <local:AccountListControl></local:AccountListControl>
-                        <Button Text="{Binding GoToAccountsText, Converter={StaticResource Translation}}" Clicked="Button_Clicked" HorizontalOptions="StartAndExpand"
-                            VerticalOptions="Center" />
+                        <local:AccountListControl VerticalOptions="FillAndExpand"></local:AccountListControl>
+                        <!--<Button Text="{Binding GoToAccountsText, Converter={StaticResource Translation}}" Clicked="Button_Clicked" HorizontalOptions="StartAndExpand" />-->
                     </StackLayout>
                 </Frame>
 

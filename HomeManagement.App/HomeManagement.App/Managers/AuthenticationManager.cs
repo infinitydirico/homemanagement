@@ -18,6 +18,8 @@ namespace HomeManagement.App.Managers
 
         bool AreCredentialsAvaible();
 
+        User GetStoredUser();
+
         Task Logout();
     }
 
@@ -148,5 +150,12 @@ namespace HomeManagement.App.Managers
         }
 
         public bool AreCredentialsAvaible() => userRepository.Any();
+
+        public User GetStoredUser()
+        {
+            var u = userRepository.FirstOrDefault();
+            u.Password = crypto.Decrypt(u.Password);
+            return u;
+        }
     }
 }

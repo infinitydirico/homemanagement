@@ -2,8 +2,6 @@
 using HomeManagement.App.Common;
 using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
-using HomeManagement.App.Services.Rest;
-using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -13,7 +11,6 @@ namespace HomeManagement.App.ViewModels
     public class ChargesListViewModel : BaseViewModel
     {
         private readonly IChargeManager chargeManager = App._container.Resolve<IChargeManager>();
-        private readonly IChargeServiceClient chargeServiceClient = App._container.Resolve<IChargeServiceClient>();
 
         ObservableCollection<Charge> charges;
 

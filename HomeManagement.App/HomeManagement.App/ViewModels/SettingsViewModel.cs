@@ -1,6 +1,5 @@
 ﻿using HomeManagement.App.Data;
 using HomeManagement.App.Data.Entities;
-using HomeManagement.App.Managers;
 using System;
 using System.Globalization;
 using System.Linq;

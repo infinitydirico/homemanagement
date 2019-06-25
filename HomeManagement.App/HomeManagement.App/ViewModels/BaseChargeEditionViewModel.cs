@@ -15,7 +15,7 @@ namespace HomeManagement.App.ViewModels
         protected Charge charge = new Charge { Date = DateTime.Now };
         protected Account account;
         protected Category selectedCategory;
-        protected ICategoryServiceClient categoryServiceClient;
+        protected ICategoryManager categoryManager;
         protected IChargeServiceClient chargeServiceClient;
         protected readonly IChargeManager chargeManager = App._container.Resolve<IChargeManager>();
         protected IEnumerable<Category> categories;
@@ -23,7 +23,7 @@ namespace HomeManagement.App.ViewModels
 
         public BaseChargeEditionViewModel()
         {
-            categoryServiceClient = App._container.Resolve<ICategoryServiceClient>();
+            categoryManager = App._container.Resolve<ICategoryManager>();
             chargeServiceClient = App._container.Resolve<IChargeServiceClient>();
 
             CancelCommand = new Command(Cancel);
@@ -99,7 +99,7 @@ namespace HomeManagement.App.ViewModels
 
         protected async Task LoadCategories()
         {
-            Categories = await categoryServiceClient.GetCategories();
+            Categories = await categoryManager.GetCategories();
         }
 
         protected virtual bool HasInvalidValues()

@@ -1,7 +1,5 @@
 ﻿using Autofac;
 using HomeManagement.App.Managers;
-using HomeManagement.App.Services.Rest;
-using HomeManagement.Contracts;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -11,8 +9,8 @@ namespace HomeManagement.App.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
-        string username = "ramiro.di.rico@gmail.com";
-        string password = "4430598Q#$q";
+        string username = string.Empty;
+        string password = string.Empty;
 
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
 
@@ -43,6 +41,17 @@ namespace HomeManagement.App.ViewModels
             {
                 password = value;
                 OnPropertyChanged();
+            }
+        }
+
+        protected override async Task InitializeAsync()
+        {
+            await Task.Delay(500);
+            if (authenticationManager.AreCredentialsAvaible())
+            {
+                var user = authenticationManager.GetStoredUser();
+                Username = user.Email;
+                Password = user.Password;
             }
         }
 
