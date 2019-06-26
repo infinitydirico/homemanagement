@@ -77,7 +77,7 @@ namespace HomeManagement.API.Controllers.Users
 
                 var readToken = jwtSecurityToken.ReadToken(tokenValue);
 
-                if (readToken.IsValid())
+                if (readToken.HasExpired())
                 {
                     var userModel = new UserModel
                     {

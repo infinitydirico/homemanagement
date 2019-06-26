@@ -37,7 +37,7 @@ namespace HomeManagement.API.Filters
 
             var token = header.GetJwtSecurityToken();
 
-            if (!token.IsValid())
+            if (!token.HasExpired())
             {
                 context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Forbidden, Content = "Token has expired" };
 
