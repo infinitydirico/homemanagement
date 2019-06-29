@@ -1,7 +1,9 @@
 ﻿using HomeManagement.App.Data.Entities;
+using HomeManagement.App.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.IO;
+using Xamarin.Forms;
 
 namespace HomeManagement.App.Data
 {
@@ -19,7 +21,17 @@ namespace HomeManagement.App.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HomeManagement.db");
+            var dbConfig = DependencyService.Get<IDatabaseConfiguration>();
+
+            string dbPath;
+            if (dbConfig == null)
+            {
+                dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HomeManagement.db");
+            }
+            else
+            {
+                dbPath = dbConfig.GetDatabasePath();
+            }
 
             optionsBuilder.UseSqlite($"Filename={dbPath}");
         }
