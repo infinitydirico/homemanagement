@@ -1,4 +1,6 @@
-﻿using HomeManagement.App.Data.Entities;
+﻿using Autofac;
+using HomeManagement.App.Data.Entities;
+using HomeManagement.App.Managers;
 using HomeManagement.App.ViewModels;
 
 using Xamarin.Forms;
@@ -11,10 +13,13 @@ namespace HomeManagement.App.Views.Charges
 	{
         private Account account;
         private AddChargeViewModel viewModel;
+        ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
 
         private AddCharge()
         {
             InitializeComponent();
+
+            Title = localizationManager.Translate("NewMovement");
         }
 
         public AddCharge(Account account) : this()

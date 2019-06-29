@@ -210,4 +210,10 @@
   <data name="Offline" xml:space="preserve">
     <value>No internet connection detected</value>
   </data>
+  <data name="AddNewCharge" xml:space="preserve">
+    <value>Charge Name</value>
+  </data>
+  <data name="EditCharge" xml:space="preserve">
+    <value>Edit Movement</value>
+  </data>
 </root>

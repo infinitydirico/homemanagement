@@ -97,6 +97,15 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Charge Name.
+        /// </summary>
+        public static string AddNewCharge {
+            get {
+                return ResourceManager.GetString("AddNewCharge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change Language.
         /// </summary>
         public static string ChangeLanguage {
@@ -147,6 +156,15 @@ namespace HomeManagement.Localization {
         public static string Disabled {
             get {
                 return ResourceManager.GetString("Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Movement.
+        /// </summary>
+        public static string EditCharge {
+            get {
+                return ResourceManager.GetString("EditCharge", resourceCulture);
             }
         }
         

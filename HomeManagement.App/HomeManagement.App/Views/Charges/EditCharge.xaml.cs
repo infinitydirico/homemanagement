@@ -1,4 +1,6 @@
-﻿using HomeManagement.App.Data.Entities;
+﻿using Autofac;
+using HomeManagement.App.Data.Entities;
+using HomeManagement.App.Managers;
 using HomeManagement.App.ViewModels;
 using System;
 
@@ -11,10 +13,13 @@ namespace HomeManagement.App.Views.Charges
 	public partial class EditCharge : ContentPage
 	{
         private Account account;
+        ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
 
         public EditCharge()
         {
             InitializeComponent();
+
+            Title = localizationManager.Translate("EditCharge");
         }
 
         public EditCharge(Account account, Charge charge) : this()

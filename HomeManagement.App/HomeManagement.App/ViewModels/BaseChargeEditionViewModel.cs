@@ -43,6 +43,8 @@ namespace HomeManagement.App.ViewModels
 
         public ICommand CancelCommand { get; }
 
+        public string ChargeNameText => "AddNewCharge";
+
         public Charge Charge
         {
             get => charge;

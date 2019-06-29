@@ -30,7 +30,7 @@ namespace HomeManagement.App
 
             CrossConnectivity.Current.ConnectivityTypeChanged += (sender, args) =>
             {
-                if(!args.IsConnected)
+                if (!args.IsConnected)
                 {
                     var page = new OfflinePage();
                     NavigationPage.SetHasBackButton(page, false);
@@ -77,6 +77,7 @@ namespace HomeManagement.App
             builder.RegisterType<AccountManager>().As<IAccountManager>();
             builder.RegisterType<MetricsManager>().As<IMetricsManager>();
             builder.RegisterType<CategoryManager>().As<ICategoryManager>();
+            builder.RegisterType<LocalizationManager>().As<ILocalizationManager>();
         }
 
         private void RegisterServiceClients(ContainerBuilder builder)

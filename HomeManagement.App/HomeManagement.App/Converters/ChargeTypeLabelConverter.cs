@@ -7,9 +7,13 @@ namespace HomeManagement.App.Converters
 {
     public class ChargeTypeLabelConverter : IValueConverter
     {
+        TranslationConverter translationConverter = new TranslationConverter();
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (bool)value ? ChargeType.Income.ToString() : ChargeType.Expense.ToString();
+            var text = (bool)value ? ChargeType.Income.ToString() : ChargeType.Expense.ToString();
+            var translatedText = translationConverter.Convert(text, targetType, null, CultureInfo.CurrentCulture);
+            return translatedText;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

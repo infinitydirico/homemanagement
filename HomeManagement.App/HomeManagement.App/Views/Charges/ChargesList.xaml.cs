@@ -53,10 +53,7 @@ namespace HomeManagement.App.Views.Charges
 
         private void OnEdit(object sender, EventArgs e)
         {
-            var editChargePage = new EditCharge(account, chargesList.SelectedItem as Charge)
-            {
-                Title = "Editar Movimiento"
-            };
+            var editChargePage = new EditCharge(account, chargesList.SelectedItem as Charge);
             NavigationPage.SetHasBackButton(editChargePage, true);
 
             Navigation.PushAsync(editChargePage);

@@ -8,6 +8,7 @@
         <ResourceDictionary>
             <Conv:InverseBoolConverter x:Key="InverseVisibility"/>
             <Conv:ChargeTypeLabelConverter x:Key="ChargeTypeLabel" />
+            <Conv:TranslationConverter x:Key="Translation" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
@@ -17,7 +18,7 @@
         <StackLayout Orientation="Vertical">
 
             <StackLayout Orientation="Vertical" Padding="20,20,20,20">
-                <Label Text="Nombre del movimiento" TextColor="White" FontSize="Large" />
+                <Label Text="{Binding ChargeNameText, Converter={StaticResource Translation}}" TextColor="White" />
 
                 <Entry TextColor="White" Text="{Binding Charge.Name}" FontSize="Large" BackgroundColor="{StaticResource LayoutDark}" />
             </StackLayout>

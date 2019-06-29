@@ -210,4 +210,10 @@
   <data name="Offline" xml:space="preserve">
     <value>No se detecta conexion a internet</value>
   </data>
+  <data name="AddNewCharge" xml:space="preserve">
+    <value>Nombre del movimiento</value>
+  </data>
+  <data name="EditCharge" xml:space="preserve">
+    <value>Editar Movimiento</value>
+  </data>
 </root>
