@@ -17,6 +17,7 @@ namespace HomeManagement.App.Views.Login
 
             viewModel.OnLoginError += ViewModel_OnLoginError;
             viewModel.OnLoginSuccess += ViewModel_OnLoginSuccess;
+
             BindingContext = viewModel;
         }
 

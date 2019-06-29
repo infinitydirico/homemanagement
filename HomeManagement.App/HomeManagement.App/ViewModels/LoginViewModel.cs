@@ -46,7 +46,6 @@ namespace HomeManagement.App.ViewModels
 
         protected override async Task InitializeAsync()
         {
-            await Task.Delay(500);
             if (authenticationManager.AreCredentialsAvaible())
             {
                 var user = authenticationManager.GetStoredUser();

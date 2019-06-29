@@ -2,6 +2,7 @@ using Autofac;
 using HomeManagement.App.Managers;
 using HomeManagement.App.Services.Rest;
 using HomeManagement.App.Views.Login;
+using HomeManagement.App.Views.Main;
 using HomeManagement.Contracts;
 using HomeManagement.Core.Caching;
 using HomeManagement.Core.Cryptography;
@@ -31,7 +32,9 @@ namespace HomeManagement.App
             {
                 if(!args.IsConnected)
                 {
-                    MainPage.DisplayAlert("Info", "Lost internet connection", "Ok");
+                    var page = new OfflinePage();
+                    NavigationPage.SetHasBackButton(page, false);
+                    MainPage.Navigation.PushAsync(page);
                 }
             };
         }

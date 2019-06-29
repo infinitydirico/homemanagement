@@ -207,4 +207,7 @@
   <data name="SyncOptions" xml:space="preserve">
     <value>Sync Options</value>
   </data>
+  <data name="Offline" xml:space="preserve">
+    <value>No internet connection detected</value>
+  </data>
 </root>
