@@ -19,9 +19,9 @@
             <StackLayout HorizontalOptions="Center">
                 <Button Text="Sign In" Command="{Binding LoginCommand}" VerticalOptions="Center" TextColor="White"
                         IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource ControlLight}" />
+                <!--<Label Text="Or" TextColor="White" HorizontalOptions="Center" />
+                <Button Text="Sign Up" Clicked="SignUpClicked" VerticalOptions="Center" TextColor="White" BackgroundColor="{StaticResource ControlLight}" />-->
             </StackLayout>
-
-            <Label x:Name="messageLabel" />
             <ActivityIndicator x:Name="indicator" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="White" />
         </StackLayout>
     </ContentPage.Content>

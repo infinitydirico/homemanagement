@@ -7,6 +7,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -58,7 +59,8 @@ namespace HomeManagement.App.UWP
                 {
                     //TODO: Load state from previously suspended application
                 }
-
+                ApplicationView.PreferredLaunchViewSize = new Size(200, 400);
+                ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }

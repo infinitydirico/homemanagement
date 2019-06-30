@@ -41,6 +41,7 @@ namespace HomeManagement.App.ViewModels
         public event EventHandler OnInitializationFinished;
         public event EventHandler OnInitializationError;
         public event EventHandler<ErrorEventArgs> OnError;
+        public event EventHandler OnSuccess;
 
         private void Initialize()
         {
@@ -72,6 +73,7 @@ namespace HomeManagement.App.ViewModels
             try
             {
                 action();
+                OnSuccess?.Invoke(this, EventArgs.Empty);
             }
             catch (AppException aex)
             {
@@ -90,6 +92,7 @@ namespace HomeManagement.App.ViewModels
             try
             {
                 await action();
+                OnSuccess?.Invoke(this, EventArgs.Empty);
             }
             catch(AppException aex)
             {

@@ -46,11 +46,22 @@ namespace HomeManagement.App.Services.Rest
         {
             await Logout(User);
         }
+
+        public async Task RegisterAsync(UserModel user)
+        {
+            var result = await RestClientFactory
+                    .CreateClient()
+                    .PostAsync(Constants.Endpoints.Auth.REGISTER, user.SerializeToJson());
+
+            result.EnsureSuccessStatusCode();
+        }
     }
 
     public interface IAuthServiceClient
     {
         Task<UserModel> Login(UserModel user);
+
+        Task RegisterAsync(UserModel user);
 
         UserModel User { get; }
 

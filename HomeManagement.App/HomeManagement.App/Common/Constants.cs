@@ -13,6 +13,8 @@
                 private const string AUTH = API + "authentication/";
                 public const string LOGIN = AUTH + "signin";
                 public const string LOGOUT = AUTH + "signout";
+
+                public const string REGISTER = API + "register";
             }
 
             public class Accounts

@@ -1,5 +1,7 @@
 ﻿using Autofac;
+using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
+using HomeManagement.Core.Caching;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -13,6 +15,7 @@ namespace HomeManagement.App.ViewModels
         string password = string.Empty;
 
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
+        private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
 
         public LoginViewModel()
         {
@@ -46,6 +49,14 @@ namespace HomeManagement.App.ViewModels
 
         protected override async Task InitializeAsync()
         {
+            if (cachingService.Exists("singupuser"))
+            {
+                var user = cachingService.Get<User>("singupuser");
+                Username = user.Email;
+                Password = user.Password;
+                return;
+            }
+
             if (authenticationManager.AreCredentialsAvaible())
             {
                 var user = authenticationManager.GetStoredUser();

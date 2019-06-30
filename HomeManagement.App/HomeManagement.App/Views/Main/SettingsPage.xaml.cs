@@ -1,4 +1,6 @@
-﻿using HomeManagement.App.ViewModels;
+﻿using Autofac;
+using HomeManagement.App.Managers;
+using HomeManagement.App.ViewModels;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -8,7 +10,9 @@ namespace HomeManagement.App.Views.Main
     [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class Settings : ContentPage
 	{
-		public Settings ()
+        ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
+
+        public Settings ()
 		{
 			InitializeComponent ();
 
@@ -21,6 +25,8 @@ namespace HomeManagement.App.Views.Main
             {
                 DisplayAlert("Info", "The cache has been cleared out.", "Ok");
             };
-		}
-	}
+
+            Title = localizationManager.Translate("Settings");
+        }
+    }
 }

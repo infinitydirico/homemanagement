@@ -1,4 +1,6 @@
-﻿using HomeManagement.App.ViewModels;
+﻿using Autofac;
+using HomeManagement.App.Managers;
+using HomeManagement.App.ViewModels;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -9,6 +11,7 @@ namespace HomeManagement.App.Views.Main
     public partial class DashboardPage : ContentPage
     {
         DashboardViewModel dashboardViewModel = new DashboardViewModel();
+        ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
 
         public DashboardPage()
         {
@@ -17,6 +20,8 @@ namespace HomeManagement.App.Views.Main
             BindingContext = dashboardViewModel;
 
             dashboardViewModel.OnInitializationError += DashboardViewModel_OnError;
+
+            Title = localizationManager.Translate("Overview");
         }
 
         private void DashboardViewModel_OnError(object sender, System.EventArgs e)

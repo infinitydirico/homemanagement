@@ -14,6 +14,8 @@ namespace HomeManagement.App.Managers
     {
         Task<User> AuthenticateAsync(string username, string password);
 
+        Task<bool> RegisterAsync(string username, string password);
+
         User GetAuthenticatedUser();
 
         bool AreCredentialsAvaible();
@@ -89,6 +91,17 @@ namespace HomeManagement.App.Managers
             {
                 cachingService.Remove("user");
             }
+        }
+
+        public async Task<bool> RegisterAsync(string username, string password)
+        {
+            var encryptedPassword = crypto.Encrypt(password);
+
+            await authServiceClient.RegisterAsync(new UserModel { Email = username, Password = encryptedPassword });
+
+            cachingService.Store("singupuser", new User { Email = username, Password = password });
+
+            return true;
         }
 
         private void CacheUserAndToken(User user)

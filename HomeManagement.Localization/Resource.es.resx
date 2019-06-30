@@ -216,4 +216,7 @@
   <data name="EditCharge" xml:space="preserve">
     <value>Editar Movimiento</value>
   </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirmar contraseña</value>
+  </data>
 </root>

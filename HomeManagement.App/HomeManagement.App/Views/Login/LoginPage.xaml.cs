@@ -19,6 +19,8 @@ namespace HomeManagement.App.Views.Login
             viewModel.OnLoginSuccess += ViewModel_OnLoginSuccess;
 
             BindingContext = viewModel;
+
+            Appearing += OnAppearing;
         }
 
         private void ViewModel_OnLoginSuccess(object sender, EventArgs e)
@@ -36,6 +38,16 @@ namespace HomeManagement.App.Views.Login
         private void ViewModel_OnLoginError(object sender, EventArgs e)
         {
             DisplayAlert("Error", "An error occur during Login", "Ok");
+        }
+
+        private void SignUpClicked(object sender, EventArgs e)
+        {
+            Navigation.PushAsync(new SignUpPage());
+        }
+
+        private void OnAppearing(object sender, EventArgs e)
+        {
+            viewModel.Refresh();
         }
     }
 }
