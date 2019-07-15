@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using HomeManagement.API.Exportation;
+﻿using HomeManagement.API.Exportation;
 using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
 using HomeManagement.Data;
@@ -10,6 +7,8 @@ using HomeManagement.Mapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 
 namespace HomeManagement.API.Controllers.Charges
 {
@@ -39,22 +38,16 @@ namespace HomeManagement.API.Controllers.Charges
             this.exportableCharge = exportableCharge;
         }
 
-        [HttpGet("download")]
-        public IActionResult DownloadCategories()
+        [HttpGet("download/{accountId}")]
+        public IActionResult DownloadCategories(int accountId)
         {
-            var email = HttpContext.GetEmailClaim();
+            var charges = chargeRepository.Where(x => x.AccountId.Equals(accountId)).ToList();
 
-            var charges = (from charge in chargeRepository.All
-                              join account in accountRepository.All
-                              on charge.AccountId equals account.Id
-                              join user in userRepository.All
-                              on account.UserId equals user.Id
-                              where user.Email.Equals(email.Value)
-                              select charge).ToList();
+            var account = accountRepository.GetById(accountId);
 
             var csv = exportableCharge.ToCsv(charges);
 
-            var filename = "charges_" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".csv";
+            var filename = $"{account}{DateTime.Now.ToString("yyyyMMddhhmmss")}.csv";
 
             var result = this.CreateCsvFile(csv, filename);
 
@@ -89,19 +82,6 @@ namespace HomeManagement.API.Controllers.Charges
             }
 
             return Ok();
-        }
-
-        private void UpdateBalance(Charge c, bool reverse = false)
-        {
-            var account = accountRepository.FirstOrDefault(x => x.Id.Equals(c.AccountId));
-
-            if (reverse)
-            {
-                c.Price = -c.Price;
-            }
-
-            account.Balance = c.ChargeType.Equals(ChargeType.Income) ? account.Balance + c.Price : account.Balance - c.Price;
-            accountRepository.Update(account);
         }
     }
 }

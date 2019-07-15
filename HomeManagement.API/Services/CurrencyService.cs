@@ -21,6 +21,7 @@ namespace HomeManagement.API.Services
     {
         private readonly ICurrencyRepository currencyRepository;
         private readonly IConfiguration configuration;
+        private readonly List<string> supportedCurrencies = new List<string> { "USD", "EUR", "ARS" };
 
         public CurrencyService(ICurrencyRepository currencyRepository, IConfiguration configuration)
         {
@@ -78,6 +79,8 @@ namespace HomeManagement.API.Services
 
         private async Task<List<Currency>> GetApiCurrencies()
         {
+            if (!IsCurrencySettingsAvaible()) return CreateDefault().ToList();
+
             using (var httpClient = new HttpClient())
             {
                 var baseUrl = configuration
@@ -100,7 +103,7 @@ namespace HomeManagement.API.Services
 
                 return values
                     .Rates
-                    .Where(x => x.Key.Equals("USD") || x.Key.Equals("ARS") || x.Key.Equals("EUR"))
+                    .Where(x => supportedCurrencies.Any(y => y.Equals(x.Key)))
                     .Select(x => new Currency
                     {
                         Name = x.Key,
@@ -109,6 +112,23 @@ namespace HomeManagement.API.Services
                     })
                     .ToList();
             }
+        }
+
+        private bool IsCurrencySettingsAvaible()
+        {
+            var section = configuration.GetSection("CurrenciesSettings");
+
+            return section != null && section.Exists();
+        }
+
+        private IEnumerable<Currency> CreateDefault()
+        {
+            return supportedCurrencies.Select(x => new Currency
+            {
+                Name = x,
+                ChangeStamp = DateTime.Now,
+                Value = 0
+            });
         }
     }
 
