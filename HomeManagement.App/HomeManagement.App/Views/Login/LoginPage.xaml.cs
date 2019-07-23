@@ -47,7 +47,7 @@ namespace HomeManagement.App.Views.Login
 
         private void OnAppearing(object sender, EventArgs e)
         {
-            viewModel.Refresh();
+            //viewModel.Refresh();
         }
     }
 }

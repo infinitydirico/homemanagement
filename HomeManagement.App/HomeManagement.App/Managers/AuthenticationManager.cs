@@ -55,7 +55,7 @@ namespace HomeManagement.App.Managers
                 {
                     Id = userModel.Id,
                     Email = userModel.Email,
-                    Password = password,
+                    Password = encryptedPassword,
                     ChangeStamp = DateTime.Now,
                     LastApiCall = DateTime.Now,
                     Token = userModel.Token
@@ -166,8 +166,17 @@ namespace HomeManagement.App.Managers
 
         public User GetStoredUser()
         {
-            var u = userRepository.FirstOrDefault();
-            return u;
+            var user = userRepository.FirstOrDefault();
+            return new User
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Password = crypto.Decrypt(user.Password),
+                ChangeStamp = user.ChangeStamp,
+                LastApiCall = user.LastApiCall,
+                NeedsUpdate = user.NeedsUpdate,
+                Token = user.Token
+            };
         }
     }
 }
