@@ -15,8 +15,8 @@
         <viewModels:SettingsViewModel />
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout Orientation="Vertical" Margin="0,10,0,0">
-            <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
+        <StackLayout Orientation="Vertical">
+            <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="5, 5, 5, 5">
                 <StackLayout Orientation="Vertical">
                     <StackLayout>
                         <Label Text="{Binding LanguageTitleText, Converter={StaticResource Translation}}" TextColor="White" />
@@ -31,7 +31,7 @@
                     </StackLayout>
                 </StackLayout>
             </Frame>
-            <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="10,0,10,0">
+            <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="5, 5, 5, 5">
                 <StackLayout Orientation="Vertical">
                     <StackLayout>
                         <Label Text="{Binding SyncTitleText, Converter={StaticResource Translation}}" TextColor="White" />

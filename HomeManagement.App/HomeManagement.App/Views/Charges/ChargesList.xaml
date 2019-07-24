@@ -12,57 +12,63 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout Margin="20,20,20,20">
-            <ListView x:Name="chargesList" ItemTapped="ShowEditionToolbar" ItemsSource="{Binding Charges}" 
+        <StackLayout>
+            <Frame Margin="5, 5, 5, 5" BackgroundColor="{StaticResource LayoutDark}">
+                <StackLayout>
+                    <ListView x:Name="chargesList" ItemTapped="ShowEditionToolbar" ItemsSource="{Binding Charges}" 
                       IsVisible="{Binding !IsBusy}" SelectedItem="{Binding SelectedCharge}" RowHeight="70"
                       IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
-                <ListView.Behaviors>
-                    <Beh:ListViewSelectedItemBehaviour x:Name="ChangeColour" />
-                </ListView.Behaviors>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <ViewCell.View BackgroundColor="{StaticResource LayoutDark}">
-                                <StackLayout Orientation="Vertical">
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text = "{Binding Name}" TextColor="White" HorizontalOptions="StartAndExpand" />
-                                        <Label Text = "{Binding Price}" TextColor="{Binding ChargeType, Converter={StaticResource ChargeTypeColor}}" FontSize="Small" HorizontalOptions="EndAndExpand"/>
-                                    </StackLayout>
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text = "{Binding Date, Converter={StaticResource DateConverter}}" TextColor="White"/>
-                                    </StackLayout>
-                                </StackLayout>
-                            </ViewCell.View>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                        <ListView.Behaviors>
+                            <Beh:ListViewSelectedItemBehaviour x:Name="ChangeColour" />
+                        </ListView.Behaviors>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <ViewCell.View BackgroundColor="{StaticResource LayoutDark}">
+                                        <StackLayout Orientation="Vertical">
+                                            <StackLayout Orientation="Horizontal">
+                                                <Label Text = "{Binding Name}" TextColor="White" HorizontalOptions="StartAndExpand" />
+                                                <Label Text = "{Binding Price}" TextColor="{Binding ChargeType, Converter={StaticResource ChargeTypeColor}}" FontSize="Small" HorizontalOptions="EndAndExpand"/>
+                                            </StackLayout>
+                                            <StackLayout Orientation="Horizontal">
+                                                <Label Text = "{Binding Date, Converter={StaticResource DateConverter}}" TextColor="White"/>
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </ViewCell.View>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
-            <ActivityIndicator x:Name="indicator" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="White"
+                    <ActivityIndicator x:Name="indicator" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="White"
                                VerticalOptions="Center" HorizontalOptions="Center"/>
+                </StackLayout>
+            </Frame>
 
-            <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
-                <StackLayout HorizontalOptions="Start">
-                    <Button Image="barchart.png" BackgroundColor="{StaticResource ControlLight}" 
+            <Frame Margin="5, 5, 5, 5" BackgroundColor="{StaticResource LayoutDark}">
+                <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
+                    <StackLayout HorizontalOptions="Start">
+                        <Button Image="barchart.png" BackgroundColor="{StaticResource ControlLight}" 
                             VerticalOptions="Center" 
                             WidthRequest="75" HeightRequest="75"
                             Clicked="OnViewAccountStatistics"/>
-                </StackLayout>
+                    </StackLayout>
 
-                <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
-                    <StackLayout>
-                        <Button Image="arrow_left.png" BackgroundColor="{StaticResource ControlLight}" 
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                        <StackLayout>
+                            <Button Image="arrow_left.png" BackgroundColor="{StaticResource ControlLight}" 
                             VerticalOptions="Center" Command="{Binding PreviousPageCommand}" IsEnabled="{Binding NotBusy}" 
                             WidthRequest="75" HeightRequest="75" />
-                    </StackLayout>
+                        </StackLayout>
 
-                    <StackLayout>
-                        <Button Image="arrow_right.png" BackgroundColor="{StaticResource ControlLight}" 
+                        <StackLayout>
+                            <Button Image="arrow_right.png" BackgroundColor="{StaticResource ControlLight}" 
                             VerticalOptions="Center" Command="{Binding NextPageCommand}" IsEnabled="{Binding NotBusy}"
                             WidthRequest="75" HeightRequest="75" />
+                        </StackLayout>
                     </StackLayout>
                 </StackLayout>
-            </StackLayout>
+            </Frame>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

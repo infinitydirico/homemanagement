@@ -16,17 +16,19 @@
         <ToolbarItem Icon="add.png" Clicked="NavigateToAddAccount" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <ListView x:Name="accountsList" ItemTapped="ViewChargesList" ItemsSource="{Binding Accounts}" Margin="10,10,10,10">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                            <Label Text = "{Binding Name}" TextColor="White"/>
-                            <Label Text = "{Binding Balance}" TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" HorizontalOptions="EndAndExpand"/>
-                        </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <Frame Margin="5, 5, 5, 5" BackgroundColor="{StaticResource LayoutDark}">
+            <ListView x:Name="accountsList" ItemTapped="ViewChargesList" ItemsSource="{Binding Accounts}" Margin="10,10,10,10">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                <Label Text = "{Binding Name}" TextColor="White"/>
+                                <Label Text = "{Binding Balance}" TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" HorizontalOptions="EndAndExpand"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Frame>
     </ContentPage.Content>
 </ContentPage>
