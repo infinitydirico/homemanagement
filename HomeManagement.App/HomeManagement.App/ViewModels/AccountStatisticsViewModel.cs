@@ -29,7 +29,7 @@ namespace HomeManagement.App.ViewModels
                           where r.Value > (result.Max(x => x.Value) * 10 / 100)
                           select new ChartValue
                           {
-                              Label = r.Category.Name,
+                              Label = r.Category.Name.Substring(0, r.Category.Name.Length > 10 ? 10 : r.Category.Name.Length),
                               Value = float.Parse(r.Value.ToString())
                           });
 

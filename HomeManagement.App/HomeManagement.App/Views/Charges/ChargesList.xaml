@@ -17,7 +17,8 @@
                 <StackLayout>
                     <ListView x:Name="chargesList" ItemTapped="ShowEditionToolbar" ItemsSource="{Binding Charges}" 
                       IsVisible="{Binding !IsBusy}" SelectedItem="{Binding SelectedCharge}" RowHeight="70"
-                      IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
+                      IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}"
+                              SeparatorVisibility="None">
                         <ListView.Behaviors>
                             <Beh:ListViewSelectedItemBehaviour x:Name="ChangeColour" />
                         </ListView.Behaviors>
@@ -50,7 +51,7 @@
                     <StackLayout HorizontalOptions="Start">
                         <Button Image="barchart.png" BackgroundColor="{StaticResource ControlLight}" 
                             VerticalOptions="Center" 
-                            WidthRequest="75" HeightRequest="75"
+                            WidthRequest="65" HeightRequest="65"
                             Clicked="OnViewAccountStatistics"/>
                     </StackLayout>
 
@@ -58,13 +59,13 @@
                         <StackLayout>
                             <Button Image="arrow_left.png" BackgroundColor="{StaticResource ControlLight}" 
                             VerticalOptions="Center" Command="{Binding PreviousPageCommand}" IsEnabled="{Binding NotBusy}" 
-                            WidthRequest="75" HeightRequest="75" />
+                            WidthRequest="65" HeightRequest="65" />
                         </StackLayout>
 
                         <StackLayout>
                             <Button Image="arrow_right.png" BackgroundColor="{StaticResource ControlLight}" 
                             VerticalOptions="Center" Command="{Binding NextPageCommand}" IsEnabled="{Binding NotBusy}"
-                            WidthRequest="75" HeightRequest="75" />
+                            WidthRequest="65" HeightRequest="65" />
                         </StackLayout>
                     </StackLayout>
                 </StackLayout>

@@ -9,7 +9,7 @@
             <StackLayout Margin="10, 10, 10, 10" Orientation="Vertical" HorizontalOptions="FillAndExpand">
                 <Frame BackgroundColor="{StaticResource LayoutDark}">
                     <charts:BarChart x:Name="barChart" Values="{Binding ChartValues}" 
-                                             TextSize="30" BackgroundColor="#303030" HeightRequest="150" />
+                                             TextSize="20" BackgroundColor="#303030" HeightRequest="150" />
                 </Frame>
             </StackLayout>
         </StackLayout>
