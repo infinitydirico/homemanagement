@@ -22,6 +22,8 @@ namespace HomeManagement.App.Views.AccountPages
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     barChart.InvalidateSurface();
+                    incomeChart.InvalidateSurface();
+                    outcomeChart.InvalidateSurface();
                 });
             };
         }

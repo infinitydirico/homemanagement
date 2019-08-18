@@ -5,13 +5,30 @@
              BackgroundColor="{StaticResource TabBarColor}"
              x:Class="HomeManagement.App.Views.AccountPages.AccountStatisticsPage">
     <ContentPage.Content>
-        <StackLayout Orientation="Vertical">
+        <ScrollView Orientation="Vertical">
             <StackLayout Margin="10, 10, 10, 10" Orientation="Vertical" HorizontalOptions="FillAndExpand">
                 <Frame BackgroundColor="{StaticResource LayoutDark}">
-                    <charts:BarChart x:Name="barChart" Values="{Binding ChartValues}" 
-                                             TextSize="20" BackgroundColor="#303030" HeightRequest="150" />
+                    <charts:BarChart x:Name="barChart" Series="{Binding ChartValues}" 
+                                     TextSize="20" BackgroundColor="#303030" HeightRequest="150" />
+                </Frame>
+
+                <Frame BackgroundColor="{StaticResource LayoutDark}">
+                    <StackLayout>
+                        <Label Text="Income Evolution" TextColor="White" />
+                        <charts:LineChart x:Name="incomeChart" Series="{Binding IncomeSeries}" RenderArea="True"
+                                     TextSize="20" BackgroundColor="#303030" HeightRequest="150" />
+                    </StackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{StaticResource LayoutDark}">
+                    <StackLayout>
+                        <Label Text="Outcome Evolution" TextColor="White" />
+                        <charts:LineChart x:Name="outcomeChart" Series="{Binding OutcomeSeries}" RenderArea="True"
+                                    TextSize="20" BackgroundColor="#303030" HeightRequest="150" />
+                    </StackLayout>
+
                 </Frame>
             </StackLayout>
-        </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

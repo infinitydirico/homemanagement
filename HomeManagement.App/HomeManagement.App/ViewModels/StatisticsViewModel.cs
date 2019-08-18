@@ -19,6 +19,8 @@ namespace HomeManagement.App.ViewModels
             Task.Run(async () =>
             {
                 await LoadMostExpensiveCategories();
+
+                await RetrieveAccountBalances();
             });
         }
 
@@ -32,7 +34,7 @@ namespace HomeManagement.App.ViewModels
 
 
             ChartValues.AddRange(from value in TopCategories.Categories
-                                  select new ChartValue
+                                  select new SeriesValue
                                   {
                                       Label = value.Category.Name,
                                       Value = float.Parse(value.Price.ToString())
@@ -48,7 +50,7 @@ namespace HomeManagement.App.ViewModels
             var values = balances.ToDictionary();
         }
 
-        public List<ChartValue> ChartValues { get; private set; } = new List<ChartValue>();
+        public List<SeriesValue> ChartValues { get; private set; } = new List<SeriesValue>();
 
         public string OverviewText => "";//language.CurrentLanguage.OverviewText;
     }

@@ -12,12 +12,25 @@ namespace HomeManagement.App.Managers
     public interface IMetricsManager
     {
         Task<IEnumerable<OverPricedCategory2>> GetMostExpensiveCategories(int accountId);
+
+        Task<AccountEvolutionModel> GetAccountEvolution(int accountId);
     }
 
     public class MetricsManager : IMetricsManager
     {
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
         private readonly IAccountMetricsServiceClient accountMetricsServiceClient = App._container.Resolve<IAccountMetricsServiceClient>();
+
+        public async Task<AccountEvolutionModel> GetAccountEvolution(int accountId)
+        {
+            if (cachingService.Exists($"{nameof(GetAccountEvolution)}{accountId}")) return cachingService.Get<AccountEvolutionModel>($"{nameof(GetAccountEvolution)}{accountId}");
+
+            var result = await accountMetricsServiceClient.GetAccountEvolution(accountId);
+
+            cachingService.StoreOrUpdate($"{nameof(GetAccountEvolution)}{accountId}", result);
+
+            return result;
+        }
 
         public async Task<IEnumerable<OverPricedCategory2>> GetMostExpensiveCategories(int accountId)
         {
