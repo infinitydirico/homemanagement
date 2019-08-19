@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HomeManagement.App.Views.AccountPages.AccountPage"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
-             xmlns:local="clr-namespace:HomeManagement.App.Views.Controls"
+             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              BackgroundColor="{StaticResource TabBarColor}"
              Title="{Binding AccountLabelText, Converter={StaticResource Translation}}">
     <ContentPage.Resources>
@@ -16,18 +16,37 @@
         <ToolbarItem Icon="add.png" Clicked="NavigateToAddAccount" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <Frame Margin="5, 5, 5, 5" BackgroundColor="{StaticResource LayoutDark}">
-            <ListView x:Name="accountsList" ItemTapped="ViewChargesList" ItemsSource="{Binding Accounts}" Margin="10,10,10,10">
-                <ListView.ItemTemplate>
+        <Frame Margin="5, 5, 5, 5" BackgroundColor="{StaticResource LayoutDark}">            
+            <ListView x:Name="accountsList" ItemsSource="{Binding Accounts}" 
+                      Margin="10,10,10,10" SeparatorVisibility="None"
+                      IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}" ItemTapped="ViewChargesList" 
+                      IsRefreshing="{Binding IsBusy}">
+                 <ListView.ItemTemplate>                    
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                                <Label Text = "{Binding Name}" TextColor="White"/>
-                                <Label Text = "{Binding Balance}" TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" HorizontalOptions="EndAndExpand"/>
+                                <StackLayout.GestureRecognizers>
+                                    <SwipeGestureRecognizer Direction="Right" Swiped="SwipeGestureRecognizer_Swiped" />
+                                    <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_Swiped" />
+                                    <SwipeGestureRecognizer Direction="Down" Swiped="SwipeGestureRecognizer_Swiped" />
+                                    <SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped" />
+                                    <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="TapGestureRecognizer_Tapped" />
+                                </StackLayout.GestureRecognizers>
+                                <Image Source="red_trash.png" VerticalOptions="Center" 
+                                       WidthRequest="25" HeightRequest="25" IsVisible="False" />
+                                <Image Source="edit.png" VerticalOptions="Center" 
+                                       WidthRequest="25" HeightRequest="25" IsVisible="False" />
+                                <Label VerticalOptions="Center" Text = "{Binding Name}" TextColor="White"/>
+                                <Label VerticalOptions="Center" Text = "{Binding Balance}" 
+                                       TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" 
+                                       HorizontalOptions="EndAndExpand"/>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.Behaviors>
+                    <Beh:ListViewSelectedItemBehaviour x:Name="ChangeColour" />
+                </ListView.Behaviors>
             </ListView>
         </Frame>
     </ContentPage.Content>

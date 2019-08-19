@@ -17,8 +17,8 @@
                 <StackLayout>
                     <ListView x:Name="chargesList" ItemTapped="ShowEditionToolbar" ItemsSource="{Binding Charges}" 
                       IsVisible="{Binding !IsBusy}" SelectedItem="{Binding SelectedCharge}" RowHeight="70"
-                      IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}"
-                              SeparatorVisibility="None">
+                      IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}"
+                              SeparatorVisibility="None" IsRefreshing="{Binding IsBusy}">
                         <ListView.Behaviors>
                             <Beh:ListViewSelectedItemBehaviour x:Name="ChangeColour" />
                         </ListView.Behaviors>
@@ -40,9 +40,6 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-
-                    <ActivityIndicator x:Name="indicator" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="White"
-                               VerticalOptions="Center" HorizontalOptions="Center"/>
                 </StackLayout>
             </Frame>
 

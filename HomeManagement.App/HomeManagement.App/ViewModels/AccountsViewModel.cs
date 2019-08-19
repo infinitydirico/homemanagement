@@ -9,16 +9,7 @@ namespace HomeManagement.App.ViewModels
     public class AccountsViewModel : LocalizationBaseViewModel
     {
         private readonly IAccountManager accountManager = App._container.Resolve<IAccountManager>();
-
         IEnumerable<Account> accounts;
-
-        protected override async Task InitializeAsync()
-        {
-            await HandleSafeExecutionAsync(async () =>
-            {
-                Accounts = await accountManager.LoadAsync();
-            });
-        }
 
         public IEnumerable<Account> Accounts
         {
@@ -31,5 +22,20 @@ namespace HomeManagement.App.ViewModels
         }
 
         public string AccountLabelText => "Accounts";
+
+        protected override async Task InitializeAsync()
+        {
+            Refresh();
+        }
+
+        public override void Refresh()
+        {
+            HandleSafeExecutionAsync(async () =>
+            {
+                IsBusy = true;
+                Accounts = await accountManager.LoadAsync();
+                IsBusy = false;
+            });
+        }
     }
 }

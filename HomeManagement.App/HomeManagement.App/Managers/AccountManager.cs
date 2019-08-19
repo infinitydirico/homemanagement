@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using HomeManagement.App.Data;
 using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Services.Rest;
+using HomeManagement.Core.Caching;
 using HomeManagement.Core.Extensions;
 using HomeManagement.Models;
 using System;
@@ -13,7 +13,7 @@ namespace HomeManagement.App.Managers
 {
     public interface IAccountManager
     {
-        Task<IEnumerable<Account>> LoadAsync();
+        Task<IEnumerable<Account>> LoadAsync(bool force = false);
 
         Task<IEnumerable<Account>> NextPageAsync();
     }
@@ -22,6 +22,7 @@ namespace HomeManagement.App.Managers
     {        
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
         private readonly IAccountServiceClient accountServiceClient = App._container.Resolve<IAccountServiceClient>();
+        private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
 
         public AccountManager()
         {
@@ -31,20 +32,30 @@ namespace HomeManagement.App.Managers
             page.CurrentPage = 1;
         }
 
-        public async Task<IEnumerable<Account>> LoadAsync()
+        public async Task<IEnumerable<Account>> LoadAsync(bool force = false)
         {
+            if (force)
+            {
+                cachingService.StoreOrUpdate("ForceApiCall", true);
+            }
             return await Paginate();
         }
 
         protected override async Task<IEnumerable<Account>> Paginate()
         {
-            var skip = (page.CurrentPage - 1) * page.PageCount;
-
-            if (accountRepository.Count() > skip)
+            if(cachingService.Get<bool>("ForceApiCall"))
             {
-                var records = accountRepository.Skip(skip).Take(page.PageCount).ToList();
-                return await Task.FromResult(records);
+                var skip = (page.CurrentPage - 1) * page.PageCount;
+
+                if (accountRepository.Count() > skip)
+                {
+                    var records = accountRepository.Skip(skip).Take(page.PageCount).ToList();
+                    return await Task.FromResult(records);
+                }
             }
+
+            accountRepository.RemoveAll();
+            accountRepository.Commit();
 
             page = await accountServiceClient.Page(page);
 

@@ -21,7 +21,7 @@ namespace HomeManagement.App.Behaviours
             {
                 foreach (ViewCell cell in listView.GetCells() as ITemplatedItemsList<Cell>)
                 {
-                    cell.View.BackgroundColor = Color.FromHex("#212121");
+                    cell.View.BackgroundColor = Color.FromHex("#303030");
                 }
             }
         }
@@ -32,7 +32,7 @@ namespace HomeManagement.App.Behaviours
             {
                 if (cell.BindingContext != null)
                 {
-                    cell.View.BackgroundColor = Color.FromHex(cell.BindingContext.Equals(e.Item) ? "#303030" : "#212121");
+                    cell.View.BackgroundColor = Color.FromHex(cell.BindingContext.Equals(e.Item) ? "#424242" : "#303030");
                 }
             }
         }

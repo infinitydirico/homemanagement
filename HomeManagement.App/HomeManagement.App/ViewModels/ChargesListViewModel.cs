@@ -11,12 +11,9 @@ namespace HomeManagement.App.ViewModels
     public class ChargesListViewModel : BaseViewModel
     {
         private readonly IChargeManager chargeManager = App._container.Resolve<IChargeManager>();
-
         ObservableCollection<Charge> charges;
-
         Account account;
         Charge selectedCharge;
-        bool isRefreshing;
 
         public ChargesListViewModel(Account account)
         {
@@ -25,7 +22,6 @@ namespace HomeManagement.App.ViewModels
             NextPageCommand = new Command(async () => await NextPage());
             PreviousPageCommand = new Command(async () => await PreviousPage());
             DeleteCommand = new Command<Charge>(async (charge) => await DeleteAsync(charge));
-            RefreshCommand = new Command(Refresh);
         }
 
         public ObservableCollection<Charge> Charges
@@ -37,8 +33,6 @@ namespace HomeManagement.App.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        public Command RefreshCommand { get; }
 
         public Command NextPageCommand { get; }
 
@@ -52,16 +46,6 @@ namespace HomeManagement.App.ViewModels
             set
             {
                 selectedCharge = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool IsRefreshing
-        {
-            get => isRefreshing;
-            set
-            {
-                isRefreshing = value;
                 OnPropertyChanged();
             }
         }
@@ -87,9 +71,17 @@ namespace HomeManagement.App.ViewModels
 
         protected override async Task InitializeAsync()
         {
-            IsRefreshing = true;
-            Charges = (await chargeManager.Load(account.Id)).ToObservableCollection();
-            IsRefreshing = false;
+            Refresh();
+        }
+
+        public override void Refresh()
+        {
+            HandleSafeExecutionAsync(async () =>
+            {
+                IsBusy = true;
+                Charges = (await chargeManager.Load(account.Id)).ToObservableCollection();
+                IsBusy = false;
+            });            
         }
     }
 }
