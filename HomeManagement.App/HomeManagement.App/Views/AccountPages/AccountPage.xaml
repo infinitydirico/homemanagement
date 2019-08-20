@@ -19,30 +19,26 @@
         <Frame Margin="5, 5, 5, 5" BackgroundColor="{StaticResource LayoutDark}">            
             <ListView x:Name="accountsList" ItemsSource="{Binding Accounts}" 
                       Margin="10,10,10,10" SeparatorVisibility="None"
-                      IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}" ItemTapped="ViewChargesList" 
+                      IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}"
                       IsRefreshing="{Binding IsBusy}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
                                 <StackLayout.GestureRecognizers>
-                                    <SwipeGestureRecognizer Direction="Right" Swiped="SwipeGestureRecognizer_Swiped" />
-                                    <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_Swiped" />
-                                    <SwipeGestureRecognizer Direction="Down" Swiped="SwipeGestureRecognizer_Swiped" />
-                                    <SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped" />
-                                    <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="TapGestureRecognizer_Tapped" />
+                                    <SwipeGestureRecognizer Direction="Right" Swiped="Swiped" />
+                                    <SwipeGestureRecognizer Direction="Left" Swiped="Swiped" />
+                                    <SwipeGestureRecognizer Direction="Down" Swiped="Swiped" />
+                                    <SwipeGestureRecognizer Direction="Up" Swiped="Swiped" />
+                                    <TapGestureRecognizer Tapped="SingleTaped" />
+                                    <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="DoubleTaped" />
                                 </StackLayout.GestureRecognizers>
                                 <Button Image="red_trash_xs.png" VerticalOptions="Center"
                                         WidthRequest="30" HeightRequest="30" IsVisible="False"
-                                        BackgroundColor="{StaticResource ControlLight}" />
+                                        BackgroundColor="{StaticResource ControlLight}" Clicked="Delete" />
                                 <Button Image="edit_xs.png" VerticalOptions="Center" 
                                        WidthRequest="30" HeightRequest="30" IsVisible="False" 
-                                        BackgroundColor="{StaticResource ControlLight}"/>
-                                
-                                <!--<Image Source="red_trash.png" VerticalOptions="Center" 
-                                       WidthRequest="25" HeightRequest="25" IsVisible="False" />
-                                <Image Source="edit.png" VerticalOptions="Center" 
-                                       WidthRequest="25" HeightRequest="25" IsVisible="False" />-->
+                                        BackgroundColor="{StaticResource ControlLight}" Clicked="Edit"/>
                                 <Label VerticalOptions="Center" Text = "{Binding Name}" TextColor="White"/>
                                 <Label VerticalOptions="Center" Text = "{Binding Balance}" 
                                        TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" 
