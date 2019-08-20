@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HomeManagement.App.Views.AccountPages.AccountPage"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
-             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
+             xmlns:Controls="clr-namespace:HomeManagement.App.Views.Controls"
              BackgroundColor="{StaticResource TabBarColor}"
              Title="{Binding AccountLabelText, Converter={StaticResource Translation}}">
     <ContentPage.Resources>
@@ -21,7 +21,7 @@
                       Margin="10,10,10,10" SeparatorVisibility="None"
                       IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}" ItemTapped="ViewChargesList" 
                       IsRefreshing="{Binding IsBusy}">
-                 <ListView.ItemTemplate>                    
+                <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
@@ -32,10 +32,17 @@
                                     <SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped" />
                                     <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="TapGestureRecognizer_Tapped" />
                                 </StackLayout.GestureRecognizers>
-                                <Image Source="red_trash.png" VerticalOptions="Center" 
+                                <Button Image="red_trash_xs.png" VerticalOptions="Center"
+                                        WidthRequest="30" HeightRequest="30" IsVisible="False"
+                                        BackgroundColor="{StaticResource ControlLight}" />
+                                <Button Image="edit_xs.png" VerticalOptions="Center" 
+                                       WidthRequest="30" HeightRequest="30" IsVisible="False" 
+                                        BackgroundColor="{StaticResource ControlLight}"/>
+                                
+                                <!--<Image Source="red_trash.png" VerticalOptions="Center" 
                                        WidthRequest="25" HeightRequest="25" IsVisible="False" />
                                 <Image Source="edit.png" VerticalOptions="Center" 
-                                       WidthRequest="25" HeightRequest="25" IsVisible="False" />
+                                       WidthRequest="25" HeightRequest="25" IsVisible="False" />-->
                                 <Label VerticalOptions="Center" Text = "{Binding Name}" TextColor="White"/>
                                 <Label VerticalOptions="Center" Text = "{Binding Balance}" 
                                        TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" 
@@ -44,9 +51,6 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-                <ListView.Behaviors>
-                    <Beh:ListViewSelectedItemBehaviour x:Name="ChangeColour" />
-                </ListView.Behaviors>
             </ListView>
         </Frame>
     </ContentPage.Content>
