@@ -24,15 +24,6 @@ namespace HomeManagement.App.Views.AccountPages
             Navigation.PushAsync(new AddAccountPage());
         }
 
-        private async void SingleTaped(object sender, System.EventArgs e)
-        {
-            var stackLayout = sender as StackLayout;
-            var label = stackLayout.Children.First(x => x.GetType().Equals(typeof(Label))) as Label;
-
-            await label.ScaleTo(2, easing: Easing.SinIn);
-            await label.ScaleTo(1, easing: Easing.SinOut);
-        }
-
         private void DoubleTaped(object sender, System.EventArgs e)
         {
             var stackLayout = sender as StackLayout;

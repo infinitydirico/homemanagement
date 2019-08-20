@@ -11,14 +11,17 @@
             <Conv:DateConverter x:Key="DateConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Icon="add.png" Clicked="OnAddChargeCommand" />
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
             <Frame Margin="5, 5, 5, 5" BackgroundColor="{StaticResource LayoutDark}">
                 <StackLayout>
-                    <ListView x:Name="chargesList" ItemTapped="ShowEditionToolbar" ItemsSource="{Binding Charges}" 
-                      IsVisible="{Binding !IsBusy}" SelectedItem="{Binding SelectedCharge}" RowHeight="70"
-                      IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}"
-                              SeparatorVisibility="None" IsRefreshing="{Binding IsBusy}">
+                    <ListView x:Name="chargesList" ItemsSource="{Binding Charges}" 
+                                IsVisible="{Binding !IsBusy}" RowHeight="70"
+                                IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}"
+                                SeparatorVisibility="None" IsRefreshing="{Binding IsBusy}">
                         <ListView.Behaviors>
                             <Beh:ListViewSelectedItemBehaviour x:Name="ChangeColour" />
                         </ListView.Behaviors>
@@ -26,13 +29,28 @@
                             <DataTemplate>
                                 <ViewCell>
                                     <ViewCell.View BackgroundColor="{StaticResource LayoutDark}">
-                                        <StackLayout Orientation="Vertical">
-                                            <StackLayout Orientation="Horizontal">
-                                                <Label Text = "{Binding Name}" TextColor="White" HorizontalOptions="StartAndExpand" />
-                                                <Label Text = "{Binding Price}" TextColor="{Binding ChargeType, Converter={StaticResource ChargeTypeColor}}" FontSize="Small" HorizontalOptions="EndAndExpand"/>
-                                            </StackLayout>
-                                            <StackLayout Orientation="Horizontal">
+                                        <StackLayout Orientation="Horizontal">
+                                            <StackLayout.Behaviors>
+                                                <Beh:ViewScaleBehvaior />
+                                            </StackLayout.Behaviors>
+                                            <StackLayout.GestureRecognizers>
+                                                <SwipeGestureRecognizer Direction="Right" Swiped="Swiped" />
+                                                <SwipeGestureRecognizer Direction="Left" Swiped="Swiped" />
+                                                <SwipeGestureRecognizer Direction="Down" Swiped="Swiped" />
+                                                <SwipeGestureRecognizer Direction="Up" Swiped="Swiped" />
+                                            </StackLayout.GestureRecognizers>
+                                            <Button Image="red_trash_xs.png" VerticalOptions="Start"
+                                                    WidthRequest="30" HeightRequest="30" IsVisible="False"
+                                                    BackgroundColor="{StaticResource ControlLight}" Clicked="Delete"  />
+                                            <Button Image="edit_xs.png" VerticalOptions="Start" 
+                                                    WidthRequest="30" HeightRequest="30" IsVisible="False" 
+                                                    BackgroundColor="{StaticResource ControlLight}" Clicked="Edit"/>
+                                            <StackLayout Orientation="Vertical" HorizontalOptions="StartAndExpand">
+                                                <Label Text = "{Binding Name}" TextColor="White" />
                                                 <Label Text = "{Binding Date, Converter={StaticResource DateConverter}}" TextColor="White"/>
+                                            </StackLayout>
+                                            <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
+                                                <Label Text = "{Binding Price}" TextColor="{Binding ChargeType, Converter={StaticResource ChargeTypeColor}}" FontSize="Small" />
                                             </StackLayout>
                                         </StackLayout>
                                     </ViewCell.View>

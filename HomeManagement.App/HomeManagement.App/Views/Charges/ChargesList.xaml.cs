@@ -2,7 +2,7 @@
 using HomeManagement.App.ViewModels;
 using HomeManagement.App.Views.AccountPages;
 using System;
-
+using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -13,7 +13,6 @@ namespace HomeManagement.App.Views.Charges
     {
         Account account;
         ChargesListViewModel viewModel;
-        private ToolbarItem editToolItem;
 
         public ChargesList(Account account)
         {
@@ -26,7 +25,6 @@ namespace HomeManagement.App.Views.Charges
             BindingContext = viewModel;
 
             Title = account.Name;
-            ShowAddChargeToolbar();
             InitializeComponent();
         }
 
@@ -51,67 +49,72 @@ namespace HomeManagement.App.Views.Charges
             Navigation.PushAsync(page);
         }
 
-        private void OnEdit(object sender, EventArgs e)
-        {
-            var editChargePage = new EditCharge(account, chargesList.SelectedItem as Charge);
-            NavigationPage.SetHasBackButton(editChargePage, true);
-
-            Navigation.PushAsync(editChargePage);
-        }
-
-        private void ShowAddChargeToolbar()
-        {
-            ToolbarItems.Clear();
-
-            var toolItem = new ToolbarItem
-            {
-                Icon = "add.png"
-            };
-
-            toolItem.Clicked += OnAddChargeCommand;
-            ToolbarItems.Add(toolItem);
-        }
-
-        private void ShowEditionToolbar(object sender, ItemTappedEventArgs e)
-        {
-            ToolbarItems.Clear();
-
-            var cancelToolbarItem = new ToolbarItem
-            {
-                Icon = "close.png"
-            };
-            cancelToolbarItem.Clicked += (s, ev) =>
-            {
-                chargesList.SelectedItem = null;
-                ShowAddChargeToolbar();
-            };
-            ToolbarItems.Add(cancelToolbarItem);
-
-            var editToolItem = new ToolbarItem
-            {
-                Icon = "edit.png"
-            };
-
-            editToolItem.Clicked += OnEdit;
-            ToolbarItems.Add(editToolItem);
-
-            var deleteItem = new ToolbarItem
-            {
-                Icon = "red_trash.png",
-                IsDestructive = true
-            };
-            deleteItem.Clicked += (s, ev) =>
-            {
-                viewModel.DeleteCommand.Execute(chargesList.SelectedItem);
-            };
-            ToolbarItems.Add(deleteItem);
-        }
-
         private void OnViewAccountStatistics(object sender, EventArgs e)
         {
             var accountStatisticsPage = new AccountStatisticsPage(account);
             NavigationPage.SetHasBackButton(accountStatisticsPage, true);
             Navigation.PushAsync(accountStatisticsPage);
+        }
+
+        private void Edit(object sender, EventArgs e)
+        {
+            var editButton = sender as Button;
+            var charge = GetCurrentCharge(editButton);
+            var editChargePage = new EditCharge(account, charge);
+            NavigationPage.SetHasBackButton(editChargePage, true);
+
+            Navigation.PushAsync(editChargePage);
+        }
+
+        private void Delete(object sender, EventArgs e)
+        {
+            var editButton = sender as Button;
+            var charge = GetCurrentCharge(editButton);
+            viewModel.DeleteCommand.Execute(charge);
+        }
+
+        private async void Swiped(object sender, SwipedEventArgs e)
+        {
+            var stackLayout = sender as StackLayout;
+            var innerLayouts = stackLayout.Children.First(x => x.GetType().Equals(typeof(StackLayout))) as StackLayout;
+
+            if (IsAlreadySwiped(innerLayouts, e.Direction)) return;
+
+            var buttonsActions = stackLayout.Children.Where(x => x.GetType().Equals(typeof(Button)));
+
+            var trashButton = buttonsActions.First();
+            var editButton = buttonsActions.Last();
+
+            var offsetIn = e.Direction.Equals(SwipeDirection.Right) ? 35 : -35;
+            var offsetOut = e.Direction.Equals(SwipeDirection.Right) ? 70 : -70;
+
+            var rectIn = innerLayouts.Bounds.Offset(offsetIn, 0);
+            var rectOut = innerLayouts.Bounds.Offset(offsetOut, 0);
+
+            var animationIn = await innerLayouts.LayoutTo(rectIn, easing: Easing.SpringIn);
+
+            if (e.Direction.Equals(SwipeDirection.Left))
+            {
+                trashButton.IsVisible = editButton.IsVisible = false;
+                rectOut.X = 0;
+            }
+
+            var animationOut = await innerLayouts.LayoutTo(rectOut, easing: Easing.SpringOut);
+
+            trashButton.IsVisible = editButton.IsVisible = e.Direction.Equals(SwipeDirection.Right);
+        }
+
+        private bool IsAlreadySwiped(StackLayout layout, SwipeDirection direction)
+            => layout.Bounds.X > 50 && direction.Equals(SwipeDirection.Right) ||
+                layout.Bounds.X < 50 && direction.Equals(SwipeDirection.Left);
+
+        private Charge GetCurrentCharge(Button button)
+        {
+            var parentLayout = button.Parent as StackLayout;
+            var layout = parentLayout.Children.First(x => x.GetType().Equals(typeof(StackLayout))) as StackLayout;
+            var label = layout.Children.First() as Label;
+            var charge = viewModel.Charges.First(x => x.Name.Equals(label.Text));
+            return charge;
         }
     }
 }
