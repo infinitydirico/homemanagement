@@ -2,23 +2,34 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HomeManagement.App.Views.Login.LoginPage"
+             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              Title="Sign In"
              BackgroundColor="{StaticResource LayoutDark}">
-    <ContentPage.Content>
+    <ContentPage.Content>        
         <StackLayout VerticalOptions="Center">
             <StackLayout HorizontalOptions="FillAndExpand" Margin="20,0,20,0">
                 <Label Text="{Binding UsernameText}" TextColor="White"/>
 
-                <Entry x:Name="usernameEntry" TextColor="White" Text="{Binding Username}" IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource LayoutDark}" />
+                <Entry x:Name="usernameEntry" TextColor="White" Text="{Binding Username}" 
+                       IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource LayoutDark}">
+                    <Entry.Behaviors>
+                        <Beh:EmptyValidationEntryBehavior />
+                    </Entry.Behaviors>
+                </Entry>
 
                 <Label Text="{Binding PasswordText}" TextColor="White" />
 
-                <Entry x:Name="passwordEntry" TextColor="White" Text="{Binding Password}" IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource LayoutDark}" IsPassword="true" />
+                <Entry x:Name="passwordEntry" TextColor="White" Text="{Binding Password}" 
+                       IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource LayoutDark}" IsPassword="true">
+                    <Entry.Behaviors>
+                        <Beh:EmptyValidationEntryBehavior />
+                    </Entry.Behaviors>
+                </Entry>
             </StackLayout>
 
             <StackLayout HorizontalOptions="Center">
                 <Button Text="Sign In" Command="{Binding LoginCommand}" VerticalOptions="Center" TextColor="White"
-                        IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource ControlLight}" />
+                        IsEnabled="{Binding CanLogin}" BackgroundColor="{StaticResource ControlLight}" />
                 <!--<Label Text="Or" TextColor="White" HorizontalOptions="Center" />
                 <Button Text="Sign Up" Clicked="SignUpClicked" VerticalOptions="Center" TextColor="White" BackgroundColor="{StaticResource ControlLight}" />-->
             </StackLayout>

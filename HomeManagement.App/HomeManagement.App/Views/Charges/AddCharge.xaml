@@ -22,13 +22,20 @@
             <StackLayout Orientation="Vertical" Padding="20,20,20,20">
                 <Label Text="{Binding ChargeNameText, Converter={StaticResource Translation}}" TextColor="White" />
 
-                <Entry TextColor="White" Text="{Binding Charge.Name}" BackgroundColor="{StaticResource LayoutDark}" />
+                <Entry TextColor="White" Text="{Binding Charge.Name}" 
+                       BackgroundColor="{StaticResource LayoutDark}">
+                    <Entry.Behaviors>
+                        <Beh:EmptyValidationEntryBehavior />
+                    </Entry.Behaviors>
+                </Entry>
             </StackLayout>
 
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
                 <Image Source="money.png" HorizontalOptions="Start" HeightRequest="50" />
 
-                <Entry WidthRequest="100" Keyboard="Numeric" TextColor="{Binding Source={x:Reference chargeTypeSwitch}, Path=IsToggled, Converter={StaticResource ChargeTypeColor}}" Text="{Binding Charge.Price}" BackgroundColor="{StaticResource LayoutDark}" />
+                <Entry WidthRequest="100" Keyboard="Numeric" 
+                       TextColor="{Binding Source={x:Reference chargeTypeSwitch}, Path=IsToggled, Converter={StaticResource ChargeTypeColor}}" 
+                       Text="{Binding Charge.Price}" BackgroundColor="{StaticResource LayoutDark}" />
 
             </StackLayout>
 

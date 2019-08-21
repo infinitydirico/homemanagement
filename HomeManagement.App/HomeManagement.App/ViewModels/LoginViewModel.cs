@@ -34,6 +34,7 @@ namespace HomeManagement.App.ViewModels
             {
                 username = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(CanLogin));
             }
         }
 
@@ -44,8 +45,11 @@ namespace HomeManagement.App.ViewModels
             {
                 password = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(CanLogin));
             }
         }
+
+        public bool CanLogin => !string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password) && NotBusy;
 
         protected override async Task InitializeAsync()
         {
@@ -68,7 +72,7 @@ namespace HomeManagement.App.ViewModels
         public async Task LoginAsync()
         {
             IsBusy = true;
-
+            OnPropertyChanged(nameof(CanLogin));
             try
             {
                 await authenticationManager.AuthenticateAsync(Username, Password);
@@ -82,6 +86,7 @@ namespace HomeManagement.App.ViewModels
             }
 
             IsBusy = false;
+            OnPropertyChanged(nameof(CanLogin));
         }
 
         #region labels
