@@ -219,4 +219,13 @@
   <data name="ConfirmPassword" xml:space="preserve">
     <value>Confirmar contraseña</value>
   </data>
+  <data name="Accept" xml:space="preserve">
+    <value>Aceptar</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="DeleteChargeModal" xml:space="preserve">
+    <value>Esta seguro que desea eliminar este item?</value>
+  </data>
 </root>

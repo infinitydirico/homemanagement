@@ -1,8 +1,12 @@
-﻿using HomeManagement.App.Data.Entities;
+﻿using Autofac;
+using HomeManagement.App.Data.Entities;
+using HomeManagement.App.Managers;
 using HomeManagement.App.ViewModels;
 using HomeManagement.App.Views.AccountPages;
+using HomeManagement.App.Views.Controls;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -11,13 +15,16 @@ namespace HomeManagement.App.Views.Charges
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ChargesList : ContentPage
     {
+        ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
         Account account;
         ChargesListViewModel viewModel;
+        Modal modal;
 
         public ChargesList(Account account)
         {
             this.account = account;
             viewModel = new ChargesListViewModel(account);
+            modal = new Modal(this);
 
             viewModel.OnError += ViewModel_OnError;
             viewModel.OnInitializationError += ViewModel_OnInitializationError;
@@ -66,19 +73,31 @@ namespace HomeManagement.App.Views.Charges
             Navigation.PushAsync(editChargePage);
         }
 
-        private void Delete(object sender, EventArgs e)
+        private async void Delete(object sender, EventArgs e)
         {
             var editButton = sender as Button;
             var charge = GetCurrentCharge(editButton);
-            viewModel.DeleteCommand.Execute(charge);
+
+            var confirmed = await modal.ShowOkCancel(localizationManager.Translate("DeleteChargeModal"));
+
+            if (confirmed)
+            {
+                viewModel.DeleteCommand.Execute(charge);
+            }
         }
 
         private async void Swiped(object sender, SwipedEventArgs e)
         {
             var stackLayout = sender as StackLayout;
-            var innerLayouts = stackLayout.Children.First(x => x.GetType().Equals(typeof(StackLayout))) as StackLayout;
 
-            if (IsAlreadySwiped(innerLayouts, e.Direction)) return;
+            await PerformSwipe(stackLayout, e);
+        }
+
+        private async Task PerformSwipe(StackLayout stackLayout, SwipedEventArgs e, uint timeout = 250)
+        {
+            var innerLayout = stackLayout.Children.First(x => x.GetType().Equals(typeof(StackLayout))) as StackLayout;
+
+            if (IsAlreadySwiped(innerLayout, e.Direction)) return;
 
             var buttonsActions = stackLayout.Children.Where(x => x.GetType().Equals(typeof(Button)));
 
@@ -88,10 +107,10 @@ namespace HomeManagement.App.Views.Charges
             var offsetIn = e.Direction.Equals(SwipeDirection.Right) ? 35 : -35;
             var offsetOut = e.Direction.Equals(SwipeDirection.Right) ? 70 : -70;
 
-            var rectIn = innerLayouts.Bounds.Offset(offsetIn, 0);
-            var rectOut = innerLayouts.Bounds.Offset(offsetOut, 0);
+            var rectIn = innerLayout.Bounds.Offset(offsetIn, 0);
+            var rectOut = innerLayout.Bounds.Offset(offsetOut, 0);
 
-            var animationIn = await innerLayouts.LayoutTo(rectIn, easing: Easing.SpringIn);
+            var animationIn = await innerLayout.LayoutTo(rectIn, timeout, easing: Easing.SpringIn);
 
             if (e.Direction.Equals(SwipeDirection.Left))
             {
@@ -99,7 +118,7 @@ namespace HomeManagement.App.Views.Charges
                 rectOut.X = 0;
             }
 
-            var animationOut = await innerLayouts.LayoutTo(rectOut, easing: Easing.SpringOut);
+            var animationOut = await innerLayout.LayoutTo(rectOut, timeout, easing: Easing.SpringOut);
 
             trashButton.IsVisible = editButton.IsVisible = e.Direction.Equals(SwipeDirection.Right);
         }
@@ -108,12 +127,10 @@ namespace HomeManagement.App.Views.Charges
             => layout.Bounds.X > 50 && direction.Equals(SwipeDirection.Right) ||
                 layout.Bounds.X < 50 && direction.Equals(SwipeDirection.Left);
 
-        private Charge GetCurrentCharge(Button button)
+        private Charge GetCurrentCharge(View view)
         {
-            var parentLayout = button.Parent as StackLayout;
-            var layout = parentLayout.Children.First(x => x.GetType().Equals(typeof(StackLayout))) as StackLayout;
-            var label = layout.Children.First() as Label;
-            var charge = viewModel.Charges.First(x => x.Name.Equals(label.Text));
+            var cell = view.Parent.Parent as ViewCell;
+            var charge = cell.BindingContext as Charge;
             return charge;
         }
     }

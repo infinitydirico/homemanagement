@@ -4,6 +4,7 @@
              x:Class="HomeManagement.App.Views.Charges.ChargesList"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
+             xmlns:Controls="clr-namespace:HomeManagement.App.Views.Controls"
              BackgroundColor="{StaticResource TabBarColor}">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -22,9 +23,6 @@
                                 IsVisible="{Binding !IsBusy}" RowHeight="70"
                                 IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}"
                                 SeparatorVisibility="None" IsRefreshing="{Binding IsBusy}">
-                        <ListView.Behaviors>
-                            <Beh:ListViewSelectedItemBehaviour x:Name="ChangeColour" />
-                        </ListView.Behaviors>
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
@@ -41,7 +39,7 @@
                                             </StackLayout.GestureRecognizers>
                                             <Button Image="red_trash_xs.png" VerticalOptions="Start"
                                                     WidthRequest="30" HeightRequest="30" IsVisible="False"
-                                                    BackgroundColor="{StaticResource ControlLight}" Clicked="Delete"  />
+                                                    BackgroundColor="{StaticResource ControlLight}" Clicked="Delete" />
                                             <Button Image="edit_xs.png" VerticalOptions="Start" 
                                                     WidthRequest="30" HeightRequest="30" IsVisible="False" 
                                                     BackgroundColor="{StaticResource ControlLight}" Clicked="Edit"/>

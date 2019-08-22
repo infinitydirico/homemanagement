@@ -8,6 +8,7 @@ using HomeManagement.Core.Caching;
 using HomeManagement.Core.Cryptography;
 using HomeManagement.Localization;
 using Plugin.Connectivity;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
