@@ -26,14 +26,6 @@ namespace HomeManagement.App.ViewModels
             ClearCacheCommand = new Command(ClearCache);
         }
 
-        protected override async Task InitializeAsync()
-        {
-            coudSyncSetting = appSettingsRepository.FirstOrDefault(x => x.Name.Equals(AppSettings.GetCloudSyncSetting().Name));
-            coudSyncEnabled = coudSyncSetting.Enabled;
-            OnPropertyChanged(nameof(CoudSyncEnabled));
-            await Task.Yield();
-        }
-
         public event EventHandler OnClearSuccess;
 
         public ICommand ChangeLanguageCommand { get; set; }
@@ -49,6 +41,8 @@ namespace HomeManagement.App.ViewModels
         public string LanguageTitleText { get; set; } = "LanguageOptions";
 
         public string SyncTitleText { get; set; } = "SyncOptions";
+
+        public bool HasCachedData { get; private set; }
 
         public bool CoudSyncEnabled
         {
@@ -69,21 +63,55 @@ namespace HomeManagement.App.ViewModels
             }
         }
 
-        private void ClearCache(object obj)
+        public void RefreshCaching()
         {
-            HandleSafeExecution(() =>
+            HasCachedData = accountRepository.Any() || chargeRepository.Any();
+            OnPropertyChanged(nameof(HasCachedData));
+        }
+
+        protected override async Task InitializeAsync()
+        {
+            coudSyncSetting = appSettingsRepository.FirstOrDefault(x => x.Name.Equals(AppSettings.GetCloudSyncSetting().Name));
+            coudSyncEnabled = coudSyncSetting.Enabled;
+            OnPropertyChanged(nameof(CoudSyncEnabled));
+            await Task.Yield();
+        }
+
+        private async void ClearCache(object obj)
+        {
+            var options = new string[] { "All", "User Data" };
+            var action = await Application.Current.MainPage.DisplayActionSheet("Choices", "Cancel", null, options);
+
+            switch(action)
             {
-                userRepository.RemoveAll();
-                userRepository.Commit();
+                case "All":
+                    HandleSafeExecution(() =>
+                    {
+                        userRepository.RemoveAll();
+                        userRepository.Commit();
 
-                accountRepository.RemoveAll();
-                accountRepository.Commit();
+                        accountRepository.RemoveAll();
+                        accountRepository.Commit();
 
-                chargeRepository.RemoveAll();
-                chargeRepository.Commit();                
+                        chargeRepository.RemoveAll();
+                        chargeRepository.Commit();
 
-                OnClearSuccess?.Invoke(this, EventArgs.Empty);
-            });
+                        OnClearSuccess?.Invoke(this, EventArgs.Empty);
+                    });
+                    break;
+                case "User Data":
+                    HandleSafeExecution(() =>
+                    {
+                        accountRepository.RemoveAll();
+                        accountRepository.Commit();
+
+                        chargeRepository.RemoveAll();
+                        chargeRepository.Commit();
+
+                        OnClearSuccess?.Invoke(this, EventArgs.Empty);
+                    });
+                    break;
+            }
         }
 
         private void ChangeLanguage()

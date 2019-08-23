@@ -1,4 +1,6 @@
 using Autofac;
+using HomeManagement.App.Data;
+using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
 using HomeManagement.App.Services.Rest;
 using HomeManagement.App.Views.Login;
@@ -27,15 +29,32 @@ namespace HomeManagement.App
 
             InitializeDefaultValues();
 
-            MainPage = new NavigationPage(new LoginPage());
+            var userRepository = new GenericRepository<User>();
+
+            Page page = new LoginPage();
+
+            var authManager = _container.Resolve<IAuthenticationManager>();
+            if (authManager.AreCredentialsAvaible())
+            {
+                var user = authManager.GetStoredUser();
+                authManager.AuthenticateAsync(user.Email, user.Password);
+
+                page = new MainPage();
+
+                NavigationPage.SetHasBackButton(page, false);
+
+                NavigationPage.SetHasNavigationBar(page, true);
+            }
+
+            MainPage = new NavigationPage(page);
 
             CrossConnectivity.Current.ConnectivityTypeChanged += (sender, args) =>
             {
                 if (!args.IsConnected)
                 {
-                    var page = new OfflinePage();
-                    NavigationPage.SetHasBackButton(page, false);
-                    MainPage.Navigation.PushAsync(page);
+                    var p = new OfflinePage();
+                    NavigationPage.SetHasBackButton(p, false);
+                    MainPage.Navigation.PushAsync(p);
                 }
             };
         }

@@ -28,5 +28,11 @@ namespace HomeManagement.App.Views.Main
 
             Title = localizationManager.Translate("Settings");
         }
+
+        protected override void OnAppearing()
+        {
+            ((SettingsViewModel)BindingContext).RefreshCaching();
+            base.OnAppearing();
+        }
     }
 }

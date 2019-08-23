@@ -49,7 +49,7 @@
                         </StackLayout>
                         <Button Text="Clear Cache" Command="{Binding ClearCacheCommand}"
                             HorizontalOptions="Start" VerticalOptions="Center"
-                            IsEnabled="{Binding CoudSyncEnabled}"/>
+                            IsEnabled="{Binding HasCachedData}"/>
                     </StackLayout>
                 </StackLayout>               
             </Frame>
