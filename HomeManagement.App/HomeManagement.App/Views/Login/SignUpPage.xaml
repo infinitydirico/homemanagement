@@ -12,20 +12,20 @@
     <ContentPage.Content>
         <StackLayout VerticalOptions="Center">
             <StackLayout HorizontalOptions="FillAndExpand" Margin="20,0,20,0">
-                <Label Text="{Binding UsernameText}" TextColor="White"/>
+                <Label Text="{Binding UsernameText}" />
 
-                <Entry TextColor="White" Text="{Binding Username}" IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource LayoutDark}" />
+                <Entry  Text="{Binding Username}" IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource LayoutDark}" />
 
-                <Label Text="{Binding PasswordText}" TextColor="White" />
+                <Label Text="{Binding PasswordText}"  />
 
-                <Entry TextColor="White" Text="{Binding Password}" IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource LayoutDark}" IsPassword="true" />
+                <Entry  Text="{Binding Password}" IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource LayoutDark}" IsPassword="true" />
 
-                <Label Text="{Binding ConfirmPasswordText}" TextColor="White" />
-                <Entry TextColor="White" Text="{Binding ConfirmPassword}" IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource LayoutDark}" IsPassword="true" />
+                <Label Text="{Binding ConfirmPasswordText}"  />
+                <Entry  Text="{Binding ConfirmPassword}" IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource LayoutDark}" IsPassword="true" />
             </StackLayout>
 
             <StackLayout HorizontalOptions="Center">
-                <Button Text="Sign Up" Command="{Binding SignUpCommand}" VerticalOptions="Center" TextColor="White"
+                <Button Text="Sign Up" Command="{Binding SignUpCommand}" VerticalOptions="Center" 
                         IsEnabled="{Binding EnableSignUp}" BackgroundColor="{StaticResource ControlLight}" />
             </StackLayout>
 

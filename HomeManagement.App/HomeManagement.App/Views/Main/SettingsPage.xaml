@@ -4,8 +4,12 @@
              x:Class="HomeManagement.App.Views.Main.Settings"
              xmlns:viewModels="clr-namespace:HomeManagement.App.ViewModels"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
+             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              BackgroundColor="{StaticResource TabBarColor}"
              Icon="dashboard.png">
+    <ContentPage.Behaviors>
+        <Beh:TranslationBehavior LanguageKey="Settings" />
+    </ContentPage.Behaviors>
     <ContentPage.Resources>
         <ResourceDictionary>
             <Conv:TranslationConverter x:Key="Translation" />
@@ -16,40 +20,50 @@
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
-            <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="5, 5, 5, 5">
+            <Frame Margin="5, 5, 5, 5">
                 <StackLayout Orientation="Vertical">
-                    <StackLayout>
-                        <Label Text="{Binding LanguageTitleText, Converter={StaticResource Translation}}" TextColor="White" />
+                    <StackLayout Orientation="Horizontal">
+                        <Label VerticalOptions="Center" HorizontalOptions="Start">
+                            <Label.Behaviors>
+                                <Beh:TranslationBehavior LanguageKey="LanguageOptions" />
+                            </Label.Behaviors>
+                        </Label>
                     </StackLayout>
-                    <StackLayout Orientation="Horizontal" Margin="10,10,10,10">
-                        <Button Command="{Binding ChangeLanguageCommand}" Text="{Binding ChangeLanguageText, Converter={StaticResource Translation}}"
-                    HorizontalOptions="Start" VerticalOptions="Center" />
-
-                        <Label Text="{Binding CurrentLanguage, Converter={StaticResource Translation}}" TextColor="White"
-                       VerticalOptions="Center" HorizontalOptions="End" />
-
+                    <StackLayout Orientation="Horizontal">
+                        <Label VerticalOptions="Center" HorizontalOptions="Start">
+                            <Label.Behaviors>
+                                <Beh:TranslationBehavior LanguageKey="CurrentLanguage" />
+                            </Label.Behaviors>
+                        </Label>
+                        <Label VerticalOptions="Center" HorizontalOptions="Start">
+                            <Label.Behaviors>
+                                <Beh:TranslationBehavior LanguageKey="Language" />
+                            </Label.Behaviors>
+                        </Label>
+                        <Button Command="{Binding ChangeLanguageCommand}" Image="language_xs.png" 
+                            WidthRequest="30" HeightRequest="30" HorizontalOptions="EndAndExpand" />
                     </StackLayout>
                 </StackLayout>
             </Frame>
-            <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="5, 5, 5, 5">
+            <Frame Margin="5, 5, 5, 5">
                 <StackLayout Orientation="Vertical">
                     <StackLayout>
-                        <Label Text="{Binding SyncTitleText, Converter={StaticResource Translation}}" TextColor="White" />
+                        <Label>
+                            <Label.Behaviors>
+                                <Beh:TranslationBehavior LanguageKey="SyncOptions" />
+                            </Label.Behaviors>
+                        </Label>
                     </StackLayout>
-                    <StackLayout Orientation="Vertical" Margin="10,10,10,10">
-                        <StackLayout Orientation="Horizontal">
-                            <Switch x:Name="enableCloudSync"  VerticalOptions="Center" HorizontalOptions="Start"
-                                    IsToggled="{Binding CoudSyncEnabled}"/>
-
-                            <Label Text="{Binding CloudSyncText, Converter={StaticResource Translation}}" TextColor="White"
-                                    VerticalOptions="Center" HorizontalOptions="Start" />
-
-                            <Label Text="{Binding CloudSyncStatusText, Converter={StaticResource Translation}}" TextColor="White"
-                                    VerticalOptions="Center" HorizontalOptions="End" />
-                        </StackLayout>
-                        <Button Text="Clear Cache" Command="{Binding ClearCacheCommand}"
-                            HorizontalOptions="Start" VerticalOptions="Center"
-                            IsEnabled="{Binding HasCachedData}"/>
+                    <StackLayout Orientation="Horizontal">
+                        <Label FontSize="Micro"   HorizontalOptions="Start">
+                            <Label.Behaviors>
+                                <Beh:TranslationBehavior LanguageKey="OfflineModeDescription" />
+                            </Label.Behaviors>
+                        </Label>
+                        <Switch x:Name="enableCloudSync" HorizontalOptions="EndAndExpand"
+                                    IsToggled="{Binding OfflineModeEnabled}" />
+                        <Button Image="red_trash_xs.png" WidthRequest="30" HeightRequest="30"
+                                HorizontalOptions="EndAndExpand" Command="{Binding ClearCacheCommand}" />
                     </StackLayout>
                 </StackLayout>               
             </Frame>

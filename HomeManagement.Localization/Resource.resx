@@ -228,4 +228,31 @@
   <data name="DeleteChargeModal" xml:space="preserve">
     <value>Are you sure you want to delete this item?</value>
   </data>
+  <data name="OfflineMode" xml:space="preserve">
+    <value>Offline Mode</value>
+  </data>
+  <data name="OfflineModeDescription" xml:space="preserve">
+    <value>By enabling this mode, only persisted data will appear and new data will await until internet connection is enabled to send to the server.</value>
+  </data>
+  <data name="DashboardTitle" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="ExpensesGroupedByCategory" xml:space="preserve">
+    <value>Expenses groped by categories</value>
+  </data>
+  <data name="IncomeEvolution" xml:space="preserve">
+    <value>Income Evolution</value>
+  </data>
+  <data name="OutcomeEvolution" xml:space="preserve">
+    <value>Outcome Evolution</value>
+  </data>
+  <data name="GeneralExpenses" xml:space="preserve">
+    <value>General Expenses</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="SignInTitle" xml:space="preserve">
+    <value>Sign in Page</value>
+  </data>
 </root>

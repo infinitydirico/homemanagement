@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HomeManagement.App.Views.Charges.EditCharge"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
+             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              BackgroundColor="{StaticResource LayoutDark}">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -18,28 +19,32 @@
         <StackLayout Orientation="Vertical">
 
             <StackLayout Orientation="Vertical" Padding="20,20,20,20">
-                <Label Text="{Binding ChargeNameText, Converter={StaticResource Translation}}" TextColor="White" />
+                <Label>
+                    <Label.Behaviors>
+                        <Beh:TranslationBehavior LanguageKey="ChargeNameText" />
+                    </Label.Behaviors>
+                </Label>
 
-                <Entry TextColor="White" Text="{Binding Charge.Name}" FontSize="Large" BackgroundColor="{StaticResource LayoutDark}" />
+                <Entry  Text="{Binding Charge.Name}" FontSize="Large" />
             </StackLayout>
 
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
                 <Image Source="money.png" HorizontalOptions="Start" HeightRequest="50" />
 
-                <Entry WidthRequest="100" Keyboard="Numeric" TextColor="White" Text="{Binding Charge.Price}" BackgroundColor="{StaticResource LayoutDark}" />
+                <Entry WidthRequest="100" Keyboard="Numeric"  Text="{Binding Charge.Price}" />
 
             </StackLayout>
 
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
                 <Image Source="date.png" HorizontalOptions="Start" HeightRequest="50" />
 
-                <DatePicker Date="{Binding Charge.Date}" TextColor="White" BackgroundColor="{StaticResource LayoutDark}"/>
+                <DatePicker Date="{Binding Charge.Date}" />
             </StackLayout>
 
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
                 <Image Source="label.png" HorizontalOptions="Start" HeightRequest="50" />
 
-                <Picker WidthRequest="150" TextColor="White" BackgroundColor="{StaticResource LayoutDark}" ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" />
+                <Picker WidthRequest="150"  ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" />
 
             </StackLayout>
 
@@ -49,7 +54,7 @@
 
                 <Switch x:Name="chargeTypeSwitch" IsToggled="{Binding ChargeType}" />
 
-                <Label Text="{Binding Source={x:Reference chargeTypeSwitch}, Path=IsToggled, Converter={StaticResource ChargeTypeLabel}}" VerticalOptions="Center" TextColor="White" />
+                <Label Text="{Binding Source={x:Reference chargeTypeSwitch}, Path=IsToggled, Converter={StaticResource ChargeTypeLabel}}" VerticalOptions="Center"  />
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

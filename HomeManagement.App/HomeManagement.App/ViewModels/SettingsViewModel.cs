@@ -17,8 +17,8 @@ namespace HomeManagement.App.ViewModels
         private readonly GenericRepository<Account> accountRepository = new GenericRepository<Account>();
         private readonly GenericRepository<Charge> chargeRepository = new GenericRepository<Charge>();
 
-        AppSettings coudSyncSetting;
-        bool coudSyncEnabled;
+        AppSettings offlineModeSetting;
+        bool offlineModeEnabled;
 
         public SettingsViewModel()
         {
@@ -32,32 +32,19 @@ namespace HomeManagement.App.ViewModels
 
         public ICommand ClearCacheCommand { get; }
 
-        public string ChangeLanguageText { get; set; } = "ChangeLanguage";
-
-        public string CloudSyncText { get; set; } = "CloudSync";
-
-        public string CloudSyncStatusText { get; private set; } = "Disabled";
-
-        public string LanguageTitleText { get; set; } = "LanguageOptions";
-
-        public string SyncTitleText { get; set; } = "SyncOptions";
-
         public bool HasCachedData { get; private set; }
 
-        public bool CoudSyncEnabled
+        public bool OfflineModeEnabled
         {
             get
             {
-                return coudSyncEnabled;
+                return offlineModeEnabled;
             }
             set
             {
-                coudSyncEnabled = value;
-                coudSyncSetting.Enabled = coudSyncEnabled;
-                CloudSyncStatusText = GetCloudSyncLabel(coudSyncEnabled);
-
+                offlineModeEnabled = value;
+                offlineModeSetting.Enabled = offlineModeEnabled;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(CloudSyncStatusText));
 
                 SaveCloudSyncSetting();
             }
@@ -71,9 +58,9 @@ namespace HomeManagement.App.ViewModels
 
         protected override async Task InitializeAsync()
         {
-            coudSyncSetting = appSettingsRepository.FirstOrDefault(x => x.Name.Equals(AppSettings.GetCloudSyncSetting().Name));
-            coudSyncEnabled = coudSyncSetting.Enabled;
-            OnPropertyChanged(nameof(CoudSyncEnabled));
+            offlineModeSetting = appSettingsRepository.FirstOrDefault(x => x.Name.Equals(AppSettings.GetOfflineModeSetting().Name));
+            offlineModeEnabled = offlineModeSetting.Enabled;
+            OnPropertyChanged(nameof(OfflineModeEnabled));
             await Task.Yield();
         }
 
@@ -122,15 +109,13 @@ namespace HomeManagement.App.ViewModels
 
         private void SaveCloudSyncSetting()
         {
-            if (!coudSyncEnabled)
+            if (!offlineModeEnabled)
             {
                 ClearCache(null);
             }
 
-            appSettingsRepository.Update(coudSyncSetting);
+            appSettingsRepository.Update(offlineModeSetting);
             appSettingsRepository.Commit();
         }
-
-        private string GetCloudSyncLabel(bool sync) => sync ? "Enabled" : "Disabled";
     }
 }

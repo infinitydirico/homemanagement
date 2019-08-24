@@ -8,6 +8,6 @@
 
         public bool Enabled { get; set; }
 
-        public static AppSettings GetCloudSyncSetting() => new AppSettings { Name = "Cloud Sync" };
+        public static AppSettings GetOfflineModeSetting() => new AppSettings { Name = "Offline Mode" };
     }
 }

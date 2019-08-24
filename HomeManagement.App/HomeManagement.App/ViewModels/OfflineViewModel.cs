@@ -2,6 +2,6 @@
 {
     public class OfflineViewModel : LocalizationBaseViewModel
     {
-        public string OfflineText => "Offline";
+
     }
 }

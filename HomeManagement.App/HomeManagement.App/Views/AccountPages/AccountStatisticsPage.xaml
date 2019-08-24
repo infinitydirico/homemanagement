@@ -2,27 +2,43 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:charts="clr-namespace:Nightingale.Charts;assembly=Nightingale"
+             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              BackgroundColor="{StaticResource TabBarColor}"
              x:Class="HomeManagement.App.Views.AccountPages.AccountStatisticsPage">
     <ContentPage.Content>
         <ScrollView Orientation="Vertical">
             <StackLayout Margin="10, 10, 10, 10" Orientation="Vertical" HorizontalOptions="FillAndExpand">
-                <Frame BackgroundColor="{StaticResource LayoutDark}">
-                    <charts:BarChart x:Name="barChart" Series="{Binding ChartValues}" 
+                <Frame>
+                    <StackLayout>
+                        <Label>
+                            <Label.Behaviors>
+                                <Beh:TranslationBehavior LanguageKey="ExpensesGroupedByCategory" />
+                            </Label.Behaviors>
+                        </Label>
+                        <charts:BarChart x:Name="barChart" Series="{Binding ChartValues}" 
                                      TextSize="20" BackgroundColor="#303030" HeightRequest="150" />
+                    </StackLayout>
                 </Frame>
 
-                <Frame BackgroundColor="{StaticResource LayoutDark}">
+                <Frame>
                     <StackLayout>
-                        <Label Text="Income Evolution" TextColor="White" />
+                        <Label>
+                            <Label.Behaviors>
+                                <Beh:TranslationBehavior LanguageKey="IncomeEvolution" />
+                            </Label.Behaviors>
+                        </Label>
                         <charts:LineChart x:Name="incomeChart" Series="{Binding IncomeSeries}" RenderArea="True"
                                      TextSize="20" BackgroundColor="#303030" HeightRequest="150" />
                     </StackLayout>
                 </Frame>
 
-                <Frame BackgroundColor="{StaticResource LayoutDark}">
+                <Frame>
                     <StackLayout>
-                        <Label Text="Outcome Evolution" TextColor="White" />
+                        <Label>
+                            <Label.Behaviors>
+                                <Beh:TranslationBehavior LanguageKey="OutcomeEvolution" />
+                            </Label.Behaviors>
+                        </Label>
                         <charts:LineChart x:Name="outcomeChart" Series="{Binding OutcomeSeries}" RenderArea="True"
                                     TextSize="20" BackgroundColor="#303030" HeightRequest="150" />
                     </StackLayout>

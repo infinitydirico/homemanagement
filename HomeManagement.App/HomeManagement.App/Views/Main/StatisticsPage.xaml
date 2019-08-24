@@ -4,17 +4,35 @@
              x:Class="HomeManagement.App.Views.Main.StatisticsPage"
              BackgroundColor="{StaticResource TabBarColor}"
              Icon="bar_chart.png"
-             xmlns:charts="clr-namespace:Nightingale.Charts;assembly=Nightingale">
+             xmlns:charts="clr-namespace:Nightingale.Charts;assembly=Nightingale"
+             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours">
+    <ContentPage.Behaviors>
+        <Beh:TranslationBehavior LanguageKey="Statistics" />
+    </ContentPage.Behaviors>
     <ContentPage.Content>
         <StackLayout HorizontalOptions="FillAndExpand">
-            <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="5, 5, 5, 5">
-                <charts:BarChart x:Name="barChart" Series="{Binding ChartValues}" 
+            <Frame Margin="5, 5, 5, 5">
+                <StackLayout>
+                    <Label>
+                        <Label.Behaviors>
+                            <Beh:TranslationBehavior LanguageKey="GeneralExpenses" />
+                        </Label.Behaviors>
+                    </Label>
+                    <charts:BarChart x:Name="barChart" Series="{Binding ChartValues}" 
                                  TextSize="25" BackgroundColor="#303030" HeightRequest="150" />
+                </StackLayout>
             </Frame>
 
-            <Frame BackgroundColor="{StaticResource LayoutDark}" Margin="5, 5, 5, 5">
-                <charts:PieChart x:Name="pieChart" Series="{Binding ChartValues}" 
+            <Frame Margin="5, 5, 5, 5">
+                <StackLayout>
+                    <Label>
+                        <Label.Behaviors>
+                            <Beh:TranslationBehavior LanguageKey="GeneralExpenses" />
+                        </Label.Behaviors>
+                    </Label>
+                    <charts:PieChart x:Name="pieChart" Series="{Binding ChartValues}" 
                                  TextSize="25" BackgroundColor="#303030" HeightRequest="150" />
+                </StackLayout>
             </Frame>
         </StackLayout>
     </ContentPage.Content>

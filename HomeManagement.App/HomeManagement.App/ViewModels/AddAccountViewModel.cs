@@ -109,11 +109,5 @@ namespace HomeManagement.App.ViewModels
                 OnAccountCreated?.Invoke(this, EventArgs.Empty);
             });
         }
-
-        public string AccountNameText { get; set; } = "AccountName";
-
-        public string CurrencyText { get; set; } = "Currency";
-
-        public string AccountTypeText { get; set; } = "AccountType";
     }
 }

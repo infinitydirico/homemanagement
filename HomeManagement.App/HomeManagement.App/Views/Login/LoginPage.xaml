@@ -5,22 +5,33 @@
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              Title="Sign In"
              BackgroundColor="{StaticResource LayoutDark}">
+    <ContentPage.Behaviors>
+        <Beh:TranslationBehavior LanguageKey="SignInTitle" />
+    </ContentPage.Behaviors>
     <ContentPage.Content>        
         <StackLayout VerticalOptions="Center">
             <StackLayout HorizontalOptions="FillAndExpand" Margin="20,0,20,0">
-                <Label Text="{Binding UsernameText}" TextColor="White"/>
+                <Label>
+                    <Label.Behaviors>
+                        <Beh:TranslationBehavior LanguageKey="Username" />
+                    </Label.Behaviors>
+                </Label>
 
-                <Entry x:Name="usernameEntry" TextColor="White" Text="{Binding Username}" 
-                       IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource LayoutDark}">
+                <Entry x:Name="usernameEntry"  Text="{Binding Username}" 
+                       IsEnabled="{Binding NotBusy}">
                     <Entry.Behaviors>
                         <Beh:EmptyValidationEntryBehavior />
                     </Entry.Behaviors>
                 </Entry>
 
-                <Label Text="{Binding PasswordText}" TextColor="White" />
+                <Label>
+                    <Label.Behaviors>
+                        <Beh:TranslationBehavior LanguageKey="Password" />
+                    </Label.Behaviors>
+                </Label>
 
-                <Entry x:Name="passwordEntry" TextColor="White" Text="{Binding Password}" 
-                       IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource LayoutDark}" IsPassword="true">
+                <Entry x:Name="passwordEntry"  Text="{Binding Password}" 
+                       IsEnabled="{Binding NotBusy}" IsPassword="true">
                     <Entry.Behaviors>
                         <Beh:EmptyValidationEntryBehavior />
                     </Entry.Behaviors>
@@ -28,10 +39,14 @@
             </StackLayout>
 
             <StackLayout HorizontalOptions="Center">
-                <Button Text="Sign In" Command="{Binding LoginCommand}" VerticalOptions="Center" TextColor="White"
-                        IsEnabled="{Binding CanLogin}" BackgroundColor="{StaticResource ControlLight}" />
-                <!--<Label Text="Or" TextColor="White" HorizontalOptions="Center" />
-                <Button Text="Sign Up" Clicked="SignUpClicked" VerticalOptions="Center" TextColor="White" BackgroundColor="{StaticResource ControlLight}" />-->
+                <Button Command="{Binding LoginCommand}" VerticalOptions="Center" 
+                        IsEnabled="{Binding CanLogin}">
+                    <Button.Behaviors>
+                        <Beh:TranslationBehavior LanguageKey="SignIn" />
+                    </Button.Behaviors>
+                </Button>
+                <!--<Label Text="Or"  HorizontalOptions="Center" />
+                <Button Text="Sign Up" Clicked="SignUpClicked" VerticalOptions="Center"  BackgroundColor="{StaticResource ControlLight}" />-->
             </StackLayout>
             <ActivityIndicator x:Name="indicator" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="White" />
         </StackLayout>

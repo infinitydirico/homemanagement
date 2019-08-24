@@ -17,11 +17,11 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
-            <Frame Margin="5, 5, 5, 5" BackgroundColor="{StaticResource LayoutDark}">
+            <Frame Margin="5, 5, 5, 5">
                 <StackLayout>
                     <ListView x:Name="chargesList" ItemsSource="{Binding Charges}" 
                                 IsVisible="{Binding !IsBusy}" RowHeight="70"
-                                IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}"
+                                IsPullToRefreshEnabled="False" RefreshCommand="{Binding RefreshCommand}"
                                 SeparatorVisibility="None" IsRefreshing="{Binding IsBusy}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
@@ -44,8 +44,8 @@
                                                     WidthRequest="30" HeightRequest="30" IsVisible="False" 
                                                     BackgroundColor="{StaticResource ControlLight}" Clicked="Edit"/>
                                             <StackLayout Orientation="Vertical" HorizontalOptions="StartAndExpand">
-                                                <Label Text = "{Binding Name}" TextColor="White" />
-                                                <Label Text = "{Binding Date, Converter={StaticResource DateConverter}}" TextColor="White"/>
+                                                <Label Text = "{Binding Name}"  />
+                                                <Label Text = "{Binding Date, Converter={StaticResource DateConverter}}" />
                                             </StackLayout>
                                             <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
                                                 <Label Text = "{Binding Price}" TextColor="{Binding ChargeType, Converter={StaticResource ChargeTypeColor}}" FontSize="Small" />
@@ -59,10 +59,10 @@
                 </StackLayout>
             </Frame>
 
-            <Frame Margin="5, 5, 5, 5" BackgroundColor="{StaticResource LayoutDark}">
+            <Frame Margin="5, 5, 5, 5">
                 <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
                     <StackLayout HorizontalOptions="Start">
-                        <Button Image="barchart.png" BackgroundColor="{StaticResource ControlLight}" 
+                        <Button Image="barchart.png"
                             VerticalOptions="Center" 
                             WidthRequest="65" HeightRequest="65"
                             Clicked="OnViewAccountStatistics"/>
@@ -70,13 +70,13 @@
 
                     <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
                         <StackLayout>
-                            <Button Image="arrow_left.png" BackgroundColor="{StaticResource ControlLight}" 
+                            <Button Image="arrow_left.png"
                             VerticalOptions="Center" Command="{Binding PreviousPageCommand}" IsEnabled="{Binding NotBusy}" 
                             WidthRequest="65" HeightRequest="65" />
                         </StackLayout>
 
                         <StackLayout>
-                            <Button Image="arrow_right.png" BackgroundColor="{StaticResource ControlLight}" 
+                            <Button Image="arrow_right.png"
                             VerticalOptions="Center" Command="{Binding NextPageCommand}" IsEnabled="{Binding NotBusy}"
                             WidthRequest="65" HeightRequest="65" />
                         </StackLayout>

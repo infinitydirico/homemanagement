@@ -19,7 +19,7 @@ namespace HomeManagement.App.Managers
 
         public BaseManager()
         {
-            coudSyncSetting = appSettingsRepository.FirstOrDefault(x => x.Name.Equals(AppSettings.GetCloudSyncSetting().Name));
+            coudSyncSetting = appSettingsRepository.FirstOrDefault(x => x.Name.Equals(AppSettings.GetOfflineModeSetting().Name));
         }
 
         public virtual async Task<IEnumerable<TEntity>> NextPageAsync()

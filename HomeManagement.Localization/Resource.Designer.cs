@@ -169,6 +169,15 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dashboard.
+        /// </summary>
+        public static string DashboardTitle {
+            get {
+                return ResourceManager.GetString("DashboardTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pocket.
         /// </summary>
         public static string DefaultAccountName {
@@ -223,6 +232,24 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expenses groped by categories.
+        /// </summary>
+        public static string ExpensesGroupedByCategory {
+            get {
+                return ResourceManager.GetString("ExpensesGroupedByCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General Expenses.
+        /// </summary>
+        public static string GeneralExpenses {
+            get {
+                return ResourceManager.GetString("GeneralExpenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Go to my Accounts.
         /// </summary>
         public static string GoToAccounts {
@@ -246,6 +273,15 @@ namespace HomeManagement.Localization {
         public static string Income {
             get {
                 return ResourceManager.GetString("Income", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Income Evolution.
+        /// </summary>
+        public static string IncomeEvolution {
+            get {
+                return ResourceManager.GetString("IncomeEvolution", resourceCulture);
             }
         }
         
@@ -304,6 +340,33 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Offline Mode.
+        /// </summary>
+        public static string OfflineMode {
+            get {
+                return ResourceManager.GetString("OfflineMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By enabling this mode, only persisted data will appear and new data will await until internet connection is enabled to send to the server..
+        /// </summary>
+        public static string OfflineModeDescription {
+            get {
+                return ResourceManager.GetString("OfflineModeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outcome Evolution.
+        /// </summary>
+        public static string OutcomeEvolution {
+            get {
+                return ResourceManager.GetString("OutcomeEvolution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Overall Income.
         /// </summary>
         public static string OverallIncome {
@@ -354,6 +417,24 @@ namespace HomeManagement.Localization {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign In.
+        /// </summary>
+        public static string SignIn {
+            get {
+                return ResourceManager.GetString("SignIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign in Page.
+        /// </summary>
+        public static string SignInTitle {
+            get {
+                return ResourceManager.GetString("SignInTitle", resourceCulture);
             }
         }
         

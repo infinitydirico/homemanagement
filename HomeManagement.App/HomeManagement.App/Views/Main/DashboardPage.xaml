@@ -4,8 +4,12 @@
              x:Class="HomeManagement.App.Views.Main.DashboardPage"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:local="clr-namespace:HomeManagement.App.Views.Controls"
+             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              BackgroundColor="{StaticResource TabBarColor}"
              Icon="dashboard.png">
+    <ContentPage.Behaviors>
+        <Beh:TranslationBehavior LanguageKey="DashboardTitle" />
+    </ContentPage.Behaviors>
     <ContentPage.Resources>
         <ResourceDictionary>
             <Conv:PercentageColorConverter x:Key="PercentageColor" />
@@ -25,12 +29,16 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Frame Grid.Column="0" Grid.Row="0" BackgroundColor="{StaticResource LayoutDark}">
+                <Frame Grid.Column="0" Grid.Row="0">
                     <StackLayout Orientation="Vertical">
-                        <Label Text="{Binding OverallIncomeText, Converter={StaticResource Translation}}" TextColor="White" />
+                        <Label>
+                            <Label.Behaviors>
+                                <Beh:TranslationBehavior LanguageKey="OverallIncome" />
+                            </Label.Behaviors>
+                        </Label>
                         <StackLayout Orientation="Horizontal">
                             <StackLayout HorizontalOptions="StartAndExpand">
-                                <Label Text="{Binding TotalIncome}" TextColor="White" />
+                                <Label Text="{Binding TotalIncome}"  />
                             </StackLayout>
                             <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
                                 <Label Text="{Binding IncomePercentage}" TextColor="{Binding IncomePercentage, Converter={StaticResource PercentageColor}}" />
@@ -41,11 +49,15 @@
                         </StackLayout>
                     </StackLayout>
                 </Frame>
-                <Frame Grid.Column="1" Grid.Row="0" BackgroundColor="{StaticResource LayoutDark}">
+                <Frame Grid.Column="1" Grid.Row="0">
                     <StackLayout Orientation="Vertical">
-                        <Label Text="{Binding OverallOutcomeText, Converter={StaticResource Translation}}" TextColor="White" />
+                        <Label>
+                            <Label.Behaviors>
+                                <Beh:TranslationBehavior LanguageKey="OverallOutcome" />
+                            </Label.Behaviors>
+                        </Label>
                         <StackLayout Orientation="Horizontal">
-                            <Label Text="{Binding TotalOutcome}" TextColor="White" />
+                            <Label Text="{Binding TotalOutcome}"  />
 
                             <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
                                 <Label Text="{Binding OutcomePercentage}" TextColor="{Binding OutcomePercentage, Converter={StaticResource PercentageColor}}" />
@@ -56,10 +68,14 @@
                         </StackLayout>
                     </StackLayout>
                 </Frame>
-                <Frame Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" BackgroundColor="{StaticResource LayoutDark}">
+                <Frame Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
                     <StackLayout>
                         <local:AccountListControl VerticalOptions="FillAndExpand"></local:AccountListControl>
-                        <Button Text="{Binding GoToAccountsText, Converter={StaticResource Translation}}" Clicked="Button_Clicked" HorizontalOptions="StartAndExpand" />
+                        <Button Clicked="Button_Clicked" HorizontalOptions="StartAndExpand">
+                            <Button.Behaviors>
+                                <Beh:TranslationBehavior LanguageKey="GoToAccounts" />
+                            </Button.Behaviors>
+                        </Button>
                     </StackLayout>
                 </Frame>
             </Grid>

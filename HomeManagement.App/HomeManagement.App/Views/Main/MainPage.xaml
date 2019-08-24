@@ -20,8 +20,8 @@
     <TabbedPage.ToolbarItems>
         <ToolbarItem Icon="exit.png" Command="{Binding LogoutCommand}" />
     </TabbedPage.ToolbarItems>
-    
-    <mainPages:DashboardPage />
+
+    <mainPages:DashboardPage  />
     <mainPages:StatisticsPage />
     <mainPages:Settings />
 </TabbedPage>

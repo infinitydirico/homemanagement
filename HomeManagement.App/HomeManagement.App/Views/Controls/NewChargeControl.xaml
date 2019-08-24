@@ -15,31 +15,31 @@
         </ResourceDictionary>
     </StackLayout.Resources>
     <StackLayout Orientation="Vertical">
-        <Label Text="Nuevo movimiento" TextColor="White" FontSize="Large" />
+        <Label Text="Nuevo movimiento"  FontSize="Large" />
         <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
             <StackLayout HorizontalOptions="FillAndExpand">
-                <Entry TextColor="White" HorizontalOptions="FillAndExpand" />
+                <Entry  HorizontalOptions="FillAndExpand" />
             </StackLayout>
             <StackLayout HorizontalOptions="EndAndExpand" Orientation="Horizontal">
                 <Image Source="money.png" HeightRequest="30" />
-                <Entry TextColor="White" Keyboard="Numeric" WidthRequest="75" />
+                <Entry  Keyboard="Numeric" WidthRequest="75" />
             </StackLayout>
         </StackLayout>
         <StackLayout Orientation="Horizontal">
             <Image Source="date.png" HorizontalOptions="Start" HeightRequest="30" />
 
-            <DatePicker x:Name="datePicker" Date="{Binding Charge.Date}" TextColor="White" HorizontalOptions="FillAndExpand" />
+            <DatePicker x:Name="datePicker" Date="{Binding Charge.Date}"  HorizontalOptions="FillAndExpand" />
         </StackLayout>
 
         <StackLayout Orientation="Horizontal">
             <Image Source="label.png" HorizontalOptions="Start" HeightRequest="30" />
 
-            <Picker HorizontalOptions="FillAndExpand" TextColor="White" BackgroundColor="{StaticResource LayoutDark}" ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" />
+            <Picker HorizontalOptions="FillAndExpand"  BackgroundColor="{StaticResource LayoutDark}" ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" />
         </StackLayout>
         <StackLayout Orientation="Horizontal" HeightRequest="75">
-            <Label Text="Pick an Account" TextColor="White" VerticalOptions="Center" />
+            <Label Text="Pick an Account"  VerticalOptions="Center" />
 
-            <Picker HorizontalOptions="FillAndExpand" TextColor="White" BackgroundColor="{StaticResource LayoutDark}" ItemsSource="{Binding Accounts}" SelectedItem="{Binding SelectedAccount}" />
+            <Picker HorizontalOptions="FillAndExpand"  BackgroundColor="{StaticResource LayoutDark}" ItemsSource="{Binding Accounts}" SelectedItem="{Binding SelectedAccount}" />
         </StackLayout>
         <StackLayout Orientation="Horizontal" HeightRequest="75">
             <StackLayout Orientation="Horizontal">
@@ -48,7 +48,7 @@
 
                 <Switch x:Name="chargeTypeSwitch" IsToggled="{Binding ChargeType}" />
 
-                <Label Text="{Binding Source={x:Reference chargeTypeSwitch}, Path=IsToggled, Converter={StaticResource ChargeTypeLabel}}" VerticalOptions="Center" TextColor="White" />
+                <Label Text="{Binding Source={x:Reference chargeTypeSwitch}, Path=IsToggled, Converter={StaticResource ChargeTypeLabel}}" VerticalOptions="Center"  />
             </StackLayout>
             <StackLayout HorizontalOptions="EndAndExpand" VerticalOptions="Center">
                 <Button WidthRequest="40" HeightRequest="40" BorderRadius="20" BackgroundColor="Green" Command="{Binding AddChargeCommand}" />

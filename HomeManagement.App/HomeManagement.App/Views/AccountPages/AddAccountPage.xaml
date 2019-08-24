@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:HomeManagement.App.ViewModels"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
+             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              BackgroundColor="{StaticResource LayoutDark}"
              x:Class="HomeManagement.App.Views.AccountPages.AddAccountPage">
     <ContentPage.BindingContext>
@@ -20,25 +21,36 @@
         <StackLayout Orientation="Vertical">
 
             <StackLayout Orientation="Vertical" Padding="20,20,20,20">
-                <Label Text="{Binding AccountNameText, Converter={StaticResource Translation}}" TextColor="White" FontSize="Large" />
+                <Label FontSize="Large">
+                    <Label.Behaviors>
+                        <Beh:TranslationBehavior LanguageKey="AccountName" />
+                        <!--<Beh:EmptyValidationEntryBehavior />-->
+                    </Label.Behaviors>
+                </Label>
 
-                <Entry TextColor="White" Text="{Binding Account.Name}" FontSize="Large" BackgroundColor="{StaticResource LayoutDark}" />
+                <Entry  Text="{Binding Account.Name}" FontSize="Large" />
             </StackLayout>
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
-                <Label Text="{Binding CurrencyText, Converter={StaticResource Translation}}" TextColor="White" FontSize="Large" VerticalOptions="Center" />
+                <Label FontSize="Large" VerticalOptions="Center">
+                    <Label.Behaviors>
+                        <Beh:TranslationBehavior LanguageKey="Currency" />
+                    </Label.Behaviors>
+                </Label>
 
-                <Picker WidthRequest="150" TextColor="White" BackgroundColor="{StaticResource LayoutDark}" 
-                        ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding Currencies}" 
+                <Picker WidthRequest="150" ItemDisplayBinding="{Binding Name}" 
+                        ItemsSource="{Binding Currencies}" 
                         SelectedItem="{Binding SelectedCurrency}" VerticalOptions="Center"/>
 
             </StackLayout>
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
-                <Label Text="{Binding AccountTypeText, Converter={StaticResource Translation}}" TextColor="White" FontSize="Large" VerticalOptions="Center"/>
+                <Label FontSize="Large" VerticalOptions="Center">
+                    <Label.Behaviors>
+                        <Beh:TranslationBehavior LanguageKey="AccountType" />
+                    </Label.Behaviors>
+                </Label>
 
-                <Picker WidthRequest="150" TextColor="White" BackgroundColor="{StaticResource LayoutDark}" 
-                        ItemsSource="{Binding AccountTypes}" SelectedItem="{Binding SelectedAccountType}"
-                        VerticalOptions="Center"/>
-
+                <Picker WidthRequest="150"  ItemsSource="{Binding AccountTypes}" 
+                        SelectedItem="{Binding SelectedAccountType}" VerticalOptions="Center"/>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

@@ -4,8 +4,10 @@
              x:Class="HomeManagement.App.Views.AccountPages.AccountPage"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
-             BackgroundColor="{StaticResource TabBarColor}"
-             Title="{Binding AccountLabelText, Converter={StaticResource Translation}}">
+             BackgroundColor="{StaticResource TabBarColor}">
+    <ContentPage.Behaviors>
+        <Beh:TranslationBehavior LanguageKey="Accounts" />
+    </ContentPage.Behaviors>
     <ContentPage.Resources>
         <ResourceDictionary>
             <Conv:PositiveNegativeColorConverter x:Key="PositiveNegative" />
@@ -16,10 +18,10 @@
         <ToolbarItem Icon="add.png" Clicked="NavigateToAddAccount" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <Frame Margin="5, 5, 5, 5" BackgroundColor="{StaticResource LayoutDark}">            
+        <Frame Margin="5, 5, 5, 5">            
             <ListView x:Name="accountsList" ItemsSource="{Binding Accounts}" 
                       Margin="10,10,10,10" SeparatorVisibility="None"
-                      IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}"
+                      IsPullToRefreshEnabled="False" RefreshCommand="{Binding RefreshCommand}"
                       IsRefreshing="{Binding IsBusy}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -37,11 +39,11 @@
                                 </StackLayout.GestureRecognizers>
                                 <Button Image="red_trash_xs.png" VerticalOptions="Center"
                                         WidthRequest="30" HeightRequest="30" IsVisible="False"
-                                        BackgroundColor="{StaticResource ControlLight}" Clicked="Delete" />
+                                        Clicked="Delete" />
                                 <Button Image="edit_xs.png" VerticalOptions="Center" 
-                                       WidthRequest="30" HeightRequest="30" IsVisible="False" 
-                                        BackgroundColor="{StaticResource ControlLight}" Clicked="Edit"/>
-                                <Label VerticalOptions="Center" Text = "{Binding Name}" TextColor="White"/>
+                                        WidthRequest="30" HeightRequest="30" IsVisible="False" 
+                                        Clicked="Edit"/>
+                                <Label VerticalOptions="Center" Text = "{Binding Name}" />
                                 <Label VerticalOptions="Center" Text = "{Binding Balance}" 
                                        TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" 
                                        HorizontalOptions="EndAndExpand"/>

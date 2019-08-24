@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 namespace HomeManagement.App.ViewModels
 {
-    public class MainViewModel : BaseViewModel
+    public class MainViewModel : LocalizationBaseViewModel
     {
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
 

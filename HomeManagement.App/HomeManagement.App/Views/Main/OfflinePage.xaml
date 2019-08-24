@@ -6,6 +6,7 @@
              xmlns:viewModels="clr-namespace:HomeManagement.App.ViewModels"
              BackgroundColor="{StaticResource LayoutDark}"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
+             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              x:Class="HomeManagement.App.Views.Main.OfflinePage">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -17,9 +18,12 @@
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="{Binding OfflineText, Converter={StaticResource Translation}}"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" FontSize="Large" TextColor="White" />
+            <Label VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" FontSize="Large">
+                <Label.Behaviors>
+                    <Beh:TranslationBehavior LanguageKey="Offline" />
+                </Label.Behaviors>
+            </Label>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

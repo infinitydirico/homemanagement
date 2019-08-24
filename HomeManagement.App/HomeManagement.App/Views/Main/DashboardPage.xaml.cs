@@ -20,8 +20,6 @@ namespace HomeManagement.App.Views.Main
             BindingContext = dashboardViewModel;
 
             dashboardViewModel.OnInitializationError += DashboardViewModel_OnError;
-
-            Title = localizationManager.Translate("Overview");
         }
 
         private void DashboardViewModel_OnError(object sender, System.EventArgs e)

@@ -21,8 +21,6 @@ namespace HomeManagement.App.ViewModels
             }
         }
 
-        public string AccountLabelText => "Accounts";
-
         protected override async Task InitializeAsync()
         {
             Refresh();

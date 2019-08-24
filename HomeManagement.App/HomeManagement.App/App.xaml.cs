@@ -34,7 +34,7 @@ namespace HomeManagement.App
             Page page = new LoginPage();
 
             var authManager = _container.Resolve<IAuthenticationManager>();
-            if (authManager.AreCredentialsAvaible())
+            if (authManager.HasValidCredentialsAvaible())
             {
                 var user = authManager.GetStoredUser();
                 authManager.AuthenticateAsync(user.Email, user.Password);

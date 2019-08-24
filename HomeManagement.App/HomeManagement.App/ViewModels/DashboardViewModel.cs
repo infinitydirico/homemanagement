@@ -1,7 +1,6 @@
-﻿using HomeManagement.App.Services.Rest;
+﻿using Autofac;
+using HomeManagement.App.Services.Rest;
 using System.Threading.Tasks;
-using Xamarin.Forms;
-using Autofac;
 
 namespace HomeManagement.App.ViewModels
 {
@@ -14,9 +13,6 @@ namespace HomeManagement.App.ViewModels
 
         public int OutcomePercentage { get; private set; }
         public int TotalOutcome { get; private set; }
-        public string OverallIncomeText { get; set; } = "OverallIncome";
-        public string OverallOutcomeText { get; set; } = "OverallOutcome";
-        public string GoToAccountsText => "GoToAccounts";
 
         protected override async Task InitializeAsync()
         {

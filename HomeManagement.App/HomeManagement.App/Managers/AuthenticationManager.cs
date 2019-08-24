@@ -20,6 +20,8 @@ namespace HomeManagement.App.Managers
 
         bool AreCredentialsAvaible();
 
+        bool HasValidCredentialsAvaible();
+
         User GetStoredUser();
 
         Task Logout();
@@ -152,7 +154,7 @@ namespace HomeManagement.App.Managers
 
         private void CreateSettingsIfNotExits()
         {
-            var cloudSyncName = AppSettings.GetCloudSyncSetting();
+            var cloudSyncName = AppSettings.GetOfflineModeSetting();
             var settings = appSettingsRepository.FirstOrDefault(x => x.Name.Equals(cloudSyncName.Name));
 
             if (settings == null)
@@ -177,6 +179,13 @@ namespace HomeManagement.App.Managers
                 NeedsUpdate = user.NeedsUpdate,
                 Token = user.Token
             };
+        }
+
+        public bool HasValidCredentialsAvaible()
+        {
+            user = userRepository.FirstOrDefault();
+
+            return user != null && (DateTime.Now - user.LastApiCall).Hours < 1;
         }
     }
 }

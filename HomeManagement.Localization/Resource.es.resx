@@ -193,7 +193,7 @@
     <value>Sincronizacion</value>
   </data>
   <data name="CurrentLanguage" xml:space="preserve">
-    <value>Lenguaje</value>
+    <value>Lenguaje Seleccionado</value>
   </data>
   <data name="Disabled" xml:space="preserve">
     <value>Deshabilitado</value>
@@ -227,5 +227,32 @@
   </data>
   <data name="DeleteChargeModal" xml:space="preserve">
     <value>Esta seguro que desea eliminar este item?</value>
+  </data>
+  <data name="DashboardTitle" xml:space="preserve">
+    <value>Tablero</value>
+  </data>
+  <data name="OfflineMode" xml:space="preserve">
+    <value>Modo Desconectado</value>
+  </data>
+  <data name="OfflineModeDescription" xml:space="preserve">
+    <value>Al habilitar este modo, solo aparecerán los datos persistidos y los nuevos datos esperarán hasta que se habilite la conexión a Internet para enviar al servidor.</value>
+  </data>
+  <data name="ExpensesGroupedByCategory" xml:space="preserve">
+    <value>Gastos agrupados por categorias</value>
+  </data>
+  <data name="IncomeEvolution" xml:space="preserve">
+    <value>Evolucion de Ingresos</value>
+  </data>
+  <data name="OutcomeEvolution" xml:space="preserve">
+    <value>Evolucion de Egresos</value>
+  </data>
+  <data name="GeneralExpenses" xml:space="preserve">
+    <value>Gastos Generales</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Ingresar</value>
+  </data>
+  <data name="SignInTitle" xml:space="preserve">
+    <value>Iniciar sesion</value>
   </data>
 </root>
