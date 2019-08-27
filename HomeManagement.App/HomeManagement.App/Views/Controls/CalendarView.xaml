@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HomeManagement.App.Views.Controls.CalendarView">
+  <ContentView.Content>
+        <Grid x:Name="calendarGrid">
+            <Grid.GestureRecognizers>
+                <SwipeGestureRecognizer Direction="Left" Swiped="OnSwiped" />
+                <SwipeGestureRecognizer Direction="Right" Swiped="OnSwiped" />
+            </Grid.GestureRecognizers>
+        </Grid>
+  </ContentView.Content>
+</ContentView>

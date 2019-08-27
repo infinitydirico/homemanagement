@@ -67,6 +67,12 @@
                             WidthRequest="65" HeightRequest="65"
                             Clicked="OnViewAccountStatistics"/>
                     </StackLayout>
+                    <StackLayout HorizontalOptions="Start">
+                        <Button Image="calendar.png"
+                            VerticalOptions="Center" 
+                            WidthRequest="65" HeightRequest="65"
+                            Clicked="OnViewChargesOnCalendar"/>
+                    </StackLayout>
 
                     <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
                         <StackLayout>

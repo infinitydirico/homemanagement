@@ -63,6 +63,13 @@ namespace HomeManagement.App.Views.Charges
             Navigation.PushAsync(accountStatisticsPage);
         }
 
+        private void OnViewChargesOnCalendar(object sender, EventArgs e)
+        {
+            var calendarPage = new CalendarPage(account);
+            NavigationPage.SetHasBackButton(calendarPage, true);
+            Navigation.PushAsync(calendarPage);
+        }
+
         private void Edit(object sender, EventArgs e)
         {
             var editButton = sender as Button;

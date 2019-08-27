@@ -14,5 +14,25 @@ namespace HomeManagement.Core.Extensions
             var monthName = new DateTime(date.Year, month, date.Day).ToString("MMMM");
             return monthName;
         }
+
+        public static bool IsSameDay(this DateTime dateTime, DateTime date)
+            => dateTime.Year.Equals(date.Year) &&
+                dateTime.Month.Equals(date.Month) &&
+                dateTime.Day.Equals(date.Day);
+
+        public static bool IsSameMonth(this DateTime dateTime, DateTime date)
+            => dateTime.Year.Equals(date.Year) && dateTime.Month.Equals(date.Month);
+
+        public static bool IsNextMonth(this DateTime dateTime, DateTime date)
+        {
+            var previousMonth = dateTime.AddMonths(-1);
+            return date.IsSameMonth(previousMonth);
+        }
+
+        public static bool IsPreviousMonth(this DateTime dateTime, DateTime date)
+        {
+            var nextMonth = dateTime.AddMonths(1);
+            return date.IsSameMonth(nextMonth);
+        }
     }
 }

@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:Controls="clr-namespace:HomeManagement.App.Views.Controls"
+             xmlns:ViewModels="clr-namespace:HomeManagement.App.ViewModels"
+             x:Class="HomeManagement.App.Views.Charges.CalendarPage"
+             BackgroundColor="{StaticResource TabBarColor}">
+    <ContentPage.BindingContext>
+        <ViewModels:CalendarViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical">
+            <StackLayout>
+                <Frame Margin="5, 5, 5, 5">
+                    <Controls:CalendarView x:Name="calendar" />
+                </Frame>
+            </StackLayout>
+            <StackLayout>
+                <Frame Margin="5, 5, 5, 5">
+                    
+                </Frame>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

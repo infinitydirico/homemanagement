@@ -78,6 +78,47 @@ namespace HomeManagement.API.Controllers.Charges
             return Ok(model);
         }
 
+        [HttpGet("by/date/{year}/{month}")]
+        public IActionResult ByDate(int year, int month)
+        {
+            var claim = HttpContext.GetEmailClaim();
+
+            var charges = (from user in userRepository.All
+                           join account in accountRepository.All
+                           on user.Id equals account.UserId
+                           join charge in chargeRepository.All
+                           on account.Id equals charge.AccountId
+                           where user.Email.Equals(claim.Value) && 
+                                    charge.Date.Year.Equals(year) &&
+                                    charge.Date.Month.Equals(month)
+                           orderby charge.Date descending
+                           select chargeMapper.ToModel(charge))
+                            .ToList();
+
+            return Ok(charges);
+        }
+
+        [HttpGet("by/date/{year}/{month}/account/{accountId}")]
+        public IActionResult ByDateAndAccount(int year, int month, int accountId)
+        {
+            var claim = HttpContext.GetEmailClaim();
+
+            var charges = (from user in userRepository.All
+                           join account in accountRepository.All
+                           on user.Id equals account.UserId
+                           join charge in chargeRepository.All
+                           on account.Id equals charge.AccountId
+                           where user.Email.Equals(claim.Value) &&
+                                    account.Id.Equals(accountId) &&
+                                    charge.Date.Year.Equals(year) &&
+                                    charge.Date.Month.Equals(month)
+                           orderby charge.Date descending
+                           select chargeMapper.ToModel(charge))
+                            .ToList();
+
+            return Ok(charges);
+        }
+
         [HttpGet("getlastfive")]
         public IActionResult GetLastFive()
         {
