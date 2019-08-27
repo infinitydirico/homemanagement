@@ -1,6 +1,7 @@
 ﻿using HomeManagement.App.Data.Entities;
 using HomeManagement.App.ViewModels;
 using HomeManagement.App.Views.Charges;
+using System;
 using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -87,6 +88,15 @@ namespace HomeManagement.App.Views.AccountPages
             var label = stackLayout.Children.First(x => x.GetType().Equals(typeof(Label))) as Label;
             var accounts = ((AccountsViewModel)accountsList.BindingContext).Accounts;
             return accounts.First(x => x.Name.Equals(label.Text));
+        }
+
+        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            var stackLayout = sender as StackLayout;
+            var label = stackLayout.Children.First(x => x.GetType().Equals(typeof(Label))) as Label;
+
+            var swipeDirection = label.Bounds.X > 50 ? SwipeDirection.Left : SwipeDirection.Right;
+            Swiped(sender, new SwipedEventArgs(null, swipeDirection));
         }
     }
 }

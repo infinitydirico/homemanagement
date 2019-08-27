@@ -19,22 +19,42 @@ namespace HomeManagement.App.Views.Charges
 		{
             this.account = account;
 
+            Title = account.Name;
+
             InitializeComponent ();
 
             calendar.Events = new List<Controls.EventDate>
             {
                 new Controls.EventDate
                 {
-                    Title = "Test1",
-                    Date = DateTime.Now.AddDays(-2),
-                    Color = Color.Red
+                    Title = "Test 1",
+                    Date = DateTime.Now.AddDays(-2)
                 },
                 new Controls.EventDate
                 {
-                    Title = "Test2",
-                    Date = DateTime.Now.AddDays(2),
-                    Color = Color.Purple
-                }
+                    Title = "Test 2",
+                    Date = DateTime.Now.AddDays(2)
+                },
+                new Controls.EventDate
+                {
+                    Title = "Test 3",
+                    Date = DateTime.Now.AddDays(2)
+                },
+                new Controls.EventDate
+                {
+                    Title = "Test 4",
+                    Date = DateTime.Now.AddDays(2)
+                },
+                new Controls.EventDate
+                {
+                    Title = "Test 5",
+                    Date = DateTime.Now.AddDays(2)
+                },
+                new Controls.EventDate
+                {
+                    Title = "Test 6",
+                    Date = DateTime.Now.AddDays(2)
+                },
             };
         }
 	}

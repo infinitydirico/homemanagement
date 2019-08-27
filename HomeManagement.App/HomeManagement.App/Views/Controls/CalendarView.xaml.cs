@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -12,6 +12,7 @@ namespace HomeManagement.App.Views.Controls
     public partial class CalendarView : ContentView
     {
         private uint animationTimeout = 250;
+        private List<Tuple<DateTime, Frame>> gridValues = new List<Tuple<DateTime, Frame>>();
 
         public CalendarView()
         {
@@ -48,28 +49,13 @@ namespace HomeManagement.App.Views.Controls
 
             if(view.Events.Any(x => x.Date.IsSameMonth(view.Date)))
             {
-                var days = view.calendarGrid.Children
-                    .Where(x => x is Frame &&
-                                view.Events.Any(z => z.Date.Day.Equals(((x as Frame).Content as Label).Text.ToInt())))
-                    .ToList();
+                var values = view.gridValues.Where(x => view.Events.Any(z => z.Date.IsSameDay(x.Item1))).ToList();
 
-                foreach (var day in days)
+                foreach (var value in values)
                 {
-                    (day as Frame).BorderColor = Color.Red;
+                    value.Item2.BorderColor = Color.Red;
                 }
-                //foreach (var child in view.calendarGrid.Children)
-                //{
-                //    if(child is Frame)
-                //    {
-                //        var frame = child as Frame;
-                //        var label = frame.Content as Label;
-                //        var day = label.Text.ToInt();
-
-                //        var ev = view.Events.First(x => x.Date.Day.Equals(day));
-                //    }                    
-                //}
-            }
-            
+            }           
         }
 
         private async void Initialize()
@@ -126,7 +112,45 @@ namespace HomeManagement.App.Views.Controls
                         frame.BorderColor = Color.Red;
                     }
 
+                    var gesture = new TapGestureRecognizer();
+                    gesture.Tapped += OnFrameTapped;
+                    frame.GestureRecognizers.Add(gesture);
+
                     calendarGrid.Children.Add(frame, (int)date.DayOfWeek, i + startingRow);
+                    gridValues.Add(new Tuple<DateTime, Frame>(date, frame));
+                }
+            }
+        }
+
+        private async void OnFrameTapped(object sender, EventArgs e)
+        {
+            eventsView.Children.Clear();
+
+            var value = gridValues.FirstOrDefault(x => x.Item2.Equals(sender));
+
+            if(value != null)
+            {
+                var events = Events.Where(ev => ev.Date.IsSameDay(value.Item1)).ToList();
+
+                var title = new Label
+                {
+                    Text = value.Item1.ToString("dd MMMM yyyy"),
+                    Margin = new Thickness(0, 20),
+                    FontSize = 20
+                };
+
+                eventsView.Children.Add(title);
+
+                foreach (var ev in events)
+                {
+                    var label = new Label
+                    {
+                        Text = ev.Title,
+                        Opacity = 0
+                    };
+
+                    eventsView.Children.Add(label);
+                    await label.FadeTo(1);
                 }
             }
         }
@@ -147,12 +171,11 @@ namespace HomeManagement.App.Views.Controls
 
             var previousButton = new Button
             {
-                Text = "<",
                 HorizontalOptions = LayoutOptions.Center,
                 WidthRequest = 35,
                 HeightRequest = 35,
-                FontSize = 10,
-                CornerRadius = 360
+                CornerRadius = 360,
+                Image = "arrow_left_xs"
             };
             previousButton.Clicked += PreviousButton_Clicked;
 
@@ -167,12 +190,11 @@ namespace HomeManagement.App.Views.Controls
 
             var nextButton = new Button
             {
-                Text = ">",
                 HorizontalOptions = LayoutOptions.Center,
                 WidthRequest = 35,
                 HeightRequest = 35,
-                FontSize = 10,
-                CornerRadius = 360
+                CornerRadius = 360,
+                Image = "arrow_right_xs"
             };
 
             nextButton.Clicked += NextButton_Clicked;
@@ -232,6 +254,8 @@ namespace HomeManagement.App.Views.Controls
 
         private async void NextButton_Clicked(object sender, EventArgs e)
         {
+            eventsView.Children.Clear();
+
             Date = Date.AddMonths(1);
 
             var offset = Width + 50;
@@ -249,6 +273,8 @@ namespace HomeManagement.App.Views.Controls
 
         private async void PreviousButton_Clicked(object sender, EventArgs e)
         {
+            eventsView.Children.Clear();
+
             Date = Date.AddMonths(-1);
 
             var offset = Width + 50;
@@ -333,6 +359,6 @@ namespace HomeManagement.App.Views.Controls
 
         public DateTime Date { get; set; }
 
-        public Color Color { get; set; }
+        public override string ToString() => $"{Title} {Date.ToShortDateString()}";
     }
 }

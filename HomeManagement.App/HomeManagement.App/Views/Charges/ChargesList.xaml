@@ -28,14 +28,12 @@
                                 <ViewCell>
                                     <ViewCell.View BackgroundColor="{StaticResource LayoutDark}">
                                         <StackLayout Orientation="Horizontal">
-                                            <StackLayout.Behaviors>
-                                                <Beh:ViewScaleBehvaior />
-                                            </StackLayout.Behaviors>
                                             <StackLayout.GestureRecognizers>
                                                 <SwipeGestureRecognizer Direction="Right" Swiped="Swiped" />
                                                 <SwipeGestureRecognizer Direction="Left" Swiped="Swiped" />
                                                 <SwipeGestureRecognizer Direction="Down" Swiped="Swiped" />
                                                 <SwipeGestureRecognizer Direction="Up" Swiped="Swiped" />
+                                                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                                             </StackLayout.GestureRecognizers>
                                             <Button Image="red_trash_xs.png" VerticalOptions="Start"
                                                     WidthRequest="30" HeightRequest="30" IsVisible="False"

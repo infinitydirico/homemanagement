@@ -25,5 +25,11 @@ namespace HomeManagement.App.Views.Controls
 
             ((ListView)sender).SelectedItem = null;
         }
+
+        private async void StackLayout_LayoutChanged(object sender, System.EventArgs e)
+        {
+            var layout = sender as StackLayout;
+            await layout.FadeTo(1);
+        }
     }
 }

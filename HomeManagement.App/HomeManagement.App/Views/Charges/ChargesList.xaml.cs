@@ -140,5 +140,14 @@ namespace HomeManagement.App.Views.Charges
             var charge = cell.BindingContext as Charge;
             return charge;
         }
+
+        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            var stackLayout = sender as StackLayout;
+            var innerLayout = stackLayout.Children.First(x => x.GetType().Equals(typeof(StackLayout))) as StackLayout;
+
+            var swipeDirection = innerLayout.Bounds.X > 50 ? SwipeDirection.Left : SwipeDirection.Right;
+            Swiped(sender, new SwipedEventArgs(null, swipeDirection));
+        }
     }
 }

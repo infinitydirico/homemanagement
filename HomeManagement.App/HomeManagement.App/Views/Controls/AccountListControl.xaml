@@ -22,7 +22,7 @@
         <ListView.ItemTemplate>
             <DataTemplate>
                 <ViewCell>
-                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <StackLayout Opacity="0" LayoutChanged="StackLayout_LayoutChanged" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
                         <Label Text = "{Binding Name}" />
                         <Label Text = "{Binding Balance}" TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" HorizontalOptions="EndAndExpand"/>
                     </StackLayout>
