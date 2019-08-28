@@ -87,7 +87,8 @@ namespace HomeManagement.API.Controllers.Accounts
                                           on c.AccountId equals a.Id
                                           where a.Measurable && 
                                                 a.Id.Equals(account.Id) &&
-                                                c.Date.Month.Equals(i)
+                                                c.Date.Month.Equals(i) &&
+                                                c.Date.Year.Equals(DateTime.Now.Year)
                                           select c);
 
                     var incomingCharges = accountCharges

@@ -10,30 +10,35 @@
         <Beh:TranslationBehavior LanguageKey="Statistics" />
     </ContentPage.Behaviors>
     <ContentPage.Content>
-        <StackLayout HorizontalOptions="FillAndExpand">
-            <Frame Margin="5, 5, 5, 5">
-                <StackLayout>
-                    <Label>
-                        <Label.Behaviors>
-                            <Beh:TranslationBehavior LanguageKey="GeneralExpenses" />
-                        </Label.Behaviors>
-                    </Label>
-                    <charts:BarChart x:Name="barChart" Series="{Binding ChartValues}" 
+        <ScrollView>
+            <StackLayout x:Name="mainContainer" HorizontalOptions="FillAndExpand">
+                <Frame Margin="5, 5, 5, 5">
+                    <StackLayout>
+                        <Label>
+                            <Label.Behaviors>
+                                <Beh:TranslationBehavior LanguageKey="GeneralExpenses" />
+                            </Label.Behaviors>
+                        </Label>
+                        <charts:BarChart x:Name="barChart" Series="{Binding ChartValues}" 
                                  TextSize="25" BackgroundColor="#303030" HeightRequest="150" />
-                </StackLayout>
-            </Frame>
+                    </StackLayout>
+                </Frame>
 
-            <Frame Margin="5, 5, 5, 5">
-                <StackLayout>
-                    <Label>
-                        <Label.Behaviors>
-                            <Beh:TranslationBehavior LanguageKey="GeneralExpenses" />
-                        </Label.Behaviors>
-                    </Label>
-                    <charts:PieChart x:Name="pieChart" Series="{Binding ChartValues}" 
-                                 TextSize="25" BackgroundColor="#303030" HeightRequest="150" />
-                </StackLayout>
-            </Frame>
-        </StackLayout>
+                <!--<ListView x:Name="chartList" ItemsSource="{Binding AccountsEvolutions}" SeparatorVisibility="None">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Frame Margin="5, 5, 5, 5">
+                                <StackLayout>
+                                    <charts:LineChart Series="{Binding .}" TextSize="12" RenderArea="True"
+                                                     BackgroundColor="#303030" HeightRequest="150" />
+                                </StackLayout>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>-->
+            </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

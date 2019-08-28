@@ -2,6 +2,7 @@
 using HomeManagement.App.Services.Rest;
 using HomeManagement.Models;
 using Nightingale;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,6 +24,8 @@ namespace HomeManagement.App.ViewModels
                 await RetrieveAccountBalances();
             });
         }
+
+        public event EventHandler OnBalancesChanged;
 
         public OverPricedCategories TopCategories { get; private set; }
 
@@ -47,11 +50,32 @@ namespace HomeManagement.App.ViewModels
         {
             var balances = await accountMetricsServiceClient.GetAccountsBalances();
 
-            var values = balances.ToDictionary();
+
+            AccountsEvolutions.AddRange(
+                       from b in balances.Balances
+                       select new AccountEvolution
+                       {
+                           AccountName = b.AccountName,
+                           Series = b.BalanceEvolution.Select(x => new SeriesValue
+                           {
+                               Value = x,
+                               Label = new DateTime(DateTime.Now.Year, b.BalanceEvolution.IndexOf(x) + 1, 1).ToString("MMMM")
+                           }).ToList()
+                       });
+
+            OnPropertyChanged(nameof(AccountsEvolutions));
+            OnBalancesChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public List<SeriesValue> ChartValues { get; private set; } = new List<SeriesValue>();
 
-        public string OverviewText => "";//language.CurrentLanguage.OverviewText;
+        public List<AccountEvolution> AccountsEvolutions { get; private set; } = new List<AccountEvolution>();
+    }
+
+    public class AccountEvolution
+    {
+        public string AccountName { get; set; }
+
+        public List<SeriesValue> Series { get; set; }
     }
 }

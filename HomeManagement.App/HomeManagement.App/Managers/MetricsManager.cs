@@ -2,9 +2,7 @@
 using HomeManagement.App.Services.Rest;
 using HomeManagement.Core.Caching;
 using HomeManagement.Models;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace HomeManagement.App.Managers
@@ -14,6 +12,8 @@ namespace HomeManagement.App.Managers
         Task<IEnumerable<OverPricedCategory2>> GetMostExpensiveCategories(int accountId);
 
         Task<AccountEvolutionModel> GetAccountEvolution(int accountId);
+
+        Task<AccountsEvolutionModel> GetAccountsEvolution();
     }
 
     public class MetricsManager : IMetricsManager
@@ -28,6 +28,17 @@ namespace HomeManagement.App.Managers
             var result = await accountMetricsServiceClient.GetAccountEvolution(accountId);
 
             cachingService.StoreOrUpdate($"{nameof(GetAccountEvolution)}{accountId}", result);
+
+            return result;
+        }
+
+        public async Task<AccountsEvolutionModel> GetAccountsEvolution()
+        {
+            if (cachingService.Exists($"{nameof(GetAccountsEvolution)}")) return cachingService.Get<AccountsEvolutionModel>($"{nameof(GetAccountsEvolution)}");
+
+            var result = await accountMetricsServiceClient.GetAccountsBalances();
+
+            cachingService.StoreOrUpdate($"{nameof(GetAccountsEvolution)}", result);
 
             return result;
         }
