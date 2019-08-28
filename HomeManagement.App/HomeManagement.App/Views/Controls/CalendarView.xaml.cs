@@ -1,4 +1,5 @@
-﻿using HomeManagement.Core.Extensions;
+﻿using HomeManagement.App.Extensions;
+using HomeManagement.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +46,7 @@ namespace HomeManagement.App.Views.Controls
 
         public event EventHandler OnDateChanged;
 
-        static void OnEventsChanged(BindableObject bindable, object oldValue, object newValue)
+        static async void OnEventsChanged(BindableObject bindable, object oldValue, object newValue)
         {
             var view = bindable as CalendarView;
 
@@ -57,7 +58,7 @@ namespace HomeManagement.App.Views.Controls
 
                 foreach (var value in values)
                 {
-                    value.Item2.BorderColor = Color.Red;
+                    await value.Item2.BorderColorTo(Color.Red, 100);
                 }
             }           
         }
