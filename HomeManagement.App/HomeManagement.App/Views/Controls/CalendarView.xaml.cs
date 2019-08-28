@@ -43,9 +43,13 @@ namespace HomeManagement.App.Views.Controls
             set { SetValue(EventsProperty, value); }
         }
 
+        public event EventHandler OnDateChanged;
+
         static void OnEventsChanged(BindableObject bindable, object oldValue, object newValue)
         {
             var view = bindable as CalendarView;
+
+            if (view.Events == null) return;
 
             if(view.Events.Any(x => x.Date.IsSameMonth(view.Date)))
             {
@@ -269,6 +273,8 @@ namespace HomeManagement.App.Views.Controls
 
             rect = calendarGrid.Bounds.Offset(-offset, calendarGrid.Bounds.Y);
             await calendarGrid.LayoutTo(rect, animationTimeout, Easing.SpringOut);
+
+            OnDateChanged.Invoke(this, EventArgs.Empty);
         }
 
         private async void PreviousButton_Clicked(object sender, EventArgs e)
@@ -288,6 +294,8 @@ namespace HomeManagement.App.Views.Controls
 
             rect = calendarGrid.Bounds.Offset(offset, calendarGrid.Bounds.Y);
             await calendarGrid.LayoutTo(rect, animationTimeout, Easing.SpringOut);
+
+            OnDateChanged.Invoke(this, EventArgs.Empty);
         }
 
         private List<List<DateTime>> Matrix()

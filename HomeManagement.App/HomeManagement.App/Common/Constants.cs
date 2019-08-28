@@ -43,6 +43,8 @@
                 public const string CHARGE = API + "charges/";
 
                 public const string PAGE = CHARGE + "paging";
+
+                public const string BY_ACCOUNT_AND_DATE = CHARGE + "by/date/{0}/{1}/account/{2}";
             }
 
             public class Category

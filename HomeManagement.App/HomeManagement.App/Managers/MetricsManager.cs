@@ -1,8 +1,10 @@
 ﻿using Autofac;
+using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Services.Rest;
 using HomeManagement.Core.Caching;
 using HomeManagement.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HomeManagement.App.Managers
@@ -14,6 +16,8 @@ namespace HomeManagement.App.Managers
         Task<AccountEvolutionModel> GetAccountEvolution(int accountId);
 
         Task<AccountsEvolutionModel> GetAccountsEvolution();
+
+        Task<IEnumerable<Charge>> GetChargesByDate(int accountId, int year, int month);
     }
 
     public class MetricsManager : IMetricsManager
@@ -39,6 +43,23 @@ namespace HomeManagement.App.Managers
             var result = await accountMetricsServiceClient.GetAccountsBalances();
 
             cachingService.StoreOrUpdate($"{nameof(GetAccountsEvolution)}", result);
+
+            return result;
+        }
+
+        public async Task<IEnumerable<Charge>> GetChargesByDate(int accountId, int year, int month)
+        {
+            var result = (await accountMetricsServiceClient.GetChargesByDate(accountId, year, month))
+                            .Select(x => new Charge
+                            {
+                                Id = x.Id,
+                                Name = x.Name,
+                                AccountId = x.AccountId,
+                                Price = x.Price,
+                                Date = x.Date,
+                                ChargeType = x.ChargeType.Equals(0) ? ChargeType.Income : ChargeType.Expense,
+                                CategoryId = x.CategoryId
+                            }).ToList();
 
             return result;
         }

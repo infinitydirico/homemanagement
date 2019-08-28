@@ -5,14 +5,11 @@
              xmlns:ViewModels="clr-namespace:HomeManagement.App.ViewModels"
              x:Class="HomeManagement.App.Views.Charges.CalendarPage"
              BackgroundColor="{StaticResource TabBarColor}">
-    <ContentPage.BindingContext>
-        <ViewModels:CalendarViewModel />
-    </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
             <StackLayout>
                 <Frame Margin="5, 5, 5, 5">
-                    <Controls:CalendarView x:Name="calendar" />
+                    <Controls:CalendarView x:Name="calendar" Date="{Binding Date}" Events="{Binding Events}" />
                 </Frame>
             </StackLayout>
         </StackLayout>

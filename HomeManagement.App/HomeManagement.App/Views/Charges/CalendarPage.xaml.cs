@@ -1,4 +1,5 @@
 ﻿using HomeManagement.App.Data.Entities;
+using HomeManagement.App.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,48 +15,25 @@ namespace HomeManagement.App.Views.Charges
 	public partial class CalendarPage : ContentPage
 	{
         Account account;
+        CalendarViewModel viewModel;
 
         public CalendarPage (Account account)
 		{
             this.account = account;
 
+            viewModel = new CalendarViewModel(this.account);
+            BindingContext = viewModel;
+
             Title = account.Name;
 
             InitializeComponent ();
 
-            calendar.Events = new List<Controls.EventDate>
-            {
-                new Controls.EventDate
-                {
-                    Title = "Test 1",
-                    Date = DateTime.Now.AddDays(-2)
-                },
-                new Controls.EventDate
-                {
-                    Title = "Test 2",
-                    Date = DateTime.Now.AddDays(2)
-                },
-                new Controls.EventDate
-                {
-                    Title = "Test 3",
-                    Date = DateTime.Now.AddDays(2)
-                },
-                new Controls.EventDate
-                {
-                    Title = "Test 4",
-                    Date = DateTime.Now.AddDays(2)
-                },
-                new Controls.EventDate
-                {
-                    Title = "Test 5",
-                    Date = DateTime.Now.AddDays(2)
-                },
-                new Controls.EventDate
-                {
-                    Title = "Test 6",
-                    Date = DateTime.Now.AddDays(2)
-                },
-            };
+            calendar.OnDateChanged += Calendar_OnDateChanged;
         }
-	}
+
+        private async void Calendar_OnDateChanged(object sender, EventArgs e)
+        {
+            await viewModel.ChangeDate(calendar.Date);
+        }
+    }
 }
