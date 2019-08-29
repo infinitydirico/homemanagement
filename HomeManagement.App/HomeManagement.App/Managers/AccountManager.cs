@@ -16,6 +16,8 @@ namespace HomeManagement.App.Managers
         Task<IEnumerable<Account>> LoadAsync(bool force = false);
 
         Task<IEnumerable<Account>> NextPageAsync();
+
+        Task Delete(Account account);
     }
 
     public class AccountManager : BaseManager<Account, AccountPageModel> , IAccountManager
@@ -30,6 +32,11 @@ namespace HomeManagement.App.Managers
 
             page.PageCount = 10;
             page.CurrentPage = 1;
+        }
+
+        public async Task Delete(Account account)
+        {
+            await accountServiceClient.Delete(account.Id);
         }
 
         public async Task<IEnumerable<Account>> LoadAsync(bool force = false)

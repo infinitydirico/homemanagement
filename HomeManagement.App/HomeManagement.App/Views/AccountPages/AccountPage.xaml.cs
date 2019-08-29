@@ -1,6 +1,9 @@
-﻿using HomeManagement.App.Data.Entities;
+﻿using Autofac;
+using HomeManagement.App.Data.Entities;
+using HomeManagement.App.Managers;
 using HomeManagement.App.ViewModels;
 using HomeManagement.App.Views.Charges;
+using HomeManagement.App.Views.Controls;
 using System;
 using System.Linq;
 using Xamarin.Forms;
@@ -11,12 +14,15 @@ namespace HomeManagement.App.Views.AccountPages
     [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class AccountPage : ContentPage
 	{
+        ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
         AccountsViewModel viewModel = new AccountsViewModel();
+        Modal modal;
 
         public AccountPage ()
 		{
 			InitializeComponent ();
 
+            modal = new Modal(this);
             BindingContext = viewModel;
         }
 
@@ -44,8 +50,8 @@ namespace HomeManagement.App.Views.AccountPages
             var trashButton = buttonsActions.First();
             var editButton = buttonsActions.Last();
 
-            var offsetIn = e.Direction.Equals(SwipeDirection.Right) ? 35 : -35;
-            var offsetOut = e.Direction.Equals(SwipeDirection.Right) ? 70 : -70;
+            var offsetIn = e.Direction.Equals(SwipeDirection.Right) ? 20 : -20;
+            var offsetOut = e.Direction.Equals(SwipeDirection.Right) ? 40 : -40;
 
             var rectIn = label.Bounds.Offset(offsetIn, 0);
             var rectOut = label.Bounds.Offset(offsetOut, 0);
@@ -64,10 +70,10 @@ namespace HomeManagement.App.Views.AccountPages
         }
 
         private bool IsAlreadySwiped(Label label, SwipeDirection direction)
-            => label.Bounds.X > 50 && direction.Equals(SwipeDirection.Right) ||
-                label.Bounds.X < 50 && direction.Equals(SwipeDirection.Left);
+            => label.Bounds.X > 20 && direction.Equals(SwipeDirection.Right) ||
+                label.Bounds.X < 20 && direction.Equals(SwipeDirection.Left);
 
-        private void Edit(object sender, System.EventArgs e)
+        private void Edit(object sender, EventArgs e)
         {
             var editButton = sender as Button;
             var stacklayout = editButton.Parent as StackLayout;
@@ -75,12 +81,17 @@ namespace HomeManagement.App.Views.AccountPages
             DisplayAlert("Edit", account.Name, "Ok");
         }
 
-        private void Delete(object sender, System.EventArgs e)
+        private async void Delete(object sender, EventArgs e)
         {
-            var deleteButton = sender as Button;
-            var stacklayout = deleteButton.Parent as StackLayout;
-            var account = GetCurrentAccount(stacklayout);
-            DisplayAlert("Delete", account.Name, "Ok");
+            var result = await modal.ShowOkCancel(localizationManager.Translate("DeleteChargeModal"));
+            if (result)
+            {
+                var deleteButton = sender as Button;
+                var stacklayout = deleteButton.Parent as StackLayout;
+                var account = GetCurrentAccount(stacklayout);
+                await viewModel.Delete(account);
+                viewModel.Refresh();
+            }
         }
 
         private Account GetCurrentAccount(StackLayout stackLayout)
@@ -95,7 +106,7 @@ namespace HomeManagement.App.Views.AccountPages
             var stackLayout = sender as StackLayout;
             var label = stackLayout.Children.First(x => x.GetType().Equals(typeof(Label))) as Label;
 
-            var swipeDirection = label.Bounds.X > 50 ? SwipeDirection.Left : SwipeDirection.Right;
+            var swipeDirection = label.Bounds.X > 20 ? SwipeDirection.Left : SwipeDirection.Right;
             Swiped(sender, new SwipedEventArgs(null, swipeDirection));
         }
     }

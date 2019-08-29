@@ -255,4 +255,13 @@
   <data name="SignInTitle" xml:space="preserve">
     <value>Iniciar sesion</value>
   </data>
+  <data name="All" xml:space="preserve">
+    <value>Todo</value>
+  </data>
+  <data name="UserData" xml:space="preserve">
+    <value>Datos de usuario</value>
+  </data>
+  <data name="WipeDataChoices" xml:space="preserve">
+    <value>Datos a eliminar</value>
+  </data>
 </root>

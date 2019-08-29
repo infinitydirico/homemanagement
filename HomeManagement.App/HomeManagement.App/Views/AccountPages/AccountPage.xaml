@@ -21,7 +21,7 @@
         <Frame Margin="5, 5, 5, 5">            
             <ListView x:Name="accountsList" ItemsSource="{Binding Accounts}" 
                       Margin="10,10,10,10" SeparatorVisibility="None"
-                      IsPullToRefreshEnabled="False" RefreshCommand="{Binding RefreshCommand}"
+                      IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}"
                       IsRefreshing="{Binding IsBusy}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -38,9 +38,6 @@
                                 <Button Image="red_trash_xs.png" VerticalOptions="Center"
                                         WidthRequest="30" HeightRequest="30" IsVisible="False"
                                         Clicked="Delete" />
-                                <Button Image="edit_xs.png" VerticalOptions="Center" 
-                                        WidthRequest="30" HeightRequest="30" IsVisible="False" 
-                                        Clicked="Edit"/>
                                 <Label VerticalOptions="Center" Text = "{Binding Name}" />
                                 <Label VerticalOptions="Center" Text = "{Binding Balance}" 
                                        TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" 

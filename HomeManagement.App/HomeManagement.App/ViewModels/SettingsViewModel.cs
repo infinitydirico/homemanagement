@@ -1,5 +1,7 @@
-﻿using HomeManagement.App.Data;
+﻿using Autofac;
+using HomeManagement.App.Data;
 using HomeManagement.App.Data.Entities;
+using HomeManagement.App.Managers;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -16,6 +18,7 @@ namespace HomeManagement.App.ViewModels
         private readonly GenericRepository<User> userRepository = new GenericRepository<User>();
         private readonly GenericRepository<Account> accountRepository = new GenericRepository<Account>();
         private readonly GenericRepository<Charge> chargeRepository = new GenericRepository<Charge>();
+        private readonly ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
 
         AppSettings offlineModeSetting;
         bool offlineModeEnabled;
@@ -66,38 +69,40 @@ namespace HomeManagement.App.ViewModels
 
         private async void ClearCache(object obj)
         {
-            var options = new string[] { "All", "User Data" };
-            var action = await Application.Current.MainPage.DisplayActionSheet("Choices", "Cancel", null, options);
+            var all = localizationManager.Translate("All");
+            var userData = localizationManager.Translate("UserData");
+            var options = new string[] { all, userData };
+            var action = await Application.Current.MainPage.DisplayActionSheet(localizationManager.Translate("WipeDataChoices"), "Cancel", null, options);
 
-            switch(action)
+            if (action.Equals(all))
             {
-                case "All":
-                    HandleSafeExecution(() =>
-                    {
-                        userRepository.RemoveAll();
-                        userRepository.Commit();
+                HandleSafeExecution(() =>
+                {
+                    userRepository.RemoveAll();
+                    userRepository.Commit();
 
-                        accountRepository.RemoveAll();
-                        accountRepository.Commit();
+                    accountRepository.RemoveAll();
+                    accountRepository.Commit();
 
-                        chargeRepository.RemoveAll();
-                        chargeRepository.Commit();
+                    chargeRepository.RemoveAll();
+                    chargeRepository.Commit();
 
-                        OnClearSuccess?.Invoke(this, EventArgs.Empty);
-                    });
-                    break;
-                case "User Data":
-                    HandleSafeExecution(() =>
-                    {
-                        accountRepository.RemoveAll();
-                        accountRepository.Commit();
+                    OnClearSuccess?.Invoke(this, EventArgs.Empty);
+                });
+            }
 
-                        chargeRepository.RemoveAll();
-                        chargeRepository.Commit();
+            if (action.Equals(userData))
+            {
+                HandleSafeExecution(() =>
+                {
+                    accountRepository.RemoveAll();
+                    accountRepository.Commit();
 
-                        OnClearSuccess?.Invoke(this, EventArgs.Empty);
-                    });
-                    break;
+                    chargeRepository.RemoveAll();
+                    chargeRepository.Commit();
+
+                    OnClearSuccess?.Invoke(this, EventArgs.Empty);
+                });
             }
         }
 

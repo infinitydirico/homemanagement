@@ -21,7 +21,13 @@ namespace HomeManagement.App.Views.AccountPages
             {
                 DisplayAlert("Error", e.ErrorMessage, "Ok");
             };
-
         }
-	}
+
+        protected override void OnAppearing()
+        {
+            accountName.Focus();
+
+            base.OnAppearing();
+        }
+    }
 }

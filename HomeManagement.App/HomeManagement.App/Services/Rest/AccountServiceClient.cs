@@ -7,6 +7,13 @@ namespace HomeManagement.App.Services.Rest
 {
     public class AccountServiceClient : IAccountServiceClient
     {
+        public async Task Delete(int id)
+        {
+            await RestClientFactory
+                .CreateAuthenticatedClient()
+                .DeleteAsync($"{Constants.Endpoints.Accounts.ACCOUNT}?id={id}");
+        }
+
         public async Task<IEnumerable<OverPricedCategory>> GetAccountTopCharges(int accountId, int month)
         {
             return await RestClientFactory
@@ -38,5 +45,7 @@ namespace HomeManagement.App.Services.Rest
         Task<AccountPageModel> Page(AccountPageModel dto);
 
         Task Update(AccountModel account);
+
+        Task Delete(int id);
     }
 }

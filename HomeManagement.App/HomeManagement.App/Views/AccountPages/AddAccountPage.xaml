@@ -24,11 +24,14 @@
                 <Label FontSize="Large">
                     <Label.Behaviors>
                         <Beh:TranslationBehavior LanguageKey="AccountName" />
-                        <!--<Beh:EmptyValidationEntryBehavior />-->
                     </Label.Behaviors>
                 </Label>
 
-                <Entry  Text="{Binding Account.Name}" FontSize="Large" />
+                <Entry x:Name="accountName"  Text="{Binding Account.Name}" FontSize="Large">
+                    <Entry.Behaviors>
+                        <Beh:EmptyValidationBackgroundBehavior />
+                    </Entry.Behaviors>
+                </Entry>
             </StackLayout>
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
                 <Label FontSize="Large" VerticalOptions="Center">

@@ -115,6 +115,15 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string All {
+            get {
+                return ResourceManager.GetString("All", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {
@@ -466,11 +475,29 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User Data.
+        /// </summary>
+        public static string UserData {
+            get {
+                return ResourceManager.GetString("UserData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Username.
         /// </summary>
         public static string Username {
             get {
                 return ResourceManager.GetString("Username", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wipe Data options.
+        /// </summary>
+        public static string WipeDataChoices {
+            get {
+                return ResourceManager.GetString("WipeDataChoices", resourceCulture);
             }
         }
     }

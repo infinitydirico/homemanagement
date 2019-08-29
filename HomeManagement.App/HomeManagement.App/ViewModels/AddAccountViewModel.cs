@@ -20,6 +20,7 @@ namespace HomeManagement.App.ViewModels
 
         Currency selectedCurrency;
         AccountType selectedAccountType;
+        IEnumerable<Currency> currencies;
 
         public AddAccountViewModel()
         {
@@ -35,7 +36,18 @@ namespace HomeManagement.App.ViewModels
 
         public ICommand AddAccountCommand { get; }
 
-        public IEnumerable<Currency> Currencies { get; private set; }
+        public IEnumerable<Currency> Currencies
+        {
+            get
+            {
+                return currencies;
+            }
+            set
+            {
+                currencies = value;
+                OnPropertyChanged();
+            }
+        }
 
         public Currency SelectedCurrency
         {
@@ -74,15 +86,13 @@ namespace HomeManagement.App.ViewModels
 
         protected override async Task InitializeAsync()
         {
-            Currencies = from c in await currencyService.GetCurrencies()
-                         select new Currency
-                         {
-                             Id = c.Id,
-                             Name = c.Name,
-                             Value = c.Value                                                                     
-                         };
-
-            OnPropertyChanged(nameof(Currencies));
+            Currencies = (from c in await currencyService.GetCurrencies()
+                          select new Currency
+                          {
+                              Id = c.Id,
+                              Name = c.Name,
+                              Value = c.Value
+                          }).ToList();
 
             SelectedCurrency = Currencies.FirstOrDefault();
         }

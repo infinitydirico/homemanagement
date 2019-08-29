@@ -255,4 +255,13 @@
   <data name="SignInTitle" xml:space="preserve">
     <value>Sign in Page</value>
   </data>
+  <data name="All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="UserData" xml:space="preserve">
+    <value>User Data</value>
+  </data>
+  <data name="WipeDataChoices" xml:space="preserve">
+    <value>Wipe Data options</value>
+  </data>
 </root>

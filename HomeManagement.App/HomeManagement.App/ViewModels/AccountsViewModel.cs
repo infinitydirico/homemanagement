@@ -35,5 +35,10 @@ namespace HomeManagement.App.ViewModels
                 IsBusy = false;
             });
         }
+
+        public async Task Delete(Account account)
+        {
+            await accountManager.Delete(account);
+        }
     }
 }
