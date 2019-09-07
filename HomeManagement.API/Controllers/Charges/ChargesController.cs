@@ -77,21 +77,14 @@ namespace HomeManagement.API.Controllers.Charges
 
             if (model.CategoryId.Equals(default(int)) || categoryRepository.All.FirstOrDefault(x => x.Id.Equals(model.CategoryId)) == null)
             {
-                category = categoryRepository.FirstOrDefault();//categoryRepository.GetDefaultCategory();
+                category = categoryRepository.FirstOrDefault();
                 model.CategoryId = category.Id;
             }
 
-            try
-            {
-                var entity = chargeMapper.ToEntity(model);
+            var entity = chargeMapper.ToEntity(model);
 
-                chargeRepository.Add(entity);
-                UpdateBalance(entity);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            chargeRepository.Add(entity);
+            UpdateBalance(entity);
 
             return Ok();
         }

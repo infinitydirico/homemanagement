@@ -88,7 +88,7 @@ namespace HomeManagement.API.Controllers.Charges
                            on user.Id equals account.UserId
                            join charge in chargeRepository.All
                            on account.Id equals charge.AccountId
-                           where user.Email.Equals(claim.Value) && 
+                           where user.Email.Equals(claim.Value) &&
                                     charge.Date.Year.Equals(year) &&
                                     charge.Date.Month.Equals(month)
                            orderby charge.Date descending
@@ -119,6 +119,61 @@ namespace HomeManagement.API.Controllers.Charges
             return Ok(charges);
         }
 
+        [HttpGet("by/category/{category}")]
+        public IActionResult ByCategory(int category)
+        {
+            var claim = HttpContext.GetEmailClaim();
+
+            var charges = (from user in userRepository.All
+                           join account in accountRepository.All
+                           on user.Id equals account.UserId
+                           join charge in chargeRepository.All
+                           on account.Id equals charge.AccountId
+                           where user.Email.Equals(claim.Value) &&
+                                    charge.Date.Year.Equals(DateTime.Now.Year) &&
+                                    charge.Date < DateTime.Now &&
+                                    charge.CategoryId.Equals(category)
+                           orderby charge.Date ascending
+                           select chargeMapper.ToModel(charge))
+                           .GroupBy(x => x.Date.Month)
+                           .Select(x => new
+                           {
+                               Month = x.First().Date.ToString("MMMM"),
+                               Price = x.Sum(z => z.Price)
+                           })
+                            .ToList();
+
+            return Ok(charges);
+        }
+
+        [HttpGet("by/account/{accountId}/category/{category}")]
+        public IActionResult ByAccountAndCategory(int accountId, int category)
+        {
+            var claim = HttpContext.GetEmailClaim();
+
+            var charges = (from user in userRepository.All
+                           join account in accountRepository.All
+                           on user.Id equals account.UserId
+                           join charge in chargeRepository.All
+                           on account.Id equals charge.AccountId
+                           where user.Email.Equals(claim.Value) &&
+                                    charge.AccountId.Equals(accountId) &&
+                                    charge.Date.Year.Equals(DateTime.Now.Year) &&
+                                    charge.Date < DateTime.Now &&
+                                    charge.CategoryId.Equals(category)
+                           orderby charge.Date ascending
+                           select chargeMapper.ToModel(charge))
+                           .GroupBy(x => x.Date.Month)
+                           .Select(x => new
+                           {
+                               Month = x.First().Date.ToString("MMMM"),
+                               Price = x.Sum(z => z.Price)
+                           })
+                            .ToList();
+
+            return Ok(charges);
+        }
+
         [HttpGet("getlastfive")]
         public IActionResult GetLastFive()
         {
@@ -130,7 +185,7 @@ namespace HomeManagement.API.Controllers.Charges
                            join charge in chargeRepository.All
                            on account.Id equals charge.AccountId
                            where user.Email.Equals(claim.Value)
-                           orderby charge.Date descending                           
+                           orderby charge.Date descending
                            select chargeMapper.ToModel(charge))
                             .Take(5)
                             .ToList();
