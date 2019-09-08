@@ -5,6 +5,7 @@ using HomeManagement.App.ViewModels;
 using HomeManagement.App.Views.Charges;
 using HomeManagement.App.Views.Controls;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -17,6 +18,8 @@ namespace HomeManagement.App.Views.AccountPages
         ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
         AccountsViewModel viewModel = new AccountsViewModel();
         Modal modal;
+        int offsetStart = 55;
+        int offsetEnd = 110;
 
         public AccountPage ()
 		{
@@ -31,11 +34,19 @@ namespace HomeManagement.App.Views.AccountPages
             Navigation.PushAsync(new AddAccountPage());
         }
 
+        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            var stackLayout = sender as StackLayout;
+            var label = stackLayout.Children.First(x => x.GetType().Equals(typeof(Label))) as Label;
+
+            var swipeDirection = label.Bounds.X > offsetStart ? SwipeDirection.Left : SwipeDirection.Right;
+            Swiped(sender, new SwipedEventArgs(null, swipeDirection));
+        }
+
         private void DoubleTaped(object sender, System.EventArgs e)
         {
             var stackLayout = sender as StackLayout;
-            var account = GetCurrentAccount(stackLayout);
-            Navigation.PushAsync(new ChargesList(account));
+            GoToChargesList(stackLayout);
         }
 
         private async void Swiped(object sender, SwipedEventArgs e)
@@ -47,11 +58,8 @@ namespace HomeManagement.App.Views.AccountPages
 
             var buttonsActions = stackLayout.Children.Where(x => x.GetType().Equals(typeof(Button)));
 
-            var trashButton = buttonsActions.First();
-            var editButton = buttonsActions.Last();
-
-            var offsetIn = e.Direction.Equals(SwipeDirection.Right) ? 20 : -20;
-            var offsetOut = e.Direction.Equals(SwipeDirection.Right) ? 40 : -40;
+            var offsetIn = e.Direction.Equals(SwipeDirection.Right) ? offsetStart : -offsetStart;
+            var offsetOut = e.Direction.Equals(SwipeDirection.Right) ? offsetEnd : -offsetEnd;
 
             var rectIn = label.Bounds.Offset(offsetIn, 0);
             var rectOut = label.Bounds.Offset(offsetOut, 0);
@@ -60,25 +68,36 @@ namespace HomeManagement.App.Views.AccountPages
 
             if (e.Direction.Equals(SwipeDirection.Left))
             {
-                trashButton.IsVisible = editButton.IsVisible = false;
+                DisplayButton(buttonsActions, e.Direction.Equals(SwipeDirection.Right));
                 rectOut.X = 0;
             }
 
             var animationOut = await label.LayoutTo(rectOut, easing: Easing.SpringOut);
 
-            trashButton.IsVisible = editButton.IsVisible = e.Direction.Equals(SwipeDirection.Right);
+            DisplayButton(buttonsActions, e.Direction.Equals(SwipeDirection.Right));
         }
 
-        private bool IsAlreadySwiped(Label label, SwipeDirection direction)
-            => label.Bounds.X > 20 && direction.Equals(SwipeDirection.Right) ||
-                label.Bounds.X < 20 && direction.Equals(SwipeDirection.Left);
+        private void DisplayButton(IEnumerable<View> buttons, bool visible)
+        {
+            foreach (var button in buttons)
+            {
+                button.IsVisible = visible;
+            }
+        }
 
         private void Edit(object sender, EventArgs e)
         {
             var editButton = sender as Button;
             var stacklayout = editButton.Parent as StackLayout;
             var account = GetCurrentAccount(stacklayout);
-            DisplayAlert("Edit", account.Name, "Ok");
+            Navigation.PushAsync(new EditAccountPage(account));
+        }
+
+        private void ViewChargesList(object sender, EventArgs e)
+        {
+            var editButton = sender as Button;
+            var stacklayout = editButton.Parent as StackLayout;
+            GoToChargesList(stacklayout);
         }
 
         private async void Delete(object sender, EventArgs e)
@@ -94,20 +113,21 @@ namespace HomeManagement.App.Views.AccountPages
             }
         }
 
+        private void GoToChargesList(StackLayout stackLayout)
+        {
+            var account = GetCurrentAccount(stackLayout);
+            Navigation.PushAsync(new ChargesList(account));
+        }
+
+        private bool IsAlreadySwiped(Label label, SwipeDirection direction)
+                        => label.Bounds.X > offsetStart && direction.Equals(SwipeDirection.Right) ||
+                            label.Bounds.X < offsetStart && direction.Equals(SwipeDirection.Left);
+
         private Account GetCurrentAccount(StackLayout stackLayout)
         {
             var label = stackLayout.Children.First(x => x.GetType().Equals(typeof(Label))) as Label;
             var accounts = ((AccountsViewModel)accountsList.BindingContext).Accounts;
             return accounts.First(x => x.Name.Equals(label.Text));
-        }
-
-        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
-        {
-            var stackLayout = sender as StackLayout;
-            var label = stackLayout.Children.First(x => x.GetType().Equals(typeof(Label))) as Label;
-
-            var swipeDirection = label.Bounds.X > 20 ? SwipeDirection.Left : SwipeDirection.Right;
-            Swiped(sender, new SwipedEventArgs(null, swipeDirection));
         }
     }
 }

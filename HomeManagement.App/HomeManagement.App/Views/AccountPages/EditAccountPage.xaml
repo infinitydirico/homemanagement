@@ -1,22 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewModels="clr-namespace:HomeManagement.App.ViewModels"
-             xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              BackgroundColor="{StaticResource LayoutDark}"
-             x:Class="HomeManagement.App.Views.AccountPages.AddAccountPage">
-    <ContentPage.BindingContext>
-        <viewModels:AddAccountViewModel />
-    </ContentPage.BindingContext>
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Icon="check_green.png" Command="{Binding AddAccountCommand}" />
-    </ContentPage.ToolbarItems>
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <Conv:TranslationConverter x:Key="Translation" />
-        </ResourceDictionary>
-    </ContentPage.Resources>
+             x:Class="HomeManagement.App.Views.AccountPages.EditAccountPage">
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
 

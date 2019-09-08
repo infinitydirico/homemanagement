@@ -1,13 +1,20 @@
-﻿using System.Threading.Tasks;
+﻿using HomeManagement.App.Extensions;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace HomeManagement.App.Behaviours
 {
     public class EmptyValidationEntryBehavior : Behavior<Entry>
     {
+        Entry entry;
+        Color currentColor;
+        Color red = Color.FromHex("#ef5350");
+
         protected override void OnAttachedTo(Entry bindable)
         {
+            entry = bindable;
             bindable.Unfocused += OnUnfocused;
+            currentColor = bindable.BackgroundColor;
             base.OnAttachedTo(bindable);
         }
 
@@ -23,7 +30,9 @@ namespace HomeManagement.App.Behaviours
 
             if (string.IsNullOrWhiteSpace(entry.Text))
             {
+                await entry.BackgroundColorTo(red);
                 await ShakeIt(entry);
+                await entry.BackgroundColorTo(currentColor);
             }            
         }
 

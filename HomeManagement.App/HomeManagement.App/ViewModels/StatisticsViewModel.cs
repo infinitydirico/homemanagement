@@ -36,20 +36,21 @@ namespace HomeManagement.App.ViewModels
             TopCategories = categories;
 
 
-            ChartValues.AddRange(from value in TopCategories.Categories
+            MostExpensiveCategories.AddRange(from value in TopCategories.Categories
                                   select new SeriesValue
                                   {
                                       Label = value.Category.Name,
                                       Value = float.Parse(value.Price.ToString())
                                   });
 
-            OnPropertyChanged(nameof(ChartValues));
+            OnPropertyChanged(nameof(MostExpensiveCategories));
+            OnPropertyChanged(nameof(DisplayExpensiveCategoriesChart));
+            OnPropertyChanged(nameof(NoAvaibleStatistics));
         }
 
         private async Task RetrieveAccountBalances()
         {
             var balances = await accountMetricsServiceClient.GetAccountsBalances();
-
 
             AccountsEvolutions.AddRange(
                        from b in balances.Balances
@@ -64,10 +65,15 @@ namespace HomeManagement.App.ViewModels
                        });
 
             OnPropertyChanged(nameof(AccountsEvolutions));
+            OnPropertyChanged(nameof(NoAvaibleStatistics));
             OnBalancesChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public List<SeriesValue> ChartValues { get; private set; } = new List<SeriesValue>();
+        public bool NoAvaibleStatistics => !DisplayExpensiveCategoriesChart && AccountsEvolutions.Count.Equals(0);
+
+        public List<SeriesValue> MostExpensiveCategories { get; private set; } = new List<SeriesValue>();
+
+        public bool DisplayExpensiveCategoriesChart => MostExpensiveCategories.Count > 0;
 
         public List<AccountEvolution> AccountsEvolutions { get; private set; } = new List<AccountEvolution>();
     }

@@ -340,6 +340,15 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No avaible statistics to display.
+        /// </summary>
+        public static string NoStatistics {
+            get {
+                return ResourceManager.GetString("NoStatistics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No internet connection detected.
         /// </summary>
         public static string Offline {

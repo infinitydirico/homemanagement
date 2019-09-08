@@ -21,11 +21,17 @@ namespace HomeManagement.App.ViewModels
 
         public Account Account { get; }
 
-        public List<SeriesValue> ChartValues { get; private set; } = new List<SeriesValue>();
+        public List<SeriesValue> ExpensiveCategories { get; private set; } = new List<SeriesValue>();
 
         public List<SeriesValue> IncomeSeries { get; set; } = new List<SeriesValue>();
 
         public List<SeriesValue> OutcomeSeries { get; set; } = new List<SeriesValue>();
+
+        public bool DisplayExpensiveCategories => ExpensiveCategories.Count > 0;
+
+        public bool DisplaySeries => IncomeSeries.Count > 0 && IncomeSeries.All(x => x.Value > 0);
+
+        public bool NoAvaibleStatistics => !DisplaySeries && !DisplayExpensiveCategories;
 
         protected override async Task InitializeAsync()
         {
@@ -52,6 +58,7 @@ namespace HomeManagement.App.ViewModels
 
             OnPropertyChanged(nameof(IncomeSeries));
             OnPropertyChanged(nameof(OutcomeSeries));
+            OnPropertyChanged(nameof(DisplaySeries));
         }
 
         private async Task GetCategoriesMetrics()
@@ -66,9 +73,10 @@ namespace HomeManagement.App.ViewModels
                               Value = float.Parse(r.Value.ToString())
                           });
 
-            ChartValues.AddRange(values);
+            ExpensiveCategories.AddRange(values);
 
-            OnPropertyChanged(nameof(ChartValues));
+            OnPropertyChanged(nameof(ExpensiveCategories));
+            OnPropertyChanged(nameof(DisplayExpensiveCategories));
         }
 
     }

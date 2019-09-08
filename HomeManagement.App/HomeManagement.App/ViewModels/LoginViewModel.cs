@@ -11,8 +11,8 @@ namespace HomeManagement.App.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
-        string username = string.Empty;
-        string password = string.Empty;
+        string username = "test@test.com";
+        string password = "123Abc!";
 
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();

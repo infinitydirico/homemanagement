@@ -12,32 +12,24 @@
     <ContentPage.Content>
         <ScrollView>
             <StackLayout x:Name="mainContainer" HorizontalOptions="FillAndExpand">
-                <Frame Margin="5, 5, 5, 5">
+                <Label IsVisible="{Binding NoAvaibleStatistics}" 
+                       HorizontalOptions="Center" VerticalOptions="Center" 
+                       FontSize="Large" Margin="10, 0, 10, 0">
+                    <Label.Behaviors>
+                        <Beh:TranslationBehavior LanguageKey="NoStatistics" />
+                    </Label.Behaviors>
+                </Label>
+                <Frame Margin="5, 5, 5, 5" IsVisible="{Binding DisplayExpensiveCategoriesChart}">
                     <StackLayout>
                         <Label>
                             <Label.Behaviors>
                                 <Beh:TranslationBehavior LanguageKey="GeneralExpenses" />
                             </Label.Behaviors>
                         </Label>
-                        <charts:BarChart x:Name="barChart" Series="{Binding ChartValues}" 
+                        <charts:BarChart x:Name="barChart" Series="{Binding MostExpensiveCategories}" 
                                  TextSize="25" BackgroundColor="#303030" HeightRequest="150" />
                     </StackLayout>
                 </Frame>
-
-                <!--<ListView x:Name="chartList" ItemsSource="{Binding AccountsEvolutions}" SeparatorVisibility="None">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Frame Margin="5, 5, 5, 5">
-                                <StackLayout>
-                                    <charts:LineChart Series="{Binding .}" TextSize="12" RenderArea="True"
-                                                     BackgroundColor="#303030" HeightRequest="150" />
-                                </StackLayout>
-                            </Frame>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>-->
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

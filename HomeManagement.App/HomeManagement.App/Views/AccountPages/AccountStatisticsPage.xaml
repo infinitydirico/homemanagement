@@ -8,19 +8,26 @@
     <ContentPage.Content>
         <ScrollView Orientation="Vertical">
             <StackLayout Margin="10, 10, 10, 10" Orientation="Vertical" HorizontalOptions="FillAndExpand">
-                <Frame>
+                <Label IsVisible="{Binding NoAvaibleStatistics}" 
+                       HorizontalOptions="Center" VerticalOptions="Center" 
+                       FontSize="Large" Margin="10, 0, 10, 0">
+                    <Label.Behaviors>
+                        <Beh:TranslationBehavior LanguageKey="NoStatistics" />
+                    </Label.Behaviors>
+                </Label>
+                <Frame IsVisible="{Binding DisplayExpensiveCategories}">
                     <StackLayout>
                         <Label>
                             <Label.Behaviors>
                                 <Beh:TranslationBehavior LanguageKey="ExpensesGroupedByCategory" />
                             </Label.Behaviors>
                         </Label>
-                        <charts:BarChart x:Name="barChart" Series="{Binding ChartValues}" 
+                        <charts:BarChart x:Name="barChart" Series="{Binding ExpensiveCategories}" 
                                      TextSize="20" BackgroundColor="#303030" HeightRequest="150" />
                     </StackLayout>
                 </Frame>
 
-                <Frame>
+                <Frame IsVisible="{Binding DisplaySeries}">
                     <StackLayout>
                         <Label>
                             <Label.Behaviors>
@@ -32,7 +39,7 @@
                     </StackLayout>
                 </Frame>
 
-                <Frame>
+                <Frame IsVisible="{Binding DisplaySeries}">
                     <StackLayout>
                         <Label>
                             <Label.Behaviors>

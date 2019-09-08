@@ -264,4 +264,7 @@
   <data name="WipeDataChoices" xml:space="preserve">
     <value>Wipe Data options</value>
   </data>
+  <data name="NoStatistics" xml:space="preserve">
+    <value>No avaible statistics to display</value>
+  </data>
 </root>

@@ -12,7 +12,7 @@ namespace HomeManagement.App.Views.Controls
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CalendarView : ContentView
     {
-        private uint animationTimeout = 250;
+        private uint animationTimeout = 150;
         private List<Tuple<DateTime, Frame>> gridValues = new List<Tuple<DateTime, Frame>>();
 
         public CalendarView()
@@ -265,15 +265,15 @@ namespace HomeManagement.App.Views.Controls
 
             var offset = Width + 50;
             var rect = calendarGrid.Bounds.Offset(-offset, calendarGrid.Bounds.Y);
-            await calendarGrid.LayoutTo(rect, animationTimeout, Easing.SpringOut);
+            await calendarGrid.LayoutTo(rect, animationTimeout, Easing.CubicOut);
 
             FillGrid();
 
             rect = calendarGrid.Bounds.Offset(offset * 2, calendarGrid.Bounds.Y);
-            await calendarGrid.LayoutTo(rect, 50, Easing.SpringIn);
+            await calendarGrid.LayoutTo(rect, 50, Easing.CubicIn);
 
             rect = calendarGrid.Bounds.Offset(-offset, calendarGrid.Bounds.Y);
-            await calendarGrid.LayoutTo(rect, animationTimeout, Easing.SpringOut);
+            await calendarGrid.LayoutTo(rect, animationTimeout, Easing.CubicOut);
 
             OnDateChanged.Invoke(this, EventArgs.Empty);
         }
@@ -286,15 +286,15 @@ namespace HomeManagement.App.Views.Controls
 
             var offset = Width + 50;
             var rect = calendarGrid.Bounds.Offset(offset, calendarGrid.Bounds.Y);
-            await calendarGrid.LayoutTo(rect, animationTimeout, Easing.SpringOut);
+            await calendarGrid.LayoutTo(rect, animationTimeout, Easing.CubicOut);
 
             FillGrid();
 
             rect = calendarGrid.Bounds.Offset(-offset * 2, calendarGrid.Bounds.Y);
-            await calendarGrid.LayoutTo(rect, 50, Easing.SpringIn);
+            await calendarGrid.LayoutTo(rect, 50, Easing.CubicIn);
 
             rect = calendarGrid.Bounds.Offset(offset, calendarGrid.Bounds.Y);
-            await calendarGrid.LayoutTo(rect, animationTimeout, Easing.SpringOut);
+            await calendarGrid.LayoutTo(rect, animationTimeout, Easing.CubicOut);
 
             OnDateChanged.Invoke(this, EventArgs.Empty);
         }

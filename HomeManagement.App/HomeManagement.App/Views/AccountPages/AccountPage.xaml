@@ -38,6 +38,12 @@
                                 <Button Image="red_trash_xs.png" VerticalOptions="Center"
                                         WidthRequest="30" HeightRequest="30" IsVisible="False"
                                         Clicked="Delete" />
+                                <Button Image="edit_xs.png" VerticalOptions="Center"
+                                        WidthRequest="30" HeightRequest="30" IsVisible="False"
+                                        Clicked="Edit" />
+                                <Button Image="charge_list_xs.png" VerticalOptions="Center"
+                                        WidthRequest="30" HeightRequest="30" IsVisible="False"
+                                        Clicked="ViewChargesList"/>
                                 <Label VerticalOptions="Center" Text = "{Binding Name}" />
                                 <Label VerticalOptions="Center" Text = "{Binding Balance}" 
                                        TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" 
