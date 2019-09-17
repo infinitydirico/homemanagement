@@ -18,6 +18,8 @@ namespace HomeManagement.App.Managers
         Task<IEnumerable<Account>> NextPageAsync();
 
         Task Delete(Account account);
+
+        Task Update(Account account);
     }
 
     public class AccountManager : BaseManager<Account, AccountPageModel> , IAccountManager
@@ -46,6 +48,22 @@ namespace HomeManagement.App.Managers
                 cachingService.StoreOrUpdate("ForceApiCall", true);
             }
             return await Paginate();
+        }
+
+        public async Task Update(Account account)
+        {
+            var model = new AccountModel
+            {
+                Id = account.Id,
+                Name = account.Name,
+                UserId = account.UserId,
+                AccountType = account.AccountType.To<Models.AccountType>(),
+                Balance = account.Balance,
+                Measurable = account.Measurable,
+                CurrencyId = account.CurrencyId,
+            };
+
+            await accountServiceClient.Update(model);
         }
 
         protected override async Task<IEnumerable<Account>> Paginate()

@@ -1,4 +1,5 @@
-﻿using HomeManagement.App.Data.Entities;
+﻿using HomeManagement.App.Common;
+using HomeManagement.App.Data.Entities;
 using HomeManagement.App.ViewModels;
 
 using Xamarin.Forms;
@@ -15,6 +16,19 @@ namespace HomeManagement.App.Views.AccountPages
 		{
 			InitializeComponent ();
             viewModel = new EditAccountViewModel(account);
+
+            BindingContext = viewModel;
+            viewModel.OnSuccess += (s, e) =>
+            {
+                Navigation.PopAsync();
+                MessagingCenter.Send(this, Constants.Messages.UpdateOnAppearing);
+            };
         }
-	}
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            accountName.Focus();
+        }
+    }
 }

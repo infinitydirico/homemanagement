@@ -4,6 +4,7 @@
             x:Class="HomeManagement.App.Views.Main.MainPage"
             xmlns:viewModels="clr-namespace:HomeManagement.App.ViewModels"
             xmlns:mainPages="clr-namespace:HomeManagement.App.Views.Main"
+            xmlns:accountsPages="clr-namespace:HomeManagement.App.Views.AccountPages"
             xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
             BarBackgroundColor="{StaticResource TabBarColor}"
             BackgroundColor="{StaticResource TabBarColor}"
@@ -22,6 +23,7 @@
     </TabbedPage.ToolbarItems>
 
     <mainPages:DashboardPage  />
+    <!--<accountsPages:AccountPage />-->
     <mainPages:StatisticsPage />
     <mainPages:Settings />
 </TabbedPage>

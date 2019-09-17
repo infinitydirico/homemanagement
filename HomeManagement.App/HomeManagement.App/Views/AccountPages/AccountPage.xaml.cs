@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using HomeManagement.App.Common;
 using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
 using HomeManagement.App.ViewModels;
@@ -13,17 +14,17 @@ using Xamarin.Forms.Xaml;
 namespace HomeManagement.App.Views.AccountPages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class AccountPage : ContentPage
-	{
+    public partial class AccountPage : ContentPage
+    {
         ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
         AccountsViewModel viewModel = new AccountsViewModel();
         Modal modal;
         int offsetStart = 55;
         int offsetEnd = 110;
 
-        public AccountPage ()
-		{
-			InitializeComponent ();
+        public AccountPage()
+        {
+            InitializeComponent();
 
             modal = new Modal(this);
             BindingContext = viewModel;
@@ -90,7 +91,16 @@ namespace HomeManagement.App.Views.AccountPages
             var editButton = sender as Button;
             var stacklayout = editButton.Parent as StackLayout;
             var account = GetCurrentAccount(stacklayout);
-            Navigation.PushAsync(new EditAccountPage(account));
+
+            var editPage = new EditAccountPage(account);
+
+            MessagingCenter.Subscribe<EditAccountPage>(editPage, Constants.Messages.UpdateOnAppearing, page =>
+           {
+               viewModel.Refresh();
+               MessagingCenter.Unsubscribe<EditAccountPage>(editPage, Constants.Messages.UpdateOnAppearing);
+           });
+
+            Navigation.PushAsync(editPage);
         }
 
         private void ViewChargesList(object sender, EventArgs e)

@@ -64,5 +64,10 @@
             public const string UserIdKey = "user_id_storage_key";
             public const string CategoriesKey = "categories_storage_key";
         }
+
+        public class Messages
+        {
+            public const string UpdateOnAppearing  = "UpdateOnAppearing";
+        }
     }
 }

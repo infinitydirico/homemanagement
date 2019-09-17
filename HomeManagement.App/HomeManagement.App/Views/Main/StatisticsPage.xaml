@@ -5,6 +5,7 @@
              BackgroundColor="{StaticResource TabBarColor}"
              Icon="bar_chart.png"
              xmlns:charts="clr-namespace:Nightingale.Charts;assembly=Nightingale"
+             xmlns:statistics="clr-namespace:HomeManagement.App.Views.Statistics"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours">
     <ContentPage.Behaviors>
         <Beh:TranslationBehavior LanguageKey="Statistics" />
@@ -19,17 +20,7 @@
                         <Beh:TranslationBehavior LanguageKey="NoStatistics" />
                     </Label.Behaviors>
                 </Label>
-                <Frame Margin="5, 5, 5, 5" IsVisible="{Binding DisplayExpensiveCategoriesChart}">
-                    <StackLayout>
-                        <Label>
-                            <Label.Behaviors>
-                                <Beh:TranslationBehavior LanguageKey="GeneralExpenses" />
-                            </Label.Behaviors>
-                        </Label>
-                        <charts:BarChart x:Name="barChart" Series="{Binding MostExpensiveCategories}" 
-                                 TextSize="25" BackgroundColor="#303030" HeightRequest="150" />
-                    </StackLayout>
-                </Frame>
+                <statistics:ExpensiveCategoriesChart />
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

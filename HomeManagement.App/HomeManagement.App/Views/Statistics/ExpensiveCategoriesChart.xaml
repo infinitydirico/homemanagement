@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Frame xmlns="http://xamarin.com/schemas/2014/forms" 
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       x:Class="HomeManagement.App.Views.Statistics.ExpensiveCategoriesChart"
+       xmlns:charts="clr-namespace:Nightingale.Charts;assembly=Nightingale"
+       xmlns:viewModels="clr-namespace:HomeManagement.App.ViewModels.Statistics"
+       xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
+       Margin="5, 5, 5, 5"
+       BackgroundColor="#303030"
+       IsVisible="{Binding DisplayExpensiveCategoriesChart}">
+    <Frame.Behaviors>
+        <Beh:TranslationBehavior LanguageKey="Statistics" />
+    </Frame.Behaviors>
+    <Frame.BindingContext>
+        <viewModels:ExpensiveCategoriesViewModel />
+    </Frame.BindingContext>
+    <Frame.Content>
+        <StackLayout>
+            <StackLayout IsVisible="{Binding NoAvaibleStatistics}" >
+                <Label HorizontalOptions="Center" VerticalOptions="Center" 
+                       FontSize="Large" Margin="10, 0, 10, 0">
+                    <Label.Behaviors>
+                        <Beh:TranslationBehavior LanguageKey="NoStatistics" />
+                    </Label.Behaviors>
+                </Label>
+            </StackLayout>
+            <StackLayout IsVisible="{Binding DisplayExpensiveCategoriesChart}">
+                <Label>
+                    <Label.Behaviors>
+                        <Beh:TranslationBehavior LanguageKey="GeneralExpenses" />
+                    </Label.Behaviors>
+                </Label>
+                <charts:BarChart x:Name="barChart" Series="{Binding MostExpensiveCategories}" 
+                                 TextSize="25" BackgroundColor="#303030" HeightRequest="150" />
+            </StackLayout>
+        </StackLayout>
+    </Frame.Content>
+</Frame>

@@ -19,8 +19,6 @@ namespace HomeManagement.App.ViewModels
 
             Task.Run(async () =>
             {
-                await LoadMostExpensiveCategories();
-
                 await RetrieveAccountBalances();
             });
         }
@@ -28,25 +26,6 @@ namespace HomeManagement.App.ViewModels
         public event EventHandler OnBalancesChanged;
 
         public OverPricedCategories TopCategories { get; private set; }
-
-        private async Task LoadMostExpensiveCategories()
-        {
-            var categories = await accountMetricsServiceClient.GetMostExpensiveCategories();
-
-            TopCategories = categories;
-
-
-            MostExpensiveCategories.AddRange(from value in TopCategories.Categories
-                                  select new SeriesValue
-                                  {
-                                      Label = value.Category.Name,
-                                      Value = float.Parse(value.Price.ToString())
-                                  });
-
-            OnPropertyChanged(nameof(MostExpensiveCategories));
-            OnPropertyChanged(nameof(DisplayExpensiveCategoriesChart));
-            OnPropertyChanged(nameof(NoAvaibleStatistics));
-        }
 
         private async Task RetrieveAccountBalances()
         {

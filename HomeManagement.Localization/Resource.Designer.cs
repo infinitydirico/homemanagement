@@ -331,6 +331,15 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Measurable.
+        /// </summary>
+        public static string Measurable {
+            get {
+                return ResourceManager.GetString("Measurable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New movement.
         /// </summary>
         public static string NewMovement {

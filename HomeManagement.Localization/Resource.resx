@@ -267,4 +267,7 @@
   <data name="NoStatistics" xml:space="preserve">
     <value>No avaible statistics to display</value>
   </data>
+  <data name="Measurable" xml:space="preserve">
+    <value>Measurable</value>
+  </data>
 </root>

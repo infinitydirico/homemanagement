@@ -32,9 +32,12 @@ namespace HomeManagement.App.Services.Rest
 
         public async Task Update(AccountModel account)
         {
-            await RestClientFactory
+            var response = 
+                await RestClientFactory
                 .CreateAuthenticatedClient()
-                .PostAsync(Constants.Endpoints.Accounts.ACCOUNT, account.SerializeToJson());
+                .PutAsync(Constants.Endpoints.Accounts.ACCOUNT, account.SerializeToJson());
+
+            response.EnsureSuccessStatusCode();
         }
     }
 

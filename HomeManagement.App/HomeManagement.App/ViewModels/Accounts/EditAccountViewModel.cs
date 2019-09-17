@@ -5,13 +5,15 @@ using HomeManagement.App.Services.Rest;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Xamarin.Forms;
 
 namespace HomeManagement.App.ViewModels
 {
     public class EditAccountViewModel : BaseViewModel
     {
         private readonly ICurrencyServiceClient currencyService = App._container.Resolve<ICurrencyServiceClient>();
-        private readonly IAccountServiceClient accountServiceClient = App._container.Resolve<IAccountServiceClient>();
+        private readonly IAccountManager accountManager = App._container.Resolve<IAccountManager>();
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
     
         Account account;
@@ -24,6 +26,8 @@ namespace HomeManagement.App.ViewModels
             Account = account;
             SelectedAccountType = account.AccountType;
         }
+
+        public ICommand FinishEditAccountCommand => new Command(UpdateAccount);
 
         public Account Account
         {
@@ -83,6 +87,24 @@ namespace HomeManagement.App.ViewModels
             }
         }
 
+        public bool MeasureAccount
+        {
+            get => Account.Measurable;
+            set
+            {
+                Account.Measurable = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void UpdateAccount()
+        {
+            HandleSafeExecutionAsync(async () =>
+            {
+                await accountManager.Update(Account);
+            });            
+        }
+
         protected override async Task InitializeAsync()
         {
             Currencies = (from c in await currencyService.GetCurrencies()
@@ -93,6 +115,7 @@ namespace HomeManagement.App.ViewModels
                               Value = c.Value
                           }).ToList();
             SelectedCurrency = Currencies.First(x => x.Id.Equals(account.CurrencyId));
+            OnPropertyChanged(nameof(Account));
         }
     }
 }

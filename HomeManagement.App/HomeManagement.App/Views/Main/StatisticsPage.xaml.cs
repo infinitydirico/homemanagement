@@ -58,10 +58,10 @@ namespace HomeManagement.App.Views.Main
 
             Title = localizationManager.Translate("Statistics");
 
-            if (Device.Idiom.Equals(TargetIdiom.Desktop))
-            {
-                barChart.TextSize = 12;
-            }
+            //if (Device.Idiom.Equals(TargetIdiom.Desktop))
+            //{
+            //    barChart.TextSize = 12;
+            //}
         }
     }
 }

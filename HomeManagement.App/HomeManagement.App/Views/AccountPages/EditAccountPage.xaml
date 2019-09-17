@@ -4,6 +4,9 @@
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              BackgroundColor="{StaticResource LayoutDark}"
              x:Class="HomeManagement.App.Views.AccountPages.EditAccountPage">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Icon="check_green.png" Command="{Binding FinishEditAccountCommand}" />
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
 
@@ -41,6 +44,16 @@
 
                 <Picker WidthRequest="150"  ItemsSource="{Binding AccountTypes}" 
                         SelectedItem="{Binding SelectedAccountType}" VerticalOptions="Center"/>
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
+                <Label FontSize="Large" VerticalOptions="Center">
+                    <Label.Behaviors>
+                        <Beh:TranslationBehavior LanguageKey="Measurable" />
+                    </Label.Behaviors>
+                </Label>
+
+                <Switch x:Name="accountMeasurableSwitch" IsToggled="{Binding MeasureAccount}" />
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>
