@@ -19,7 +19,7 @@ namespace HomeManagement.App.ViewModels
         protected IChargeServiceClient chargeServiceClient;
         protected readonly IChargeManager chargeManager = App._container.Resolve<IChargeManager>();
         protected IEnumerable<Category> categories;
-        protected bool chargeType = false;
+        protected ChargeType selectedChargeType;
 
         public BaseChargeEditionViewModel()
         {
@@ -27,8 +27,6 @@ namespace HomeManagement.App.ViewModels
             chargeServiceClient = App._container.Resolve<IChargeServiceClient>();
 
             CancelCommand = new Command(Cancel);
-
-            ChargeType = false;
         }
 
         public BaseChargeEditionViewModel(Account account) : this()
@@ -74,24 +72,20 @@ namespace HomeManagement.App.ViewModels
             }
         }
 
-        public bool ChargeType
+        public List<ChargeType> ChargeTypes => new List<ChargeType>
         {
-            get
-            {
-                return chargeType;
-            }
+            Data.Entities.ChargeType.Expense,
+            Data.Entities.ChargeType.Income
+        };
+
+        public ChargeType SelectedChargeType
+        {
+            get => selectedChargeType;
             set
             {
-                chargeType = value;
-                if (chargeType)
-                {
-                    Charge.ChargeType = Data.Entities.ChargeType.Income;
-                }
-                else
-                {
-                    Charge.ChargeType = Data.Entities.ChargeType.Expense;
-                }
-                OnPropertyChanged(nameof(ChargeType));
+                selectedChargeType = value;
+                Charge.ChargeType = selectedChargeType;
+                OnPropertyChanged(nameof(SelectedChargeType));
             }
         }
 

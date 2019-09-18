@@ -51,5 +51,11 @@ namespace HomeManagement.App.Views.Charges
         {
             Navigation.PopAsync();
         }
+
+        protected override void OnAppearing()
+        {
+            chargeNameEntry.Focus();
+            base.OnAppearing();
+        }
     }
 }

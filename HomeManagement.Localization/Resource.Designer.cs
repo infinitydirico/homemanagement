@@ -70,7 +70,7 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to remove an account that has charges.
+        ///   Looks up a localized string similar to Unable to remove an account that has transactions.
         /// </summary>
         public static string AccountHasCharges {
             get {
@@ -106,7 +106,7 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Charge Name.
+        ///   Looks up a localized string similar to Transaction Name.
         /// </summary>
         public static string AddNewCharge {
             get {
@@ -214,7 +214,7 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit Movement.
+        ///   Looks up a localized string similar to Edit Transaction.
         /// </summary>
         public static string EditCharge {
             get {
@@ -340,7 +340,7 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New movement.
+        ///   Looks up a localized string similar to New transaction.
         /// </summary>
         public static string NewMovement {
             get {
@@ -484,11 +484,20 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Top Charges.
+        ///   Looks up a localized string similar to Top Transactions.
         /// </summary>
         public static string TopCharges {
             get {
                 return ResourceManager.GetString("TopCharges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction Type.
+        /// </summary>
+        public static string TransactionType {
+            get {
+                return ResourceManager.GetString("TransactionType", resourceCulture);
             }
         }
         

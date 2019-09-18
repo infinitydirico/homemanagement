@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AccountHasCharges" xml:space="preserve">
-    <value>No se puede eliminar una cuenta que tiene movimientos</value>
+    <value>No se puede eliminar una cuenta que tiene transacciones</value>
   </data>
   <data name="AccountName" xml:space="preserve">
     <value>Nombre de la nueva Cuenta</value>
@@ -160,7 +160,7 @@
     <value>Cerrar Sesion</value>
   </data>
   <data name="NewMovement" xml:space="preserve">
-    <value>Nuevo movimiento</value>
+    <value>Nuevo transaccion</value>
   </data>
   <data name="OverallIncome" xml:space="preserve">
     <value>Ingreso Total</value>
@@ -184,7 +184,7 @@
     <value>Estadisticas</value>
   </data>
   <data name="TopCharges" xml:space="preserve">
-    <value>Mayores Movimientos</value>
+    <value>Mayores Transacciones</value>
   </data>
   <data name="Username" xml:space="preserve">
     <value>Nombre de usuario</value>
@@ -211,10 +211,10 @@
     <value>No se detecta conexion a internet</value>
   </data>
   <data name="AddNewCharge" xml:space="preserve">
-    <value>Nombre del movimiento</value>
+    <value>Nombre de la transaccion</value>
   </data>
   <data name="EditCharge" xml:space="preserve">
-    <value>Editar Movimiento</value>
+    <value>Editar Transaccion</value>
   </data>
   <data name="ConfirmPassword" xml:space="preserve">
     <value>Confirmar contraseña</value>
@@ -269,5 +269,11 @@
   </data>
   <data name="Measurable" xml:space="preserve">
     <value>Medible</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>Tipo de Transaccion</value>
   </data>
 </root>

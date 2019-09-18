@@ -14,8 +14,7 @@ namespace HomeManagement.App.ViewModels
             Charge = charge;
 
             UpdateChargeCommand = new Command(UpdateCharge);
-
-            ChargeType = charge.ChargeType.Equals(Data.Entities.ChargeType.Income) ? true : false;
+            SelectedChargeType = Charge.ChargeType;
         }
 
         public ICommand UpdateChargeCommand { get; }

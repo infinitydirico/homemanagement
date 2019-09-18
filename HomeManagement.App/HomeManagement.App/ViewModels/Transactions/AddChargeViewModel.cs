@@ -14,6 +14,7 @@ namespace HomeManagement.App.ViewModels
         public AddChargeViewModel(Account account) : base(account)
         {
             AddChargeCommand = new Command(AddCharge);
+            SelectedChargeType = ChargeType.Expense;
         }
 
         public ICommand AddChargeCommand { get; }

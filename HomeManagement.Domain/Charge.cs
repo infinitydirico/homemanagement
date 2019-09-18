@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace HomeManagement.Domain
 {
+    /// <summary>
+    /// TODO rename Charge to transaction
+    /// </summary>
     public class Charge : IExportable
     {
         IList<string> exportableHeaders = new List<string>

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Frame xmlns="http://xamarin.com/schemas/2014/forms"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       x:Class="HomeManagement.App.Views.Statistics.AccountEvolutionFrame"
+       xmlns:charts="clr-namespace:Nightingale.Charts;assembly=Nightingale"
+       xmlns:viewModels="clr-namespace:HomeManagement.App.ViewModels.Statistics"
+       xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
+       Margin="5, 5, 5, 5"
+       BackgroundColor="#303030">
+</Frame>

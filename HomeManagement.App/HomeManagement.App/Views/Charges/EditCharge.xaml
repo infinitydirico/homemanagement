@@ -49,12 +49,12 @@
             </StackLayout>
 
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
-                <Image Source="money_green.png" IsVisible="{Binding Source={x:Reference chargeTypeSwitch}, Path=IsToggled}" HorizontalOptions="Start" HeightRequest="50" />
-                <Image Source="money_red.png" IsVisible="{Binding Source={x:Reference chargeTypeSwitch}, Path=IsToggled, Converter={StaticResource InverseVisibility}}" HorizontalOptions="Start" HeightRequest="50" />
-
-                <Switch x:Name="chargeTypeSwitch" IsToggled="{Binding ChargeType}" />
-
-                <Label Text="{Binding Source={x:Reference chargeTypeSwitch}, Path=IsToggled, Converter={StaticResource ChargeTypeLabel}}" VerticalOptions="Center"  />
+                <Label VerticalOptions="Center">
+                    <Label.Behaviors>
+                        <Beh:TranslationBehavior LanguageKey="TransactionType" />
+                    </Label.Behaviors>
+                </Label>
+                <Picker WidthRequest="150"  ItemsSource="{Binding ChargeTypes}" SelectedItem="{Binding SelectedChargeType}" />
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

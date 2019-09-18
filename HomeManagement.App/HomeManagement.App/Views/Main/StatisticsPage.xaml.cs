@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using HomeManagement.App.Managers;
 using HomeManagement.App.ViewModels;
-using Nightingale.Charts;
+using HomeManagement.App.Views.Statistics;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -25,43 +25,18 @@ namespace HomeManagement.App.Views.Main
                 {
                     foreach (var evolution in viewModel.AccountsEvolutions)
                     {
-                        var frame = new Frame
+                        var accountEvolution = new AccountEvolutionFrame
                         {
-                            Margin = new Thickness(5)
+                            AccountName = evolution.AccountName,
+                            Series = evolution.Series
                         };
 
-                        var layout = new StackLayout();
-                        var chart = new LineChart
-                        {
-                            TextSize = 25,
-                            BackgroundColor = Color.FromHex("#303030"),
-                            HeightRequest = 150,
-                            RenderArea = true
-                        };
-
-                        var label = new Label
-                        {
-                            Text = evolution.AccountName
-                        };
-
-                        chart.Series = evolution.Series;
-
-                        layout.Children.Add(label);
-                        layout.Children.Add(chart);
-
-                        frame.Content = layout;
-
-                        mainContainer.Children.Add(frame);
+                        mainContainer.Children.Add(accountEvolution);
                     }
                 });
             };
 
             Title = localizationManager.Translate("Statistics");
-
-            //if (Device.Idiom.Equals(TargetIdiom.Desktop))
-            //{
-            //    barChart.TextSize = 12;
-            //}
         }
     }
 }
