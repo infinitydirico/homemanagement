@@ -5,6 +5,7 @@
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:local="clr-namespace:HomeManagement.App.Views.Controls"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
+             xmlns:statistics="clr-namespace:HomeManagement.App.Views.Statistics"
              BackgroundColor="{StaticResource TabBarColor}"
              Icon="dashboard.png">
     <ContentPage.Behaviors>
@@ -19,66 +20,58 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout Orientation="Vertical">
-            <Grid Margin="5, 5, 5, 5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="100" />
-                    <RowDefinition Height="2*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Frame Grid.Column="0" Grid.Row="0">
-                    <StackLayout Orientation="Vertical">
-                        <Label>
-                            <Label.Behaviors>
-                                <Beh:TranslationBehavior LanguageKey="OverallIncome" />
-                            </Label.Behaviors>
-                        </Label>
-                        <StackLayout Orientation="Horizontal">
-                            <StackLayout HorizontalOptions="StartAndExpand">
-                                <Label Text="{Binding TotalIncome}"  />
-                            </StackLayout>
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
-                                <Label Text="{Binding IncomePercentage}" TextColor="{Binding IncomePercentage, Converter={StaticResource PercentageColor}}" />
+        <ScrollView>
+            <StackLayout Orientation="Vertical">
+                <Grid x:Name="grid" Margin="5, 5, 5, 5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="100" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Frame Grid.Column="0" Grid.Row="0">
+                        <StackLayout Orientation="Vertical">
+                            <Label>
+                                <Label.Behaviors>
+                                    <Beh:TranslationBehavior LanguageKey="OverallIncome" />
+                                </Label.Behaviors>
+                            </Label>
+                            <StackLayout Orientation="Horizontal">
+                                <StackLayout HorizontalOptions="StartAndExpand">
+                                    <Label Text="{Binding TotalIncome}"  />
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
+                                    <Label Text="{Binding IncomePercentage}" TextColor="{Binding IncomePercentage, Converter={StaticResource PercentageColor}}" />
 
-                                <Image Source="perc_down.png" IsVisible="{Binding IncomePercentage, Converter={StaticResource LessThan}}" HeightRequest="25" />
-                                <Image Source="perc_up.png" IsVisible="{Binding IncomePercentage, Converter={StaticResource GreaterThan}}" HeightRequest="25"/>
-                            </StackLayout>
-                        </StackLayout>
-                    </StackLayout>
-                </Frame>
-                <Frame Grid.Column="1" Grid.Row="0">
-                    <StackLayout Orientation="Vertical">
-                        <Label>
-                            <Label.Behaviors>
-                                <Beh:TranslationBehavior LanguageKey="OverallOutcome" />
-                            </Label.Behaviors>
-                        </Label>
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="{Binding TotalOutcome}"  />
-
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
-                                <Label Text="{Binding OutcomePercentage}" TextColor="{Binding OutcomePercentage, Converter={StaticResource PercentageColor}}" />
-
-                                <Image Source="perc_down.png" IsVisible="{Binding OutcomePercentage, Converter={StaticResource LessThan}}" HeightRequest="25" />
-                                <Image Source="perc_up.png" IsVisible="{Binding OutcomePercentage, Converter={StaticResource GreaterThan}}" HeightRequest="25"/>
+                                    <Image Source="perc_down.png" IsVisible="{Binding IncomePercentage, Converter={StaticResource LessThan}}" HeightRequest="25" />
+                                    <Image Source="perc_up.png" IsVisible="{Binding IncomePercentage, Converter={StaticResource GreaterThan}}" HeightRequest="25"/>
+                                </StackLayout>
                             </StackLayout>
                         </StackLayout>
-                    </StackLayout>
-                </Frame>
-                <Frame Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
-                    <StackLayout>
-                        <local:AccountListControl VerticalOptions="FillAndExpand"></local:AccountListControl>
-                        <Button Clicked="Button_Clicked" HorizontalOptions="StartAndExpand">
-                            <Button.Behaviors>
-                                <Beh:TranslationBehavior LanguageKey="GoToAccounts" />
-                            </Button.Behaviors>
-                        </Button>
-                    </StackLayout>
-                </Frame>
-            </Grid>
-        </StackLayout>
+                    </Frame>
+                    <Frame Grid.Column="1" Grid.Row="0">
+                        <StackLayout Orientation="Vertical">
+                            <Label>
+                                <Label.Behaviors>
+                                    <Beh:TranslationBehavior LanguageKey="OverallOutcome" />
+                                </Label.Behaviors>
+                            </Label>
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="{Binding TotalOutcome}"  />
+
+                                <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
+                                    <Label Text="{Binding OutcomePercentage}" TextColor="{Binding OutcomePercentage, Converter={StaticResource PercentageColor}}" />
+
+                                    <Image Source="perc_down.png" IsVisible="{Binding OutcomePercentage, Converter={StaticResource LessThan}}" HeightRequest="25" />
+                                    <Image Source="perc_up.png" IsVisible="{Binding OutcomePercentage, Converter={StaticResource GreaterThan}}" HeightRequest="25"/>
+                                </StackLayout>
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+
+                    <statistics:ExpensiveCategoriesChart Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" />
+                </Grid>
+            </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

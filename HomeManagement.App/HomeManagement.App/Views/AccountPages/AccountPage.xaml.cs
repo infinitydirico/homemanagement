@@ -28,6 +28,10 @@ namespace HomeManagement.App.Views.AccountPages
 
             modal = new Modal(this);
             BindingContext = viewModel;
+            viewModel.OnSuccess += (s, e) =>
+            {
+
+            };
         }
 
         private void NavigateToAddAccount(object sender, System.EventArgs e)

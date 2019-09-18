@@ -30,9 +30,7 @@ namespace HomeManagement.App.ViewModels
         {
             HandleSafeExecutionAsync(async () =>
             {
-                IsBusy = true;
                 Accounts = await accountManager.LoadAsync();
-                IsBusy = false;
             });
         }
 

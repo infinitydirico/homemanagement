@@ -6,7 +6,7 @@
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              BackgroundColor="{StaticResource TabBarColor}"
-             Icon="dashboard.png">
+             Icon="settings.png">
     <ContentPage.Behaviors>
         <Beh:TranslationBehavior LanguageKey="Settings" />
     </ContentPage.Behaviors>

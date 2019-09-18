@@ -23,7 +23,7 @@
     </TabbedPage.ToolbarItems>
 
     <mainPages:DashboardPage  />
-    <!--<accountsPages:AccountPage />-->
-    <mainPages:StatisticsPage />
+    <accountsPages:AccountPage />
+    <!--<mainPages:StatisticsPage />-->
     <mainPages:Settings />
 </TabbedPage>

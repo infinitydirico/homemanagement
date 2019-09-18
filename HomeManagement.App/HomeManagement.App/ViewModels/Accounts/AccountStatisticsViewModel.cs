@@ -38,6 +38,8 @@ namespace HomeManagement.App.ViewModels
             await GetCategoriesMetrics();
 
             await GetAccountMetrics();
+
+            OnPropertyChanged(nameof(NoAvaibleStatistics));
         }
 
         private async Task GetAccountMetrics()
