@@ -68,6 +68,7 @@
         public class Messages
         {
             public const string UpdateOnAppearing  = "UpdateOnAppearing";
+            public const string Logout = "Logout";
         }
     }
 }

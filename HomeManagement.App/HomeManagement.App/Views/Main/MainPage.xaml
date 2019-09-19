@@ -18,12 +18,11 @@
     <BindableObject.BindingContext>
         <viewModels:MainViewModel />
     </BindableObject.BindingContext>
-    <TabbedPage.ToolbarItems>
+    <!--<TabbedPage.ToolbarItems>
         <ToolbarItem Icon="exit.png" Command="{Binding LogoutCommand}" />
-    </TabbedPage.ToolbarItems>
+    </TabbedPage.ToolbarItems>-->
 
     <mainPages:DashboardPage  />
     <accountsPages:AccountPage />
-    <!--<mainPages:StatisticsPage />-->
-    <mainPages:Settings />
+    <mainPages:Settings x:Name="settingsPage" />
 </TabbedPage>

@@ -16,14 +16,15 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
+        <ToolbarItem Icon="help.png" Clicked="PopupHelpModal" />
         <ToolbarItem Icon="add.png" Clicked="NavigateToAddAccount" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <Frame Margin="5, 5, 5, 5">            
+        <Frame Margin="5, 5, 5, 5">
             <ListView x:Name="accountsList" ItemsSource="{Binding Accounts}" 
-                      Margin="10,10,10,10" SeparatorVisibility="None"
-                      IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}"
-                      IsRefreshing="{Binding IsBusy}">
+                        Margin="10,10,10,10" SeparatorVisibility="None"
+                        IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}"
+                        IsRefreshing="{Binding IsBusy}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -47,8 +48,8 @@
                                         Clicked="ViewChargesList"/>
                                 <Label VerticalOptions="Center" Text = "{Binding Name}" />
                                 <Label VerticalOptions="Center" Text = "{Binding Balance}" 
-                                       TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" 
-                                       HorizontalOptions="EndAndExpand"/>
+                                        TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" 
+                                        HorizontalOptions="EndAndExpand"/>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>

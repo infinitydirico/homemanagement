@@ -65,7 +65,16 @@
                         <Button Image="red_trash_xs.png" WidthRequest="30" HeightRequest="30"
                                 HorizontalOptions="EndAndExpand" Command="{Binding ClearCacheCommand}" />
                     </StackLayout>
-                </StackLayout>               
+                </StackLayout>
+            </Frame>
+            <Frame Margin="5, 5, 5, 5" VerticalOptions="EndAndExpand">
+                <StackLayout>
+                    <Button Clicked="OnLogoutClicked">
+                        <Button.Behaviors>
+                            <Beh:TranslationBehavior LanguageKey="Logout" />
+                        </Button.Behaviors>
+                    </Button>
+                </StackLayout>
             </Frame>
         </StackLayout>
     </ContentPage.Content>

@@ -19,6 +19,7 @@ namespace HomeManagement.App.ViewModels
         private readonly GenericRepository<Account> accountRepository = new GenericRepository<Account>();
         private readonly GenericRepository<Charge> chargeRepository = new GenericRepository<Charge>();
         private readonly ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
+        private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
 
         AppSettings offlineModeSetting;
         bool offlineModeEnabled;
@@ -27,7 +28,12 @@ namespace HomeManagement.App.ViewModels
         {
             ChangeLanguageCommand = new Command(ChangeLanguage);
             ClearCacheCommand = new Command(ClearCache);
+            LogoutCommand = new Command(Logout);
         }
+
+        public event EventHandler OnLogout;
+
+        public ICommand LogoutCommand { get; } 
 
         public event EventHandler OnClearSuccess;
 
@@ -51,6 +57,13 @@ namespace HomeManagement.App.ViewModels
 
                 SaveCloudSyncSetting();
             }
+        }
+
+        public async void Logout()
+        {
+            await authenticationManager.Logout();
+
+            OnLogout?.Invoke(this, EventArgs.Empty);
         }
 
         public void RefreshCaching()

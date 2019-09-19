@@ -27,16 +27,18 @@ namespace HomeManagement.App.Views.AccountPages
             InitializeComponent();
 
             modal = new Modal(this);
-            BindingContext = viewModel;
-            viewModel.OnSuccess += (s, e) =>
-            {
-
-            };
+            BindingContext = viewModel;            
         }
 
         private void NavigateToAddAccount(object sender, System.EventArgs e)
         {
             Navigation.PushAsync(new AddAccountPage());
+        }
+
+        private async void PopupHelpModal(object sender, EventArgs e)
+        {
+            string message = $"Tap an account once to see the options. {Environment.NewLine}Tap twice to enter.";
+            await modal.Show(message);
         }
 
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)

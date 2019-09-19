@@ -1,7 +1,9 @@
 ﻿using Autofac;
+using HomeManagement.App.Common;
 using HomeManagement.App.Managers;
 using HomeManagement.App.ViewModels;
-
+using HomeManagement.App.Views.Login;
+using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -33,6 +35,11 @@ namespace HomeManagement.App.Views.Main
         {
             ((SettingsViewModel)BindingContext).RefreshCaching();
             base.OnAppearing();
+        }
+
+        private void OnLogoutClicked(object sender, System.EventArgs e)
+        {
+            MessagingCenter.Send(this, Constants.Messages.Logout);
         }
     }
 }
