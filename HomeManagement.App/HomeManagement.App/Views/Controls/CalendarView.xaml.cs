@@ -180,7 +180,7 @@ namespace HomeManagement.App.Views.Controls
                 WidthRequest = 35,
                 HeightRequest = 35,
                 CornerRadius = 360,
-                Image = "arrow_left_xs"
+                Image = "arrow_left_18dp"
             };
             previousButton.Clicked += PreviousButton_Clicked;
 
@@ -199,7 +199,7 @@ namespace HomeManagement.App.Views.Controls
                 WidthRequest = 35,
                 HeightRequest = 35,
                 CornerRadius = 360,
-                Image = "arrow_right_xs"
+                Image = "arrow_right_18dp"
             };
 
             nextButton.Clicked += NextButton_Clicked;

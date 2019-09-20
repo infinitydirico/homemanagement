@@ -5,7 +5,7 @@
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              BackgroundColor="{StaticResource TabBarColor}"
-             Icon="bank.png">
+             Icon="bank_48dp.png">
     <ContentPage.Behaviors>
         <Beh:TranslationBehavior LanguageKey="Accounts" />
     </ContentPage.Behaviors>
@@ -16,8 +16,8 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Icon="help.png" Clicked="PopupHelpModal" />
-        <ToolbarItem Icon="add.png" Clicked="NavigateToAddAccount" />
+        <ToolbarItem Icon="help_48dp.png" Clicked="PopupHelpModal" />
+        <ToolbarItem Icon="add_48dp.png" Clicked="NavigateToAddAccount" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <Frame Margin="5, 5, 5, 5">

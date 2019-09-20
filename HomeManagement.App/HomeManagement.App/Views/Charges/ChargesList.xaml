@@ -13,7 +13,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Icon="add.png" Clicked="OnAddChargeCommand" />
+        <ToolbarItem Icon="add_48dp.png" Clicked="OnAddChargeCommand" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
@@ -60,29 +60,29 @@
             <Frame Margin="5, 5, 5, 5">
                 <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
                     <StackLayout HorizontalOptions="Start">
-                        <Button Image="barchart.png"
+                        <Button Image="chart_36dp.png"
                             VerticalOptions="Center" 
-                            WidthRequest="65" HeightRequest="65"
+                            WidthRequest="55" HeightRequest="55"
                             Clicked="OnViewAccountStatistics"/>
                     </StackLayout>
                     <StackLayout HorizontalOptions="Start">
-                        <Button Image="calendar.png"
+                        <Button Image="calendar_36dp.png"
                             VerticalOptions="Center" 
-                            WidthRequest="65" HeightRequest="65"
+                            WidthRequest="55" HeightRequest="55"
                             Clicked="OnViewChargesOnCalendar"/>
                     </StackLayout>
 
                     <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
                         <StackLayout>
-                            <Button Image="arrow_left.png"
+                            <Button Image="arrow_left_36dp.png"
                             VerticalOptions="Center" Command="{Binding PreviousPageCommand}" IsEnabled="{Binding NotBusy}" 
-                            WidthRequest="65" HeightRequest="65" />
+                            WidthRequest="55" HeightRequest="55" />
                         </StackLayout>
 
                         <StackLayout>
-                            <Button Image="arrow_right.png"
+                            <Button Image="arrow_right_36dp.png"
                             VerticalOptions="Center" Command="{Binding NextPageCommand}" IsEnabled="{Binding NotBusy}"
-                            WidthRequest="65" HeightRequest="65" />
+                            WidthRequest="55" HeightRequest="55" />
                         </StackLayout>
                     </StackLayout>
                 </StackLayout>

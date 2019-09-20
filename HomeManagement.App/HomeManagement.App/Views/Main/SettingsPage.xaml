@@ -6,7 +6,7 @@
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              BackgroundColor="{StaticResource TabBarColor}"
-             Icon="settings.png">
+             Icon="settings_48dp.png">
     <ContentPage.Behaviors>
         <Beh:TranslationBehavior LanguageKey="Settings" />
     </ContentPage.Behaviors>
@@ -40,7 +40,7 @@
                                 <Beh:TranslationBehavior LanguageKey="Language" />
                             </Label.Behaviors>
                         </Label>
-                        <Button Command="{Binding ChangeLanguageCommand}" Image="language_xs.png" 
+                        <Button Command="{Binding ChangeLanguageCommand}" Image="language_18dp.png" 
                             WidthRequest="30" HeightRequest="30" HorizontalOptions="EndAndExpand" />
                     </StackLayout>
                 </StackLayout>
@@ -62,7 +62,7 @@
                         </Label>
                         <Switch x:Name="enableCloudSync" HorizontalOptions="EndAndExpand"
                                     IsToggled="{Binding OfflineModeEnabled}" />
-                        <Button Image="red_trash_xs.png" WidthRequest="30" HeightRequest="30"
+                        <Button Image="red_trash_18dp.png" WidthRequest="30" HeightRequest="30"
                                 HorizontalOptions="EndAndExpand" Command="{Binding ClearCacheCommand}" />
                     </StackLayout>
                 </StackLayout>
