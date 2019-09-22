@@ -13,7 +13,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Icon="add_48dp.png" Clicked="OnAddChargeCommand" />
+        <ToolbarItem Icon="add_green_48dp.png" Clicked="OnAddChargeCommand" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
@@ -35,10 +35,10 @@
                                                 <SwipeGestureRecognizer Direction="Up" Swiped="Swiped" />
                                                 <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                                             </StackLayout.GestureRecognizers>
-                                            <Button Image="red_trash_xs.png" VerticalOptions="Start"
+                                            <Button Image="red_trash_18dp.png" VerticalOptions="Start"
                                                     WidthRequest="30" HeightRequest="30" IsVisible="False"
                                                     BackgroundColor="{StaticResource ControlLight}" Clicked="Delete" />
-                                            <Button Image="edit_xs.png" VerticalOptions="Start" 
+                                            <Button Image="edit_18dp.png" VerticalOptions="Start" 
                                                     WidthRequest="30" HeightRequest="30" IsVisible="False" 
                                                     BackgroundColor="{StaticResource ControlLight}" Clicked="Edit"/>
                                             <StackLayout Orientation="Vertical" HorizontalOptions="StartAndExpand">

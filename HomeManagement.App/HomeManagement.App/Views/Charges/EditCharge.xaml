@@ -13,7 +13,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Icon="check_green.png" Command="{Binding UpdateChargeCommand}" />
+        <ToolbarItem Icon="check_48dp.png" Command="{Binding UpdateChargeCommand}" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
@@ -29,20 +29,20 @@
             </StackLayout>
 
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
-                <Image Source="money.png" HorizontalOptions="Start" HeightRequest="50" />
+                <Image Source="money_36dp.png" HorizontalOptions="Start" HeightRequest="50" />
 
                 <Entry WidthRequest="100" Keyboard="Numeric"  Text="{Binding Charge.Price}" />
 
             </StackLayout>
 
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
-                <Image Source="date.png" HorizontalOptions="Start" HeightRequest="50" />
+                <Image Source="date_36dp.png" HorizontalOptions="Start" HeightRequest="50" />
 
                 <DatePicker Date="{Binding Charge.Date}" />
             </StackLayout>
 
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
-                <Image Source="label.png" HorizontalOptions="Start" HeightRequest="50" />
+                <Image Source="label_48dp.png" HorizontalOptions="Start" HeightRequest="50" />
 
                 <Picker WidthRequest="150"  ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" />
 

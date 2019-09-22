@@ -16,8 +16,8 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Icon="help_48dp.png" Clicked="PopupHelpModal" />
-        <ToolbarItem Icon="add_48dp.png" Clicked="NavigateToAddAccount" />
+        <ToolbarItem Icon="help_purple_48dp.png" Clicked="PopupHelpModal" />
+        <ToolbarItem Icon="add_green_48dp.png" Clicked="NavigateToAddAccount" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <Frame Margin="5, 5, 5, 5">
@@ -37,13 +37,13 @@
                                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                                     <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="DoubleTaped" />
                                 </StackLayout.GestureRecognizers>
-                                <Button Image="red_trash_xs.png" VerticalOptions="Center"
+                                <Button Image="red_trash_18dp.png" VerticalOptions="Center"
                                         WidthRequest="30" HeightRequest="30" IsVisible="False"
                                         Clicked="Delete" />
-                                <Button Image="edit_xs.png" VerticalOptions="Center"
+                                <Button Image="edit_18dp.png" VerticalOptions="Center"
                                         WidthRequest="30" HeightRequest="30" IsVisible="False"
                                         Clicked="Edit" />
-                                <Button Image="charge_list_xs.png" VerticalOptions="Center"
+                                <Button Image="list_18dp.png" VerticalOptions="Center"
                                         WidthRequest="30" HeightRequest="30" IsVisible="False"
                                         Clicked="ViewChargesList"/>
                                 <Label VerticalOptions="Center" Text = "{Binding Name}" />

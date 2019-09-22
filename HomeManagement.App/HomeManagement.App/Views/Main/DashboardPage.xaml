@@ -43,8 +43,8 @@
                                 <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
                                     <Label Text="{Binding IncomePercentage}" TextColor="{Binding IncomePercentage, Converter={StaticResource PercentageColor}}" />
 
-                                    <Image Source="perc_down.png" IsVisible="{Binding IncomePercentage, Converter={StaticResource LessThan}}" HeightRequest="25" />
-                                    <Image Source="perc_up.png" IsVisible="{Binding IncomePercentage, Converter={StaticResource GreaterThan}}" HeightRequest="25"/>
+                                    <Image Source="trending_down_18dp.png" IsVisible="{Binding IncomePercentage, Converter={StaticResource LessThan}}" HeightRequest="25" />
+                                    <Image Source="trending_up_18dp.png" IsVisible="{Binding IncomePercentage, Converter={StaticResource GreaterThan}}" />
                                 </StackLayout>
                             </StackLayout>
                         </StackLayout>
@@ -62,8 +62,8 @@
                                 <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
                                     <Label Text="{Binding OutcomePercentage}" TextColor="{Binding OutcomePercentage, Converter={StaticResource PercentageColor}}" />
 
-                                    <Image Source="perc_down.png" IsVisible="{Binding OutcomePercentage, Converter={StaticResource LessThan}}" HeightRequest="25" />
-                                    <Image Source="perc_up.png" IsVisible="{Binding OutcomePercentage, Converter={StaticResource GreaterThan}}" HeightRequest="25"/>
+                                    <Image Source="trending_down_18dp.png" IsVisible="{Binding OutcomePercentage, Converter={StaticResource LessThan}}" HeightRequest="25" />
+                                    <Image Source="trending_up_18dp.png" IsVisible="{Binding OutcomePercentage, Converter={StaticResource GreaterThan}}" HeightRequest="25"/>
                                 </StackLayout>
                             </StackLayout>
                         </StackLayout>

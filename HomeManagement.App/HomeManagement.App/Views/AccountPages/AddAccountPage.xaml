@@ -10,7 +10,7 @@
         <viewModels:AddAccountViewModel />
     </ContentPage.BindingContext>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Icon="check_green.png" Command="{Binding AddAccountCommand}" />
+        <ToolbarItem Icon="check_48dp.png" Command="{Binding AddAccountCommand}" />
     </ContentPage.ToolbarItems>
     <ContentPage.Resources>
         <ResourceDictionary>

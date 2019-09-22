@@ -32,7 +32,7 @@
         </StackLayout>
 
         <StackLayout Orientation="Horizontal">
-            <Image Source="label.png" HorizontalOptions="Start" HeightRequest="30" />
+            <Image Source="label_48dp.png" HorizontalOptions="Start" HeightRequest="30" />
 
             <Picker HorizontalOptions="FillAndExpand"  BackgroundColor="{StaticResource LayoutDark}" ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" />
         </StackLayout>

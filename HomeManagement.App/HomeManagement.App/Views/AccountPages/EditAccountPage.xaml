@@ -5,7 +5,7 @@
              BackgroundColor="{StaticResource LayoutDark}"
              x:Class="HomeManagement.App.Views.AccountPages.EditAccountPage">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Icon="check_green.png" Command="{Binding FinishEditAccountCommand}" />
+        <ToolbarItem Icon="check_48dp.png" Command="{Binding FinishEditAccountCommand}" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
