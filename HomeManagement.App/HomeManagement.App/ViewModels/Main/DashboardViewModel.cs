@@ -56,7 +56,7 @@ namespace HomeManagement.App.ViewModels
                            Series = b.BalanceEvolution.Select(x => new SeriesValue
                            {
                                Value = x,
-                               Label = new DateTime(DateTime.Now.Year, b.BalanceEvolution.IndexOf(x) + 1, 1).ToString("MMMM")
+                               Label = new DateTime(DateTime.Now.Year, b.BalanceEvolution.IndexOf(x) + 1, 1).ToString("MMM")
                            }).ToList()
                        });
 

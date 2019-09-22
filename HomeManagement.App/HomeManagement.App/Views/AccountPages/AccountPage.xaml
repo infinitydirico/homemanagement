@@ -30,10 +30,6 @@
                         <ViewCell>
                             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
                                 <StackLayout.GestureRecognizers>
-                                    <SwipeGestureRecognizer Direction="Right" Swiped="Swiped" />
-                                    <SwipeGestureRecognizer Direction="Left" Swiped="Swiped" />
-                                    <SwipeGestureRecognizer Direction="Down" Swiped="Swiped" />
-                                    <SwipeGestureRecognizer Direction="Up" Swiped="Swiped" />
                                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                                     <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="DoubleTaped" />
                                 </StackLayout.GestureRecognizers>
