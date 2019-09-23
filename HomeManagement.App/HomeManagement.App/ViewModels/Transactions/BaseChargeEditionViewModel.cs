@@ -72,10 +72,10 @@ namespace HomeManagement.App.ViewModels
             }
         }
 
-        public List<ChargeType> ChargeTypes => new List<ChargeType>
+        public IEnumerable<ChargeType> ChargeTypes => new List<ChargeType>
         {
-            Data.Entities.ChargeType.Expense,
-            Data.Entities.ChargeType.Income
+                ChargeType.Expense,
+                ChargeType.Income
         };
 
         public ChargeType SelectedChargeType
@@ -89,7 +89,7 @@ namespace HomeManagement.App.ViewModels
             }
         }
 
-        protected override async Task InitializeAsync() => await LoadCategories();        
+        protected override async Task InitializeAsync() => await LoadCategories();
 
         protected async Task LoadCategories()
         {

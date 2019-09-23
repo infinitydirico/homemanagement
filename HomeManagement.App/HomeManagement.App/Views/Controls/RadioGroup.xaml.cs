@@ -1,0 +1,100 @@
+﻿using HomeManagement.App.Data.Entities;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+
+using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
+
+namespace HomeManagement.App.Views.Controls
+{
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class RadioGroup : StackLayout
+    {
+        private const string radioButtonChecked = "radio_button_checked_24dp.png";
+        private const string radioButtonUnchecked = "radio_button_unchecked_24dp.png";
+
+        public RadioGroup()
+        {
+            InitializeComponent();
+        }
+
+        public static readonly BindableProperty OptionsProperty =
+            BindableProperty.Create("Options", typeof(IEnumerable<ChargeType>), typeof(RadioGroup),
+                                    defaultValue: null,
+                                    propertyChanged: OptionsChanged);
+
+        public IEnumerable<ChargeType> Options
+        {
+            get => (IEnumerable<ChargeType>)GetValue(OptionsProperty);
+            set
+            {
+                SetValue(OptionsProperty, value);
+            }
+        }
+
+        public static readonly BindableProperty SelectedItemProperty =
+            BindableProperty.Create("SelectedItem", typeof(ChargeType), typeof(RadioGroup),
+                                    defaultValue: null,
+                                    defaultBindingMode: BindingMode.TwoWay,
+                                    propertyChanged: SelectedItemChanged);
+
+        public ChargeType SelectedItem
+        {
+            get => (ChargeType)GetValue(SelectedItemProperty);
+            set
+            {
+                SetValue(SelectedItemProperty, value);
+            }
+        }
+
+        private static void OptionsChanged(BindableObject bindale, object oldValue, object newValue)
+        {
+            var self = bindale as RadioGroup;
+            var options = self.Options;
+            if(options != null && options.Count() > 0)
+            {
+                foreach (var option in options)
+                {
+                    var button = new Button
+                    {
+                        Image = radioButtonUnchecked,
+                        Text = option.ToString()
+                    };
+
+                    button.Clicked += self.OptionChanged;
+
+                    self.Children.Add(button);
+                }
+            }
+        }
+
+        private void OptionChanged(object sender, EventArgs e)
+        {
+            foreach (Button button in Children)
+            {
+                if (button.Equals(sender))
+                {
+                    button.Image = radioButtonChecked;
+                    var selectedItem = Options.First(x => x.ToString().Equals(button.Text));
+                    SelectedItem = selectedItem;
+                }
+                else
+                {
+                    button.Image = radioButtonUnchecked;
+                }
+            }
+        }
+
+        private static void SelectedItemChanged(BindableObject bindale, object oldValue, object newValue)
+        {
+            var self = bindale as RadioGroup;
+
+            if (self.Children.Count.Equals(0)) return;
+
+            var optionToSetSelected = self.Children.First(x => (x as Button).Text.Equals(newValue.ToString())) as Button;
+            optionToSetSelected.Image = radioButtonChecked;
+        }
+    }
+}

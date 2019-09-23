@@ -104,9 +104,14 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="add.png" />
-    <Content Include="arrow_left.png" />
-    <Content Include="arrow_right.png" />
+    <Content Include="add_48dp.png" />
+    <Content Include="add_green_48dp.png" />
+    <Content Include="arrow_left_18dp.png" />
+    <Content Include="arrow_left_24dp.png" />
+    <Content Include="arrow_left_36dp.png" />
+    <Content Include="arrow_right_18dp.png" />
+    <Content Include="arrow_right_24dp.png" />
+    <Content Include="arrow_right_36dp.png" />
     <Content Include="Assets\icon.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-200.png" />
@@ -135,32 +140,37 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
     <Content Include="Assets\xamarin_logo.png" />
-    <Content Include="barchart.png" />
-    <Content Include="bar_chart.png" />
-    <Content Include="check.png" />
-    <Content Include="check_green.png" />
-    <Content Include="check_green_circle.png" />
-    <Content Include="close.png" />
-    <Content Include="dashboard.png" />
-    <Content Include="date.png" />
-    <Content Include="edit.png" />
-    <Content Include="english_flag.png" />
-    <Content Include="exit.png" />
+    <Content Include="bank_48dp.png" />
+    <Content Include="calendar_36dp.png" />
+    <Content Include="chart_24dp.png" />
+    <Content Include="chart_36dp.png" />
+    <Content Include="check_48dp.png" />
+    <Content Include="close_48dp.png" />
+    <Content Include="dashboard_48dp.png" />
+    <Content Include="date_36dp.png" />
+    <Content Include="edit_18dp.png" />
+    <Content Include="exit_48dp.png" />
+    <Content Include="help_48dp.png" />
+    <Content Include="help_purple_48dp.png" />
     <Content Include="HomeManagement.png" />
     <Content Include="HomeManagement_launcher.png" />
-    <Content Include="label.png" />
-    <Content Include="login.png" />
-    <Content Include="money.png" />
-    <Content Include="money_green.png" />
-    <Content Include="money_red.png" />
-    <Content Include="perc_down.png" />
-    <Content Include="perc_up.png" />
+    <Content Include="icon.png" />
+    <Content Include="label_24dp.png" />
+    <Content Include="label_36dp.png" />
+    <Content Include="label_48dp.png" />
+    <Content Include="language_18dp.png" />
+    <Content Include="list_18dp.png" />
+    <Content Include="list_48dp.png" />
+    <Content Include="money_36dp.png" />
+    <Content Include="money_green_36dp.png" />
+    <Content Include="money_red_36dp.png" />
     <Content Include="Properties\Default.rd.xml" />
-    <Content Include="red_trash.png" />
-    <Content Include="settings.png" />
+    <Content Include="red_trash_18dp.png" />
+    <Content Include="settings_48dp.png" />
     <Content Include="SmallTile.scale-100.png" />
-    <Content Include="spanish_flag.png" />
-    <Content Include="trash.png" />
+    <Content Include="trash_18dp.png" />
+    <Content Include="trending_down_18dp.png" />
+    <Content Include="trending_up_18dp.png" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

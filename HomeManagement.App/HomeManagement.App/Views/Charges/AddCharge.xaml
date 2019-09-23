@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HomeManagement.App.Views.Charges.AddCharge"
              BackgroundColor="{StaticResource LayoutDark}"
+             xmlns:Controls="clr-namespace:HomeManagement.App.Views.Controls"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters">
     <ContentPage.Resources>
@@ -54,13 +55,14 @@
 
             </StackLayout>
 
-            <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
+            <StackLayout Orientation="Vertical" Padding="20,20,20,20">
                 <Label VerticalOptions="Center">
                     <Label.Behaviors>
                         <Beh:TranslationBehavior LanguageKey="TransactionType" />
                     </Label.Behaviors>
                 </Label>
-                <Picker WidthRequest="150"  ItemsSource="{Binding ChargeTypes}" SelectedItem="{Binding SelectedChargeType}" />
+                <Controls:RadioGroup Options="{Binding ChargeTypes}" SelectedItem="{Binding SelectedChargeType}" 
+                                     HorizontalOptions="Start"/>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>
