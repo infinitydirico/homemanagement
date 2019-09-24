@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<StackLayout xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HomeManagement.App.Views.Controls.Checkbox">
+    <Button x:Name="checkboxUnchecked" IsVisible="True" Image="check_box_unchecked_24dp.png" 
+            Clicked="Check" BackgroundColor="Transparent" WidthRequest="24" HeightRequest="24" />
+    <Button x:Name="checkboxChecked" IsVisible="False" Image="check_box_checked_24dp.png" 
+            Clicked="Uncheck" BackgroundColor="Transparent" WidthRequest="24" HeightRequest="24" />
+</StackLayout>

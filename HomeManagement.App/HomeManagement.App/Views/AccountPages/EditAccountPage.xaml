@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              BackgroundColor="{StaticResource LayoutDark}"
+             xmlns:Controls="clr-namespace:HomeManagement.App.Views.Controls"
              x:Class="HomeManagement.App.Views.AccountPages.EditAccountPage">
     <ContentPage.ToolbarItems>
         <ToolbarItem Icon="check_48dp.png" Command="{Binding FinishEditAccountCommand}" />
@@ -47,13 +48,12 @@
             </StackLayout>
 
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
+                <Controls:Checkbox Checked="{Binding MeasureAccount}" VerticalOptions="Center"  HorizontalOptions="Start"/>
                 <Label FontSize="Large" VerticalOptions="Center">
                     <Label.Behaviors>
                         <Beh:TranslationBehavior LanguageKey="Measurable" />
                     </Label.Behaviors>
                 </Label>
-
-                <Switch x:Name="accountMeasurableSwitch" IsToggled="{Binding MeasureAccount}" />
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

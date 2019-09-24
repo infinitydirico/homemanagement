@@ -84,6 +84,16 @@ namespace HomeManagement.App.ViewModels
             }
         }
 
+        public bool MeasureAccount
+        {
+            get => Account.Measurable;
+            set
+            {
+                Account.Measurable = value;
+                OnPropertyChanged();
+            }
+        }
+
         protected override async Task InitializeAsync()
         {
             Currencies = (from c in await currencyService.GetCurrencies()

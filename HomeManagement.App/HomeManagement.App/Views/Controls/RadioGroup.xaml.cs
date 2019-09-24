@@ -1,7 +1,6 @@
 ﻿using HomeManagement.App.Data.Entities;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 using Xamarin.Forms;
@@ -60,11 +59,12 @@ namespace HomeManagement.App.Views.Controls
                     var button = new Button
                     {
                         Image = radioButtonUnchecked,
+                        BackgroundColor = Color.Transparent,
                         Text = option.ToString()
                     };
 
                     button.Clicked += self.OptionChanged;
-
+                    
                     self.Children.Add(button);
                 }
             }

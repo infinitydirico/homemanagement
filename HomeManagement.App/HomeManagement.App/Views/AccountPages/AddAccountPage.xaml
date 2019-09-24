@@ -4,6 +4,7 @@
              xmlns:viewModels="clr-namespace:HomeManagement.App.ViewModels"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
+             xmlns:Controls="clr-namespace:HomeManagement.App.Views.Controls"
              BackgroundColor="{StaticResource LayoutDark}"
              x:Class="HomeManagement.App.Views.AccountPages.AddAccountPage">
     <ContentPage.BindingContext>
@@ -54,6 +55,15 @@
 
                 <Picker WidthRequest="150"  ItemsSource="{Binding AccountTypes}" 
                         SelectedItem="{Binding SelectedAccountType}" VerticalOptions="Center"/>
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
+                <Controls:Checkbox Checked="{Binding MeasureAccount}" VerticalOptions="Center"  HorizontalOptions="Start"/>
+                <Label FontSize="Large" VerticalOptions="Center">
+                    <Label.Behaviors>
+                        <Beh:TranslationBehavior LanguageKey="Measurable" />
+                    </Label.Behaviors>
+                </Label>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>
