@@ -27,15 +27,11 @@ namespace HomeManagement.App.Views.Controls
 
         private void Check(object sender, EventArgs e)
         {
-            checkboxChecked.IsVisible = true;
-            checkboxUnchecked.IsVisible = false;
             Checked = true;
         }
 
         private void Uncheck(object sender, EventArgs e)
         {
-            checkboxChecked.IsVisible = false;
-            checkboxUnchecked.IsVisible = true;
             Checked = false;
         }
 
@@ -43,14 +39,8 @@ namespace HomeManagement.App.Views.Controls
         {
             var self = sender as Checkbox;
             var value = (bool)newValue;
-            if (value)
-            {
-                self.Check(self, EventArgs.Empty);
-            }
-            else
-            {
-                self.Uncheck(self, EventArgs.Empty);
-            }
+            self.checkboxChecked.IsVisible = value;
+            self.checkboxUnchecked.IsVisible = !value;
         }
     }
 }
