@@ -67,6 +67,11 @@
                     </StackLayout>
                 </StackLayout>
             </Frame>
+            <Frame x:Name="logFileFrame" IsVisible="False" Margin="5, 5, 5, 5">
+                <StackLayout>
+                    <Button Clicked="ViewLogFile" Text="View Log File" />
+                </StackLayout>
+            </Frame>
             <Frame Margin="5, 5, 5, 5" VerticalOptions="EndAndExpand">
                 <StackLayout>
                     <Button Clicked="OnLogoutClicked">

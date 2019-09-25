@@ -29,6 +29,10 @@ namespace HomeManagement.App.Views.Main
             };
 
             Title = localizationManager.Translate("Settings");
+
+#if DEBUG
+            logFileFrame.IsVisible = true;
+#endif
         }
 
         protected override void OnAppearing()
@@ -40,6 +44,11 @@ namespace HomeManagement.App.Views.Main
         private void OnLogoutClicked(object sender, System.EventArgs e)
         {
             MessagingCenter.Send(this, Constants.Messages.Logout);
+        }
+
+        private void ViewLogFile(object sender, System.EventArgs e)
+        {
+            Navigation.PushAsync(new LogFilePage());
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Autofac;
 using HomeManagement.App.Managers;
+using HomeManagement.App.Services;
 using HomeManagement.App.ViewModels;
 using HomeManagement.App.Views.Statistics;
+using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -21,11 +23,19 @@ namespace HomeManagement.App.Views.Main
 
             dashboardViewModel.OnInitializationError += DashboardViewModel_OnError;
 
+            Logger.LogMessage("some message");
+
             dashboardViewModel.OnBalancesChanged += (s, e) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     var index = 2;
+                    var categoriesChart = grid.Children.Last();
+                    if (!categoriesChart.IsVisible)
+                    {
+                        grid.Children.Remove(categoriesChart);
+                        index--;
+                    }
                     foreach (var evolution in dashboardViewModel.AccountsEvolutions)
                     {
                         var accountEvolution = new AccountEvolutionFrame
