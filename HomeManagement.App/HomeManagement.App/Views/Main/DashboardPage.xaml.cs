@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using HomeManagement.App.Managers;
-using HomeManagement.App.Services;
 using HomeManagement.App.ViewModels;
 using HomeManagement.App.Views.Statistics;
 using System.Linq;
@@ -22,8 +21,6 @@ namespace HomeManagement.App.Views.Main
             BindingContext = dashboardViewModel;
 
             dashboardViewModel.OnInitializationError += DashboardViewModel_OnError;
-
-            Logger.LogMessage("some message");
 
             dashboardViewModel.OnBalancesChanged += (s, e) =>
             {

@@ -22,7 +22,7 @@ namespace HomeManagement.App.Views.Controls
         public static readonly BindableProperty OptionsProperty =
             BindableProperty.Create("Options", typeof(IEnumerable<ChargeType>), typeof(RadioGroup),
                                     defaultValue: null,
-                                    propertyChanged: OptionsChanged);
+                                    propertyChanged: LoadOptions);
 
         public IEnumerable<ChargeType> Options
         {
@@ -48,7 +48,7 @@ namespace HomeManagement.App.Views.Controls
             }
         }
 
-        private static void OptionsChanged(BindableObject bindale, object oldValue, object newValue)
+        private static void LoadOptions(BindableObject bindale, object oldValue, object newValue)
         {
             var self = bindale as RadioGroup;
             var options = self.Options;
@@ -58,7 +58,7 @@ namespace HomeManagement.App.Views.Controls
                 {
                     var button = new Button
                     {
-                        Image = radioButtonUnchecked,
+                        Image = self.SelectedItem.Equals(option) ? radioButtonChecked : radioButtonUnchecked,
                         BackgroundColor = Color.Transparent,
                         Text = option.ToString()
                     };
@@ -94,7 +94,7 @@ namespace HomeManagement.App.Views.Controls
             if (self.Children.Count.Equals(0)) return;
 
             var optionToSetSelected = self.Children.First(x => (x as Button).Text.Equals(newValue.ToString())) as Button;
-            optionToSetSelected.Image = radioButtonChecked;
+            self.OptionChanged(optionToSetSelected, EventArgs.Empty);
         }
     }
 }

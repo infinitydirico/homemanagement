@@ -2,6 +2,7 @@ using Autofac;
 using HomeManagement.App.Data;
 using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
+using HomeManagement.App.Services;
 using HomeManagement.App.Services.Rest;
 using HomeManagement.App.Views.Login;
 using HomeManagement.App.Views.Main;
@@ -57,6 +58,8 @@ namespace HomeManagement.App
                     MainPage.Navigation.PushAsync(p);
                 }
             };
+
+            AppDomain.CurrentDomain.UnhandledException += (s, e) => Logger.LogException(e.ExceptionObject as Exception);
         }
 
         protected override void OnStart()

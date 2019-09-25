@@ -1,6 +1,4 @@
-﻿using Autofac;
-using HomeManagement.App.Common;
-using HomeManagement.Core.Caching;
+﻿using HomeManagement.App.Common;
 using HomeManagement.Models;
 using System;
 using System.Threading.Tasks;
@@ -28,6 +26,7 @@ namespace HomeManagement.App.Services.Rest
             }
             catch (Exception ex)
             {
+                Logger.LogException(ex);
                 throw;
             }
         }

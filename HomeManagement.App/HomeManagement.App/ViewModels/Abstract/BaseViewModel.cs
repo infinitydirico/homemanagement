@@ -1,4 +1,5 @@
 ﻿using HomeManagement.App.Common;
+using HomeManagement.App.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -57,6 +58,7 @@ namespace HomeManagement.App.ViewModels
                 }
                 catch (Exception ex)
                 {
+                    Logger.LogException(ex);
                     OnInitializationError?.Invoke(this, EventArgs.Empty);
                 }
             });
@@ -81,10 +83,12 @@ namespace HomeManagement.App.ViewModels
             }
             catch (AppException aex)
             {
+                Logger.LogException(aex);
                 OnError?.Invoke(this, new ErrorEventArgs(aex.Message));
             }
             catch (Exception ex)
             {
+                Logger.LogException(ex);
                 OnError?.Invoke(this, new ErrorEventArgs("An error ocurred."));
             }
             IsBusy = false;
@@ -100,10 +104,12 @@ namespace HomeManagement.App.ViewModels
             }
             catch(AppException aex)
             {
+                Logger.LogException(aex);
                 OnError?.Invoke(this, new ErrorEventArgs(aex.Message));
             }
             catch (Exception ex)
             {
+                Logger.LogException(ex);
                 OnError?.Invoke(this, new ErrorEventArgs("An error ocurred."));
             }
             IsBusy = false;

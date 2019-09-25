@@ -2,8 +2,6 @@
 using HomeManagement.App.Common;
 using HomeManagement.App.Managers;
 using HomeManagement.App.ViewModels;
-using HomeManagement.App.Views.Login;
-using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

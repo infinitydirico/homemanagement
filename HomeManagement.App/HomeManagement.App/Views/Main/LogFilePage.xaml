@@ -2,7 +2,11 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HomeManagement.App.Views.Main.LogFilePage"
-             BackgroundColor="{StaticResource TabBarColor}">
+             BackgroundColor="{StaticResource TabBarColor}"
+             Title="Logs">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Icon="red_trash_18dp.png" Clicked="ClearFiles" />
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
             <Label x:Name="logtext" />
