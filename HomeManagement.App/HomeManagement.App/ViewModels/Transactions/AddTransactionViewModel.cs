@@ -5,13 +5,13 @@ using Xamarin.Forms;
 
 namespace HomeManagement.App.ViewModels
 {
-    public class AddChargeViewModel : BaseChargeEditionViewModel
+    public class AddTransactionViewModel : BaseTransactionEditionViewModel
     {
-        public AddChargeViewModel()
+        public AddTransactionViewModel()
         {
         }
 
-        public AddChargeViewModel(Account account) : base(account)
+        public AddTransactionViewModel(Account account) : base(account)
         {
             AddChargeCommand = new Command(AddCharge);
             SelectedChargeType = ChargeType.Expense;

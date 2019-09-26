@@ -16,13 +16,13 @@ namespace HomeManagement.App.Views.Charges
     {
         ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
         Account account;
-        ChargesListViewModel viewModel;
+        TransactionListViewModel viewModel;
         Modal modal;
 
         public ChargesList(Account account)
         {
             this.account = account;
-            viewModel = new ChargesListViewModel(account);
+            viewModel = new TransactionListViewModel(account);
             modal = new Modal(this);
 
             viewModel.OnError += ViewModel_OnError;

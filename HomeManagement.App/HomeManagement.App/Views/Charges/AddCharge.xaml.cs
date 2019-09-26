@@ -12,7 +12,7 @@ namespace HomeManagement.App.Views.Charges
 	public partial class AddCharge : ContentPage
 	{
         private Account account;
-        private AddChargeViewModel viewModel;
+        private AddTransactionViewModel viewModel;
         ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
 
         private AddCharge()
@@ -26,7 +26,7 @@ namespace HomeManagement.App.Views.Charges
         {
             this.account = account;
 
-            viewModel = new AddChargeViewModel(account);
+            viewModel = new AddTransactionViewModel(account);
 
             BindingContext = viewModel;
 

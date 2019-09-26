@@ -10,7 +10,7 @@ using Xamarin.Forms;
 
 namespace HomeManagement.App.ViewModels
 {
-    public class BaseChargeEditionViewModel : BaseViewModel
+    public class BaseTransactionEditionViewModel : BaseViewModel
     {
         protected Charge charge = new Charge { Date = DateTime.Now };
         protected Account account;
@@ -21,7 +21,7 @@ namespace HomeManagement.App.ViewModels
         protected IEnumerable<Category> categories;
         protected ChargeType selectedChargeType;
 
-        public BaseChargeEditionViewModel()
+        public BaseTransactionEditionViewModel()
         {
             categoryManager = App._container.Resolve<ICategoryManager>();
             chargeServiceClient = App._container.Resolve<IChargeServiceClient>();
@@ -29,7 +29,7 @@ namespace HomeManagement.App.ViewModels
             CancelCommand = new Command(Cancel);
         }
 
-        public BaseChargeEditionViewModel(Account account) : this()
+        public BaseTransactionEditionViewModel(Account account) : this()
         {
             this.account = account;
             charge.AccountId = account.Id;

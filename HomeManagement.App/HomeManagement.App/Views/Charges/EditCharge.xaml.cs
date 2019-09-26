@@ -25,7 +25,7 @@ namespace HomeManagement.App.Views.Charges
         public EditCharge(Account account, Charge charge) : this()
         {
             this.account = account;
-            var viewModel = new EditChargeViewModel(account, charge);
+            var viewModel = new EditTransactionViewModel(account, charge);
             BindingContext = viewModel;
 
             viewModel.OnChargeUpdated += ViewModel_OnChargeUpdated;

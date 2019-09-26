@@ -8,14 +8,14 @@ using Xamarin.Forms;
 
 namespace HomeManagement.App.ViewModels
 {
-    public class ChargesListViewModel : BaseViewModel
+    public class TransactionListViewModel : BaseViewModel
     {
         private readonly IChargeManager chargeManager = App._container.Resolve<IChargeManager>();
         ObservableCollection<Charge> charges;
         Account account;
         Charge selectedCharge;
 
-        public ChargesListViewModel(Account account)
+        public TransactionListViewModel(Account account)
         {
             this.account = account;
 

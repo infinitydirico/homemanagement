@@ -7,9 +7,9 @@ using Xamarin.Forms;
 
 namespace HomeManagement.App.ViewModels
 {
-    public class EditChargeViewModel : BaseChargeEditionViewModel
+    public class EditTransactionViewModel : BaseTransactionEditionViewModel
     {
-        public EditChargeViewModel(Account account, Charge charge) : base(account)
+        public EditTransactionViewModel(Account account, Charge charge) : base(account)
         {
             Charge = charge;
 
