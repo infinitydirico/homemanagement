@@ -14,7 +14,7 @@ namespace HomeManagement.App.ViewModels
         public AddTransactionViewModel(Account account) : base(account)
         {
             AddTransactionCommand = new Command(AddTransaction);
-            SelectedTransactionType = ChargeType.Expense;
+            SelectedTransactionType = TransactionType.Expense;
         }
 
         public ICommand AddTransactionCommand { get; }
@@ -25,7 +25,7 @@ namespace HomeManagement.App.ViewModels
         {
             if (HasInvalidValues()) return;
 
-            transactionManager.AddChargeAsync(Transaction);
+            transactionManager.AddTransactionAsync(Transaction);
 
             OnAdded.Invoke(this, EventArgs.Empty);
         }

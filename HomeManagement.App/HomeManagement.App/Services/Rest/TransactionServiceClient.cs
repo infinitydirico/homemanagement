@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 
 namespace HomeManagement.App.Services.Rest
 {
-    public interface IChargeServiceClient
+    public interface ITransactionServiceClient
     {
         Task<ChargePageModel> Page(ChargePageModel dto);
 
         Task Delete(int id);
 
-        Task Post(Charge charge);
+        Task Post(ChargeModel charge);
 
-        Task Put(Charge charge);
+        Task Put(ChargeModel charge);
     }
 
-    public class ChargeServiceClient : IChargeServiceClient
+    public class TransactionServiceClient : ITransactionServiceClient
     {
         public async Task Delete(int id)
         {
@@ -35,7 +35,7 @@ namespace HomeManagement.App.Services.Rest
                 .ReadContent<ChargePageModel>();
         }
 
-        public async Task Post(Charge charge)
+        public async Task Post(ChargeModel charge)
         {
             var response = await RestClientFactory
                 .CreateAuthenticatedClient()
@@ -44,7 +44,7 @@ namespace HomeManagement.App.Services.Rest
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task Put(Charge charge)
+        public async Task Put(ChargeModel charge)
         {
             var response = await RestClientFactory
                 .CreateAuthenticatedClient()

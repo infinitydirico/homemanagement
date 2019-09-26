@@ -10,10 +10,10 @@ namespace HomeManagement.App.ViewModels
 {
     public class TransactionListViewModel : BaseViewModel
     {
-        private readonly IChargeManager transactionManager = App._container.Resolve<IChargeManager>();
-        ObservableCollection<Charge> transactions;
+        private readonly ITransactionManager transactionManager = App._container.Resolve<ITransactionManager>();
+        ObservableCollection<Transaction> transactions;
         Account account;
-        Charge selectedTransaction;
+        Transaction selectedTransaction;
 
         public TransactionListViewModel(Account account)
         {
@@ -21,10 +21,10 @@ namespace HomeManagement.App.ViewModels
 
             NextPageCommand = new Command(async () => await NextPage());
             PreviousPageCommand = new Command(async () => await PreviousPage());
-            DeleteCommand = new Command<Charge>(async (charge) => await DeleteAsync(charge));
+            DeleteCommand = new Command<Transaction>(async (charge) => await DeleteAsync(charge));
         }
 
-        public ObservableCollection<Charge> Transactions
+        public ObservableCollection<Transaction> Transactions
         {
             get => transactions;
             set
@@ -40,7 +40,7 @@ namespace HomeManagement.App.ViewModels
 
         public Command DeleteCommand { get; }
 
-        public Charge SelectedTransaction
+        public Transaction SelectedTransaction
         {
             get => selectedTransaction;
             set
@@ -60,11 +60,11 @@ namespace HomeManagement.App.ViewModels
             await HandleSafeExecutionAsync(async () => Transactions = (await transactionManager.PreviousPageAsync()).ToObservableCollection());
 
 
-        private async Task DeleteAsync(Charge charge)
+        private async Task DeleteAsync(Transaction charge)
         {
             await HandleSafeExecutionAsync(async () =>
             {
-                await transactionManager.DeleteChargeAsync(charge);
+                await transactionManager.DeleteTransactionAsync(charge);
                 Transactions = (await transactionManager.Load(account.Id)).ToObservableCollection();
             });
         }

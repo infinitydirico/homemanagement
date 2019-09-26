@@ -2,7 +2,7 @@
 
 namespace HomeManagement.App.Data.Entities
 {
-    public class Charge : IOfflineEntity
+    public class Transaction : IOfflineEntity
     {
         public int Id { get; set; }
 
@@ -12,7 +12,7 @@ namespace HomeManagement.App.Data.Entities
 
         public DateTime Date { get; set; }
 
-        public ChargeType ChargeType { get; set; }
+        public TransactionType TransactionType { get; set; }
 
         public int CategoryId { get; set; }
 
@@ -25,7 +25,7 @@ namespace HomeManagement.App.Data.Entities
         public bool NeedsUpdate { get; set; }
     }
 
-    public enum ChargeType
+    public enum TransactionType
     {
         Income,
         Expense

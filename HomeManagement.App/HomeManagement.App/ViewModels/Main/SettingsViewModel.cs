@@ -17,7 +17,7 @@ namespace HomeManagement.App.ViewModels
         private readonly GenericRepository<AppSettings> appSettingsRepository = new GenericRepository<AppSettings>();
         private readonly GenericRepository<User> userRepository = new GenericRepository<User>();
         private readonly GenericRepository<Account> accountRepository = new GenericRepository<Account>();
-        private readonly GenericRepository<Charge> chargeRepository = new GenericRepository<Charge>();
+        private readonly GenericRepository<Transaction> chargeRepository = new GenericRepository<Transaction>();
         private readonly ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
 

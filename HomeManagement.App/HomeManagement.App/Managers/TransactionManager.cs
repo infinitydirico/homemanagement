@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace HomeManagement.App.Managers
 {
-    public interface IChargeManager
+    public interface ITransactionManager
     {
         int PageCount { get; }
 
@@ -19,24 +19,26 @@ namespace HomeManagement.App.Managers
 
         int CurrentPage { get; }
 
-        Task<IEnumerable<Charge>> Load(int accountId);
+        Task<IEnumerable<Transaction>> Load(int accountId);
 
-        Task<IEnumerable<Charge>> NextPageAsync();
+        Task<IEnumerable<Transaction>> NextPageAsync();
 
-        Task<IEnumerable<Charge>> PreviousPageAsync();
+        Task<IEnumerable<Transaction>> PreviousPageAsync();
 
-        Task AddChargeAsync(Charge charge);
+        Task AddTransactionAsync(Transaction charge);
 
-        Task DeleteChargeAsync(Charge charge);
+        Task DeleteTransactionAsync(Transaction charge);
+
+        Task UpdateAsync(Transaction transaction);
     }
 
-    public class ChargeManager : BaseManager<Charge, ChargePageModel>, IChargeManager
+    public class TransactionManager : BaseManager<Transaction, ChargePageModel>, ITransactionManager
     {
-        protected readonly IChargeServiceClient chargeServiceClient = App._container.Resolve<IChargeServiceClient>();
-        private readonly GenericRepository<Charge> chargeRepository = new GenericRepository<Charge>();
+        protected readonly ITransactionServiceClient transactionServiceClient = App._container.Resolve<ITransactionServiceClient>();
+        private readonly GenericRepository<Transaction> chargeRepository = new GenericRepository<Transaction>();
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
 
-        public ChargeManager()
+        public TransactionManager()
         {
             page.PageCount = 10;
             page.CurrentPage = 1;
@@ -48,9 +50,9 @@ namespace HomeManagement.App.Managers
 
         public int CurrentPage => page.CurrentPage;
 
-        public virtual async Task AddChargeAsync(Charge charge)
+        public virtual async Task AddTransactionAsync(Transaction charge)
         {
-            await chargeServiceClient.Post(charge);
+            await transactionServiceClient.Post(MapToModel(charge));
 
             if (coudSyncSetting.Enabled)
             {
@@ -58,9 +60,9 @@ namespace HomeManagement.App.Managers
             }
         }
 
-        public virtual async Task DeleteChargeAsync(Charge charge)
+        public virtual async Task DeleteTransactionAsync(Transaction charge)
         {
-            await chargeServiceClient.Delete(charge.Id);
+            await transactionServiceClient.Delete(charge.Id);
 
             if (coudSyncSetting.Enabled)
             {
@@ -68,36 +70,36 @@ namespace HomeManagement.App.Managers
             }
         }
 
-        public virtual async Task<IEnumerable<Charge>> Load(int accountId)
+        public virtual async Task<IEnumerable<Transaction>> Load(int accountId)
         {
             page.AccountId = accountId;
 
             return await Paginate();
         }
 
-        public override async Task<IEnumerable<Charge>> NextPageAsync()
+        public override async Task<IEnumerable<Transaction>> NextPageAsync()
         {
             if (page.CurrentPage.Equals(page.TotalPages))
             {
                 var skip = (page.CurrentPage - 1) * page.PageCount;
-                return GetCachedFilteredCharges(skip);
+                return GetCachedFilteredTransactions(skip);
             }
 
             return await base.NextPageAsync();
         }
 
-        public override async Task<IEnumerable<Charge>> PreviousPageAsync()
+        public override async Task<IEnumerable<Transaction>> PreviousPageAsync()
         {
             if (page.CurrentPage == 1)
             {
                 var skip = (page.CurrentPage - 1) * page.PageCount;
-                return GetCachedFilteredCharges(skip);
+                return GetCachedFilteredTransactions(skip);
             }
 
             return await base.PreviousPageAsync();
         }
 
-        protected override async Task<IEnumerable<Charge>> Paginate()
+        protected override async Task<IEnumerable<Transaction>> Paginate()
         {
             if (!cachingService.Get<bool>("ForceApiCall") || coudSyncSetting.Enabled)
             {
@@ -105,7 +107,7 @@ namespace HomeManagement.App.Managers
 
                 if (chargeRepository.Count(x => x.AccountId.Equals(page.AccountId)) > skip)
                 {
-                    var c = GetCachedFilteredCharges(skip);
+                    var c = GetCachedFilteredTransactions(skip);
                     return await Task.FromResult(c);
                 }
             }
@@ -114,16 +116,16 @@ namespace HomeManagement.App.Managers
 
             await Task.Delay(500);
 
-            page = await chargeServiceClient.Page(page);
+            page = await transactionServiceClient.Page(page);
 
             var chargesResult = MapPageToEntity(page);
 
-            UpdateCachedCharges(chargesResult);
+            UpdateCachedTransactions(chargesResult);
 
             return chargesResult;
         }
 
-        private void UpdateCachedCharges(IEnumerable<Charge> charges)
+        private void UpdateCachedTransactions(IEnumerable<Transaction> charges)
         {
             if (!coudSyncSetting.Enabled) return;
 
@@ -142,7 +144,7 @@ namespace HomeManagement.App.Managers
             });
         }
 
-        private IEnumerable<Charge> GetCachedFilteredCharges(int skip)
+        private IEnumerable<Transaction> GetCachedFilteredTransactions(int skip)
             => chargeRepository
             .Where(x => x.AccountId.Equals(page.AccountId))
             .OrderByDescending(x => x.Id)
@@ -150,14 +152,14 @@ namespace HomeManagement.App.Managers
             .Take(page.PageCount)
             .ToList();
 
-        private IEnumerable<Charge> MapPageToEntity(ChargePageModel page) 
+        private IEnumerable<Transaction> MapPageToEntity(ChargePageModel page) 
             => from charge in page.Charges
-               select new Charge
+               select new Transaction
                {
                    Id = charge.Id,
                    AccountId = charge.AccountId,
                    CategoryId = charge.CategoryId,
-                   ChargeType = (ChargeType)Enum.Parse(typeof(ChargeType), charge.ChargeType.ToString()),
+                   TransactionType = (TransactionType)Enum.Parse(typeof(TransactionType), charge.ChargeType.ToString()),
                    Date = charge.Date,
                    Name = charge.Name,
                    Price = charge.Price,
@@ -165,5 +167,23 @@ namespace HomeManagement.App.Managers
                    LastApiCall = DateTime.Now,
                    NeedsUpdate = false
                };
+
+        public async Task UpdateAsync(Transaction transaction)
+        {
+            var model = MapToModel(transaction);
+
+            await transactionServiceClient.Put(model);
+        }
+
+        private ChargeModel MapToModel(Transaction transaction) => new ChargeModel
+        {
+            Id = transaction.Id,
+            AccountId = transaction.AccountId,
+            CategoryId = transaction.CategoryId,
+            ChargeType = transaction.TransactionType.Equals(TransactionType.Expense) ? ChargeTypeModel.Expense : ChargeTypeModel.Income,
+            Date = transaction.Date,
+            Name = transaction.Name,
+            Price = transaction.Price
+        };
     }
 }

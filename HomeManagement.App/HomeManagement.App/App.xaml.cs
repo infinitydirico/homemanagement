@@ -95,7 +95,7 @@ namespace HomeManagement.App
 
         private void RegisterManagers(ContainerBuilder builder)
         {
-            builder.RegisterType<ChargeManager>().As<IChargeManager>();
+            builder.RegisterType<TransactionManager>().As<ITransactionManager>();
             builder.RegisterType<AuthenticationManager>().As<IAuthenticationManager>();
             builder.RegisterType<AccountManager>().As<IAccountManager>();
             builder.RegisterType<MetricsManager>().As<IMetricsManager>();
@@ -107,7 +107,7 @@ namespace HomeManagement.App
         {
             builder.RegisterType<AccountServiceClient>().As<IAccountServiceClient>();
             builder.RegisterType<AuthServiceClient>().As<IAuthServiceClient>().SingleInstance();
-            builder.RegisterType<ChargeServiceClient>().As<IChargeServiceClient>();
+            builder.RegisterType<TransactionServiceClient>().As<ITransactionServiceClient>();
             builder.RegisterType<AccountMetricsServiceClient>().As<IAccountMetricsServiceClient>();
             builder.RegisterType<CategoryServiceClient>().As<ICategoryServiceClient>();
             builder.RegisterType<CurrencyServiceClient>().As<ICurrencyServiceClient>();

@@ -12,7 +12,7 @@ namespace HomeManagement.App.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<AppSettings> AppSettings { get; set; }
-        public DbSet<Charge> Charges { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         public MobileAppDbContext()
         {
@@ -82,17 +82,17 @@ namespace HomeManagement.App.Data
 
         private void BuildChargesEntity(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Charge>().HasKey(x => x.Id);
-            modelBuilder.Entity<Charge>().Property(x => x.Name).HasMaxLength(80);
-            modelBuilder.Entity<Charge>().Property(x => x.ChangeStamp);
-            modelBuilder.Entity<Charge>().Property(x => x.LastApiCall);
-            modelBuilder.Entity<Charge>().Property(x => x.NeedsUpdate);
-            modelBuilder.Entity<Charge>().Property(x => x.Name);
-            modelBuilder.Entity<Charge>().Property(x => x.Price);
-            modelBuilder.Entity<Charge>().Property(x => x.Date);
-            modelBuilder.Entity<Charge>().Property(x => x.ChargeType);
-            modelBuilder.Entity<Charge>().Property(x => x.CategoryId);
-            modelBuilder.Entity<Charge>().Property(x => x.AccountId);
+            modelBuilder.Entity<Transaction>().HasKey(x => x.Id);
+            modelBuilder.Entity<Transaction>().Property(x => x.Name).HasMaxLength(80);
+            modelBuilder.Entity<Transaction>().Property(x => x.ChangeStamp);
+            modelBuilder.Entity<Transaction>().Property(x => x.LastApiCall);
+            modelBuilder.Entity<Transaction>().Property(x => x.NeedsUpdate);
+            modelBuilder.Entity<Transaction>().Property(x => x.Name);
+            modelBuilder.Entity<Transaction>().Property(x => x.Price);
+            modelBuilder.Entity<Transaction>().Property(x => x.Date);
+            modelBuilder.Entity<Transaction>().Property(x => x.TransactionType);
+            modelBuilder.Entity<Transaction>().Property(x => x.CategoryId);
+            modelBuilder.Entity<Transaction>().Property(x => x.AccountId);
         }
     }
 }

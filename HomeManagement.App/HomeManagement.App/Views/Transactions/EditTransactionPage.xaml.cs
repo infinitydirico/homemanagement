@@ -22,7 +22,7 @@ namespace HomeManagement.App.Views.Transactions
             Title = localizationManager.Translate("EditCharge");
         }
 
-        public EditTransactionPage(Account account, Charge charge) : this()
+        public EditTransactionPage(Account account, Transaction charge) : this()
         {
             this.account = account;
             var viewModel = new EditTransactionViewModel(account, charge);

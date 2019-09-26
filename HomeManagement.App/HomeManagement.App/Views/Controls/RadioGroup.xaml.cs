@@ -20,13 +20,13 @@ namespace HomeManagement.App.Views.Controls
         }
 
         public static readonly BindableProperty OptionsProperty =
-            BindableProperty.Create("Options", typeof(IEnumerable<ChargeType>), typeof(RadioGroup),
+            BindableProperty.Create("Options", typeof(IEnumerable<TransactionType>), typeof(RadioGroup),
                                     defaultValue: null,
                                     propertyChanged: LoadOptions);
 
-        public IEnumerable<ChargeType> Options
+        public IEnumerable<TransactionType> Options
         {
-            get => (IEnumerable<ChargeType>)GetValue(OptionsProperty);
+            get => (IEnumerable<TransactionType>)GetValue(OptionsProperty);
             set
             {
                 SetValue(OptionsProperty, value);
@@ -34,14 +34,14 @@ namespace HomeManagement.App.Views.Controls
         }
 
         public static readonly BindableProperty SelectedItemProperty =
-            BindableProperty.Create("SelectedItem", typeof(ChargeType), typeof(RadioGroup),
+            BindableProperty.Create("SelectedItem", typeof(TransactionType), typeof(RadioGroup),
                                     defaultValue: null,
                                     defaultBindingMode: BindingMode.TwoWay,
                                     propertyChanged: SelectedItemChanged);
 
-        public ChargeType SelectedItem
+        public TransactionType SelectedItem
         {
-            get => (ChargeType)GetValue(SelectedItemProperty);
+            get => (TransactionType)GetValue(SelectedItemProperty);
             set
             {
                 SetValue(SelectedItemProperty, value);

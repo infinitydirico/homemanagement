@@ -11,7 +11,7 @@ namespace HomeManagement.App.Converters
         {
             if(value is bool) return (bool)value ? Color.FromHex("#388E3C") : Color.FromHex("#ef5350");
 
-            if(value is ChargeType) return (ChargeType)value == ChargeType.Income ? Color.FromHex("#388E3C") : Color.FromHex("#ef5350");
+            if(value is TransactionType) return (TransactionType)value == TransactionType.Income ? Color.FromHex("#388E3C") : Color.FromHex("#ef5350");
 
             throw new InvalidCastException("Unable to cast to bool or ChargeType");
         }

@@ -17,7 +17,7 @@ namespace HomeManagement.App.Managers
 
         Task<AccountsEvolutionModel> GetAccountsEvolution();
 
-        Task<IEnumerable<Charge>> GetChargesByDate(int accountId, int year, int month);
+        Task<IEnumerable<Transaction>> GetChargesByDate(int accountId, int year, int month);
     }
 
     public class MetricsManager : IMetricsManager
@@ -47,17 +47,17 @@ namespace HomeManagement.App.Managers
             return result;
         }
 
-        public async Task<IEnumerable<Charge>> GetChargesByDate(int accountId, int year, int month)
+        public async Task<IEnumerable<Transaction>> GetChargesByDate(int accountId, int year, int month)
         {
             var result = (await accountMetricsServiceClient.GetChargesByDate(accountId, year, month))
-                            .Select(x => new Charge
+                            .Select(x => new Transaction
                             {
                                 Id = x.Id,
                                 Name = x.Name,
                                 AccountId = x.AccountId,
                                 Price = x.Price,
                                 Date = x.Date,
-                                ChargeType = x.ChargeType.Equals(0) ? ChargeType.Income : ChargeType.Expense,
+                                TransactionType = x.ChargeType.Equals(0) ? TransactionType.Income : TransactionType.Expense,
                                 CategoryId = x.CategoryId
                             }).ToList();
 

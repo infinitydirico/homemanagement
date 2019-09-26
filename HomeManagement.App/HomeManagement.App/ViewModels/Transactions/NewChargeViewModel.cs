@@ -64,7 +64,7 @@ namespace HomeManagement.App.ViewModels
         {
             base.AddTransaction();
 
-            Transaction = new Charge();
+            Transaction = new Transaction();
         }
     }
 }

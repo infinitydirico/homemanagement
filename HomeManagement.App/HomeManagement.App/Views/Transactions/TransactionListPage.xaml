@@ -37,7 +37,7 @@
                                                     <Label Text = "{Binding Date, Converter={StaticResource DateConverter}}" />
                                                 </StackLayout>
                                                 <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
-                                                    <Label Text = "{Binding Price}" TextColor="{Binding ChargeType, Converter={StaticResource ChargeTypeColor}}" FontSize="Small" />
+                                                    <Label Text = "{Binding Price}" TextColor="{Binding TransactionType, Converter={StaticResource ChargeTypeColor}}" FontSize="Small" />
                                                 </StackLayout>
                                             </StackLayout>
                                             <StackLayout IsVisible="False" Orientation="Horizontal" HorizontalOptions="FillAndExpand">

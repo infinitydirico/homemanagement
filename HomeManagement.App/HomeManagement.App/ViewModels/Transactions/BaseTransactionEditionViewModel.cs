@@ -12,19 +12,19 @@ namespace HomeManagement.App.ViewModels
 {
     public class BaseTransactionEditionViewModel : BaseViewModel
     {
-        protected Charge transaction = new Charge { Date = DateTime.Now };
+        protected Transaction transaction = new Transaction { Date = DateTime.Now };
         protected Account account;
         protected Category selectedCategory;
         protected ICategoryManager categoryManager;
-        protected IChargeServiceClient chargeServiceClient;
-        protected readonly IChargeManager transactionManager = App._container.Resolve<IChargeManager>();
+        protected ITransactionServiceClient chargeServiceClient;
+        protected readonly ITransactionManager transactionManager = App._container.Resolve<ITransactionManager>();
         protected IEnumerable<Category> categories;
-        protected ChargeType selectedChargeType;
+        protected TransactionType selectedChargeType;
 
         public BaseTransactionEditionViewModel()
         {
             categoryManager = App._container.Resolve<ICategoryManager>();
-            chargeServiceClient = App._container.Resolve<IChargeServiceClient>();
+            chargeServiceClient = App._container.Resolve<ITransactionServiceClient>();
 
             CancelCommand = new Command(Cancel);
         }
@@ -41,7 +41,7 @@ namespace HomeManagement.App.ViewModels
 
         public ICommand CancelCommand { get; }
 
-        public Charge Transaction
+        public Transaction Transaction
         {
             get => transaction;
             set
@@ -72,19 +72,19 @@ namespace HomeManagement.App.ViewModels
             }
         }
 
-        public IEnumerable<ChargeType> TransactionTypes => new List<ChargeType>
+        public IEnumerable<TransactionType> TransactionTypes => new List<TransactionType>
         {
-                ChargeType.Expense,
-                ChargeType.Income
+                TransactionType.Expense,
+                TransactionType.Income
         };
 
-        public ChargeType SelectedTransactionType
+        public TransactionType SelectedTransactionType
         {
             get => selectedChargeType;
             set
             {
                 selectedChargeType = value;
-                Transaction.ChargeType = selectedChargeType;
+                Transaction.TransactionType = selectedChargeType;
                 OnPropertyChanged(nameof(SelectedTransactionType));
             }
         }

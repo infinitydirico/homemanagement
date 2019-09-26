@@ -9,12 +9,12 @@ namespace HomeManagement.App.ViewModels
 {
     public class EditTransactionViewModel : BaseTransactionEditionViewModel
     {
-        public EditTransactionViewModel(Account account, Charge charge) : base(account)
+        public EditTransactionViewModel(Account account, Transaction charge) : base(account)
         {
             Transaction = charge;
 
             UpdateTransactionCommand = new Command(UpdateTransaction);
-            SelectedTransactionType = Transaction.ChargeType;
+            SelectedTransactionType = Transaction.TransactionType;
         }
 
         public ICommand UpdateTransactionCommand { get; }
@@ -25,7 +25,7 @@ namespace HomeManagement.App.ViewModels
         {
             if (HasInvalidValues()) return;
 
-            chargeServiceClient.Put(Transaction);
+            transactionManager.UpdateAsync(Transaction);
 
             OnTransactionUpdated?.Invoke(this, EventArgs.Empty);
         }

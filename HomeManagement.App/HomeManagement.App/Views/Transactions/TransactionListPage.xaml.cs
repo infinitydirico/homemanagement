@@ -92,10 +92,10 @@ namespace HomeManagement.App.Views.Transactions
             }
         }
 
-        private Charge GetCurrentCharge(View view)
+        private Transaction GetCurrentCharge(View view)
         {
             var cell = GetViewCell(view);
-            var charge = cell.BindingContext as Charge;
+            var charge = cell.BindingContext as Transaction;
             return charge;
         }
 

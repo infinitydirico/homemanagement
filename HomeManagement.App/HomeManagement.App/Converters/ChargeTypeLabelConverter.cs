@@ -11,7 +11,7 @@ namespace HomeManagement.App.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var text = (bool)value ? ChargeType.Income.ToString() : ChargeType.Expense.ToString();
+            var text = (bool)value ? TransactionType.Income.ToString() : TransactionType.Expense.ToString();
             var translatedText = translationConverter.Convert(text, targetType, null, CultureInfo.CurrentCulture);
             return translatedText;
         }
