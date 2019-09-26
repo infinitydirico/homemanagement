@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using HomeManagement.App.Data.Entities;
+using HomeManagement.App.Managers;
 using HomeManagement.App.Services.Rest;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace HomeManagement.App.ViewModels
     public class NewChargeViewModel : AddChargeViewModel
     {
         private readonly IAccountServiceClient accountServiceClient = App._container.Resolve<IAccountServiceClient>();
-        private readonly IAuthServiceClient authServiceClient = App._container.Resolve<IAuthServiceClient>();
+        private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
 
         protected IEnumerable<Account> accounts = Enumerable.Empty<Account>();
 
@@ -40,7 +41,7 @@ namespace HomeManagement.App.ViewModels
         {
             var page = await accountServiceClient.Page(new Models.AccountPageModel
             {
-                UserId = authServiceClient.User.Id,
+                UserId = authenticationManager.GetAuthenticatedUser().Id,
                 PageCount = 10,
                 CurrentPage = 1
             });

@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using HomeManagement.App.Common;
-using HomeManagement.Core.Caching;
+using HomeManagement.App.Managers;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
 using System;
@@ -42,7 +42,7 @@ namespace HomeManagement.App.Services.Rest
         public static StringContent SerializeToJson(this object data)
             => new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
 
-        private static string GetToken() => App._container.Resolve<ICachingService>().Get<string>("header");
+        private static string GetToken() => App._container.Resolve<IAuthenticationManager>().GetAuthenticatedUser().Token;
 
         private static void CheckForInternetConnection()
         {

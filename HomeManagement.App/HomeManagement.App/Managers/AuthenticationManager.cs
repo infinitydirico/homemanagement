@@ -45,7 +45,7 @@ namespace HomeManagement.App.Managers
 
             if (user != null && user.Password.Equals(encryptedPassword) && (DateTime.Now - user.LastApiCall).Hours < 1)
             {
-                CacheUserAndToken(user);
+                CacheUser(user);
                 return user;
             }
 
@@ -74,7 +74,7 @@ namespace HomeManagement.App.Managers
 
             CreateSettingsIfNotExits();
 
-            CacheUserAndToken(user);
+            CacheUser(user);
 
             return user;
         }
@@ -84,11 +84,6 @@ namespace HomeManagement.App.Managers
         public async Task Logout()
         {
             //await authServiceClient.Logout();
-            if (cachingService.Exists("header"))
-            {
-                cachingService.Remove("header");
-            }
-
             if (cachingService.Exists("user"))
             {
                 cachingService.Remove("user");
@@ -106,13 +101,7 @@ namespace HomeManagement.App.Managers
             return true;
         }
 
-        private void CacheUserAndToken(User user)
-        {
-            SaveHttpHeader(user.Token);
-            SaveUser(user);
-        }
-
-        private void SaveUser(User user)
+        private void CacheUser(User user)
         {
             if (!cachingService.Exists("user"))
             {
@@ -122,19 +111,6 @@ namespace HomeManagement.App.Managers
             {
                 cachingService.Remove("user");
                 cachingService.Store("user", user);
-            }
-        }
-
-        private void SaveHttpHeader(string token)
-        {
-            if (!cachingService.Exists("header"))
-            {
-                cachingService.Store("header", token);
-            }
-            else
-            {
-                cachingService.Remove("header");
-                cachingService.Store("header", token);
             }
         }
 

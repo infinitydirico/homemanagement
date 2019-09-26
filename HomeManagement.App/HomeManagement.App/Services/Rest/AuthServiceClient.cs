@@ -7,7 +7,7 @@ namespace HomeManagement.App.Services.Rest
 {
     public class AuthServiceClient : IAuthServiceClient
     {
-        public UserModel User { get; private set; }
+        private UserModel user;
 
         public async Task<UserModel> Login(UserModel user)
         {
@@ -18,10 +18,7 @@ namespace HomeManagement.App.Services.Rest
                     .PostAsync(Constants.Endpoints.Auth.LOGIN, user.SerializeToJson())
                     .ReadContent<UserModel>();
 
-                //App._container.Resolve<ICachingService>().Store("header", result.Token);
-
-                User = result;
-
+                user = result;
                 return result;
             }
             catch (Exception ex)
@@ -37,13 +34,11 @@ namespace HomeManagement.App.Services.Rest
                     .CreateAuthenticatedClient()
                     .PostAsync(Constants.Endpoints.Auth.LOGOUT, user.SerializeToJson())
                     .ReadContent<UserModel>();
-
-            //App._container.Resolve<ICachingService>().Remove("header");
         }
 
         public async Task Logout()
         {
-            await Logout(User);
+            await Logout(user);
         }
 
         public async Task RegisterAsync(UserModel user)
@@ -61,8 +56,6 @@ namespace HomeManagement.App.Services.Rest
         Task<UserModel> Login(UserModel user);
 
         Task RegisterAsync(UserModel user);
-
-        UserModel User { get; }
 
         Task Logout(UserModel user);
         Task Logout();

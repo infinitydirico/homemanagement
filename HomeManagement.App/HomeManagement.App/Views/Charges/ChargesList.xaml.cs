@@ -6,7 +6,6 @@ using HomeManagement.App.Views.AccountPages;
 using HomeManagement.App.Views.Controls;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -93,52 +92,20 @@ namespace HomeManagement.App.Views.Charges
             }
         }
 
-        private async void Swiped(object sender, SwipedEventArgs e)
-        {
-            var stackLayout = sender as StackLayout;
-
-            await PerformSwipe(stackLayout, e);
-        }
-
-        private async Task PerformSwipe(StackLayout stackLayout, SwipedEventArgs e, uint timeout = 250)
-        {
-            var innerLayout = stackLayout.Children.First(x => x.GetType().Equals(typeof(StackLayout))) as StackLayout;
-
-            if (IsAlreadySwiped(innerLayout, e.Direction)) return;
-
-            var buttonsActions = stackLayout.Children.Where(x => x.GetType().Equals(typeof(Button)));
-
-            var trashButton = buttonsActions.First();
-            var editButton = buttonsActions.Last();
-
-            var offsetIn = e.Direction.Equals(SwipeDirection.Right) ? 35 : -35;
-            var offsetOut = e.Direction.Equals(SwipeDirection.Right) ? 70 : -70;
-
-            var rectIn = innerLayout.Bounds.Offset(offsetIn, 0);
-            var rectOut = innerLayout.Bounds.Offset(offsetOut, 0);
-
-            var animationIn = await innerLayout.LayoutTo(rectIn, timeout, easing: Easing.SpringIn);
-
-            if (e.Direction.Equals(SwipeDirection.Left))
-            {
-                trashButton.IsVisible = editButton.IsVisible = false;
-                rectOut.X = 0;
-            }
-
-            var animationOut = await innerLayout.LayoutTo(rectOut, timeout, easing: Easing.SpringOut);
-
-            trashButton.IsVisible = editButton.IsVisible = e.Direction.Equals(SwipeDirection.Right);
-        }
-
-        private bool IsAlreadySwiped(StackLayout layout, SwipeDirection direction)
-            => layout.Bounds.X > 50 && direction.Equals(SwipeDirection.Right) ||
-                layout.Bounds.X < 50 && direction.Equals(SwipeDirection.Left);
-
         private Charge GetCurrentCharge(View view)
         {
-            var cell = view.Parent.Parent as ViewCell;
+            var cell = GetViewCell(view);
             var charge = cell.BindingContext as Charge;
             return charge;
+        }
+
+        private ViewCell GetViewCell(Element view)
+        {
+            var parent = view.Parent;
+
+            if (parent is ViewCell) return parent as ViewCell;
+
+            return GetViewCell(parent);
         }
 
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
@@ -146,8 +113,38 @@ namespace HomeManagement.App.Views.Charges
             var stackLayout = sender as StackLayout;
             var innerLayout = stackLayout.Children.First(x => x.GetType().Equals(typeof(StackLayout))) as StackLayout;
 
-            var swipeDirection = innerLayout.Bounds.X > 50 ? SwipeDirection.Left : SwipeDirection.Right;
-            Swiped(sender, new SwipedEventArgs(null, swipeDirection));
+            Rotate(stackLayout);
+        }
+
+        private async void Rotate(StackLayout parent)
+        {
+            uint length = 250;
+            var layouts = parent.Children.ToList();
+
+            var infoLayout = layouts.First();
+            var actionsLayout = layouts.Last();
+
+            var actionsVisible = actionsLayout.IsVisible;
+            if (actionsVisible)
+            {
+                await actionsLayout.RotateXTo(-90, length, Easing.SpringIn);
+
+                actionsLayout.IsVisible = false;
+                infoLayout.IsVisible = true;
+
+                infoLayout.RotationX = -90;
+                await infoLayout.RotateXTo(0, length, Easing.SpringOut);
+            }
+            else
+            {
+                await infoLayout.RotateXTo(-90, length, Easing.SpringIn);
+
+                infoLayout.IsVisible = false;
+                actionsLayout.IsVisible = true;
+
+                actionsLayout.RotationX = -90;
+                await actionsLayout.RotateXTo(0, length, Easing.SpringOut);
+            }
         }
     }
 }

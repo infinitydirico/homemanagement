@@ -88,13 +88,5 @@ namespace HomeManagement.App.ViewModels
             IsBusy = false;
             OnPropertyChanged(nameof(CanLogin));
         }
-
-        #region labels
-
-        public string UsernameText => "Username";
-
-        public string PasswordText => "Password";
-
-        #endregion
     }
 }
