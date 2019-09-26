@@ -3,7 +3,7 @@ using HomeManagement.App.Common;
 using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
 using HomeManagement.App.ViewModels;
-using HomeManagement.App.Views.Charges;
+using HomeManagement.App.Views.Transactions;
 using HomeManagement.App.Views.Controls;
 using System;
 using System.Linq;
@@ -115,7 +115,7 @@ namespace HomeManagement.App.Views.AccountPages
         private void GoToChargesList(StackLayout stackLayout)
         {
             var account = GetCurrentAccount(stackLayout);
-            Navigation.PushAsync(new ChargesList(account));
+            Navigation.PushAsync(new TransactionListPage(account));
         }
 
         private Account GetCurrentAccount(StackLayout stackLayout)

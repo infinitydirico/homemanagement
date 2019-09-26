@@ -12,12 +12,12 @@ namespace HomeManagement.App.ViewModels
 {
     public class BaseTransactionEditionViewModel : BaseViewModel
     {
-        protected Charge charge = new Charge { Date = DateTime.Now };
+        protected Charge transaction = new Charge { Date = DateTime.Now };
         protected Account account;
         protected Category selectedCategory;
         protected ICategoryManager categoryManager;
         protected IChargeServiceClient chargeServiceClient;
-        protected readonly IChargeManager chargeManager = App._container.Resolve<IChargeManager>();
+        protected readonly IChargeManager transactionManager = App._container.Resolve<IChargeManager>();
         protected IEnumerable<Category> categories;
         protected ChargeType selectedChargeType;
 
@@ -32,7 +32,7 @@ namespace HomeManagement.App.ViewModels
         public BaseTransactionEditionViewModel(Account account) : this()
         {
             this.account = account;
-            charge.AccountId = account.Id;
+            transaction.AccountId = account.Id;
         }
 
         public event EventHandler OnError;
@@ -41,12 +41,12 @@ namespace HomeManagement.App.ViewModels
 
         public ICommand CancelCommand { get; }
 
-        public Charge Charge
+        public Charge Transaction
         {
-            get => charge;
+            get => transaction;
             set
             {
-                charge = value;
+                transaction = value;
                 OnPropertyChanged();
             }
         }
@@ -67,25 +67,25 @@ namespace HomeManagement.App.ViewModels
             set
             {
                 selectedCategory = value;
-                Charge.CategoryId = selectedCategory.Id;
+                Transaction.CategoryId = selectedCategory.Id;
                 OnPropertyChanged();
             }
         }
 
-        public IEnumerable<ChargeType> ChargeTypes => new List<ChargeType>
+        public IEnumerable<ChargeType> TransactionTypes => new List<ChargeType>
         {
                 ChargeType.Expense,
                 ChargeType.Income
         };
 
-        public ChargeType SelectedChargeType
+        public ChargeType SelectedTransactionType
         {
             get => selectedChargeType;
             set
             {
                 selectedChargeType = value;
-                Charge.ChargeType = selectedChargeType;
-                OnPropertyChanged(nameof(SelectedChargeType));
+                Transaction.ChargeType = selectedChargeType;
+                OnPropertyChanged(nameof(SelectedTransactionType));
             }
         }
 
@@ -109,13 +109,13 @@ namespace HomeManagement.App.ViewModels
 
         protected bool CheckForInvalidInput()
         {
-            if (string.IsNullOrEmpty(charge.Name)) return true;
+            if (string.IsNullOrEmpty(transaction.Name)) return true;
 
-            if (Charge.Price < 0) return true;
+            if (Transaction.Price < 0) return true;
 
-            if (Charge.CategoryId < 0) return true;
+            if (Transaction.CategoryId < 0) return true;
 
-            if (Charge.AccountId < 0) return true;
+            if (Transaction.AccountId < 0) return true;
 
             return false;
         }

@@ -1,6 +1,6 @@
 ﻿using HomeManagement.App.Data.Entities;
 using HomeManagement.App.ViewModels;
-using HomeManagement.App.Views.Charges;
+using HomeManagement.App.Views.Transactions;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -21,7 +21,7 @@ namespace HomeManagement.App.Views.Controls
         {
             var account = e.Item as Account;
 
-            Navigation.PushAsync(new ChargesList(account));
+            Navigation.PushAsync(new TransactionListPage(account));
 
             ((ListView)sender).SelectedItem = null;
         }

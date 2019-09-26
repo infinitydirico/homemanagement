@@ -38,16 +38,16 @@
     <EmbeddedResource Update="Views\Accounts\AccountsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Charges\AddCharge.xaml">
+    <EmbeddedResource Update="Views\Transactions\AddTransactionPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Charges\CalendarPage.xaml">
+    <EmbeddedResource Update="Views\Transactions\CalendarPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Charges\ChargesList.xaml">
+    <EmbeddedResource Update="Views\Transactions\TransactionListPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Charges\EditCharge.xaml">
+    <EmbeddedResource Update="Views\Transactions\EditTransactionPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Controls\AccountListControl.xaml">
@@ -100,6 +100,15 @@
   <ItemGroup>
     <Compile Update="Views\Accounts\AccountsPage.xaml.cs">
       <DependentUpon>AccountsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Transactions\AddTransactionPage.xaml.cs">
+      <DependentUpon>AddTransactionPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Transactions\EditTransactionPage.xaml.cs">
+      <DependentUpon>EditTransactionPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Transactions\TransactionListPage.xaml.cs">
+      <DependentUpon>TransactionListPage.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Main\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>

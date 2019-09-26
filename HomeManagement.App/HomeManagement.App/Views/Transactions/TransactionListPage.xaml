@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="HomeManagement.App.Views.Charges.ChargesList"
+             x:Class="HomeManagement.App.Views.Transactions.TransactionListPage"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              xmlns:Controls="clr-namespace:HomeManagement.App.Views.Controls"
@@ -19,7 +19,7 @@
         <StackLayout>
             <Frame Margin="5, 5, 5, 5">
                 <StackLayout>
-                    <ListView x:Name="chargesList" ItemsSource="{Binding Charges}" 
+                    <ListView x:Name="chargesList" ItemsSource="{Binding Transactions}" 
                                 IsVisible="{Binding !IsBusy}" RowHeight="70"
                                 IsPullToRefreshEnabled="False" RefreshCommand="{Binding RefreshCommand}"
                                 SeparatorVisibility="None" IsRefreshing="{Binding IsBusy}">

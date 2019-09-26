@@ -10,10 +10,10 @@ namespace HomeManagement.App.ViewModels
 {
     public class TransactionListViewModel : BaseViewModel
     {
-        private readonly IChargeManager chargeManager = App._container.Resolve<IChargeManager>();
-        ObservableCollection<Charge> charges;
+        private readonly IChargeManager transactionManager = App._container.Resolve<IChargeManager>();
+        ObservableCollection<Charge> transactions;
         Account account;
-        Charge selectedCharge;
+        Charge selectedTransaction;
 
         public TransactionListViewModel(Account account)
         {
@@ -24,12 +24,12 @@ namespace HomeManagement.App.ViewModels
             DeleteCommand = new Command<Charge>(async (charge) => await DeleteAsync(charge));
         }
 
-        public ObservableCollection<Charge> Charges
+        public ObservableCollection<Charge> Transactions
         {
-            get => charges;
+            get => transactions;
             set
             {
-                charges = value;
+                transactions = value;
                 OnPropertyChanged();
             }
         }
@@ -40,32 +40,32 @@ namespace HomeManagement.App.ViewModels
 
         public Command DeleteCommand { get; }
 
-        public Charge SelectedCharge
+        public Charge SelectedTransaction
         {
-            get => selectedCharge;
+            get => selectedTransaction;
             set
             {
-                selectedCharge = value;
+                selectedTransaction = value;
                 OnPropertyChanged();
             }
         }
 
-        public int CurrentPage => chargeManager.CurrentPage;
+        public int CurrentPage => transactionManager.CurrentPage;
 
         async Task NextPage() =>
-            await HandleSafeExecutionAsync(async () => Charges = (await chargeManager.NextPageAsync()).ToObservableCollection());
+            await HandleSafeExecutionAsync(async () => Transactions = (await transactionManager.NextPageAsync()).ToObservableCollection());
 
 
         async Task PreviousPage() =>
-            await HandleSafeExecutionAsync(async () => Charges = (await chargeManager.PreviousPageAsync()).ToObservableCollection());
+            await HandleSafeExecutionAsync(async () => Transactions = (await transactionManager.PreviousPageAsync()).ToObservableCollection());
 
 
         private async Task DeleteAsync(Charge charge)
         {
             await HandleSafeExecutionAsync(async () =>
             {
-                await chargeManager.DeleteChargeAsync(charge);
-                Charges = (await chargeManager.Load(account.Id)).ToObservableCollection();
+                await transactionManager.DeleteChargeAsync(charge);
+                Transactions = (await transactionManager.Load(account.Id)).ToObservableCollection();
             });
         }
 
@@ -79,7 +79,7 @@ namespace HomeManagement.App.ViewModels
             HandleSafeExecutionAsync(async () =>
             {
                 IsBusy = true;
-                Charges = (await chargeManager.Load(account.Id)).ToObservableCollection();
+                Transactions = (await transactionManager.Load(account.Id)).ToObservableCollection();
                 IsBusy = false;
             });            
         }

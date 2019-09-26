@@ -6,23 +6,23 @@ using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace HomeManagement.App.Views.Charges
+namespace HomeManagement.App.Views.Transactions
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class AddCharge : ContentPage
+	public partial class AddTransactionPage : ContentPage
 	{
         private Account account;
         private AddTransactionViewModel viewModel;
         ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
 
-        private AddCharge()
+        private AddTransactionPage()
         {
             InitializeComponent();
 
             Title = localizationManager.Translate("NewMovement");
         }
 
-        public AddCharge(Account account) : this()
+        public AddTransactionPage(Account account) : this()
         {
             this.account = account;
 

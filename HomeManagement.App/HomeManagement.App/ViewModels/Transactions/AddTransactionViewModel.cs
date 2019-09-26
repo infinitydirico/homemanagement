@@ -13,19 +13,19 @@ namespace HomeManagement.App.ViewModels
 
         public AddTransactionViewModel(Account account) : base(account)
         {
-            AddChargeCommand = new Command(AddCharge);
-            SelectedChargeType = ChargeType.Expense;
+            AddTransactionCommand = new Command(AddTransaction);
+            SelectedTransactionType = ChargeType.Expense;
         }
 
-        public ICommand AddChargeCommand { get; }
+        public ICommand AddTransactionCommand { get; }
 
         public event EventHandler OnAdded;
 
-        public virtual void AddCharge()
+        public virtual void AddTransaction()
         {
             if (HasInvalidValues()) return;
 
-            chargeManager.AddChargeAsync(Charge);
+            transactionManager.AddChargeAsync(Transaction);
 
             OnAdded.Invoke(this, EventArgs.Empty);
         }

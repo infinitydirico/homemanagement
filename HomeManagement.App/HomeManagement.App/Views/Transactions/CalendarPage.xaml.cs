@@ -5,7 +5,7 @@ using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace HomeManagement.App.Views.Charges
+namespace HomeManagement.App.Views.Transactions
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class CalendarPage : ContentPage

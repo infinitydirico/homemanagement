@@ -9,17 +9,17 @@ using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace HomeManagement.App.Views.Charges
+namespace HomeManagement.App.Views.Transactions
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ChargesList : ContentPage
+    public partial class TransactionListPage : ContentPage
     {
         ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
         Account account;
         TransactionListViewModel viewModel;
         Modal modal;
 
-        public ChargesList(Account account)
+        public TransactionListPage(Account account)
         {
             this.account = account;
             viewModel = new TransactionListViewModel(account);
@@ -46,7 +46,7 @@ namespace HomeManagement.App.Views.Charges
 
         private void OnAddChargeCommand(object sender, EventArgs e)
         {
-            var page = new AddCharge(account);
+            var page = new AddTransactionPage(account);
 
             NavigationPage.SetHasBackButton(page, true);
 
@@ -73,7 +73,7 @@ namespace HomeManagement.App.Views.Charges
         {
             var editButton = sender as Button;
             var charge = GetCurrentCharge(editButton);
-            var editChargePage = new EditCharge(account, charge);
+            var editChargePage = new EditTransactionPage(account, charge);
             NavigationPage.SetHasBackButton(editChargePage, true);
 
             Navigation.PushAsync(editChargePage);

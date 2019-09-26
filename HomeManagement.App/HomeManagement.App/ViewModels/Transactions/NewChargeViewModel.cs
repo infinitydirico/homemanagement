@@ -22,7 +22,7 @@ namespace HomeManagement.App.ViewModels
             set
             {
                 account = value;
-                Charge.AccountId = account.Id;
+                Transaction.AccountId = account.Id;
                 OnPropertyChanged();
             }
         }
@@ -60,11 +60,11 @@ namespace HomeManagement.App.ViewModels
             await base.InitializeAsync();
         }
 
-        public override void AddCharge()
+        public override void AddTransaction()
         {
-            base.AddCharge();
+            base.AddTransaction();
 
-            Charge = new Charge();
+            Transaction = new Charge();
         }
     }
 }

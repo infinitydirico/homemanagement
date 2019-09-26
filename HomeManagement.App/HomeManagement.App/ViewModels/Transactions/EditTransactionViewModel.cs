@@ -11,29 +11,29 @@ namespace HomeManagement.App.ViewModels
     {
         public EditTransactionViewModel(Account account, Charge charge) : base(account)
         {
-            Charge = charge;
+            Transaction = charge;
 
-            UpdateChargeCommand = new Command(UpdateCharge);
-            SelectedChargeType = Charge.ChargeType;
+            UpdateTransactionCommand = new Command(UpdateTransaction);
+            SelectedTransactionType = Transaction.ChargeType;
         }
 
-        public ICommand UpdateChargeCommand { get; }
+        public ICommand UpdateTransactionCommand { get; }
 
-        public event EventHandler OnChargeUpdated;
+        public event EventHandler OnTransactionUpdated;
 
-        private void UpdateCharge()
+        private void UpdateTransaction()
         {
             if (HasInvalidValues()) return;
 
-            chargeServiceClient.Put(Charge);
+            chargeServiceClient.Put(Transaction);
 
-            OnChargeUpdated?.Invoke(this, EventArgs.Empty);
+            OnTransactionUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         protected override async Task InitializeAsync()
         {
             await LoadCategories();
-            SelectedCategory = Categories.FirstOrDefault(x => x.Id.Equals(Charge.CategoryId));
+            SelectedCategory = Categories.FirstOrDefault(x => x.Id.Equals(Transaction.CategoryId));
         }
     }
 }

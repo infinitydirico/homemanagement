@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="HomeManagement.App.Views.Charges.EditCharge"
+             x:Class="HomeManagement.App.Views.Transactions.EditTransactionPage"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              xmlns:Controls="clr-namespace:HomeManagement.App.Views.Controls"
@@ -14,7 +14,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Icon="check_48dp.png" Command="{Binding UpdateChargeCommand}" />
+        <ToolbarItem Icon="check_48dp.png" Command="{Binding UpdateTransactionCommand}" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
@@ -26,20 +26,20 @@
                     </Label.Behaviors>
                 </Label>
 
-                <Entry  Text="{Binding Charge.Name}" FontSize="Large" />
+                <Entry  Text="{Binding Transaction.Name}" FontSize="Large" />
             </StackLayout>
 
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
                 <Image Source="money_36dp.png" HorizontalOptions="Start" HeightRequest="50" />
 
-                <Entry WidthRequest="100" Keyboard="Numeric"  Text="{Binding Charge.Price}" />
+                <Entry WidthRequest="100" Keyboard="Numeric"  Text="{Binding Transaction.Price}" />
 
             </StackLayout>
 
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
                 <Image Source="date_36dp.png" HorizontalOptions="Start" HeightRequest="50" />
 
-                <DatePicker Date="{Binding Charge.Date}" />
+                <DatePicker Date="{Binding Transaction.Date}" />
             </StackLayout>
 
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
@@ -55,7 +55,7 @@
                         <Beh:TranslationBehavior LanguageKey="TransactionType" />
                     </Label.Behaviors>
                 </Label>
-                <Controls:RadioGroup Options="{Binding ChargeTypes}" SelectedItem="{Binding SelectedChargeType}" 
+                <Controls:RadioGroup Options="{Binding TransactionTypes}" SelectedItem="{Binding SelectedTransactionType}" 
                                      HorizontalOptions="Start"/>
             </StackLayout>
         </StackLayout>
