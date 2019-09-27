@@ -15,17 +15,17 @@ namespace HomeManagement.API.Controllers.Transactions
     [Authorization]
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
-    [Route("api/Charges")]
+    [Route("api/Transactions")]
     [Persistable]
     public class TransactionsExportController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.TransactionRepository chargeRepository;
+        private readonly Data.Repositories.ITransactionRepository transactionRepository;
         private readonly IUserRepository userRepository;
         private readonly IExportableCharge exportableCharge;
 
         public TransactionsExportController(IAccountRepository accountRepository,
-            Data.Repositories.TransactionRepository chargeRepository,
+            Data.Repositories.ITransactionRepository transactionRepository,
             ICategoryRepository categoryRepository,
             ITransactionMapper chargeMapper,
             ICategoryMapper categoryMapper,
@@ -33,7 +33,7 @@ namespace HomeManagement.API.Controllers.Transactions
             IExportableCharge exportableCharge)
         {
             this.accountRepository = accountRepository;
-            this.chargeRepository = chargeRepository;
+            this.transactionRepository = transactionRepository;
             this.userRepository = userRepository;
             this.exportableCharge = exportableCharge;
         }
@@ -41,7 +41,7 @@ namespace HomeManagement.API.Controllers.Transactions
         [HttpGet("download/{accountId}")]
         public IActionResult DownloadCategories(int accountId)
         {
-            var charges = chargeRepository.Where(x => x.AccountId.Equals(accountId)).ToList();
+            var charges = transactionRepository.Where(x => x.AccountId.Equals(accountId)).ToList();
 
             var account = accountRepository.GetById(accountId);
 
@@ -70,11 +70,11 @@ namespace HomeManagement.API.Controllers.Transactions
                 {
                     if (entity == null) continue;
 
-                    if (chargeRepository.Exists(entity)) continue;
+                    if (transactionRepository.Exists(entity)) continue;
 
                     entity.Id = 0;
                     entity.AccountId = accountId;
-                    chargeRepository.Add(entity);
+                    transactionRepository.Add(entity);
 
                     account.Balance = entity.TransactionType.Equals(TransactionType.Income) ? account.Balance + entity.Price : account.Balance - entity.Price;
                     accountRepository.Update(account);

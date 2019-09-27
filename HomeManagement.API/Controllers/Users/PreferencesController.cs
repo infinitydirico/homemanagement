@@ -21,21 +21,21 @@ namespace HomeManagement.API.Controllers.Users
         private readonly IPreferencesRepository preferencesRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly IUserCategoryRepository userCategoryRepository;
-        private readonly Data.Repositories.TransactionRepository chargeRepository;
+        private readonly Data.Repositories.ITransactionRepository transactionRepository;
         private readonly IAccountRepository accountRepository;
 
         public PreferencesController(IUserRepository userRepository,
             IPreferencesRepository preferencesRepository,
             ICategoryRepository categoryRepository,
             IUserCategoryRepository userCategoryRepository,
-            Data.Repositories.TransactionRepository chargeRepository,
+            Data.Repositories.ITransactionRepository transactionRepository,
             IAccountRepository accountRepository)
         {
             this.userRepository = userRepository;
             this.preferencesRepository = preferencesRepository;
             this.categoryRepository = categoryRepository;
             this.userCategoryRepository = userCategoryRepository;
-            this.chargeRepository = chargeRepository;
+            this.transactionRepository = transactionRepository;
             this.accountRepository = accountRepository;
         }
 
@@ -84,7 +84,7 @@ namespace HomeManagement.API.Controllers.Users
 
         private void UpdateCharges(User user, string language)
         {
-            var chargesWithOldCategories = (from charge in chargeRepository.All
+            var chargesWithOldCategories = (from charge in transactionRepository.All
                                             join account in accountRepository.All
                                             on charge.AccountId equals account.Id
                                             where account.UserId.Equals(user.Id) &&
@@ -104,7 +104,7 @@ namespace HomeManagement.API.Controllers.Users
 
                 charge.CategoryId = newCategory.Id;
 
-                chargeRepository.Update(charge);
+                transactionRepository.Update(charge);
             }
         }
     }

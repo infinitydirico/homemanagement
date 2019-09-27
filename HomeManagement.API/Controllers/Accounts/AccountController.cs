@@ -20,18 +20,18 @@ namespace HomeManagement.API.Controllers.Accounts
     public class AccountController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.TransactionRepository chargeRepository;
+        private readonly Data.Repositories.ITransactionRepository transactionRepository;
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
 
         public AccountController(IAccountRepository accountRepository,
-            Data.Repositories.TransactionRepository chargeRepository,
+            Data.Repositories.ITransactionRepository transactionRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository,
             IStringLocalizer<AccountController> localizer)
         {
             this.accountRepository = accountRepository;
-            this.chargeRepository = chargeRepository;
+            this.transactionRepository = transactionRepository;
             this.accountMapper = accountMapper;
             this.userRepository = userRepository;
         }       
@@ -92,7 +92,7 @@ namespace HomeManagement.API.Controllers.Accounts
         {
             if (id < 1) return BadRequest();
 
-            var charge = chargeRepository.FirstOrDefault(c => c.AccountId.Equals(id));
+            var charge = transactionRepository.FirstOrDefault(c => c.AccountId.Equals(id));
             if (charge != null) return BadRequest(Constants.ErrorCode.AccountHasCharges);
 
             accountRepository.Remove(id);

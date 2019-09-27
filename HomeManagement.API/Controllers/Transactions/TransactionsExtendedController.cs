@@ -18,18 +18,18 @@ namespace HomeManagement.API.Controllers.Transactions
     [Authorization]
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
-    [Route("api/Charges")]
+    [Route("api/Transactions")]
     public class TransactionsExtendedController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.TransactionRepository transactionsRepository;
+        private readonly Data.Repositories.ITransactionRepository transactionsRepository;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly ITransactionMapper transactionsMapper;
         private readonly ICategoryMapper categoryMapper;
 
         public TransactionsExtendedController(IAccountRepository accountRepository,
-            Data.Repositories.TransactionRepository transactionsRepository,
+            Data.Repositories.ITransactionRepository transactionsRepository,
             ICategoryRepository categoryRepository,
             ITransactionMapper transactionsMapper,
             ICategoryMapper categoryMapper,

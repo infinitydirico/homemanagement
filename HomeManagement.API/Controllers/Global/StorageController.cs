@@ -25,7 +25,7 @@ namespace HomeManagement.API.Controllers.Global
         private readonly IStorageItemRepository storageItemRepository;
         private readonly IStorageClient storageClient;
         private readonly IUserRepository userRepository;
-        private readonly Data.Repositories.TransactionRepository chargeRepository;
+        private readonly Data.Repositories.ITransactionRepository transactionRepository;
         private readonly IAccountRepository accountRepository;
         private readonly IPreferencesRepository preferencesRepository;
 
@@ -33,7 +33,7 @@ namespace HomeManagement.API.Controllers.Global
             IStorageItemRepository storageItemRepository,
             IStorageClient storageClient,
             IUserRepository userRepository,
-            Data.Repositories.TransactionRepository chargeRepository,
+            Data.Repositories.ITransactionRepository transactionRepository,
             IAccountRepository accountRepository,
             IPreferencesRepository preferencesRepository)
         {
@@ -41,7 +41,7 @@ namespace HomeManagement.API.Controllers.Global
             this.storageItemRepository = storageItemRepository;
             this.storageClient = storageClient;
             this.userRepository = userRepository;
-            this.chargeRepository = chargeRepository;
+            this.transactionRepository = transactionRepository;
             this.accountRepository = accountRepository;
             this.preferencesRepository = preferencesRepository;
         }
@@ -147,7 +147,7 @@ namespace HomeManagement.API.Controllers.Global
             if (HttpContext.HasHeader("chargeId"))
             {
                 chargeId = int.Parse(HttpContext.GetHeader("chargeId"));
-                charge = chargeRepository.GetById(chargeId);
+                charge = transactionRepository.GetById(chargeId);
                 account = accountRepository.GetById(charge.AccountId);
             }
 
@@ -163,7 +163,7 @@ namespace HomeManagement.API.Controllers.Global
         private List<StorageItem> GetRepoItems(int userId)
         {
             return (from storageItem in storageItemRepository.All
-                    join charge in chargeRepository.All
+                    join charge in transactionRepository.All
                     on storageItem.TransactionId equals charge.Id
                     join account in accountRepository.All
                     on charge.AccountId equals account.Id

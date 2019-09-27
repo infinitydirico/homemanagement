@@ -19,7 +19,7 @@ namespace HomeManagement.API.Controllers.Categories
     public class CategoryController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.TransactionRepository chargeRepository;
+        private readonly Data.Repositories.ITransactionRepository transactionRepository;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly ITransactionMapper chargeMapper;
@@ -27,7 +27,7 @@ namespace HomeManagement.API.Controllers.Categories
         private readonly IUserCategoryRepository userCategoryRepository;
 
         public CategoryController(IAccountRepository accountRepository,
-                                    Data.Repositories.TransactionRepository chargeRepository,
+                                    Data.Repositories.ITransactionRepository transactionRepository,
                                     ICategoryRepository categoryRepository,
                                     ITransactionMapper chargeMapper,
                                     ICategoryMapper categoryMapper,
@@ -35,7 +35,7 @@ namespace HomeManagement.API.Controllers.Categories
                                     IUserCategoryRepository userCategoryRepository)
         {
             this.accountRepository = accountRepository;
-            this.chargeRepository = chargeRepository;
+            this.transactionRepository = transactionRepository;
             this.categoryRepository = categoryRepository;
             this.chargeMapper = chargeMapper;
             this.categoryMapper = categoryMapper;
@@ -106,7 +106,7 @@ namespace HomeManagement.API.Controllers.Categories
 
             if (category == null) return BadRequest();
 
-            var chargesWithThisCategory = chargeRepository.Count(x => x.CategoryId.Equals(id));
+            var chargesWithThisCategory = transactionRepository.Count(x => x.CategoryId.Equals(id));
 
             if (chargesWithThisCategory > default(int)) return BadRequest();
 

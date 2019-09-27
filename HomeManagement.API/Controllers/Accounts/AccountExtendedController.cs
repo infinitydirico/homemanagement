@@ -17,7 +17,7 @@ namespace HomeManagement.API.Controllers.Accounts
     public class AccountExtendedController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.TransactionRepository chargeRepository;
+        private readonly Data.Repositories.ITransactionRepository transactionRepository;
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
         private readonly ITransactionMapper chargeMapper;
@@ -25,7 +25,7 @@ namespace HomeManagement.API.Controllers.Accounts
         private readonly ICategoryRepository categoryRepository;
 
         public AccountExtendedController(IAccountRepository accountRepository,
-            Data.Repositories.TransactionRepository chargeRepository,
+            Data.Repositories.ITransactionRepository transactionRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository,
             ITransactionMapper chargeMapper,
@@ -33,7 +33,7 @@ namespace HomeManagement.API.Controllers.Accounts
             ICategoryRepository categoryRepository)
         {
             this.accountRepository = accountRepository;
-            this.chargeRepository = chargeRepository;
+            this.transactionRepository = transactionRepository;
             this.accountMapper = accountMapper;
             this.userRepository = userRepository;
             this.chargeMapper = chargeMapper;
@@ -72,7 +72,7 @@ namespace HomeManagement.API.Controllers.Accounts
         {
             if (model == null) return BadRequest();
 
-            var controller = new TransactionsController(accountRepository, chargeRepository, categoryRepository, chargeMapper, categoryMapper, userRepository);
+            var controller = new TransactionsController(accountRepository, transactionRepository, categoryRepository, chargeMapper, categoryMapper, userRepository);
 
             var incomingCharge = new TransactionModel
             {

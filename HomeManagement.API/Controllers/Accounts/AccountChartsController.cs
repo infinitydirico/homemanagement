@@ -19,21 +19,21 @@ namespace HomeManagement.API.Controllers.Accounts
     public class AccountChartsController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.TransactionRepository chargeRepository;
+        private readonly Data.Repositories.ITransactionRepository transactionRepository;
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly ICategoryMapper categoryMapper;
 
         public AccountChartsController(IAccountRepository accountRepository,
-            Data.Repositories.TransactionRepository chargeRepository,
+            Data.Repositories.ITransactionRepository transactionRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository,
             ICategoryRepository categoryRepository,
             ICategoryMapper categoryMapper)
         {
             this.accountRepository = accountRepository;
-            this.chargeRepository = chargeRepository;
+            this.transactionRepository = transactionRepository;
             this.accountMapper = accountMapper;
             this.userRepository = userRepository;
             this.categoryRepository = categoryRepository;
@@ -44,7 +44,7 @@ namespace HomeManagement.API.Controllers.Accounts
         [HttpGet("{id}/chartbychargetype")]
         public IActionResult ChartData(int id)
         {
-            var accountCharges = (from c in chargeRepository.All
+            var accountCharges = (from c in transactionRepository.All
                                   join a in accountRepository.All
                                   on c.AccountId equals a.Id
                                   where a.Measurable && a.Id.Equals(id)
@@ -82,7 +82,7 @@ namespace HomeManagement.API.Controllers.Accounts
 
                 for (int i = 1; i <= DateTime.Now.Month; i++)
                 {
-                    var accountCharges = (from c in chargeRepository.All
+                    var accountCharges = (from c in transactionRepository.All
                                           join a in accountRepository.All
                                           on c.AccountId equals a.Id
                                           where a.Measurable && 
@@ -132,7 +132,7 @@ namespace HomeManagement.API.Controllers.Accounts
 
             for (int i = 1; i <= DateTime.Now.Month; i++)
             {
-                var accountCharges = (from c in chargeRepository.All
+                var accountCharges = (from c in transactionRepository.All
                                       join a in accountRepository.All
                                       on c.AccountId equals a.Id
                                       where a.Measurable &&
@@ -177,7 +177,7 @@ namespace HomeManagement.API.Controllers.Accounts
             }
 
             //implement a method where it gets all charges of all accounts to the authenticated user that is grouped by categories
-            var result = (from charge in chargeRepository.All
+            var result = (from charge in transactionRepository.All
                           join account in accountRepository.All
                           on charge.AccountId equals account.Id
                           join user in userRepository.All
@@ -217,7 +217,7 @@ namespace HomeManagement.API.Controllers.Accounts
                 month = DateTime.Now.Month;
             }
 
-            var result = (from c in chargeRepository.All
+            var result = (from c in transactionRepository.All
                      join a in accountRepository.All
                      on c.AccountId equals a.Id
                      join ca in categoryRepository.All
