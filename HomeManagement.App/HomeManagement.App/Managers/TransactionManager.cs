@@ -32,7 +32,7 @@ namespace HomeManagement.App.Managers
         Task UpdateAsync(Transaction transaction);
     }
 
-    public class TransactionManager : BaseManager<Transaction, ChargePageModel>, ITransactionManager
+    public class TransactionManager : BaseManager<Transaction, TransactionPageModel>, ITransactionManager
     {
         protected readonly ITransactionServiceClient transactionServiceClient = App._container.Resolve<ITransactionServiceClient>();
         private readonly GenericRepository<Transaction> chargeRepository = new GenericRepository<Transaction>();
@@ -112,7 +112,7 @@ namespace HomeManagement.App.Managers
                 }
             }
 
-            page.Charges.Clear();
+            page.Transactions.Clear();
 
             await Task.Delay(500);
 
@@ -152,14 +152,14 @@ namespace HomeManagement.App.Managers
             .Take(page.PageCount)
             .ToList();
 
-        private IEnumerable<Transaction> MapPageToEntity(ChargePageModel page) 
-            => from charge in page.Charges
+        private IEnumerable<Transaction> MapPageToEntity(TransactionPageModel page) 
+            => from charge in page.Transactions
                select new Transaction
                {
                    Id = charge.Id,
                    AccountId = charge.AccountId,
                    CategoryId = charge.CategoryId,
-                   TransactionType = (TransactionType)Enum.Parse(typeof(TransactionType), charge.ChargeType.ToString()),
+                   TransactionType = (TransactionType)Enum.Parse(typeof(TransactionType), charge.TransactionType.ToString()),
                    Date = charge.Date,
                    Name = charge.Name,
                    Price = charge.Price,
@@ -175,12 +175,12 @@ namespace HomeManagement.App.Managers
             await transactionServiceClient.Put(model);
         }
 
-        private ChargeModel MapToModel(Transaction transaction) => new ChargeModel
+        private TransactionModel MapToModel(Transaction transaction) => new TransactionModel
         {
             Id = transaction.Id,
             AccountId = transaction.AccountId,
             CategoryId = transaction.CategoryId,
-            ChargeType = transaction.TransactionType.Equals(TransactionType.Expense) ? ChargeTypeModel.Expense : ChargeTypeModel.Income,
+            TransactionType = transaction.TransactionType.Equals(TransactionType.Expense) ? TransactionTypeModel.Expense : TransactionTypeModel.Income,
             Date = transaction.Date,
             Name = transaction.Name,
             Price = transaction.Price

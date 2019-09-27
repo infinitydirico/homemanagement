@@ -10,24 +10,24 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 
-namespace HomeManagement.API.Controllers.Charges
+namespace HomeManagement.API.Controllers.Transactions
 {
     [Authorization]
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Charges")]
     [Persistable]
-    public class ChargesExportController : Controller
+    public class TransactionsExportController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.IChargeRepository chargeRepository;
+        private readonly Data.Repositories.TransactionRepository chargeRepository;
         private readonly IUserRepository userRepository;
         private readonly IExportableCharge exportableCharge;
 
-        public ChargesExportController(IAccountRepository accountRepository,
-            Data.Repositories.IChargeRepository chargeRepository,
+        public TransactionsExportController(IAccountRepository accountRepository,
+            Data.Repositories.TransactionRepository chargeRepository,
             ICategoryRepository categoryRepository,
-            IChargeMapper chargeMapper,
+            ITransactionMapper chargeMapper,
             ICategoryMapper categoryMapper,
             IUserRepository userRepository,
             IExportableCharge exportableCharge)
@@ -76,7 +76,7 @@ namespace HomeManagement.API.Controllers.Charges
                     entity.AccountId = accountId;
                     chargeRepository.Add(entity);
 
-                    account.Balance = entity.ChargeType.Equals(ChargeType.Income) ? account.Balance + entity.Price : account.Balance - entity.Price;
+                    account.Balance = entity.TransactionType.Equals(TransactionType.Income) ? account.Balance + entity.Price : account.Balance - entity.Price;
                     accountRepository.Update(account);
                 }
             }

@@ -28,7 +28,7 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<IAccountRepository, AccountRepository>();
 
-            services.AddScoped<Data.Repositories.IChargeRepository, Data.Repositories.ChargeRepository>();
+            services.AddScoped<Data.Repositories.ITransactionRepository, Data.Repositories.TransactionRepository>();
 
             services.AddScoped<ICategoryRepository, API.Data.Repositories.CategoryRepository>();
 
@@ -63,7 +63,7 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<IUserMapper, UserMapper>();
 
-            services.AddScoped<IChargeMapper, ChargeMapper>();
+            services.AddScoped<ITransactionMapper, TransactionMapper>();
 
             services.AddScoped<IReminderMapper, ReminderMapper>();
 

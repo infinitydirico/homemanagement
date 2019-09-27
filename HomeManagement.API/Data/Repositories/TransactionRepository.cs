@@ -5,26 +5,26 @@ using System.Linq;
 
 namespace HomeManagement.API.Data.Repositories
 {
-    public interface IChargeRepository : HomeManagement.Data.IChargeRepository
+    public interface ITransactionRepository : HomeManagement.Data.ITransactionRepository
     {
-        void Add(Charge charge, bool affectsBalance);
+        void Add(Transaction charge, bool affectsBalance);
 
-        void Update(Charge charge, bool affectsBalance);
+        void Update(Transaction charge, bool affectsBalance);
 
-        void Remove(Charge charge, bool affectsBalance);
+        void Remove(Transaction charge, bool affectsBalance);
     }
 
-    public class ChargeRepository : HomeManagement.Data.ChargeRepository, IChargeRepository
+    public class TransactionRepository : HomeManagement.Data.TransactionRepository, ITransactionRepository
     {
-        public ChargeRepository(IPlatformContext platformContext) : base(platformContext)
+        public TransactionRepository(IPlatformContext platformContext) : base(platformContext)
         {
         }
 
-        public void Add(Charge charge, bool affectsBalance)
+        public void Add(Transaction charge, bool affectsBalance)
         {
             using(var transaction = dbContext.Database.BeginTransaction())
             {
-                dbContext.Set<Charge>().Add(charge);
+                dbContext.Set<Transaction>().Add(charge);
 
                 UpdateBalance(charge);
 
@@ -34,7 +34,7 @@ namespace HomeManagement.API.Data.Repositories
             }
         }
 
-        public void Update(Charge charge, bool affectsBalance)
+        public void Update(Transaction charge, bool affectsBalance)
         {
             using (var transaction = dbContext.Database.BeginTransaction())
             {
@@ -43,7 +43,7 @@ namespace HomeManagement.API.Data.Repositories
                 dbContext.Entry(previousCharge).State = EntityState.Detached;
                 dbContext.Attach(charge);
                 dbContext.Entry(charge).State = EntityState.Modified;
-                dbContext.Set<Charge>().Update(charge);
+                dbContext.Set<Transaction>().Update(charge);
 
                 UpdateBalance(previousCharge, true);
 
@@ -55,11 +55,11 @@ namespace HomeManagement.API.Data.Repositories
             }
         }
 
-        public void Remove(Charge charge, bool affectsBalance)
+        public void Remove(Transaction charge, bool affectsBalance)
         {
             using (var transaction = dbContext.Database.BeginTransaction())
             {
-                dbContext.Set<Charge>().Remove(charge);
+                dbContext.Set<Transaction>().Remove(charge);
                 dbContext.Entry(charge).State = EntityState.Deleted;
 
                 UpdateBalance(charge, true);
@@ -70,7 +70,7 @@ namespace HomeManagement.API.Data.Repositories
             }
         }
 
-        private void UpdateBalance(Charge c, bool reverse = false)
+        private void UpdateBalance(Transaction c, bool reverse = false)
         {
             var account = dbContext.Set<Account>().First(x => x.Id.Equals(c.AccountId));
 
@@ -79,7 +79,7 @@ namespace HomeManagement.API.Data.Repositories
                 c.Price = -c.Price;
             }
 
-            account.Balance = c.ChargeType.Equals(ChargeType.Income) ? account.Balance + c.Price : account.Balance - c.Price;
+            account.Balance = c.TransactionType.Equals(TransactionType.Income) ? account.Balance + c.Price : account.Balance - c.Price;
             dbContext.Set<Account>().Update(account);
         }
     }

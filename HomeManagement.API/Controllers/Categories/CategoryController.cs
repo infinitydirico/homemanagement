@@ -19,17 +19,17 @@ namespace HomeManagement.API.Controllers.Categories
     public class CategoryController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.IChargeRepository chargeRepository;
+        private readonly Data.Repositories.TransactionRepository chargeRepository;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
-        private readonly IChargeMapper chargeMapper;
+        private readonly ITransactionMapper chargeMapper;
         private readonly ICategoryMapper categoryMapper;
         private readonly IUserCategoryRepository userCategoryRepository;
 
         public CategoryController(IAccountRepository accountRepository,
-                                    Data.Repositories.IChargeRepository chargeRepository,
+                                    Data.Repositories.TransactionRepository chargeRepository,
                                     ICategoryRepository categoryRepository,
-                                    IChargeMapper chargeMapper,
+                                    ITransactionMapper chargeMapper,
                                     ICategoryMapper categoryMapper,
                                     IUserRepository userRepository,
                                     IUserCategoryRepository userCategoryRepository)

@@ -21,14 +21,14 @@ namespace HomeManagement.API.Controllers.Users
         private readonly IPreferencesRepository preferencesRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly IUserCategoryRepository userCategoryRepository;
-        private readonly Data.Repositories.IChargeRepository chargeRepository;
+        private readonly Data.Repositories.TransactionRepository chargeRepository;
         private readonly IAccountRepository accountRepository;
 
         public PreferencesController(IUserRepository userRepository,
             IPreferencesRepository preferencesRepository,
             ICategoryRepository categoryRepository,
             IUserCategoryRepository userCategoryRepository,
-            Data.Repositories.IChargeRepository chargeRepository,
+            Data.Repositories.TransactionRepository chargeRepository,
             IAccountRepository accountRepository)
         {
             this.userRepository = userRepository;

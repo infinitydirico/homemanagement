@@ -19,14 +19,14 @@ namespace HomeManagement.API.Controllers.Accounts
     public class AccountChartsController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.IChargeRepository chargeRepository;
+        private readonly Data.Repositories.TransactionRepository chargeRepository;
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly ICategoryMapper categoryMapper;
 
         public AccountChartsController(IAccountRepository accountRepository,
-            Data.Repositories.IChargeRepository chargeRepository,
+            Data.Repositories.TransactionRepository chargeRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository,
             ICategoryRepository categoryRepository,
@@ -53,8 +53,8 @@ namespace HomeManagement.API.Controllers.Accounts
             return Ok(new AccountOverviewModel
             {
                 TotalCharges = accountCharges.Count(),
-                ExpneseCharges = accountCharges.Count(c => c.ChargeType == ChargeType.Expense),
-                IncomeCharges = accountCharges.Count(c => c.ChargeType == (int)ChargeType.Income)
+                ExpneseCharges = accountCharges.Count(c => c.TransactionType == TransactionType.Expense),
+                IncomeCharges = accountCharges.Count(c => c.TransactionType == (int)TransactionType.Income)
             });
         }
 
@@ -92,11 +92,11 @@ namespace HomeManagement.API.Controllers.Accounts
                                           select c);
 
                     var incomingCharges = accountCharges
-                        .Where(x => x.ChargeType == ChargeType.Income)
+                        .Where(x => x.TransactionType == TransactionType.Income)
                         .Sum(x => x.Price.ParseNoDecimals());
 
                     var outgoingCharges = accountCharges
-                        .Where(x => x.ChargeType == ChargeType.Expense)
+                        .Where(x => x.TransactionType == TransactionType.Expense)
                         .Sum(x => x.Price.ParseNoDecimals());
 
                     accountEvoModel.AccountId = account.Id;
@@ -141,11 +141,11 @@ namespace HomeManagement.API.Controllers.Accounts
                                       select c);
 
                 var incomingCharges = accountCharges
-                    .Where(x => x.ChargeType == ChargeType.Income)
+                    .Where(x => x.TransactionType == TransactionType.Income)
                     .Sum(x => x.Price.ParseNoDecimals());
 
                 var outgoingCharges = accountCharges
-                    .Where(x => x.ChargeType == ChargeType.Expense)
+                    .Where(x => x.TransactionType == TransactionType.Expense)
                     .Sum(x => x.Price.ParseNoDecimals());
 
                 model.IncomingSeries.Add(decimal.ToInt32(incomingCharges));
@@ -185,7 +185,7 @@ namespace HomeManagement.API.Controllers.Accounts
                           join category in categoryRepository.All
                           on charge.CategoryId equals category.Id
                           where user.Email.Equals(email.Value)
-                                   && charge.ChargeType.Equals(ChargeType.Expense)
+                                   && charge.TransactionType.Equals(TransactionType.Expense)
                                    && charge.Date.Month.Equals(month)
                                    && account.Measurable
                                    && category.Measurable
@@ -225,7 +225,7 @@ namespace HomeManagement.API.Controllers.Accounts
                      where a.Measurable &&
                            a.Id.Equals(id) &&
                            c.Date.Month.Equals(month) &&
-                           c.ChargeType == ChargeType.Expense &&
+                           c.TransactionType == TransactionType.Expense &&
                            ca.Measurable
                      select new { c, ca })
                      .GroupBy(x => x.c.CategoryId)

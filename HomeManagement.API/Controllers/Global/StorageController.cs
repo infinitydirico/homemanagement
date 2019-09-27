@@ -25,7 +25,7 @@ namespace HomeManagement.API.Controllers.Global
         private readonly IStorageItemRepository storageItemRepository;
         private readonly IStorageClient storageClient;
         private readonly IUserRepository userRepository;
-        private readonly Data.Repositories.IChargeRepository chargeRepository;
+        private readonly Data.Repositories.TransactionRepository chargeRepository;
         private readonly IAccountRepository accountRepository;
         private readonly IPreferencesRepository preferencesRepository;
 
@@ -33,7 +33,7 @@ namespace HomeManagement.API.Controllers.Global
             IStorageItemRepository storageItemRepository,
             IStorageClient storageClient,
             IUserRepository userRepository,
-            Data.Repositories.IChargeRepository chargeRepository,
+            Data.Repositories.TransactionRepository chargeRepository,
             IAccountRepository accountRepository,
             IPreferencesRepository preferencesRepository)
         {
@@ -85,7 +85,7 @@ namespace HomeManagement.API.Controllers.Global
             if (!storageClient.IsAuthorized(user.Id)) return Forbid();
 
             return Ok(GetRepoItems(user.Id)
-                .Where(x => x.ChargeId.Equals(chargeId))
+                .Where(x => x.TransactionId.Equals(chargeId))
                 .Select(x => storageItemMapper.ToModel(x)));
         }
 
@@ -134,7 +134,7 @@ namespace HomeManagement.API.Controllers.Global
         {
             int chargeId = 0;
             Account account = null;
-            Charge charge = null;
+            Transaction charge = null;
 
             var claim = HttpContext.GetEmailClaim();
 
@@ -153,7 +153,7 @@ namespace HomeManagement.API.Controllers.Global
 
             var storageItem = await storageClient.Upload(user.Id, filename,account.Name, charge.Name, Request.Body);
 
-            storageItem.ChargeId = chargeId;
+            storageItem.TransactionId = chargeId;
 
             storageItemRepository.Add(storageItem);
 
@@ -164,7 +164,7 @@ namespace HomeManagement.API.Controllers.Global
         {
             return (from storageItem in storageItemRepository.All
                     join charge in chargeRepository.All
-                    on storageItem.ChargeId equals charge.Id
+                    on storageItem.TransactionId equals charge.Id
                     join account in accountRepository.All
                     on charge.AccountId equals account.Id
                     where account.UserId.Equals(userId)

@@ -4,22 +4,22 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HomeManagement.Mapper.Tests
 {
     [TestClass]
-    public class ChargeMapperTest
+    public class TransactionMapperTest
     {
         [TestMethod]
         public void GivenEntity_WhenMapping_ShouldReturnModel()
         {
             //Arrange
-            ChargeMapper mapper = new ChargeMapper();
+            TransactionMapper mapper = new TransactionMapper();
 
             //Act
-            var model = mapper.ToModel(new Domain.Charge
+            var model = mapper.ToModel(new Domain.Transaction
             {
                 Id = 1,
                 Name = "Credit Card Payment",
                 AccountId = 1,
                 CategoryId = 1,
-                ChargeType = Domain.ChargeType.Expense,
+                TransactionType = Domain.TransactionType.Expense,
                 Date = DateTime.Now,
                 Price = 666
             });

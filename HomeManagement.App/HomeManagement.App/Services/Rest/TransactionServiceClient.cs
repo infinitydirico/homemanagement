@@ -7,13 +7,13 @@ namespace HomeManagement.App.Services.Rest
 {
     public interface ITransactionServiceClient
     {
-        Task<ChargePageModel> Page(ChargePageModel dto);
+        Task<TransactionPageModel> Page(TransactionPageModel dto);
 
         Task Delete(int id);
 
-        Task Post(ChargeModel charge);
+        Task Post(TransactionModel charge);
 
-        Task Put(ChargeModel charge);
+        Task Put(TransactionModel charge);
     }
 
     public class TransactionServiceClient : ITransactionServiceClient
@@ -27,15 +27,15 @@ namespace HomeManagement.App.Services.Rest
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<ChargePageModel> Page(ChargePageModel dto)
+        public async Task<TransactionPageModel> Page(TransactionPageModel dto)
         {
             return await RestClientFactory
                 .CreateAuthenticatedClient()
                 .PostAsync(Constants.Endpoints.Charge.PAGE, dto.SerializeToJson())
-                .ReadContent<ChargePageModel>();
+                .ReadContent<TransactionPageModel>();
         }
 
-        public async Task Post(ChargeModel charge)
+        public async Task Post(TransactionModel charge)
         {
             var response = await RestClientFactory
                 .CreateAuthenticatedClient()
@@ -44,7 +44,7 @@ namespace HomeManagement.App.Services.Rest
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task Put(ChargeModel charge)
+        public async Task Put(TransactionModel charge)
         {
             var response = await RestClientFactory
                 .CreateAuthenticatedClient()

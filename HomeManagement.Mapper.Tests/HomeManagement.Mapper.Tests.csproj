@@ -51,7 +51,7 @@
   <ItemGroup>
     <Compile Include="AccountMapperTest.cs" />
     <Compile Include="CategoryMapperTest.cs" />
-    <Compile Include="ChargeMapperTest.cs" />
+    <Compile Include="TransactionMapperTest.cs" />
     <Compile Include="UserMapperTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

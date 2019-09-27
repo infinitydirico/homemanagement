@@ -11,33 +11,33 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 
-namespace HomeManagement.API.Controllers.Charges
+namespace HomeManagement.API.Controllers.Transactions
 {
     [Authorization]
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Charges")]
     [Persistable]
-    public class ChargesController : Controller
+    public class TransactionsController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.IChargeRepository chargeRepository;
+        private readonly Data.Repositories.TransactionRepository transactionRepository;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
-        private readonly IChargeMapper chargeMapper;
+        private readonly ITransactionMapper transactionMapper;
         private readonly ICategoryMapper categoryMapper;
 
-        public ChargesController(IAccountRepository accountRepository,
-            Data.Repositories.IChargeRepository chargeRepository,
+        public TransactionsController(IAccountRepository accountRepository,
+            Data.Repositories.TransactionRepository transactionRepository,
             ICategoryRepository categoryRepository,
-            IChargeMapper chargeMapper,
+            ITransactionMapper transactionMapper,
             ICategoryMapper categoryMapper,
             IUserRepository userRepository)
         {
             this.accountRepository = accountRepository;
-            this.chargeRepository = chargeRepository;
+            this.transactionRepository = transactionRepository;
             this.categoryRepository = categoryRepository;
-            this.chargeMapper = chargeMapper;
+            this.transactionMapper = transactionMapper;
             this.categoryMapper = categoryMapper;
             this.userRepository = userRepository;
         }
@@ -49,28 +49,28 @@ namespace HomeManagement.API.Controllers.Charges
 
             if (claim == null) return BadRequest();
 
-            var charges = (from charge in chargeRepository.All
+            var transactions = (from charge in transactionRepository.All
                            join account in accountRepository.All
                            on charge.AccountId equals account.Id
                            join user in userRepository.All
                            on account.UserId equals user.Id
                            where user.Email.Equals(claim.Value)
-                           select chargeMapper.ToModel(charge)).ToList();
+                           select transactionMapper.ToModel(charge)).ToList();
 
-            return Ok(charges);
+            return Ok(transactions);
 
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var result = chargeRepository.GetById(id);
+            var result = transactionRepository.GetById(id);
 
-            return Ok(chargeMapper.ToModel(result));
+            return Ok(transactionMapper.ToModel(result));
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] ChargeModel model)
+        public IActionResult Post([FromBody] TransactionModel model)
         {
             Category category;
             if (model == null) return BadRequest();
@@ -81,22 +81,22 @@ namespace HomeManagement.API.Controllers.Charges
                 model.CategoryId = category.Id;
             }
 
-            var entity = chargeMapper.ToEntity(model);
+            var entity = transactionMapper.ToEntity(model);
 
-            chargeRepository.Add(entity);
+            transactionRepository.Add(entity);
             UpdateBalance(entity);
 
             return Ok();
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody]ChargeModel model)
+        public IActionResult Put([FromBody]TransactionModel model)
         {
             if (model == null) return BadRequest();
 
-            var entity = chargeMapper.ToEntity(model);
+            var entity = transactionMapper.ToEntity(model);
 
-            chargeRepository.Update(entity, true);
+            transactionRepository.Update(entity, true);
 
             return Ok();
         }
@@ -106,12 +106,12 @@ namespace HomeManagement.API.Controllers.Charges
         {
             if (id < 1) return BadRequest();
 
-            chargeRepository.Remove(chargeRepository.GetById(id), true);
+            transactionRepository.Remove(transactionRepository.GetById(id), true);
 
             return Ok();
         }
 
-        private void UpdateBalance(Charge c, bool reverse = false)
+        private void UpdateBalance(Transaction c, bool reverse = false)
         {
             var account = accountRepository.FirstOrDefault(x => x.Id.Equals(c.AccountId));
 
@@ -120,7 +120,7 @@ namespace HomeManagement.API.Controllers.Charges
                 c.Price = -c.Price;
             }
 
-            account.Balance = c.ChargeType.Equals(ChargeType.Income) ? account.Balance + c.Price : account.Balance - c.Price;
+            account.Balance = c.TransactionType.Equals(TransactionType.Income) ? account.Balance + c.Price : account.Balance - c.Price;
             accountRepository.Update(account);
         }
     }

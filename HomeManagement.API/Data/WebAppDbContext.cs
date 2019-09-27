@@ -13,7 +13,7 @@ namespace HomeManagement.API.Data
 
         public DbSet<Account> Accounts { get; set; }
 
-        public DbSet<Charge> Charges { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         public DbSet<Category> Categories { get; set; }
 
@@ -54,9 +54,9 @@ namespace HomeManagement.API.Data
 
             modelBuilder.Entity<Account>().HasOne(x => x.User).WithMany(x => x.Accounts).HasForeignKey(x => x.UserId);
 
-            modelBuilder.Entity<Charge>().HasOne(x => x.Account).WithMany(x => x.Charges).HasForeignKey(x => x.AccountId);
+            modelBuilder.Entity<Transaction>().HasOne(x => x.Account).WithMany(x => x.Transactions).HasForeignKey(x => x.AccountId);
 
-            modelBuilder.Entity<Charge>().HasOne(x => x.Category);
+            modelBuilder.Entity<Transaction>().HasOne(x => x.Category);
 
             modelBuilder.Entity<UserCategory>().HasKey(x => new { x.UserId, x.CategoryId });
 

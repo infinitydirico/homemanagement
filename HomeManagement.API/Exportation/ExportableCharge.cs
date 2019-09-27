@@ -10,11 +10,11 @@ using System.Text;
 
 namespace HomeManagement.API.Exportation
 {
-    public interface IExportableCharge : IExportable<Charge>
+    public interface IExportableCharge : IExportable<Transaction>
     {
     }
 
-    public class ExportableCharge : Exportable<Charge>, IExportableCharge
+    public class ExportableCharge : Exportable<Transaction>, IExportableCharge
     {
         ICategoryRepository categoryRepository;
 
@@ -23,21 +23,22 @@ namespace HomeManagement.API.Exportation
             this.categoryRepository = categoryRepository;
         }
 
-        protected override Charge CreateInstanceOf(List<string> exportableEntity)
+        protected override Transaction CreateInstanceOf(List<string> exportableEntity)
         {
-            var charge = new Charge();
+            var transaction = new Transaction();
 
-            charge.Name = exportableEntity[0];
-            charge.Price = Convert.ToInt32(exportableEntity[1]);
+            transaction.Name = exportableEntity[0];
+            transaction.Price = Convert.ToInt32(exportableEntity[1]);
 
+            //TODO use user settings (table settings) to fetch user default language
             DateTime date;
             if (!DateTime.TryParse(exportableEntity[2], out date))
             {                
                 date = ForceParsingDateTime(exportableEntity[2]);
             }
-            charge.Date = date;
+            transaction.Date = date;
 
-            charge.ChargeType = exportableEntity[3].ToEnum<ChargeType>();
+            transaction.TransactionType = exportableEntity[3].ToEnum<TransactionType>();
 
             if (exportableEntity.Count > 4 && !string.IsNullOrEmpty(exportableEntity[4]))
             {
@@ -50,19 +51,19 @@ namespace HomeManagement.API.Exportation
                 if (categories.Count() > default(int))
                 {
                     var category = categories.FirstOrDefault();
-                    charge.CategoryId = category.Id;
+                    transaction.CategoryId = category.Id;
                 }
             }
 
             //default fallback
-            if(charge.CategoryId == 0)
+            if(transaction.CategoryId == 0)
             {
                 var category = categoryRepository.FirstOrDefault(x => x.IsDefault);
 
-                charge.CategoryId = category.Id;
+                transaction.CategoryId = category.Id;
             }
 
-            return charge;
+            return transaction;
         }
 
         private DateTime ForceParsingDateTime(string v)
@@ -95,7 +96,7 @@ namespace HomeManagement.API.Exportation
             return new DateTime(year, month, day);
         }
 
-        protected override string GetValues(Charge exportableEntity)
+        protected override string GetValues(Transaction exportableEntity)
         {
             var headers = GetProperties();
 
@@ -105,19 +106,19 @@ namespace HomeManagement.API.Exportation
             {
                 switch (header)
                 {
-                    case nameof(Charge.Name):
+                    case nameof(Transaction.Name):
                         sb.Append(exportableEntity.Name + divider);
                         break;
-                    case nameof(Charge.Price):
+                    case nameof(Transaction.Price):
                         sb.Append(exportableEntity.Price.ToString() + divider);
                         break;
-                    case nameof(Charge.Date):
+                    case nameof(Transaction.Date):
                         sb.Append(exportableEntity.Date.ToString() + divider);
                         break;
-                    case nameof(Charge.ChargeType):
-                        sb.Append(exportableEntity.ChargeType.ToString() + divider);
+                    case nameof(Transaction.TransactionType):
+                        sb.Append(exportableEntity.TransactionType.ToString() + divider);
                         break;
-                    case nameof(Charge.CategoryName):
+                    case nameof(Transaction.CategoryName):
                         var category = categoryRepository.GetById(exportableEntity.CategoryId);
                         sb.Append(category?.Name);
                         break;

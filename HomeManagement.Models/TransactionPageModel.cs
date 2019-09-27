@@ -3,17 +3,17 @@ using System.Runtime.Serialization;
 
 namespace HomeManagement.Models
 {
-    public class ChargePageModel : Page
+    public class TransactionPageModel : Page
     {
-        public ChargePageModel()
+        public TransactionPageModel()
         {
-            Charges = new List<ChargeModel>();
+            Transactions = new List<TransactionModel>();
         }
 
         [DataMember(Name = "accountId")]
         public int AccountId { get; set; }
 
         [DataMember(Name = "charges")]
-        public List<ChargeModel> Charges { get; set; }
+        public List<TransactionModel> Transactions { get; set; }
     }
 }

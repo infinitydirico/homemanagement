@@ -24,12 +24,12 @@ namespace HomeManagement.App.Services.Rest
                 .ReadContent<AccountsEvolutionModel>();
         }
 
-        public async Task<IEnumerable<ChargeModel>> GetChargesByDate(int accountId, int year, int month)
+        public async Task<IEnumerable<TransactionModel>> GetChargesByDate(int accountId, int year, int month)
         {
             return await RestClientFactory
                 .CreateAuthenticatedClient()
                 .GetAsync(string.Format(Constants.Endpoints.Charge.BY_ACCOUNT_AND_DATE, year, month, accountId))
-                .ReadContent<IEnumerable<ChargeModel>>();
+                .ReadContent<IEnumerable<TransactionModel>>();
         }
 
         public async Task<OverPricedCategories> GetMostExpensiveCategories()
@@ -79,6 +79,6 @@ namespace HomeManagement.App.Services.Rest
 
         Task<MetricValueDto> GetTotalOutcome();
 
-        Task<IEnumerable<ChargeModel>> GetChargesByDate(int accountId, int year, int month);
+        Task<IEnumerable<TransactionModel>> GetChargesByDate(int accountId, int year, int month);
     }
 }

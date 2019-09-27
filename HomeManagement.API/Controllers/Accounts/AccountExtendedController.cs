@@ -1,4 +1,4 @@
-﻿using HomeManagement.API.Controllers.Charges;
+﻿using HomeManagement.API.Controllers.Transactions;
 using HomeManagement.API.Filters;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
@@ -17,18 +17,18 @@ namespace HomeManagement.API.Controllers.Accounts
     public class AccountExtendedController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.IChargeRepository chargeRepository;
+        private readonly Data.Repositories.TransactionRepository chargeRepository;
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
-        private readonly IChargeMapper chargeMapper;
+        private readonly ITransactionMapper chargeMapper;
         private readonly ICategoryMapper categoryMapper;
         private readonly ICategoryRepository categoryRepository;
 
         public AccountExtendedController(IAccountRepository accountRepository,
-            Data.Repositories.IChargeRepository chargeRepository,
+            Data.Repositories.TransactionRepository chargeRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository,
-            IChargeMapper chargeMapper,
+            ITransactionMapper chargeMapper,
             ICategoryMapper categoryMapper,
             ICategoryRepository categoryRepository)
         {
@@ -72,26 +72,26 @@ namespace HomeManagement.API.Controllers.Accounts
         {
             if (model == null) return BadRequest();
 
-            var controller = new ChargesController(accountRepository, chargeRepository, categoryRepository, chargeMapper, categoryMapper, userRepository);
+            var controller = new TransactionsController(accountRepository, chargeRepository, categoryRepository, chargeMapper, categoryMapper, userRepository);
 
-            var incomingCharge = new ChargeModel
+            var incomingCharge = new TransactionModel
             {
                 Name = model.OperationName,
                 Price = model.Price,
                 Date = DateTime.Now,
-                ChargeType = ChargeTypeModel.Income,
+                TransactionType = TransactionTypeModel.Income,
                 AccountId = model.TargetAccountId,
                 CategoryId = model.CategoryId
             };
 
             controller.Post(incomingCharge);
 
-            var outgoingCharge = new ChargeModel
+            var outgoingCharge = new TransactionModel
             {
                 Name = model.OperationName,
                 Price = model.Price,
                 Date = DateTime.Now,
-                ChargeType = ChargeTypeModel.Expense,
+                TransactionType = TransactionTypeModel.Expense,
                 AccountId = model.SourceAccountId,
                 CategoryId = model.CategoryId
             };

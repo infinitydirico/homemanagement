@@ -19,12 +19,12 @@ namespace HomeManagement.API.Controllers.Accounts
     public class AccountStatisticsController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.IChargeRepository chargeRepository;
+        private readonly Data.Repositories.TransactionRepository chargeRepository;
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
 
         public AccountStatisticsController(IAccountRepository accountRepository,
-            Data.Repositories.IChargeRepository chargeRepository,
+            Data.Repositories.TransactionRepository chargeRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository)
         {
@@ -44,8 +44,8 @@ namespace HomeManagement.API.Controllers.Accounts
             return Ok(new AccountOverviewModel
             {
                 TotalCharges = chargeRepository.All.Count(c => c.AccountId.Equals(id)),
-                ExpneseCharges = chargeRepository.All.Count(c => c.AccountId.Equals(id) && c.ChargeType == ChargeType.Expense),
-                IncomeCharges = chargeRepository.All.Count(c => c.AccountId.Equals(id) && c.ChargeType == (int)ChargeType.Income)
+                ExpneseCharges = chargeRepository.All.Count(c => c.AccountId.Equals(id) && c.TransactionType == TransactionType.Expense),
+                IncomeCharges = chargeRepository.All.Count(c => c.AccountId.Equals(id) && c.TransactionType == (int)TransactionType.Income)
             });
         }
 
@@ -66,9 +66,9 @@ namespace HomeManagement.API.Controllers.Accounts
 
             var user = userRepository.FirstOrDefault(x => x.Email.Equals(email.Value));
 
-            var total = chargeRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(DateTime.Now.Month) && c.ChargeType == ChargeType.Income);
+            var total = chargeRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(DateTime.Now.Month) && c.TransactionType == TransactionType.Income);
 
-            var previousMonth = chargeRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) && c.ChargeType == ChargeType.Income);
+            var previousMonth = chargeRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) && c.TransactionType == TransactionType.Income);
 
             var percentage = total.CalculatePercentage(previousMonth);
 
@@ -86,9 +86,9 @@ namespace HomeManagement.API.Controllers.Accounts
 
             var user = userRepository.FirstOrDefault(x => x.Email.Equals(email.Value));
 
-            var total = chargeRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(DateTime.Now.Month) && c.ChargeType == ChargeType.Expense);
+            var total = chargeRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(DateTime.Now.Month) && c.TransactionType == TransactionType.Expense);
 
-            var previousMonth = chargeRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) && c.ChargeType == ChargeType.Expense);
+            var previousMonth = chargeRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) && c.TransactionType == TransactionType.Expense);
 
             var percentage = total.CalculatePercentage(previousMonth);
 

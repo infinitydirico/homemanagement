@@ -2,7 +2,7 @@
 
 namespace HomeManagement.Models
 {
-    public class ChargeModel
+    public class TransactionModel
     {
         public int Id { get; set; }
 
@@ -12,7 +12,7 @@ namespace HomeManagement.Models
 
         public DateTime Date { get; set; }
 
-        public ChargeTypeModel ChargeType { get; set; }
+        public TransactionTypeModel TransactionType { get; set; }
 
         public int CategoryId { get; set; }
 
@@ -21,7 +21,7 @@ namespace HomeManagement.Models
         public int AccountId { get; set; }
     }
 
-    public enum ChargeTypeModel
+    public enum TransactionTypeModel
     {
         Income,
         Expense

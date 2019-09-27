@@ -145,11 +145,16 @@
     <Content Include="chart_24dp.png" />
     <Content Include="chart_36dp.png" />
     <Content Include="check_48dp.png" />
+    <Content Include="check_box_24dp.png" />
+    <Content Include="check_box_checked_24dp.png" />
+    <Content Include="check_box_outline_24dp.png" />
+    <Content Include="check_box_unchecked_24dp.png" />
     <Content Include="close_48dp.png" />
     <Content Include="dashboard_48dp.png" />
     <Content Include="date_36dp.png" />
     <Content Include="edit_18dp.png" />
     <Content Include="exit_48dp.png" />
+    <Content Include="eye_18dp.png" />
     <Content Include="help_48dp.png" />
     <Content Include="help_purple_48dp.png" />
     <Content Include="HomeManagement.png" />
@@ -165,6 +170,8 @@
     <Content Include="money_green_36dp.png" />
     <Content Include="money_red_36dp.png" />
     <Content Include="Properties\Default.rd.xml" />
+    <Content Include="radio_button_checked_24dp.png" />
+    <Content Include="radio_button_unchecked_24dp.png" />
     <Content Include="red_trash_18dp.png" />
     <Content Include="settings_48dp.png" />
     <Content Include="SmallTile.scale-100.png" />

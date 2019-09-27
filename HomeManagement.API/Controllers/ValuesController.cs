@@ -10,9 +10,9 @@ namespace HomeManagement.API.Controllers
     public class ValuesController : Controller
     {
         private readonly IUserRepository userRepository;
-        private readonly Data.Repositories.IChargeRepository chargeRepository;
+        private readonly Data.Repositories.TransactionRepository chargeRepository;
 
-        public ValuesController(IUserRepository userRepository, Data.Repositories.IChargeRepository chargeRepository)
+        public ValuesController(IUserRepository userRepository, Data.Repositories.TransactionRepository chargeRepository)
         {
             this.userRepository = userRepository;
             this.chargeRepository = chargeRepository;

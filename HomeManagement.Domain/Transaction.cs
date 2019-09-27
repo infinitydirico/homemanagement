@@ -4,17 +4,14 @@ using System.Collections.Generic;
 
 namespace HomeManagement.Domain
 {
-    /// <summary>
-    /// TODO rename Charge to transaction
-    /// </summary>
-    public class Charge : IExportable
+    public class Transaction : IExportable
     {
         IList<string> exportableHeaders = new List<string>
         {
             nameof(Name),
             nameof(Price),
             nameof(Date),
-            nameof(ChargeType),
+            nameof(TransactionType),
             nameof(CategoryName)
         };
 
@@ -26,7 +23,7 @@ namespace HomeManagement.Domain
 
         public DateTime Date { get; set; }
 
-        public ChargeType ChargeType { get; set; }
+        public TransactionType TransactionType { get; set; }
 
         public int CategoryId { get; set; }
 
@@ -41,7 +38,7 @@ namespace HomeManagement.Domain
         public IList<string> GetProperties() => exportableHeaders;
     }
 
-    public enum ChargeType
+    public enum TransactionType
     {
         Income,
         Expense

@@ -57,7 +57,7 @@ namespace HomeManagement.App.Managers
                                 AccountId = x.AccountId,
                                 Price = x.Price,
                                 Date = x.Date,
-                                TransactionType = x.ChargeType.Equals(0) ? TransactionType.Income : TransactionType.Expense,
+                                TransactionType = x.TransactionType.Equals(0) ? TransactionType.Income : TransactionType.Expense,
                                 CategoryId = x.CategoryId
                             }).ToList();
 

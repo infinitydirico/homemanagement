@@ -13,45 +13,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace HomeManagement.API.Controllers.Charges
+namespace HomeManagement.API.Controllers.Transactions
 {
     [Authorization]
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Charges")]
-    public class ChargesExtendedController : Controller
+    public class TransactionsExtendedController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.IChargeRepository chargeRepository;
+        private readonly Data.Repositories.TransactionRepository transactionsRepository;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
-        private readonly IChargeMapper chargeMapper;
+        private readonly ITransactionMapper transactionsMapper;
         private readonly ICategoryMapper categoryMapper;
 
-        public ChargesExtendedController(IAccountRepository accountRepository,
-            Data.Repositories.IChargeRepository chargeRepository,
+        public TransactionsExtendedController(IAccountRepository accountRepository,
+            Data.Repositories.TransactionRepository transactionsRepository,
             ICategoryRepository categoryRepository,
-            IChargeMapper chargeMapper,
+            ITransactionMapper transactionsMapper,
             ICategoryMapper categoryMapper,
             IUserRepository userRepository)
         {
             this.accountRepository = accountRepository;
-            this.chargeRepository = chargeRepository;
+            this.transactionsRepository = transactionsRepository;
             this.categoryRepository = categoryRepository;
-            this.chargeMapper = chargeMapper;
+            this.transactionsMapper = transactionsMapper;
             this.categoryMapper = categoryMapper;
             this.userRepository = userRepository;
         }
 
         [HttpPost("paging")]
-        public IActionResult Page([FromBody]ChargePageModel model)
+        public IActionResult Page([FromBody]TransactionPageModel model)
         {
             if (model == null) return BadRequest();
 
-            Expression<Func<Charge, bool>> predicate = o => o.AccountId.Equals(model.AccountId);
-            Func<Charge, bool> filter = predicate.Compile();
+            Expression<Func<Transaction, bool>> predicate = o => o.AccountId.Equals(model.AccountId);
+            Func<Transaction, bool> filter = predicate.Compile();
 
-            var total = (double)chargeRepository.Count(predicate);
+            var total = (double)transactionsRepository.Count(predicate);
 
             var totalPages = Math.Ceiling(total / (double)model.PageCount);
 
@@ -66,13 +66,13 @@ namespace HomeManagement.API.Controllers.Charges
 
             var currentPage = model.CurrentPage - 1;
 
-            model.Charges = chargeRepository
+            model.Transactions = transactionsRepository
                             .All
                             .Where(filter)
                             .OrderByDescending(x => x.Id)
                             .Skip(model.PageCount * currentPage)
                             .Take(model.PageCount)
-                            .Select(x => chargeMapper.ToModel(x))
+                            .Select(x => transactionsMapper.ToModel(x))
                             .ToList();
 
             return Ok(model);
@@ -83,19 +83,19 @@ namespace HomeManagement.API.Controllers.Charges
         {
             var claim = HttpContext.GetEmailClaim();
 
-            var charges = (from user in userRepository.All
+            var transactions = (from user in userRepository.All
                            join account in accountRepository.All
                            on user.Id equals account.UserId
-                           join charge in chargeRepository.All
+                           join charge in transactionsRepository.All
                            on account.Id equals charge.AccountId
                            where user.Email.Equals(claim.Value) &&
                                     charge.Date.Year.Equals(year) &&
                                     charge.Date.Month.Equals(month)
                            orderby charge.Date descending
-                           select chargeMapper.ToModel(charge))
+                           select transactionsMapper.ToModel(charge))
                             .ToList();
 
-            return Ok(charges);
+            return Ok(transactions);
         }
 
         [HttpGet("by/date/{year}/{month}/account/{accountId}")]
@@ -103,20 +103,20 @@ namespace HomeManagement.API.Controllers.Charges
         {
             var claim = HttpContext.GetEmailClaim();
 
-            var charges = (from user in userRepository.All
+            var transactions = (from user in userRepository.All
                            join account in accountRepository.All
                            on user.Id equals account.UserId
-                           join charge in chargeRepository.All
+                           join charge in transactionsRepository.All
                            on account.Id equals charge.AccountId
                            where user.Email.Equals(claim.Value) &&
                                     account.Id.Equals(accountId) &&
                                     charge.Date.Year.Equals(year) &&
                                     charge.Date.Month.Equals(month)
                            orderby charge.Date descending
-                           select chargeMapper.ToModel(charge))
+                           select transactionsMapper.ToModel(charge))
                             .ToList();
 
-            return Ok(charges);
+            return Ok(transactions);
         }
 
         [HttpGet("by/category/{category}")]
@@ -124,17 +124,17 @@ namespace HomeManagement.API.Controllers.Charges
         {
             var claim = HttpContext.GetEmailClaim();
 
-            var charges = (from user in userRepository.All
+            var transactions = (from user in userRepository.All
                            join account in accountRepository.All
                            on user.Id equals account.UserId
-                           join charge in chargeRepository.All
+                           join charge in transactionsRepository.All
                            on account.Id equals charge.AccountId
                            where user.Email.Equals(claim.Value) &&
                                     charge.Date.Year.Equals(DateTime.Now.Year) &&
                                     charge.Date < DateTime.Now &&
                                     charge.CategoryId.Equals(category)
                            orderby charge.Date ascending
-                           select chargeMapper.ToModel(charge))
+                           select transactionsMapper.ToModel(charge))
                            .GroupBy(x => x.Date.Month)
                            .Select(x => new
                            {
@@ -143,7 +143,7 @@ namespace HomeManagement.API.Controllers.Charges
                            })
                             .ToList();
 
-            return Ok(charges);
+            return Ok(transactions);
         }
 
         [HttpGet("by/account/{accountId}/category/{category}")]
@@ -151,10 +151,10 @@ namespace HomeManagement.API.Controllers.Charges
         {
             var claim = HttpContext.GetEmailClaim();
 
-            var charges = (from user in userRepository.All
+            var transactions = (from user in userRepository.All
                            join account in accountRepository.All
                            on user.Id equals account.UserId
-                           join charge in chargeRepository.All
+                           join charge in transactionsRepository.All
                            on account.Id equals charge.AccountId
                            where user.Email.Equals(claim.Value) &&
                                     charge.AccountId.Equals(accountId) &&
@@ -162,7 +162,7 @@ namespace HomeManagement.API.Controllers.Charges
                                     charge.Date < DateTime.Now &&
                                     charge.CategoryId.Equals(category)
                            orderby charge.Date ascending
-                           select chargeMapper.ToModel(charge))
+                           select transactionsMapper.ToModel(charge))
                            .GroupBy(x => x.Date.Month)
                            .Select(x => new
                            {
@@ -171,7 +171,7 @@ namespace HomeManagement.API.Controllers.Charges
                            })
                             .ToList();
 
-            return Ok(charges);
+            return Ok(transactions);
         }
 
         [HttpGet("getlastfive")]
@@ -179,28 +179,28 @@ namespace HomeManagement.API.Controllers.Charges
         {
             var claim = HttpContext.GetEmailClaim();
 
-            var charges = (from user in userRepository.All
+            var transactions = (from user in userRepository.All
                            join account in accountRepository.All
                            on user.Id equals account.UserId
-                           join charge in chargeRepository.All
+                           join charge in transactionsRepository.All
                            on account.Id equals charge.AccountId
                            where user.Email.Equals(claim.Value)
                            orderby charge.Date descending
-                           select chargeMapper.ToModel(charge))
+                           select transactionsMapper.ToModel(charge))
                             .Take(5)
                             .ToList();
 
-            return Ok(charges);
+            return Ok(transactions);
         }
 
         [HttpPost("updateAll")]
-        public IActionResult UpdateAll([FromBody] IEnumerable<ChargeModel> models)
+        public IActionResult UpdateAll([FromBody] IEnumerable<TransactionModel> models)
         {
             if (models == null || models.Count().Equals(default(int))) return BadRequest();
 
             foreach (var charge in models)
             {
-                chargeRepository.Update(chargeMapper.ToEntity(charge), true);
+                transactionsRepository.Update(transactionsMapper.ToEntity(charge), true);
             }
 
             return Ok();
@@ -213,19 +213,19 @@ namespace HomeManagement.API.Controllers.Charges
 
             var account = accountRepository.FirstOrDefault(x => x.Id.Equals(accountId));
 
-            var charges = chargeRepository
+            var transactions = transactionsRepository
                 .All
                 .Where(o => o.AccountId.Equals(accountId))
                 .ToList();
 
-            foreach (var charge in charges)
+            foreach (var charge in transactions)
             {
-                chargeRepository.Remove(charge);
+                transactionsRepository.Remove(charge);
 
-                account.Balance = charge.ChargeType.Equals(ChargeType.Income) ? account.Balance - charge.Price : account.Balance + charge.Price; //it's a reverse.
+                account.Balance = charge.TransactionType.Equals(TransactionType.Income) ? account.Balance - charge.Price : account.Balance + charge.Price; //it's a reverse.
                 accountRepository.Update(account);
             }
-            chargeRepository.Commit();
+            transactionsRepository.Commit();
 
             return Ok();
         }

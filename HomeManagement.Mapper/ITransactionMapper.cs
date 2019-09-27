@@ -4,7 +4,7 @@ using HomeManagement.Models;
 
 namespace HomeManagement.Mapper
 {
-    public interface IChargeMapper : IMapper<Charge, ChargeModel>
+    public interface ITransactionMapper : IMapper<Transaction, TransactionModel>
     {
     }
 }

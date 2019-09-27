@@ -20,12 +20,12 @@ namespace HomeManagement.API.Controllers.Accounts
     public class AccountController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.IChargeRepository chargeRepository;
+        private readonly Data.Repositories.TransactionRepository chargeRepository;
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
 
         public AccountController(IAccountRepository accountRepository,
-            Data.Repositories.IChargeRepository chargeRepository,
+            Data.Repositories.TransactionRepository chargeRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository,
             IStringLocalizer<AccountController> localizer)

@@ -6,7 +6,7 @@ namespace HomeManagement.Domain
     {
         public Account()
         {
-            Charges = new List<Charge>();
+            Transactions = new List<Transaction>();
             Taxes = new List<Tax>();
         }
 
@@ -28,7 +28,7 @@ namespace HomeManagement.Domain
 
         public User User { get; set; }
 
-        public virtual List<Charge> Charges { get; set; }
+        public virtual List<Transaction> Transactions { get; set; }
 
         public virtual List<Tax> Taxes { get; set; }
     }
