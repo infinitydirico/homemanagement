@@ -28,7 +28,7 @@ namespace HomeManagement.API.Exportation
             var transaction = new Transaction();
 
             transaction.Name = exportableEntity[0];
-            transaction.Price = Convert.ToInt32(exportableEntity[1]);
+            transaction.Price = double.Parse(exportableEntity[1]);
 
             //TODO use user settings (table settings) to fetch user default language
             DateTime date;
