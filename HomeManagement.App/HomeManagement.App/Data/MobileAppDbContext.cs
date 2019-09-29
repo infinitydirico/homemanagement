@@ -47,7 +47,7 @@ namespace HomeManagement.App.Data
 
             BuildAppSettingsEntity(modelBuilder);
 
-            BuildChargesEntity(modelBuilder);
+            BuildTransactionEntity(modelBuilder);
         }
 
         private void BuildUserEntity(ModelBuilder modelBuilder)
@@ -80,7 +80,7 @@ namespace HomeManagement.App.Data
             modelBuilder.Entity<AppSettings>().Property(x => x.Enabled);
         }
 
-        private void BuildChargesEntity(ModelBuilder modelBuilder)
+        private void BuildTransactionEntity(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Transaction>().HasKey(x => x.Id);
             modelBuilder.Entity<Transaction>().Property(x => x.Name).HasMaxLength(80);

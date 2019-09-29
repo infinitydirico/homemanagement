@@ -43,9 +43,9 @@ namespace HomeManagement.API.Controllers.Accounts
 
             return Ok(new AccountOverviewModel
             {
-                TotalCharges = transactionRepository.All.Count(c => c.AccountId.Equals(id)),
-                ExpneseCharges = transactionRepository.All.Count(c => c.AccountId.Equals(id) && c.TransactionType == TransactionType.Expense),
-                IncomeCharges = transactionRepository.All.Count(c => c.AccountId.Equals(id) && c.TransactionType == (int)TransactionType.Income)
+                TotalTransactions = transactionRepository.All.Count(c => c.AccountId.Equals(id)),
+                ExpenseTransactions = transactionRepository.All.Count(c => c.AccountId.Equals(id) && c.TransactionType == TransactionType.Expense),
+                IncomeTransactions = transactionRepository.All.Count(c => c.AccountId.Equals(id) && c.TransactionType == (int)TransactionType.Income)
             });
         }
 

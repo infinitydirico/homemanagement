@@ -17,7 +17,7 @@ namespace HomeManagement.App.ViewModels
         private readonly GenericRepository<AppSettings> appSettingsRepository = new GenericRepository<AppSettings>();
         private readonly GenericRepository<User> userRepository = new GenericRepository<User>();
         private readonly GenericRepository<Account> accountRepository = new GenericRepository<Account>();
-        private readonly GenericRepository<Transaction> chargeRepository = new GenericRepository<Transaction>();
+        private readonly GenericRepository<Transaction> transactionRepository = new GenericRepository<Transaction>();
         private readonly ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
 
@@ -68,7 +68,7 @@ namespace HomeManagement.App.ViewModels
 
         public void RefreshCaching()
         {
-            HasCachedData = accountRepository.Any() || chargeRepository.Any();
+            HasCachedData = accountRepository.Any() || transactionRepository.Any();
             OnPropertyChanged(nameof(HasCachedData));
         }
 
@@ -97,8 +97,8 @@ namespace HomeManagement.App.ViewModels
                     accountRepository.RemoveAll();
                     accountRepository.Commit();
 
-                    chargeRepository.RemoveAll();
-                    chargeRepository.Commit();
+                    transactionRepository.RemoveAll();
+                    transactionRepository.Commit();
 
                     OnClearSuccess?.Invoke(this, EventArgs.Empty);
                 });
@@ -111,8 +111,8 @@ namespace HomeManagement.App.ViewModels
                     accountRepository.RemoveAll();
                     accountRepository.Commit();
 
-                    chargeRepository.RemoveAll();
-                    chargeRepository.Commit();
+                    transactionRepository.RemoveAll();
+                    transactionRepository.Commit();
 
                     OnClearSuccess?.Invoke(this, EventArgs.Empty);
                 });

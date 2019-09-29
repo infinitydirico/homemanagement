@@ -10,15 +10,15 @@ using System.Text;
 
 namespace HomeManagement.API.Exportation
 {
-    public interface IExportableCharge : IExportable<Transaction>
+    public interface IExportableTransaction : IExportable<Transaction>
     {
     }
 
-    public class ExportableCharge : Exportable<Transaction>, IExportableCharge
+    public class ExportableTransaction : Exportable<Transaction>, IExportableTransaction
     {
         ICategoryRepository categoryRepository;
 
-        public ExportableCharge(ICategoryRepository categoryRepository)
+        public ExportableTransaction(ICategoryRepository categoryRepository)
         {
             this.categoryRepository = categoryRepository;
         }

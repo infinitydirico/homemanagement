@@ -49,7 +49,7 @@
                                             Clicked="Edit" />
                                         <Button Image="eye_18dp.png" VerticalOptions="Center"
                                             WidthRequest="30" HeightRequest="30"
-                                            Clicked="ViewChargesList" />
+                                            Clicked="ViewTransactionsList" />
                                     </StackLayout>
                                 </StackLayout>
                             </StackLayout>

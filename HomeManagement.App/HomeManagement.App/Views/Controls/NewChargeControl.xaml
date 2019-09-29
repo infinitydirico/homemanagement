@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="HomeManagement.App.Views.Controls.NewChargeControl"
+             x:Class="HomeManagement.App.Views.Controls.NewTransactionControl"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:local="clr-namespace:HomeManagement.App.ViewModels">
     <StackLayout.BindingContext>
-        <local:NewChargeViewModel />
+        <local:NewTransactionViewModel />
     </StackLayout.BindingContext>
     <StackLayout.Resources>
         <ResourceDictionary>
             <Conv:InverseBoolConverter x:Key="InverseVisibility"/>
-            <Conv:ChargeTypeLabelConverter x:Key="ChargeTypeLabel" />
-            <Conv:ChargeTypeColorConverter x:Key="ChargeTypeColor" />
+            <Conv:TransactionTypeLabelConverter x:Key="TransactionTypeLabel" />
+            <Conv:TransactionTypeColorConverter x:Key="TransactionTypeColor" />
         </ResourceDictionary>
     </StackLayout.Resources>
     <StackLayout Orientation="Vertical">
@@ -28,7 +28,7 @@
         <StackLayout Orientation="Horizontal">
             <Image Source="date.png" HorizontalOptions="Start" HeightRequest="30" />
 
-            <DatePicker x:Name="datePicker" Date="{Binding Charge.Date}"  HorizontalOptions="FillAndExpand" />
+            <DatePicker x:Name="datePicker" Date="{Binding Transaction.Date}"  HorizontalOptions="FillAndExpand" />
         </StackLayout>
 
         <StackLayout Orientation="Horizontal">
@@ -43,15 +43,15 @@
         </StackLayout>
         <StackLayout Orientation="Horizontal" HeightRequest="75">
             <StackLayout Orientation="Horizontal">
-                <Image Source="money_green.png" IsVisible="{Binding Source={x:Reference chargeTypeSwitch}, Path=IsToggled}" HorizontalOptions="Start" HeightRequest="50" />
-                <Image Source="money_red.png" IsVisible="{Binding Source={x:Reference chargeTypeSwitch}, Path=IsToggled, Converter={StaticResource InverseVisibility}}" HorizontalOptions="Start" HeightRequest="50" />
+                <Image Source="money_green.png" IsVisible="{Binding Source={x:Reference TransactionTypeSwitch}, Path=IsToggled}" HorizontalOptions="Start" HeightRequest="50" />
+                <Image Source="money_red.png" IsVisible="{Binding Source={x:Reference TransactionTypeSwitch}, Path=IsToggled, Converter={StaticResource InverseVisibility}}" HorizontalOptions="Start" HeightRequest="50" />
 
-                <Switch x:Name="chargeTypeSwitch" IsToggled="{Binding ChargeType}" />
+                <Switch x:Name="TransactionTypeSwitch" IsToggled="{Binding TransactionType}" />
 
-                <Label Text="{Binding Source={x:Reference chargeTypeSwitch}, Path=IsToggled, Converter={StaticResource ChargeTypeLabel}}" VerticalOptions="Center"  />
+                <Label Text="{Binding Source={x:Reference TransactionTypeSwitch}, Path=IsToggled, Converter={StaticResource TransactionTypeLabel}}" VerticalOptions="Center"  />
             </StackLayout>
             <StackLayout HorizontalOptions="EndAndExpand" VerticalOptions="Center">
-                <Button WidthRequest="40" HeightRequest="40" BorderRadius="20" BackgroundColor="Green" Command="{Binding AddChargeCommand}" />
+                <Button WidthRequest="40" HeightRequest="40" BorderRadius="20" BackgroundColor="Green" Command="{Binding AddTransactionCommand}" />
             </StackLayout>
         </StackLayout>
     </StackLayout>

@@ -19,16 +19,16 @@ namespace HomeManagement.App.Views.Transactions
         {
             InitializeComponent();
 
-            Title = localizationManager.Translate("EditCharge");
+            Title = localizationManager.Translate("EditTransaction");
         }
 
-        public EditTransactionPage(Account account, Transaction charge) : this()
+        public EditTransactionPage(Account account, Transaction Transaction) : this()
         {
             this.account = account;
-            var viewModel = new EditTransactionViewModel(account, charge);
+            var viewModel = new EditTransactionViewModel(account, Transaction);
             BindingContext = viewModel;
 
-            viewModel.OnTransactionUpdated += ViewModel_OnChargeUpdated;
+            viewModel.OnTransactionUpdated += ViewModel_OnTransactionUpdated;
             viewModel.OnError += ViewModel_OnError;
             viewModel.OnCancel += ViewModel_OnCancel;
         }
@@ -43,7 +43,7 @@ namespace HomeManagement.App.Views.Transactions
             DisplayAlert("Error", "Algunos de los datos ingresados no son validos", string.Empty);
         }
 
-        private void ViewModel_OnChargeUpdated(object sender, EventArgs e)
+        private void ViewModel_OnTransactionUpdated(object sender, EventArgs e)
         {
             Navigation.PopAsync();
         }

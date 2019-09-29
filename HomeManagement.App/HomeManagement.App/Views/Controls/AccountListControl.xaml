@@ -18,7 +18,7 @@
             <Beh:TranslationBehavior LanguageKey="Accounts" />
         </Label.Behaviors>
     </Label>
-    <ListView x:Name="accountsList" ItemTapped="EditCharge" ItemsSource="{Binding Accounts}">
+    <ListView x:Name="accountsList" ItemTapped="EditTransaction" ItemsSource="{Binding Accounts}">
         <ListView.ItemTemplate>
             <DataTemplate>
                 <ViewCell>

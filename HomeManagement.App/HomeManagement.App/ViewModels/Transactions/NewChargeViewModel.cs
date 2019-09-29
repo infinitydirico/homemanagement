@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace HomeManagement.App.ViewModels
 {
-    public class NewChargeViewModel : AddTransactionViewModel
+    public class NewTransactionViewModel : AddTransactionViewModel
     {
         private readonly IAccountServiceClient accountServiceClient = App._container.Resolve<IAccountServiceClient>();
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();

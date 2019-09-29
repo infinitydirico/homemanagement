@@ -24,11 +24,11 @@ namespace HomeManagement.App.Services.Rest
                 .ReadContent<AccountsEvolutionModel>();
         }
 
-        public async Task<IEnumerable<TransactionModel>> GetChargesByDate(int accountId, int year, int month)
+        public async Task<IEnumerable<TransactionModel>> GetTransactionsByDate(int accountId, int year, int month)
         {
             return await RestClientFactory
                 .CreateAuthenticatedClient()
-                .GetAsync(string.Format(Constants.Endpoints.Charge.BY_ACCOUNT_AND_DATE, year, month, accountId))
+                .GetAsync(string.Format(Constants.Endpoints.Transaction.BY_ACCOUNT_AND_DATE, year, month, accountId))
                 .ReadContent<IEnumerable<TransactionModel>>();
         }
 
@@ -36,7 +36,7 @@ namespace HomeManagement.App.Services.Rest
         {
             return await RestClientFactory
                 .CreateAuthenticatedClient()
-                .GetAsync($"{Constants.Endpoints.Accounts.ACCOUNT}/{Constants.Endpoints.Accounts.AccountTopCharges}/{DateTime.Now.Month}")
+                .GetAsync($"{Constants.Endpoints.Accounts.ACCOUNT}/{Constants.Endpoints.Accounts.AccountTopTransactions}/{DateTime.Now.Month}")
                 .ReadContent<OverPricedCategories>();
         }
 
@@ -44,7 +44,7 @@ namespace HomeManagement.App.Services.Rest
         {
             return await RestClientFactory
                 .CreateAuthenticatedClient()
-                .GetAsync($"{Constants.Endpoints.Accounts.ACCOUNT}/{accountId}/{Constants.Endpoints.Accounts.AccountTopCharges}/{DateTime.Now.Month}")
+                .GetAsync($"{Constants.Endpoints.Accounts.ACCOUNT}/{accountId}/{Constants.Endpoints.Accounts.AccountTopTransactions}/{DateTime.Now.Month}")
                 .ReadContent<IEnumerable<OverPricedCategory2>>();
         }
 
@@ -79,6 +79,6 @@ namespace HomeManagement.App.Services.Rest
 
         Task<MetricValueDto> GetTotalOutcome();
 
-        Task<IEnumerable<TransactionModel>> GetChargesByDate(int accountId, int year, int month);
+        Task<IEnumerable<TransactionModel>> GetTransactionsByDate(int accountId, int year, int month);
     }
 }

@@ -21,7 +21,7 @@ namespace HomeManagement.App.ViewModels
 
             NextPageCommand = new Command(async () => await NextPage());
             PreviousPageCommand = new Command(async () => await PreviousPage());
-            DeleteCommand = new Command<Transaction>(async (charge) => await DeleteAsync(charge));
+            DeleteCommand = new Command<Transaction>(async (transaction) => await DeleteAsync(transaction));
         }
 
         public ObservableCollection<Transaction> Transactions
@@ -60,11 +60,11 @@ namespace HomeManagement.App.ViewModels
             await HandleSafeExecutionAsync(async () => Transactions = (await transactionManager.PreviousPageAsync()).ToObservableCollection());
 
 
-        private async Task DeleteAsync(Transaction charge)
+        private async Task DeleteAsync(Transaction transaction)
         {
             await HandleSafeExecutionAsync(async () =>
             {
-                await transactionManager.DeleteTransactionAsync(charge);
+                await transactionManager.DeleteTransactionAsync(transaction);
                 Transactions = (await transactionManager.Load(account.Id)).ToObservableCollection();
             });
         }

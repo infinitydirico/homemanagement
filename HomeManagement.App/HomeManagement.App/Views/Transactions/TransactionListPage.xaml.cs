@@ -44,7 +44,7 @@ namespace HomeManagement.App.Views.Transactions
             DisplayAlert("Info", e.ErrorMessage, "Ok");
         }
 
-        private void OnAddChargeCommand(object sender, EventArgs e)
+        private void OnAddTransactionCommand(object sender, EventArgs e)
         {
             var page = new AddTransactionPage(account);
 
@@ -62,7 +62,7 @@ namespace HomeManagement.App.Views.Transactions
             Navigation.PushAsync(accountStatisticsPage);
         }
 
-        private void OnViewChargesOnCalendar(object sender, EventArgs e)
+        private void OnViewTransactionsOnCalendar(object sender, EventArgs e)
         {
             var calendarPage = new CalendarPage(account);
             NavigationPage.SetHasBackButton(calendarPage, true);
@@ -72,31 +72,31 @@ namespace HomeManagement.App.Views.Transactions
         private void Edit(object sender, EventArgs e)
         {
             var editButton = sender as Button;
-            var charge = GetCurrentCharge(editButton);
-            var editChargePage = new EditTransactionPage(account, charge);
-            NavigationPage.SetHasBackButton(editChargePage, true);
+            var Transaction = GetCurrentTransaction(editButton);
+            var editTransactionPage = new EditTransactionPage(account, Transaction);
+            NavigationPage.SetHasBackButton(editTransactionPage, true);
 
-            Navigation.PushAsync(editChargePage);
+            Navigation.PushAsync(editTransactionPage);
         }
 
         private async void Delete(object sender, EventArgs e)
         {
             var editButton = sender as Button;
-            var charge = GetCurrentCharge(editButton);
+            var Transaction = GetCurrentTransaction(editButton);
 
-            var confirmed = await modal.ShowOkCancel(localizationManager.Translate("DeleteChargeModal"));
+            var confirmed = await modal.ShowOkCancel(localizationManager.Translate("DeleteTransactionModal"));
 
             if (confirmed)
             {
-                viewModel.DeleteCommand.Execute(charge);
+                viewModel.DeleteCommand.Execute(Transaction);
             }
         }
 
-        private Transaction GetCurrentCharge(View view)
+        private Transaction GetCurrentTransaction(View view)
         {
             var cell = GetViewCell(view);
-            var charge = cell.BindingContext as Transaction;
-            return charge;
+            var Transaction = cell.BindingContext as Transaction;
+            return Transaction;
         }
 
         private ViewCell GetViewCell(Element view)

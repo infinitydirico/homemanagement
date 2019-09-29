@@ -86,13 +86,13 @@ namespace HomeManagement.API.Controllers.Transactions
             var transactions = (from user in userRepository.All
                            join account in accountRepository.All
                            on user.Id equals account.UserId
-                           join charge in transactionsRepository.All
-                           on account.Id equals charge.AccountId
+                           join transaction in transactionsRepository.All
+                           on account.Id equals transaction.AccountId
                            where user.Email.Equals(claim.Value) &&
-                                    charge.Date.Year.Equals(year) &&
-                                    charge.Date.Month.Equals(month)
-                           orderby charge.Date descending
-                           select transactionsMapper.ToModel(charge))
+                                    transaction.Date.Year.Equals(year) &&
+                                    transaction.Date.Month.Equals(month)
+                           orderby transaction.Date descending
+                           select transactionsMapper.ToModel(transaction))
                             .ToList();
 
             return Ok(transactions);
@@ -106,14 +106,14 @@ namespace HomeManagement.API.Controllers.Transactions
             var transactions = (from user in userRepository.All
                            join account in accountRepository.All
                            on user.Id equals account.UserId
-                           join charge in transactionsRepository.All
-                           on account.Id equals charge.AccountId
+                           join transaction in transactionsRepository.All
+                           on account.Id equals transaction.AccountId
                            where user.Email.Equals(claim.Value) &&
                                     account.Id.Equals(accountId) &&
-                                    charge.Date.Year.Equals(year) &&
-                                    charge.Date.Month.Equals(month)
-                           orderby charge.Date descending
-                           select transactionsMapper.ToModel(charge))
+                                    transaction.Date.Year.Equals(year) &&
+                                    transaction.Date.Month.Equals(month)
+                           orderby transaction.Date descending
+                           select transactionsMapper.ToModel(transaction))
                             .ToList();
 
             return Ok(transactions);
@@ -127,14 +127,14 @@ namespace HomeManagement.API.Controllers.Transactions
             var transactions = (from user in userRepository.All
                            join account in accountRepository.All
                            on user.Id equals account.UserId
-                           join charge in transactionsRepository.All
-                           on account.Id equals charge.AccountId
+                           join transaction in transactionsRepository.All
+                           on account.Id equals transaction.AccountId
                            where user.Email.Equals(claim.Value) &&
-                                    charge.Date.Year.Equals(DateTime.Now.Year) &&
-                                    charge.Date < DateTime.Now &&
-                                    charge.CategoryId.Equals(category)
-                           orderby charge.Date ascending
-                           select transactionsMapper.ToModel(charge))
+                                    transaction.Date.Year.Equals(DateTime.Now.Year) &&
+                                    transaction.Date < DateTime.Now &&
+                                    transaction.CategoryId.Equals(category)
+                           orderby transaction.Date ascending
+                           select transactionsMapper.ToModel(transaction))
                            .GroupBy(x => x.Date.Month)
                            .Select(x => new
                            {
@@ -154,15 +154,15 @@ namespace HomeManagement.API.Controllers.Transactions
             var transactions = (from user in userRepository.All
                            join account in accountRepository.All
                            on user.Id equals account.UserId
-                           join charge in transactionsRepository.All
-                           on account.Id equals charge.AccountId
+                           join transaction in transactionsRepository.All
+                           on account.Id equals transaction.AccountId
                            where user.Email.Equals(claim.Value) &&
-                                    charge.AccountId.Equals(accountId) &&
-                                    charge.Date.Year.Equals(DateTime.Now.Year) &&
-                                    charge.Date < DateTime.Now &&
-                                    charge.CategoryId.Equals(category)
-                           orderby charge.Date ascending
-                           select transactionsMapper.ToModel(charge))
+                                    transaction.AccountId.Equals(accountId) &&
+                                    transaction.Date.Year.Equals(DateTime.Now.Year) &&
+                                    transaction.Date < DateTime.Now &&
+                                    transaction.CategoryId.Equals(category)
+                           orderby transaction.Date ascending
+                           select transactionsMapper.ToModel(transaction))
                            .GroupBy(x => x.Date.Month)
                            .Select(x => new
                            {
@@ -182,11 +182,11 @@ namespace HomeManagement.API.Controllers.Transactions
             var transactions = (from user in userRepository.All
                            join account in accountRepository.All
                            on user.Id equals account.UserId
-                           join charge in transactionsRepository.All
-                           on account.Id equals charge.AccountId
+                           join transaction in transactionsRepository.All
+                           on account.Id equals transaction.AccountId
                            where user.Email.Equals(claim.Value)
-                           orderby charge.Date descending
-                           select transactionsMapper.ToModel(charge))
+                           orderby transaction.Date descending
+                           select transactionsMapper.ToModel(transaction))
                             .Take(5)
                             .ToList();
 
@@ -198,9 +198,9 @@ namespace HomeManagement.API.Controllers.Transactions
         {
             if (models == null || models.Count().Equals(default(int))) return BadRequest();
 
-            foreach (var charge in models)
+            foreach (var transaction in models)
             {
-                transactionsRepository.Update(transactionsMapper.ToEntity(charge), true);
+                transactionsRepository.Update(transactionsMapper.ToEntity(transaction), true);
             }
 
             return Ok();
@@ -218,11 +218,11 @@ namespace HomeManagement.API.Controllers.Transactions
                 .Where(o => o.AccountId.Equals(accountId))
                 .ToList();
 
-            foreach (var charge in transactions)
+            foreach (var transaction in transactions)
             {
-                transactionsRepository.Remove(charge);
+                transactionsRepository.Remove(transaction);
 
-                account.Balance = charge.TransactionType.Equals(TransactionType.Income) ? account.Balance - charge.Price : account.Balance + charge.Price; //it's a reverse.
+                account.Balance = transaction.TransactionType.Equals(TransactionType.Income) ? account.Balance - transaction.Price : account.Balance + transaction.Price; //it's a reverse.
                 accountRepository.Update(account);
             }
             transactionsRepository.Commit();

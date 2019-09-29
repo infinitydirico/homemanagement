@@ -12,6 +12,6 @@
 
         public ulong Size { get; set; }
 
-        public int ChargeId { get; set; }
+        public int TransactionId { get; set; }
     }
 }

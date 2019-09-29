@@ -5,7 +5,7 @@ using Xamarin.Forms;
 
 namespace HomeManagement.App.Converters
 {
-    public class ChargeTypeLabelConverter : IValueConverter
+    public class TransactionTypeLabelConverter : IValueConverter
     {
         TranslationConverter translationConverter = new TranslationConverter();
 

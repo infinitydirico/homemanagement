@@ -17,7 +17,7 @@ namespace HomeManagement.App.Views.Controls
             BindingContext = new AccountsViewModel();
         }
 
-        private void EditCharge(object sender, ItemTappedEventArgs e)
+        private void EditTransaction(object sender, ItemTappedEventArgs e)
         {
             var account = e.Item as Account;
 

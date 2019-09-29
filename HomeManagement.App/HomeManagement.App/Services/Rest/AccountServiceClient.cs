@@ -14,11 +14,11 @@ namespace HomeManagement.App.Services.Rest
                 .DeleteAsync($"{Constants.Endpoints.Accounts.ACCOUNT}?id={id}");
         }
 
-        public async Task<IEnumerable<OverPricedCategory>> GetAccountTopCharges(int accountId, int month)
+        public async Task<IEnumerable<OverPricedCategory>> GetAccountTopTransactions(int accountId, int month)
         {
             return await RestClientFactory
                 .CreateAuthenticatedClient()
-                .GetAsync($"{accountId}/{Constants.Endpoints.Accounts.AccountTopCharges}/{month}")
+                .GetAsync($"{accountId}/{Constants.Endpoints.Accounts.AccountTopTransactions}/{month}")
                 .ReadContent<IEnumerable<OverPricedCategory>>();
         }
 
@@ -43,7 +43,7 @@ namespace HomeManagement.App.Services.Rest
 
     public interface IAccountServiceClient
     {
-        Task<IEnumerable<OverPricedCategory>> GetAccountTopCharges(int accountId, int month);
+        Task<IEnumerable<OverPricedCategory>> GetAccountTopTransactions(int accountId, int month);
 
         Task<AccountPageModel> Page(AccountPageModel dto);
 

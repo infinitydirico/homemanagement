@@ -20,7 +20,7 @@ namespace HomeManagement.API.Controllers.Accounts
         private readonly Data.Repositories.ITransactionRepository transactionRepository;
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
-        private readonly ITransactionMapper chargeMapper;
+        private readonly ITransactionMapper transactionMapper;
         private readonly ICategoryMapper categoryMapper;
         private readonly ICategoryRepository categoryRepository;
 
@@ -28,7 +28,7 @@ namespace HomeManagement.API.Controllers.Accounts
             Data.Repositories.ITransactionRepository transactionRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository,
-            ITransactionMapper chargeMapper,
+            ITransactionMapper transactionMapper,
             ICategoryMapper categoryMapper,
             ICategoryRepository categoryRepository)
         {
@@ -36,7 +36,7 @@ namespace HomeManagement.API.Controllers.Accounts
             this.transactionRepository = transactionRepository;
             this.accountMapper = accountMapper;
             this.userRepository = userRepository;
-            this.chargeMapper = chargeMapper;
+            this.transactionMapper = transactionMapper;
             this.categoryMapper = categoryMapper;
             this.categoryRepository = categoryRepository;
         }
@@ -72,9 +72,9 @@ namespace HomeManagement.API.Controllers.Accounts
         {
             if (model == null) return BadRequest();
 
-            var controller = new TransactionsController(accountRepository, transactionRepository, categoryRepository, chargeMapper, categoryMapper, userRepository);
+            var controller = new TransactionsController(accountRepository, transactionRepository, categoryRepository, transactionMapper, categoryMapper, userRepository);
 
-            var incomingCharge = new TransactionModel
+            var incomeTransaction = new TransactionModel
             {
                 Name = model.OperationName,
                 Price = model.Price,
@@ -84,9 +84,9 @@ namespace HomeManagement.API.Controllers.Accounts
                 CategoryId = model.CategoryId
             };
 
-            controller.Post(incomingCharge);
+            controller.Post(incomeTransaction);
 
-            var outgoingCharge = new TransactionModel
+            var outcomeTransaction = new TransactionModel
             {
                 Name = model.OperationName,
                 Price = model.Price,
@@ -96,7 +96,7 @@ namespace HomeManagement.API.Controllers.Accounts
                 CategoryId = model.CategoryId
             };
 
-            controller.Post(outgoingCharge);
+            controller.Post(outcomeTransaction);
 
             return Ok();
         }

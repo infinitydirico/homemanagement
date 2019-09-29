@@ -92,8 +92,8 @@ namespace HomeManagement.API.Controllers.Accounts
         {
             if (id < 1) return BadRequest();
 
-            var charge = transactionRepository.FirstOrDefault(c => c.AccountId.Equals(id));
-            if (charge != null) return BadRequest(Constants.ErrorCode.AccountHasCharges);
+            var transaction = transactionRepository.FirstOrDefault(c => c.AccountId.Equals(id));
+            if (transaction != null) return BadRequest(Constants.ErrorCode.AccountHasTransactions);
 
             accountRepository.Remove(id);
 

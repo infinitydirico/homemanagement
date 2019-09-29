@@ -7,11 +7,11 @@ namespace HomeManagement.API.Data.Repositories
 {
     public interface ITransactionRepository : HomeManagement.Data.ITransactionRepository
     {
-        void Add(Transaction charge, bool affectsBalance);
+        void Add(Transaction transaction, bool affectsBalance);
 
-        void Update(Transaction charge, bool affectsBalance);
+        void Update(Transaction transaction, bool affectsBalance);
 
-        void Remove(Transaction charge, bool affectsBalance);
+        void Remove(Transaction transaction, bool affectsBalance);
     }
 
     public class TransactionRepository : HomeManagement.Data.TransactionRepository, ITransactionRepository
@@ -20,53 +20,53 @@ namespace HomeManagement.API.Data.Repositories
         {
         }
 
-        public void Add(Transaction charge, bool affectsBalance)
+        public void Add(Transaction transaction, bool affectsBalance)
         {
-            using(var transaction = dbContext.Database.BeginTransaction())
+            using(var dbContextTransaction = dbContext.Database.BeginTransaction())
             {
-                dbContext.Set<Transaction>().Add(charge);
+                dbContext.Set<Transaction>().Add(transaction);
 
-                UpdateBalance(charge);
+                UpdateBalance(transaction);
 
                 dbContext.SaveChanges();
 
-                transaction.Commit();
+                dbContextTransaction.Commit();
             }
         }
 
-        public void Update(Transaction charge, bool affectsBalance)
+        public void Update(Transaction transaction, bool affectsBalance)
         {
-            using (var transaction = dbContext.Database.BeginTransaction())
+            using (var dbContextTransaction = dbContext.Database.BeginTransaction())
             {
-                var previousCharge = GetById(charge.Id);
+                var previousTransaction = GetById(transaction.Id);
 
-                dbContext.Entry(previousCharge).State = EntityState.Detached;
-                dbContext.Attach(charge);
-                dbContext.Entry(charge).State = EntityState.Modified;
-                dbContext.Set<Transaction>().Update(charge);
+                dbContext.Entry(previousTransaction).State = EntityState.Detached;
+                dbContext.Attach(transaction);
+                dbContext.Entry(transaction).State = EntityState.Modified;
+                dbContext.Set<Transaction>().Update(transaction);
 
-                UpdateBalance(previousCharge, true);
+                UpdateBalance(previousTransaction, true);
 
-                UpdateBalance(charge);
+                UpdateBalance(transaction);
 
                 dbContext.SaveChanges();
 
-                transaction.Commit();
+                dbContextTransaction.Commit();
             }
         }
 
-        public void Remove(Transaction charge, bool affectsBalance)
+        public void Remove(Transaction transaction, bool affectsBalance)
         {
-            using (var transaction = dbContext.Database.BeginTransaction())
+            using (var dbContextTransaction = dbContext.Database.BeginTransaction())
             {
-                dbContext.Set<Transaction>().Remove(charge);
-                dbContext.Entry(charge).State = EntityState.Deleted;
+                dbContext.Set<Transaction>().Remove(transaction);
+                dbContext.Entry(transaction).State = EntityState.Deleted;
 
-                UpdateBalance(charge, true);
+                UpdateBalance(transaction, true);
 
                 dbContext.SaveChanges();
 
-                transaction.Commit();
+                dbContextTransaction.Commit();
             }
         }
 

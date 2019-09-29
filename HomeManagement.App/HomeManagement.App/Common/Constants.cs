@@ -23,7 +23,7 @@
 
                 public const string PAGE = ACCOUNT + "paging";
 
-                public const string AccountTopCharges = "/topcharges/";
+                public const string AccountTopTransactions = "/toptransactions/";
                 
                 public const string TotalIncome = ACCOUNT + "incomes";
 
@@ -35,16 +35,16 @@
 
                 public const string AccountEvolution = "accountevolution";
 
-                public const string Metric = "chartbychargetype";
+                public const string Metric = "chartbytransactiontype";
             }
 
-            public class Charge
+            public class Transaction
             {
-                public const string CHARGE = API + "charges/";
+                public const string TRANSACTION = API + "transactions/";
 
-                public const string PAGE = CHARGE + "paging";
+                public const string PAGE = TRANSACTION + "paging";
 
-                public const string BY_ACCOUNT_AND_DATE = CHARGE + "by/date/{0}/{1}/account/{2}";
+                public const string BY_ACCOUNT_AND_DATE = TRANSACTION + "by/date/{0}/{1}/account/{2}";
             }
 
             public class Category

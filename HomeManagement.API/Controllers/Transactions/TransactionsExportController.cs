@@ -22,30 +22,30 @@ namespace HomeManagement.API.Controllers.Transactions
         private readonly IAccountRepository accountRepository;
         private readonly Data.Repositories.ITransactionRepository transactionRepository;
         private readonly IUserRepository userRepository;
-        private readonly IExportableCharge exportableCharge;
+        private readonly IExportableTransaction exportableTransaction;
 
         public TransactionsExportController(IAccountRepository accountRepository,
             Data.Repositories.ITransactionRepository transactionRepository,
             ICategoryRepository categoryRepository,
-            ITransactionMapper chargeMapper,
+            ITransactionMapper transactionMapper,
             ICategoryMapper categoryMapper,
             IUserRepository userRepository,
-            IExportableCharge exportableCharge)
+            IExportableTransaction exportableTransaction)
         {
             this.accountRepository = accountRepository;
             this.transactionRepository = transactionRepository;
             this.userRepository = userRepository;
-            this.exportableCharge = exportableCharge;
+            this.exportableTransaction = exportableTransaction;
         }
 
         [HttpGet("download/{accountId}")]
         public IActionResult DownloadCategories(int accountId)
         {
-            var charges = transactionRepository.Where(x => x.AccountId.Equals(accountId)).ToList();
+            var transactions = transactionRepository.Where(x => x.AccountId.Equals(accountId)).ToList();
 
             var account = accountRepository.GetById(accountId);
 
-            var csv = exportableCharge.ToCsv(charges);
+            var csv = exportableTransaction.ToCsv(transactions);
 
             var filename = $"{account}{DateTime.Now.ToString("yyyyMMddhhmmss")}.csv";
 
@@ -66,7 +66,7 @@ namespace HomeManagement.API.Controllers.Transactions
             {
                 var account = accountRepository.FirstOrDefault(x => x.Id.Equals(accountId));
 
-                foreach (var entity in exportableCharge.ToEntities(formFile.OpenReadStream().GetBytes()))
+                foreach (var entity in exportableTransaction.ToEntities(formFile.OpenReadStream().GetBytes()))
                 {
                     if (entity == null) continue;
 

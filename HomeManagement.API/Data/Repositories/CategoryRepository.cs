@@ -17,19 +17,19 @@ namespace HomeManagement.API.Data.Repositories
             this.categoryMapper = categoryMapper;
         }
 
-        public OverPricedCategories GetMostOverPricedCategories(TransactionType chargeType)
+        public OverPricedCategories GetMostOverPricedCategories(TransactionType transactionType)
         {
             var context = platformContext.GetDbContext();
 
             var query = (from category in context.Set<Category>()
-                         join charge in context.Set<Transaction>()
-                         on category.Id equals charge.CategoryId
-                         where charge.TransactionType == chargeType
+                         join transaction in context.Set<Transaction>()
+                         on category.Id equals transaction.CategoryId
+                         where transaction.TransactionType == transactionType
                          group category by category.Id into g
                          select new OverPricedCategory
                          {
                              Category = categoryMapper.ToModel(context.Set<Category>().FirstOrDefault(c => c.Id.Equals(g.Key))),
-                             Price = context.Set<Transaction>().Where(c => c.CategoryId.Equals(g.Select(s => s.Id).First()) && c.TransactionType == chargeType && c.Date.Month.Equals(DateTime.Now.Month))
+                             Price = context.Set<Transaction>().Where(c => c.CategoryId.Equals(g.Select(s => s.Id).First()) && c.TransactionType == transactionType && c.Date.Month.Equals(DateTime.Now.Month))
                                                     .Sum(o => o.Price)
                          }).ToList();
 

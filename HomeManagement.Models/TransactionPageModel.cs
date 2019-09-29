@@ -13,7 +13,7 @@ namespace HomeManagement.Models
         [DataMember(Name = "accountId")]
         public int AccountId { get; set; }
 
-        [DataMember(Name = "charges")]
+        [DataMember(Name = "transactions")]
         public List<TransactionModel> Transactions { get; set; }
     }
 }

@@ -2,10 +2,10 @@
 {
     public class AccountOverviewModel
     {
-        public int TotalCharges { get; set; }
+        public int TotalTransactions { get; set; }
 
-        public int ExpneseCharges { get; set; }
+        public int ExpenseTransactions { get; set; }
 
-        public int IncomeCharges { get; set; }
+        public int IncomeTransactions { get; set; }
     }
 }

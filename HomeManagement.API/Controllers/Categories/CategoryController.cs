@@ -22,14 +22,14 @@ namespace HomeManagement.API.Controllers.Categories
         private readonly Data.Repositories.ITransactionRepository transactionRepository;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
-        private readonly ITransactionMapper chargeMapper;
+        private readonly ITransactionMapper transactionMapper;
         private readonly ICategoryMapper categoryMapper;
         private readonly IUserCategoryRepository userCategoryRepository;
 
         public CategoryController(IAccountRepository accountRepository,
                                     Data.Repositories.ITransactionRepository transactionRepository,
                                     ICategoryRepository categoryRepository,
-                                    ITransactionMapper chargeMapper,
+                                    ITransactionMapper transactionMapper,
                                     ICategoryMapper categoryMapper,
                                     IUserRepository userRepository,
                                     IUserCategoryRepository userCategoryRepository)
@@ -37,7 +37,7 @@ namespace HomeManagement.API.Controllers.Categories
             this.accountRepository = accountRepository;
             this.transactionRepository = transactionRepository;
             this.categoryRepository = categoryRepository;
-            this.chargeMapper = chargeMapper;
+            this.transactionMapper = transactionMapper;
             this.categoryMapper = categoryMapper;
             this.userRepository = userRepository;
             this.userCategoryRepository = userCategoryRepository;
@@ -106,9 +106,9 @@ namespace HomeManagement.API.Controllers.Categories
 
             if (category == null) return BadRequest();
 
-            var chargesWithThisCategory = transactionRepository.Count(x => x.CategoryId.Equals(id));
+            var transactionsWithThisCategory = transactionRepository.Count(x => x.CategoryId.Equals(id));
 
-            if (chargesWithThisCategory > default(int)) return BadRequest();
+            if (transactionsWithThisCategory > default(int)) return BadRequest();
 
             categoryRepository.Remove(id, userRepository.FirstOrDefault(x => x.Email.Equals(HttpContext.GetEmailClaim().Value)));
             categoryRepository.Commit();

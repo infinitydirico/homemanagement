@@ -11,9 +11,9 @@ namespace HomeManagement.App.Services.Rest
 
         Task Delete(int id);
 
-        Task Post(TransactionModel charge);
+        Task Post(TransactionModel transaction);
 
-        Task Put(TransactionModel charge);
+        Task Put(TransactionModel transaction);
     }
 
     public class TransactionServiceClient : ITransactionServiceClient
@@ -22,7 +22,7 @@ namespace HomeManagement.App.Services.Rest
         {
             var response = await RestClientFactory
                 .CreateAuthenticatedClient()
-                .DeleteAsync($"{Constants.Endpoints.Charge.CHARGE}/?id={id.ToString()}");
+                .DeleteAsync($"{Constants.Endpoints.Transaction.TRANSACTION}/?id={id.ToString()}");
 
             response.EnsureSuccessStatusCode();
         }
@@ -31,24 +31,24 @@ namespace HomeManagement.App.Services.Rest
         {
             return await RestClientFactory
                 .CreateAuthenticatedClient()
-                .PostAsync(Constants.Endpoints.Charge.PAGE, dto.SerializeToJson())
+                .PostAsync(Constants.Endpoints.Transaction.PAGE, dto.SerializeToJson())
                 .ReadContent<TransactionPageModel>();
         }
 
-        public async Task Post(TransactionModel charge)
+        public async Task Post(TransactionModel transaction)
         {
             var response = await RestClientFactory
                 .CreateAuthenticatedClient()
-                .PostAsync(Constants.Endpoints.Charge.CHARGE, charge.SerializeToJson());
+                .PostAsync(Constants.Endpoints.Transaction.TRANSACTION, transaction.SerializeToJson());
 
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task Put(TransactionModel charge)
+        public async Task Put(TransactionModel transaction)
         {
             var response = await RestClientFactory
                 .CreateAuthenticatedClient()
-                .PutAsync(Constants.Endpoints.Charge.CHARGE, charge.SerializeToJson());
+                .PutAsync(Constants.Endpoints.Transaction.TRANSACTION, transaction.SerializeToJson());
 
             response.EnsureSuccessStatusCode();
         }

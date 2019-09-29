@@ -29,7 +29,7 @@ namespace HomeManagement.App.ViewModels
         {
             CurrentDate = date;
 
-            var results = await metricsManager.GetChargesByDate(Account.Id, CurrentDate.Year, CurrentDate.Month);
+            var results = await metricsManager.GetTransactionsByDate(Account.Id, CurrentDate.Year, CurrentDate.Month);
 
             Events = results.Select(x => new EventDate
             {

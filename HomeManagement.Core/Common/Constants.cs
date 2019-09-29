@@ -4,7 +4,7 @@
     {
         public class ErrorCode
         {
-            public const int AccountHasCharges = 1;
+            public const int AccountHasTransactions = 1;
         }
     }
 }

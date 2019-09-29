@@ -16,15 +16,15 @@ namespace HomeManagement.App.ViewModels
         protected Account account;
         protected Category selectedCategory;
         protected ICategoryManager categoryManager;
-        protected ITransactionServiceClient chargeServiceClient;
+        protected ITransactionServiceClient transactionServiceClient;
         protected readonly ITransactionManager transactionManager = App._container.Resolve<ITransactionManager>();
         protected IEnumerable<Category> categories;
-        protected TransactionType selectedChargeType;
+        protected TransactionType selectedTransactionType;
 
         public BaseTransactionEditionViewModel()
         {
             categoryManager = App._container.Resolve<ICategoryManager>();
-            chargeServiceClient = App._container.Resolve<ITransactionServiceClient>();
+            transactionServiceClient = App._container.Resolve<ITransactionServiceClient>();
 
             CancelCommand = new Command(Cancel);
         }
@@ -80,11 +80,11 @@ namespace HomeManagement.App.ViewModels
 
         public TransactionType SelectedTransactionType
         {
-            get => selectedChargeType;
+            get => selectedTransactionType;
             set
             {
-                selectedChargeType = value;
-                Transaction.TransactionType = selectedChargeType;
+                selectedTransactionType = value;
+                Transaction.TransactionType = selectedTransactionType;
                 OnPropertyChanged(nameof(SelectedTransactionType));
             }
         }

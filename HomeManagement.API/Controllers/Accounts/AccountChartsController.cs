@@ -41,10 +41,10 @@ namespace HomeManagement.API.Controllers.Accounts
         }
 
 
-        [HttpGet("{id}/chartbychargetype")]
+        [HttpGet("{id}/chartbytransactiontype")]
         public IActionResult ChartData(int id)
         {
-            var accountCharges = (from c in transactionRepository.All
+            var accountTransactions = (from c in transactionRepository.All
                                   join a in accountRepository.All
                                   on c.AccountId equals a.Id
                                   where a.Measurable && a.Id.Equals(id)
@@ -52,9 +52,9 @@ namespace HomeManagement.API.Controllers.Accounts
 
             return Ok(new AccountOverviewModel
             {
-                TotalCharges = accountCharges.Count(),
-                ExpneseCharges = accountCharges.Count(c => c.TransactionType == TransactionType.Expense),
-                IncomeCharges = accountCharges.Count(c => c.TransactionType == (int)TransactionType.Income)
+                TotalTransactions = accountTransactions.Count(),
+                ExpenseTransactions = accountTransactions.Count(c => c.TransactionType == TransactionType.Expense),
+                IncomeTransactions = accountTransactions.Count(c => c.TransactionType == (int)TransactionType.Income)
             });
         }
 
@@ -82,7 +82,7 @@ namespace HomeManagement.API.Controllers.Accounts
 
                 for (int i = 1; i <= DateTime.Now.Month; i++)
                 {
-                    var accountCharges = (from c in transactionRepository.All
+                    var accountTransactions = (from c in transactionRepository.All
                                           join a in accountRepository.All
                                           on c.AccountId equals a.Id
                                           where a.Measurable && 
@@ -91,17 +91,17 @@ namespace HomeManagement.API.Controllers.Accounts
                                                 c.Date.Year.Equals(DateTime.Now.Year)
                                           select c);
 
-                    var incomingCharges = accountCharges
+                    var incomeTransactions = accountTransactions
                         .Where(x => x.TransactionType == TransactionType.Income)
                         .Sum(x => x.Price.ParseNoDecimals());
 
-                    var outgoingCharges = accountCharges
+                    var outcomeTransactions = accountTransactions
                         .Where(x => x.TransactionType == TransactionType.Expense)
                         .Sum(x => x.Price.ParseNoDecimals());
 
                     accountEvoModel.AccountId = account.Id;
                     accountEvoModel.AccountName = account.Name;
-                    var balance = decimal.ToInt32(incomingCharges) - decimal.ToInt32(outgoingCharges);
+                    var balance = decimal.ToInt32(incomeTransactions) - decimal.ToInt32(outcomeTransactions);
 
                     accountEvoModel.BalanceEvolution.Add(balance);
 
@@ -132,7 +132,7 @@ namespace HomeManagement.API.Controllers.Accounts
 
             for (int i = 1; i <= DateTime.Now.Month; i++)
             {
-                var accountCharges = (from c in transactionRepository.All
+                var accountTransactions = (from c in transactionRepository.All
                                       join a in accountRepository.All
                                       on c.AccountId equals a.Id
                                       where a.Measurable &&
@@ -140,16 +140,16 @@ namespace HomeManagement.API.Controllers.Accounts
                                             c.Date.Month.Equals(i)
                                       select c);
 
-                var incomingCharges = accountCharges
+                var incomeTransactions = accountTransactions
                     .Where(x => x.TransactionType == TransactionType.Income)
                     .Sum(x => x.Price.ParseNoDecimals());
 
-                var outgoingCharges = accountCharges
+                var outcomeTransactions = accountTransactions
                     .Where(x => x.TransactionType == TransactionType.Expense)
                     .Sum(x => x.Price.ParseNoDecimals());
 
-                model.IncomingSeries.Add(decimal.ToInt32(incomingCharges));
-                model.OutgoingSeries.Add(decimal.ToInt32(outgoingCharges));
+                model.IncomingSeries.Add(decimal.ToInt32(incomeTransactions));
+                model.OutgoingSeries.Add(decimal.ToInt32(outcomeTransactions));
             }
 
             var incomeMax = model.IncomingSeries.Max();
@@ -166,8 +166,8 @@ namespace HomeManagement.API.Controllers.Accounts
             return Ok(model);
         }
 
-        [HttpGet("topcharges/{month}")]
-        public IActionResult AccountTopCharges(int month)
+        [HttpGet("toptransactions/{month}")]
+        public IActionResult AccountTopTransactions(int month)
         {
             var email = HttpContext.GetEmailClaim();
 
@@ -177,25 +177,25 @@ namespace HomeManagement.API.Controllers.Accounts
             }
 
             //implement a method where it gets all charges of all accounts to the authenticated user that is grouped by categories
-            var result = (from charge in transactionRepository.All
+            var result = (from transaction in transactionRepository.All
                           join account in accountRepository.All
-                          on charge.AccountId equals account.Id
+                          on transaction.AccountId equals account.Id
                           join user in userRepository.All
                           on account.UserId equals user.Id
                           join category in categoryRepository.All
-                          on charge.CategoryId equals category.Id
+                          on transaction.CategoryId equals category.Id
                           where user.Email.Equals(email.Value)
-                                   && charge.TransactionType.Equals(TransactionType.Expense)
-                                   && charge.Date.Month.Equals(month)
+                                   && transaction.TransactionType.Equals(TransactionType.Expense)
+                                   && transaction.Date.Month.Equals(month)
                                    && account.Measurable
                                    && category.Measurable
-                          select new { Charge = charge, Category = category })
+                          select new { Transaction = transaction, Category = category })
                          .Take(10)
                          .GroupBy(x => x.Category.Id)
                          .Select(x => new OverPricedCategory
                          {
                              Category = categoryMapper.ToModel(x.FirstOrDefault().Category),
-                             Price = x.Sum(c => c.Charge.Price)
+                             Price = x.Sum(c => c.Transaction.Price)
                          })
                          .ToList();
 
@@ -209,8 +209,8 @@ namespace HomeManagement.API.Controllers.Accounts
             return Ok(model);
         }
 
-        [HttpGet("{id}/topcharges/{month}")]
-        public IActionResult AccountTopCharges(int id, int month)
+        [HttpGet("{id}/toptransactions/{month}")]
+        public IActionResult AccountTopTransactions(int id, int month)
         {
             if (month.Equals(default(int)))
             {

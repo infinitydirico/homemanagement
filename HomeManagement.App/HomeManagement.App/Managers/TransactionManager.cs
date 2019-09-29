@@ -25,9 +25,9 @@ namespace HomeManagement.App.Managers
 
         Task<IEnumerable<Transaction>> PreviousPageAsync();
 
-        Task AddTransactionAsync(Transaction charge);
+        Task AddTransactionAsync(Transaction transaction);
 
-        Task DeleteTransactionAsync(Transaction charge);
+        Task DeleteTransactionAsync(Transaction transaction);
 
         Task UpdateAsync(Transaction transaction);
     }
@@ -35,7 +35,7 @@ namespace HomeManagement.App.Managers
     public class TransactionManager : BaseManager<Transaction, TransactionPageModel>, ITransactionManager
     {
         protected readonly ITransactionServiceClient transactionServiceClient = App._container.Resolve<ITransactionServiceClient>();
-        private readonly GenericRepository<Transaction> chargeRepository = new GenericRepository<Transaction>();
+        private readonly GenericRepository<Transaction> transactionRepository = new GenericRepository<Transaction>();
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
 
         public TransactionManager()
@@ -50,9 +50,9 @@ namespace HomeManagement.App.Managers
 
         public int CurrentPage => page.CurrentPage;
 
-        public virtual async Task AddTransactionAsync(Transaction charge)
+        public virtual async Task AddTransactionAsync(Transaction transaction)
         {
-            await transactionServiceClient.Post(MapToModel(charge));
+            await transactionServiceClient.Post(MapToModel(transaction));
 
             if (coudSyncSetting.Enabled)
             {
@@ -60,9 +60,9 @@ namespace HomeManagement.App.Managers
             }
         }
 
-        public virtual async Task DeleteTransactionAsync(Transaction charge)
+        public virtual async Task DeleteTransactionAsync(Transaction transaction)
         {
-            await transactionServiceClient.Delete(charge.Id);
+            await transactionServiceClient.Delete(transaction.Id);
 
             if (coudSyncSetting.Enabled)
             {
@@ -105,7 +105,7 @@ namespace HomeManagement.App.Managers
             {
                 var skip = (page.CurrentPage - 1) * page.PageCount;
 
-                if (chargeRepository.Count(x => x.AccountId.Equals(page.AccountId)) > skip)
+                if (transactionRepository.Count(x => x.AccountId.Equals(page.AccountId)) > skip)
                 {
                     var c = GetCachedFilteredTransactions(skip);
                     return await Task.FromResult(c);
@@ -118,34 +118,34 @@ namespace HomeManagement.App.Managers
 
             page = await transactionServiceClient.Page(page);
 
-            var chargesResult = MapPageToEntity(page);
+            var transasctionsResult = MapPageToEntity(page);
 
-            UpdateCachedTransactions(chargesResult);
+            UpdateCachedTransactions(transasctionsResult);
 
-            return chargesResult;
+            return transasctionsResult;
         }
 
-        private void UpdateCachedTransactions(IEnumerable<Transaction> charges)
+        private void UpdateCachedTransactions(IEnumerable<Transaction> transactions)
         {
             if (!coudSyncSetting.Enabled) return;
 
             Task.Run(() =>
             {
-                foreach (var item in charges)
+                foreach (var item in transactions)
                 {
-                    if (!chargeRepository.Any(x => x.Id.Equals(item.Id)))
+                    if (!transactionRepository.Any(x => x.Id.Equals(item.Id)))
                     {
-                        chargeRepository.Add(item);
+                        transactionRepository.Add(item);
                     }
                 }
-                chargeRepository.Commit();
+                transactionRepository.Commit();
 
                 cachingService.StoreOrUpdate("ForceApiCall", false);
             });
         }
 
         private IEnumerable<Transaction> GetCachedFilteredTransactions(int skip)
-            => chargeRepository
+            => transactionRepository
             .Where(x => x.AccountId.Equals(page.AccountId))
             .OrderByDescending(x => x.Id)
             .Skip(skip)
@@ -153,16 +153,16 @@ namespace HomeManagement.App.Managers
             .ToList();
 
         private IEnumerable<Transaction> MapPageToEntity(TransactionPageModel page) 
-            => from charge in page.Transactions
+            => from transaction in page.Transactions
                select new Transaction
                {
-                   Id = charge.Id,
-                   AccountId = charge.AccountId,
-                   CategoryId = charge.CategoryId,
-                   TransactionType = (TransactionType)Enum.Parse(typeof(TransactionType), charge.TransactionType.ToString()),
-                   Date = charge.Date,
-                   Name = charge.Name,
-                   Price = charge.Price,
+                   Id = transaction.Id,
+                   AccountId = transaction.AccountId,
+                   CategoryId = transaction.CategoryId,
+                   TransactionType = (TransactionType)Enum.Parse(typeof(TransactionType), transaction.TransactionType.ToString()),
+                   Date = transaction.Date,
+                   Name = transaction.Name,
+                   Price = transaction.Price,
                    ChangeStamp = DateTime.Now,
                    LastApiCall = DateTime.Now,
                    NeedsUpdate = false

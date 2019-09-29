@@ -49,13 +49,13 @@ namespace HomeManagement.API.Controllers.Transactions
 
             if (claim == null) return BadRequest();
 
-            var transactions = (from charge in transactionRepository.All
+            var transactions = (from transaction in transactionRepository.All
                            join account in accountRepository.All
-                           on charge.AccountId equals account.Id
+                           on transaction.AccountId equals account.Id
                            join user in userRepository.All
                            on account.UserId equals user.Id
                            where user.Email.Equals(claim.Value)
-                           select transactionMapper.ToModel(charge)).ToList();
+                           select transactionMapper.ToModel(transaction)).ToList();
 
             return Ok(transactions);
 

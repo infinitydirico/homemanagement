@@ -8,18 +8,18 @@
              BackgroundColor="{StaticResource TabBarColor}">
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Conv:ChargeTypeColorConverter x:Key="ChargeTypeColor" />
+            <Conv:TransactionTypeColorConverter x:Key="TransactionTypeColor" />
             <Conv:DateConverter x:Key="DateConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Icon="add_green_48dp.png" Clicked="OnAddChargeCommand" />
+        <ToolbarItem Icon="add_green_48dp.png" Clicked="OnAddTransactionCommand" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
             <Frame Margin="5, 5, 5, 5">
                 <StackLayout>
-                    <ListView x:Name="chargesList" ItemsSource="{Binding Transactions}" 
+                    <ListView x:Name="TransactionsList" ItemsSource="{Binding Transactions}" 
                                 IsVisible="{Binding !IsBusy}" RowHeight="70"
                                 IsPullToRefreshEnabled="False" RefreshCommand="{Binding RefreshCommand}"
                                 SeparatorVisibility="None" IsRefreshing="{Binding IsBusy}">
@@ -37,7 +37,7 @@
                                                     <Label Text = "{Binding Date, Converter={StaticResource DateConverter}}" />
                                                 </StackLayout>
                                                 <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
-                                                    <Label Text = "{Binding Price}" TextColor="{Binding TransactionType, Converter={StaticResource ChargeTypeColor}}" FontSize="Small" />
+                                                    <Label Text = "{Binding Price}" TextColor="{Binding TransactionType, Converter={StaticResource TransactionTypeColor}}" FontSize="Small" />
                                                 </StackLayout>
                                             </StackLayout>
                                             <StackLayout IsVisible="False" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
@@ -75,7 +75,7 @@
                         <Button Image="calendar_36dp.png"
                             VerticalOptions="Center" 
                             WidthRequest="55" HeightRequest="55"
-                            Clicked="OnViewChargesOnCalendar"/>
+                            Clicked="OnViewTransactionsOnCalendar"/>
                     </StackLayout>
 
                     <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">

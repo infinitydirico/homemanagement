@@ -92,16 +92,16 @@ namespace HomeManagement.App.Views.AccountPages
             Navigation.PushAsync(editPage);
         }
 
-        private void ViewChargesList(object sender, EventArgs e)
+        private void ViewTransactionsList(object sender, EventArgs e)
         {
             var editButton = sender as Button;
             var stacklayout = editButton.Parent.Parent as StackLayout;
-            GoToChargesList(stacklayout);
+            GoToTransactionsList(stacklayout);
         }
 
         private async void Delete(object sender, EventArgs e)
         {
-            var result = await modal.ShowOkCancel(localizationManager.Translate("DeleteChargeModal"));
+            var result = await modal.ShowOkCancel(localizationManager.Translate("DeleteTransactionModal"));
             if (result)
             {
                 var deleteButton = sender as Button;
@@ -112,7 +112,7 @@ namespace HomeManagement.App.Views.AccountPages
             }
         }
 
-        private void GoToChargesList(StackLayout stackLayout)
+        private void GoToTransactionsList(StackLayout stackLayout)
         {
             var account = GetCurrentAccount(stackLayout);
             Navigation.PushAsync(new TransactionListPage(account));

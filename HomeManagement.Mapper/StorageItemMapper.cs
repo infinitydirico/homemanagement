@@ -28,7 +28,7 @@ namespace HomeManagement.Mapper
         {
             yield return typeof(StorageItemModel).GetProperty(nameof(StorageItemModel.Id));
             yield return typeof(StorageItemModel).GetProperty(nameof(StorageItemModel.Name));
-            yield return typeof(StorageItemModel).GetProperty(nameof(StorageItemModel.ChargeId));
+            yield return typeof(StorageItemModel).GetProperty(nameof(StorageItemModel.TransactionId));
             yield return typeof(StorageItemModel).GetProperty(nameof(StorageItemModel.IsFolder));
             yield return typeof(StorageItemModel).GetProperty(nameof(StorageItemModel.Name));
             yield return typeof(StorageItemModel).GetProperty(nameof(StorageItemModel.Path));

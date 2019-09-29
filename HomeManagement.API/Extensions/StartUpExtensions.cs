@@ -78,7 +78,7 @@ namespace HomeManagement.API.Extensions
         {
             services.AddScoped<IExportableCategory, ExportableCategory>();
 
-            services.AddScoped<IExportableCharge, ExportableCharge>();
+            services.AddScoped<IExportableTransaction, ExportableTransaction>();
         }
 
         public static CorsPolicy BuildCorsPolicy(this CorsOptions corsOptions)

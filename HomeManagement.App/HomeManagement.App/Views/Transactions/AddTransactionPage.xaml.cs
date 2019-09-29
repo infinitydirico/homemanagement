@@ -30,7 +30,7 @@ namespace HomeManagement.App.Views.Transactions
 
             BindingContext = viewModel;
 
-            viewModel.OnAdded += OnChargeAdded;
+            viewModel.OnAdded += OnTransactionAdded;
 
             viewModel.OnCancel += OnCancel;
 
@@ -47,14 +47,14 @@ namespace HomeManagement.App.Views.Transactions
             Navigation.PopAsync();
         }
 
-        private void OnChargeAdded(object sender, System.EventArgs e)
+        private void OnTransactionAdded(object sender, System.EventArgs e)
         {
             Navigation.PopAsync();
         }
 
         protected override void OnAppearing()
         {
-            chargeNameEntry.Focus();
+            TransactionNameEntry.Focus();
             base.OnAppearing();
         }
     }

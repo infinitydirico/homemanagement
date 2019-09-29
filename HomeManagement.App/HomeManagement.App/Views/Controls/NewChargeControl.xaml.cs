@@ -5,9 +5,9 @@ using Xamarin.Forms.Xaml;
 namespace HomeManagement.App.Views.Controls
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class NewChargeControl : StackLayout
+	public partial class NewTransactionControl : StackLayout
 	{
-		public NewChargeControl ()
+		public NewTransactionControl ()
 		{
 			InitializeComponent ();
 		}

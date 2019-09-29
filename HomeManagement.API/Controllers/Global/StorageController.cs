@@ -77,15 +77,15 @@ namespace HomeManagement.API.Controllers.Global
             return Ok(GetRepoItems(user.Id).Select(x => storageItemMapper.ToModel(x)));
         }
         
-        [HttpGet("getchargefiles/{chargeId}")]
-        public IActionResult GetChargeFles(int chargeId)
+        [HttpGet("gettransactionfiles/{transactionId}")]
+        public IActionResult GetTransactionFiles(int transactionId)
         {
             var user = userRepository.GetByEmail(HttpContext.GetEmailClaim().Value);
 
             if (!storageClient.IsAuthorized(user.Id)) return Forbid();
 
             return Ok(GetRepoItems(user.Id)
-                .Where(x => x.TransactionId.Equals(chargeId))
+                .Where(x => x.TransactionId.Equals(transactionId))
                 .Select(x => storageItemMapper.ToModel(x)));
         }
 
@@ -132,9 +132,9 @@ namespace HomeManagement.API.Controllers.Global
         [HttpPost("upload")]
         public async Task<IActionResult> Upload()
         {
-            int chargeId = 0;
+            int transactionId = 0;
             Account account = null;
-            Transaction charge = null;
+            Transaction transaction = null;
 
             var claim = HttpContext.GetEmailClaim();
 
@@ -144,16 +144,16 @@ namespace HomeManagement.API.Controllers.Global
 
             var filename = HttpContext.GetHeader("filename");
 
-            if (HttpContext.HasHeader("chargeId"))
+            if (HttpContext.HasHeader("transactionId"))
             {
-                chargeId = int.Parse(HttpContext.GetHeader("chargeId"));
-                charge = transactionRepository.GetById(chargeId);
-                account = accountRepository.GetById(charge.AccountId);
+                transactionId = int.Parse(HttpContext.GetHeader("transactionId"));
+                transaction = transactionRepository.GetById(transactionId);
+                account = accountRepository.GetById(transaction.AccountId);
             }
 
-            var storageItem = await storageClient.Upload(user.Id, filename,account.Name, charge.Name, Request.Body);
+            var storageItem = await storageClient.Upload(user.Id, filename,account.Name, transaction.Name, Request.Body);
 
-            storageItem.TransactionId = chargeId;
+            storageItem.TransactionId = transactionId;
 
             storageItemRepository.Add(storageItem);
 
@@ -163,10 +163,10 @@ namespace HomeManagement.API.Controllers.Global
         private List<StorageItem> GetRepoItems(int userId)
         {
             return (from storageItem in storageItemRepository.All
-                    join charge in transactionRepository.All
-                    on storageItem.TransactionId equals charge.Id
+                    join transaction in transactionRepository.All
+                    on storageItem.TransactionId equals transaction.Id
                     join account in accountRepository.All
-                    on charge.AccountId equals account.Id
+                    on transaction.AccountId equals account.Id
                     where account.UserId.Equals(userId)
                     select storageItem).ToList();
         }

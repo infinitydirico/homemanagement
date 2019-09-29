@@ -10,21 +10,18 @@ namespace HomeManagement.API.Controllers
     public class ValuesController : Controller
     {
         private readonly IUserRepository userRepository;
-        private readonly Data.Repositories.TransactionRepository chargeRepository;
+        private readonly Data.Repositories.ITransactionRepository transactionRepository;
 
-        public ValuesController(IUserRepository userRepository, Data.Repositories.TransactionRepository chargeRepository)
+        public ValuesController(IUserRepository userRepository, Data.Repositories.ITransactionRepository transactionRepository)
         {
             this.userRepository = userRepository;
-            this.chargeRepository = chargeRepository;
+            this.transactionRepository = transactionRepository;
         }
 
         // GET api/values
         [HttpGet]
         public IActionResult Get()
         {
-            var firstCharge = chargeRepository.FirstOrDefault();
-            firstCharge.Date = DateTime.Now;
-            chargeRepository.Update(firstCharge);
             return Ok();
         }
 

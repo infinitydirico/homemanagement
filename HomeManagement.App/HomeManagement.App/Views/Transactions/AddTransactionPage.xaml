@@ -9,8 +9,8 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <Conv:InverseBoolConverter x:Key="InverseVisibility"/>
-            <Conv:ChargeTypeLabelConverter x:Key="ChargeTypeLabel" />
-            <Conv:ChargeTypeColorConverter x:Key="ChargeTypeColor" />
+            <Conv:TransactionTypeLabelConverter x:Key="TransactionTypeLabel" />
+            <Conv:TransactionTypeColorConverter x:Key="TransactionTypeColor" />
             <Conv:TranslationConverter x:Key="Translation" />
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -23,11 +23,11 @@
             <StackLayout Orientation="Vertical" Padding="20,20,20,20">
                 <Label>
                     <Label.Behaviors>
-                        <Beh:TranslationBehavior LanguageKey="ChargeNameText" />
+                        <Beh:TranslationBehavior LanguageKey="TransactionNameText" />
                     </Label.Behaviors>
                 </Label>
 
-                <Entry x:Name="chargeNameEntry" Text="{Binding Transaction.Name}">
+                <Entry x:Name="TransactionNameEntry" Text="{Binding Transaction.Name}">
                     <Entry.Behaviors>
                         <Beh:EmptyValidationEntryBehavior />
                     </Entry.Behaviors>

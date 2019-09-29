@@ -56,7 +56,7 @@ namespace HomeManagement.API.Controllers.Users
 
             UpdateUserCategories(user, language);
 
-            UpdateCharges(user, language);
+            UpdateTransactions(user, language);
 
             return Ok();
         }
@@ -82,18 +82,18 @@ namespace HomeManagement.API.Controllers.Users
             }
         }
 
-        private void UpdateCharges(User user, string language)
+        private void UpdateTransactions(User user, string language)
         {
-            var chargesWithOldCategories = (from charge in transactionRepository.All
+            var transactionsWithOldCategories = (from transaction in transactionRepository.All
                                             join account in accountRepository.All
-                                            on charge.AccountId equals account.Id
+                                            on transaction.AccountId equals account.Id
                                             where account.UserId.Equals(user.Id) &&
-                                                    userCategoryRepository.All.Any(x => x.CategoryId != charge.CategoryId)
-                                            select charge);
+                                                    userCategoryRepository.All.Any(x => x.CategoryId != transaction.CategoryId)
+                                            select transaction);
 
-            foreach (var charge in chargesWithOldCategories)
+            foreach (var transaction in transactionsWithOldCategories)
             {
-                var oldCategory = categoryRepository.FirstOrDefault(x => x.Id.Equals(charge.CategoryId));
+                var oldCategory = categoryRepository.FirstOrDefault(x => x.Id.Equals(transaction.CategoryId));
 
                 var newCategory = (from userCategory in userCategoryRepository.All
                                    join category in categoryRepository.All
@@ -102,9 +102,9 @@ namespace HomeManagement.API.Controllers.Users
                                             category.Icon.Equals(oldCategory.Icon)
                                    select category).FirstOrDefault();
 
-                charge.CategoryId = newCategory.Id;
+                transaction.CategoryId = newCategory.Id;
 
-                transactionRepository.Update(charge);
+                transactionRepository.Update(transaction);
             }
         }
     }

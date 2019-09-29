@@ -9,9 +9,9 @@ namespace HomeManagement.App.ViewModels
 {
     public class EditTransactionViewModel : BaseTransactionEditionViewModel
     {
-        public EditTransactionViewModel(Account account, Transaction charge) : base(account)
+        public EditTransactionViewModel(Account account, Transaction transaction) : base(account)
         {
-            Transaction = charge;
+            Transaction = transaction;
 
             UpdateTransactionCommand = new Command(UpdateTransaction);
             SelectedTransactionType = Transaction.TransactionType;
