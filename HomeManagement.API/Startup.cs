@@ -82,6 +82,7 @@ namespace HomeManagement.API
             services.AddMiddleware();
             services.AddMappers();
             services.AddExportableComponents();
+            services.AddCustomServices();
 
             services.AddScoped<ICurrencyService, CurrencyService>();
 

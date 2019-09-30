@@ -1,4 +1,5 @@
-﻿using HomeManagement.API.Data;
+﻿using HomeManagement.API.Business;
+using HomeManagement.API.Data;
 using HomeManagement.API.Data.Repositories;
 using HomeManagement.API.Exportation;
 using HomeManagement.API.Throttle;
@@ -28,7 +29,7 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<IAccountRepository, AccountRepository>();
 
-            services.AddScoped<Data.Repositories.ITransactionRepository, Data.Repositories.TransactionRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
 
             services.AddScoped<ICategoryRepository, API.Data.Repositories.CategoryRepository>();
 
@@ -79,6 +80,13 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IExportableCategory, ExportableCategory>();
 
             services.AddScoped<IExportableTransaction, ExportableTransaction>();
+        }
+
+        public static void AddCustomServices(this IServiceCollection services)
+        {
+            services.AddScoped<IPreferenceService, PreferenceService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITransactionService, TransactionService>();
         }
 
         public static CorsPolicy BuildCorsPolicy(this CorsOptions corsOptions)

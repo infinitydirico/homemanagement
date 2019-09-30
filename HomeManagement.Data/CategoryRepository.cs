@@ -40,8 +40,6 @@ namespace HomeManagement.Data
                 CategoryId = category.Id
             });
 
-            context.SaveChanges();
-
             return category;
         }
 
@@ -70,8 +68,6 @@ namespace HomeManagement.Data
             if (userCategorySet.Any(x => x.CategoryId.Equals(entity.Id))) return;
 
             set.Remove(entity);
-
-            context.SaveChanges();
         }
 
         public override bool Exists(Category entity) => GetById(entity.Id) != null;

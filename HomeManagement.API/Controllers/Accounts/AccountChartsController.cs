@@ -19,14 +19,14 @@ namespace HomeManagement.API.Controllers.Accounts
     public class AccountChartsController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.ITransactionRepository transactionRepository;
+        private readonly ITransactionRepository transactionRepository;
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly ICategoryMapper categoryMapper;
 
         public AccountChartsController(IAccountRepository accountRepository,
-            Data.Repositories.ITransactionRepository transactionRepository,
+            ITransactionRepository transactionRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository,
             ICategoryRepository categoryRepository,

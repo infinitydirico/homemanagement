@@ -17,7 +17,7 @@ namespace HomeManagement.API.Controllers.Accounts
     public class AccountExtendedController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.ITransactionRepository transactionRepository;
+        private readonly ITransactionRepository transactionRepository;
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
         private readonly ITransactionMapper transactionMapper;
@@ -25,7 +25,7 @@ namespace HomeManagement.API.Controllers.Accounts
         private readonly ICategoryRepository categoryRepository;
 
         public AccountExtendedController(IAccountRepository accountRepository,
-            Data.Repositories.ITransactionRepository transactionRepository,
+            ITransactionRepository transactionRepository,
             IAccountMapper accountMapper,
             IUserRepository userRepository,
             ITransactionMapper transactionMapper,
@@ -72,31 +72,31 @@ namespace HomeManagement.API.Controllers.Accounts
         {
             if (model == null) return BadRequest();
 
-            var controller = new TransactionsController(accountRepository, transactionRepository, categoryRepository, transactionMapper, categoryMapper, userRepository);
+            //var controller = new TransactionsController(accountRepository, transactionRepository, categoryRepository, transactionMapper, categoryMapper, userRepository);
 
-            var incomeTransaction = new TransactionModel
-            {
-                Name = model.OperationName,
-                Price = model.Price,
-                Date = DateTime.Now,
-                TransactionType = TransactionTypeModel.Income,
-                AccountId = model.TargetAccountId,
-                CategoryId = model.CategoryId
-            };
+            //var incomeTransaction = new TransactionModel
+            //{
+            //    Name = model.OperationName,
+            //    Price = model.Price,
+            //    Date = DateTime.Now,
+            //    TransactionType = TransactionTypeModel.Income,
+            //    AccountId = model.TargetAccountId,
+            //    CategoryId = model.CategoryId
+            //};
 
-            controller.Post(incomeTransaction);
+            //controller.Post(incomeTransaction);
 
-            var outcomeTransaction = new TransactionModel
-            {
-                Name = model.OperationName,
-                Price = model.Price,
-                Date = DateTime.Now,
-                TransactionType = TransactionTypeModel.Expense,
-                AccountId = model.SourceAccountId,
-                CategoryId = model.CategoryId
-            };
+            //var outcomeTransaction = new TransactionModel
+            //{
+            //    Name = model.OperationName,
+            //    Price = model.Price,
+            //    Date = DateTime.Now,
+            //    TransactionType = TransactionTypeModel.Expense,
+            //    AccountId = model.SourceAccountId,
+            //    CategoryId = model.CategoryId
+            //};
 
-            controller.Post(outcomeTransaction);
+            //controller.Post(outcomeTransaction);
 
             return Ok();
         }

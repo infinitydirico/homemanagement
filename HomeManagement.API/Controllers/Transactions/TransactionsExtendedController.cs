@@ -22,14 +22,14 @@ namespace HomeManagement.API.Controllers.Transactions
     public class TransactionsExtendedController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.ITransactionRepository transactionsRepository;
+        private readonly ITransactionRepository transactionsRepository;
         private readonly IUserRepository userRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly ITransactionMapper transactionsMapper;
         private readonly ICategoryMapper categoryMapper;
 
         public TransactionsExtendedController(IAccountRepository accountRepository,
-            Data.Repositories.ITransactionRepository transactionsRepository,
+            ITransactionRepository transactionsRepository,
             ICategoryRepository categoryRepository,
             ITransactionMapper transactionsMapper,
             ICategoryMapper categoryMapper,
@@ -200,7 +200,7 @@ namespace HomeManagement.API.Controllers.Transactions
 
             foreach (var transaction in models)
             {
-                transactionsRepository.Update(transactionsMapper.ToEntity(transaction), true);
+                //transactionsRepository.Update(transactionsMapper.ToEntity(transaction), true);
             }
 
             return Ok();

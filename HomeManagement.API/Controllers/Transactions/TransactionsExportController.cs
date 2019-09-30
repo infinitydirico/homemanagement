@@ -20,12 +20,12 @@ namespace HomeManagement.API.Controllers.Transactions
     public class TransactionsExportController : Controller
     {
         private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.ITransactionRepository transactionRepository;
+        private readonly ITransactionRepository transactionRepository;
         private readonly IUserRepository userRepository;
         private readonly IExportableTransaction exportableTransaction;
 
         public TransactionsExportController(IAccountRepository accountRepository,
-            Data.Repositories.ITransactionRepository transactionRepository,
+            ITransactionRepository transactionRepository,
             ICategoryRepository categoryRepository,
             ITransactionMapper transactionMapper,
             ICategoryMapper categoryMapper,

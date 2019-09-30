@@ -1,13 +1,9 @@
-﻿using HomeManagement.API.Filters;
-using HomeManagement.Data;
-using HomeManagement.Domain;
-using HomeManagement.Mapper;
+﻿using HomeManagement.API.Business;
+using HomeManagement.API.Filters;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 
@@ -17,29 +13,13 @@ namespace HomeManagement.API.Controllers.Transactions
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Transactions")]
-    [Persistable]
     public class TransactionsController : Controller
     {
-        private readonly IAccountRepository accountRepository;
-        private readonly Data.Repositories.ITransactionRepository transactionRepository;
-        private readonly IUserRepository userRepository;
-        private readonly ICategoryRepository categoryRepository;
-        private readonly ITransactionMapper transactionMapper;
-        private readonly ICategoryMapper categoryMapper;
+        private readonly ITransactionService transactionService;
 
-        public TransactionsController(IAccountRepository accountRepository,
-            Data.Repositories.ITransactionRepository transactionRepository,
-            ICategoryRepository categoryRepository,
-            ITransactionMapper transactionMapper,
-            ICategoryMapper categoryMapper,
-            IUserRepository userRepository)
+        public TransactionsController(ITransactionService transactionService)
         {
-            this.accountRepository = accountRepository;
-            this.transactionRepository = transactionRepository;
-            this.categoryRepository = categoryRepository;
-            this.transactionMapper = transactionMapper;
-            this.categoryMapper = categoryMapper;
-            this.userRepository = userRepository;
+            this.transactionService = transactionService;
         }
 
         [HttpGet]
@@ -49,42 +29,22 @@ namespace HomeManagement.API.Controllers.Transactions
 
             if (claim == null) return BadRequest();
 
-            var transactions = (from transaction in transactionRepository.All
-                           join account in accountRepository.All
-                           on transaction.AccountId equals account.Id
-                           join user in userRepository.All
-                           on account.UserId equals user.Id
-                           where user.Email.Equals(claim.Value)
-                           select transactionMapper.ToModel(transaction)).ToList();
-
-            return Ok(transactions);
+            return Ok(transactionService.GetAll(claim.Value));
 
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var result = transactionRepository.GetById(id);
-
-            return Ok(transactionMapper.ToModel(result));
+            return Ok(transactionService.Get(id));
         }
 
         [HttpPost]
         public IActionResult Post([FromBody] TransactionModel model)
         {
-            Category category;
             if (model == null) return BadRequest();
 
-            if (model.CategoryId.Equals(default(int)) || categoryRepository.All.FirstOrDefault(x => x.Id.Equals(model.CategoryId)) == null)
-            {
-                category = categoryRepository.FirstOrDefault();
-                model.CategoryId = category.Id;
-            }
-
-            var entity = transactionMapper.ToEntity(model);
-
-            transactionRepository.Add(entity);
-            UpdateBalance(entity);
+            transactionService.Add(model);
 
             return Ok();
         }
@@ -94,9 +54,7 @@ namespace HomeManagement.API.Controllers.Transactions
         {
             if (model == null) return BadRequest();
 
-            var entity = transactionMapper.ToEntity(model);
-
-            transactionRepository.Update(entity, true);
+            transactionService.Update(model);
 
             return Ok();
         }
@@ -106,22 +64,9 @@ namespace HomeManagement.API.Controllers.Transactions
         {
             if (id < 1) return BadRequest();
 
-            transactionRepository.Remove(transactionRepository.GetById(id), true);
+            transactionService.Delete(id);
 
             return Ok();
-        }
-
-        private void UpdateBalance(Transaction c, bool reverse = false)
-        {
-            var account = accountRepository.FirstOrDefault(x => x.Id.Equals(c.AccountId));
-
-            if (reverse)
-            {
-                c.Price = -c.Price;
-            }
-
-            account.Balance = c.TransactionType.Equals(TransactionType.Income) ? account.Balance + c.Price : account.Balance - c.Price;
-            accountRepository.Update(account);
         }
     }
 }
