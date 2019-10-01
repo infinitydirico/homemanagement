@@ -1,13 +1,10 @@
-﻿using HomeManagement.API.Extensions;
+﻿using HomeManagement.API.Business;
+using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
-using HomeManagement.Data;
-using HomeManagement.Mapper;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace HomeManagement.API.Controllers.Categories
 {
@@ -15,48 +12,13 @@ namespace HomeManagement.API.Controllers.Categories
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Category")]
-    [Persistable]
     public class CategoryController : Controller
     {
-        private readonly IAccountRepository accountRepository;
-        private readonly ITransactionRepository transactionRepository;
-        private readonly IUserRepository userRepository;
-        private readonly ICategoryRepository categoryRepository;
-        private readonly ITransactionMapper transactionMapper;
-        private readonly ICategoryMapper categoryMapper;
-        private readonly IUserCategoryRepository userCategoryRepository;
+        private readonly ICategoryService categoryService;
 
-        public CategoryController(IAccountRepository accountRepository,
-                                    ITransactionRepository transactionRepository,
-                                    ICategoryRepository categoryRepository,
-                                    ITransactionMapper transactionMapper,
-                                    ICategoryMapper categoryMapper,
-                                    IUserRepository userRepository,
-                                    IUserCategoryRepository userCategoryRepository)
+        public CategoryController(ICategoryService categoryService)
         {
-            this.accountRepository = accountRepository;
-            this.transactionRepository = transactionRepository;
-            this.categoryRepository = categoryRepository;
-            this.transactionMapper = transactionMapper;
-            this.categoryMapper = categoryMapper;
-            this.userRepository = userRepository;
-            this.userCategoryRepository = userCategoryRepository;
-        }
-
-        [HttpGet]
-        public IActionResult Get()
-        {
-            var email = HttpContext.GetEmailClaim();
-
-            var categories = (from category in categoryRepository.All
-                              join userCategory in userCategoryRepository.All
-                              on category.Id equals userCategory.CategoryId
-                              join user in userRepository.All
-                              on userCategory.UserId equals user.Id
-                              where user.Email.Equals(email.Value)
-                              select categoryMapper.ToModel(category)).ToList();
-
-            return Ok(categories);
+            this.categoryService = categoryService;
         }
 
         [HttpGet("active")]
@@ -64,15 +26,7 @@ namespace HomeManagement.API.Controllers.Categories
         {
             var email = HttpContext.GetEmailClaim();
 
-            var categories = (from category in categoryRepository.All
-                              join userCategory in userCategoryRepository.All
-                              on category.Id equals userCategory.CategoryId
-                              join user in userRepository.All
-                              on userCategory.UserId equals user.Id
-                              where user.Email.Equals(email.Value) && category.IsActive
-                              select categoryMapper.ToModel(category)).ToList();
-
-            return Ok(categories);
+            return Ok(categoryService.GetActive(email.Value));
         }
 
         [HttpPost]
@@ -80,8 +34,7 @@ namespace HomeManagement.API.Controllers.Categories
         {
             if (category == null) return BadRequest();
 
-            categoryRepository.Add(categoryMapper.ToEntity(category), userRepository.FirstOrDefault(x => x.Email.Equals(HttpContext.GetEmailClaim().Value)));
-            categoryRepository.Commit();
+            categoryService.Add(category, HttpContext.GetEmailClaim().Value);
 
             return Ok();
         }
@@ -93,8 +46,7 @@ namespace HomeManagement.API.Controllers.Categories
 
             if (!(category.Id > 0)) return BadRequest();
 
-            categoryRepository.Update(categoryMapper.ToEntity(category));
-            categoryRepository.Commit();
+            categoryService.Update(category);
 
             return Ok();
         }
@@ -102,16 +54,9 @@ namespace HomeManagement.API.Controllers.Categories
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var category = categoryRepository.GetById(id);
+            var result = categoryService.Delete(id, HttpContext.GetEmailClaim().Value);
 
-            if (category == null) return BadRequest();
-
-            var transactionsWithThisCategory = transactionRepository.Count(x => x.CategoryId.Equals(id));
-
-            if (transactionsWithThisCategory > default(int)) return BadRequest();
-
-            categoryRepository.Remove(id, userRepository.FirstOrDefault(x => x.Email.Equals(HttpContext.GetEmailClaim().Value)));
-            categoryRepository.Commit();
+            if (result.Result.Equals(Result.Error)) return BadRequest(result.Errors);
 
             return Ok();
         }

@@ -1,7 +1,11 @@
-﻿using HomeManagement.Data;
+﻿using HomeManagement.API.Exportation;
+using HomeManagement.API.Extensions;
+using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,16 +16,20 @@ namespace HomeManagement.API.Business
         private readonly IAccountRepository accountRepository;
         private readonly ITransactionRepository transactionRepository;
         private readonly IUserRepository userRepository;
+        private readonly IPreferenceService preferenceService;
         private readonly ICategoryRepository categoryRepository;
         private readonly ITransactionMapper transactionMapper;
         private readonly ICategoryMapper categoryMapper;
+        private readonly IExportableTransaction exportableTransaction;
 
         public TransactionService(IAccountRepository accountRepository,
             ITransactionRepository transactionRepository,
             ICategoryRepository categoryRepository,
             ITransactionMapper transactionMapper,
             ICategoryMapper categoryMapper,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IPreferenceService preferenceService,
+            IExportableTransaction exportableTransaction)
         {
             this.accountRepository = accountRepository;
             this.transactionRepository = transactionRepository;
@@ -29,6 +37,8 @@ namespace HomeManagement.API.Business
             this.transactionMapper = transactionMapper;
             this.categoryMapper = categoryMapper;
             this.userRepository = userRepository;
+            this.preferenceService = preferenceService;
+            this.exportableTransaction = exportableTransaction;
         }
 
         public void Add(TransactionModel transaction)
@@ -40,6 +50,8 @@ namespace HomeManagement.API.Business
                 category = categoryRepository.FirstOrDefault();
                 transaction.CategoryId = category.Id;
             }
+
+            var account = accountRepository.GetById(transaction.AccountId);
 
             var entity = transactionMapper.ToEntity(transaction);
 
@@ -115,6 +127,42 @@ namespace HomeManagement.API.Business
 
             return transactionMapper.ToModel(result);
         }
+
+        public void Import(int accountId, string email, IFormFile formFile)
+        {
+            var account = accountRepository.FirstOrDefault(x => x.Id.Equals(accountId));
+
+            foreach (var entity in exportableTransaction.ToEntities(formFile.OpenReadStream().GetBytes()))
+            {
+                if (entity == null) continue;
+
+                if (transactionRepository.Exists(entity)) continue;
+
+                entity.Id = 0;
+                entity.AccountId = accountId;
+                transactionRepository.Add(entity);
+
+                account.Balance = entity.TransactionType.Equals(TransactionType.Income) ? account.Balance + entity.Price : account.Balance - entity.Price;
+                accountRepository.Update(account);
+            }
+
+            accountRepository.Commit();
+        }
+
+        public ExportFile Export(int accountId, string email)
+        {
+            var transactions = transactionRepository.Where(x => x.AccountId.Equals(accountId)).ToList();
+
+            var account = accountRepository.GetById(accountId);
+
+            var csv = exportableTransaction.ToCsv(transactions);
+
+            return new ExportFile
+            {
+                Filename = $"{account}{DateTime.Now.ToString("yyyyMMddhhmmss")}.csv",
+                Content = csv
+            };
+        }
     }
 
     public interface ITransactionService
@@ -128,5 +176,16 @@ namespace HomeManagement.API.Business
         IEnumerable<TransactionModel> GetAll(string userEmail);
 
         TransactionModel Get(int id);
+
+        void Import(int accountId, string email, IFormFile formFile);
+
+        ExportFile Export(int accountId, string email);
+    }
+
+    public class ExportFile
+    {
+        public string Filename { get; set; }
+
+        public byte[] Content { get; set; }
     }
 }

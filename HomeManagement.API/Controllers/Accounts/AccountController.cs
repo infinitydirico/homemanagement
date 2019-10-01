@@ -1,14 +1,9 @@
-﻿using HomeManagement.API.Extensions;
+﻿using HomeManagement.API.Business;
+using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
-using HomeManagement.Core.Common;
-using HomeManagement.Data;
-using HomeManagement.Mapper;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace HomeManagement.API.Controllers.Accounts
 {
@@ -16,24 +11,13 @@ namespace HomeManagement.API.Controllers.Accounts
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Account")]
-    [Persistable]
     public class AccountController : Controller
     {
-        private readonly IAccountRepository accountRepository;
-        private readonly ITransactionRepository transactionRepository;
-        private readonly IAccountMapper accountMapper;
-        private readonly IUserRepository userRepository;
+        private readonly IAccountService accountService;
 
-        public AccountController(IAccountRepository accountRepository,
-            ITransactionRepository transactionRepository,
-            IAccountMapper accountMapper,
-            IUserRepository userRepository,
-            IStringLocalizer<AccountController> localizer)
+        public AccountController(IAccountService accountService)
         {
-            this.accountRepository = accountRepository;
-            this.transactionRepository = transactionRepository;
-            this.accountMapper = accountMapper;
-            this.userRepository = userRepository;
+            this.accountService = accountService;
         }       
 
         [HttpGet]
@@ -43,24 +27,17 @@ namespace HomeManagement.API.Controllers.Accounts
 
             if (claim == null) return BadRequest();
 
-            var accounts = (from account in accountRepository.All
-                            join user in userRepository.All
-                            on account.UserId equals user.Id
-                            where user.Email.Equals(claim.Value)
-                            select accountMapper.ToModel(account))
-                            .ToList();
-
-            return Ok(accounts);
+            return Ok(accountService.GetAccounts(claim.Value));
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var account = accountRepository.GetById(id);
+            var account = accountService.Get(id);
 
             if (account == null) return NotFound();
 
-            return Ok(accountMapper.ToModel(account));
+            return Ok(account);
         }
 
         [HttpPost]
@@ -68,9 +45,7 @@ namespace HomeManagement.API.Controllers.Accounts
         {
             if (model == null && !ModelState.IsValid) return BadRequest();
 
-            var entity = accountMapper.ToEntity(model);
-
-            accountRepository.Add(entity);
+            accountService.Add(model);
 
             return Ok();
         }
@@ -80,9 +55,7 @@ namespace HomeManagement.API.Controllers.Accounts
         {
             if (model == null && !ModelState.IsValid) return BadRequest();
 
-            var entity = accountMapper.ToEntity(model);
-
-            accountRepository.Update(entity);
+            accountService.Update(model);
 
             return Ok();
         }
@@ -92,10 +65,9 @@ namespace HomeManagement.API.Controllers.Accounts
         {
             if (id < 1) return BadRequest();
 
-            var transaction = transactionRepository.FirstOrDefault(c => c.AccountId.Equals(id));
-            if (transaction != null) return BadRequest(Constants.ErrorCode.AccountHasTransactions);
+            var result = accountService.Delete(id);
 
-            accountRepository.Remove(id);
+            if (result.Result.Equals(Result.Error)) return BadRequest(result.Errors);
 
             return Ok();
         }

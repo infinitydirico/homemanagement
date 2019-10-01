@@ -12,6 +12,9 @@ namespace HomeManagement.API.Business
 
         public static OperationResult Succeed()
             => new OperationResult { Result = Result.Succeed };
+
+        public static OperationResult Error(string error)
+            => new OperationResult { Result = Result.Error, Errors = new List<string> { error } };
     }
 
     public enum Result

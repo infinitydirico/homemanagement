@@ -18,7 +18,6 @@ namespace HomeManagement.API.Controllers.Global
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Storage")]
-    [Persistable]
     public class StorageController : Controller
     {
         private readonly IStorageItemMapper storageItemMapper;
@@ -156,6 +155,7 @@ namespace HomeManagement.API.Controllers.Global
             storageItem.TransactionId = transactionId;
 
             storageItemRepository.Add(storageItem);
+            storageItemRepository.Commit();
 
             return Ok(storageItem);
         }

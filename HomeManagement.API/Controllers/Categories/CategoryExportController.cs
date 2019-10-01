@@ -11,6 +11,9 @@ using System.Linq;
 
 namespace HomeManagement.API.Controllers.Categories
 {
+    /// <summary>
+    /// TODO extract to category service
+    /// </summary>
     [Authorization]
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]

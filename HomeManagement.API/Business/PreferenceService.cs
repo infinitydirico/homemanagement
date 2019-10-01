@@ -15,6 +15,8 @@ namespace HomeManagement.API.Business
         private readonly ITransactionRepository transactionRepository;
         private readonly IAccountRepository accountRepository;
 
+        private const string LanguageKey = "Language";
+
         public PreferenceService(IUserRepository userRepository,
             IPreferencesRepository preferencesRepository,
             ICategoryRepository categoryRepository,
@@ -36,7 +38,7 @@ namespace HomeManagement.API.Business
 
             var userPreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id)) ?? new Preferences();
 
-            userPreference.Key = "Language";
+            userPreference.Key = LanguageKey;
             userPreference.Value = language;
             userPreference.UserId = user.Id;
 
@@ -49,6 +51,8 @@ namespace HomeManagement.API.Business
                 preferencesRepository.Add(userPreference);
             }
 
+            preferencesRepository.Commit();
+
             UpdateUserCategories(user, language);
 
             UpdateTransactions(user, language);
@@ -56,7 +60,7 @@ namespace HomeManagement.API.Business
 
         public string GetUserLanguage(int userId)
         {
-            var languagePreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(userId) && x.Key.Equals("Language"));
+            var languagePreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(userId) && x.Key.Equals(LanguageKey));
 
             return languagePreference?.Value ?? "en";
         }
@@ -71,8 +75,9 @@ namespace HomeManagement.API.Business
 
             foreach (var category in userCategories)
             {
-                categoryRepository.Remove(category.Id, user);
+                categoryRepository.Remove(category.Id, user);                
             }
+            categoryRepository.Commit();
 
             var defaultCategories = CategoryInitializer.GetDefaultCategories(new System.Globalization.CultureInfo(language));
 
@@ -80,6 +85,7 @@ namespace HomeManagement.API.Business
             {
                 categoryRepository.Add(category, user);
             }
+            categoryRepository.Commit();
         }
 
         private void UpdateTransactions(User user, string language)
@@ -106,6 +112,8 @@ namespace HomeManagement.API.Business
 
                 transactionRepository.Update(transaction);
             }
+
+            transactionRepository.Commit();
         }
     }
 

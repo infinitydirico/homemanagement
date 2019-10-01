@@ -11,7 +11,6 @@ namespace HomeManagement.API.Controllers.Users
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/Preferences")]
-    [Persistable]
     public class PreferencesController : Controller
     {
         private readonly IPreferenceService preferenceService;

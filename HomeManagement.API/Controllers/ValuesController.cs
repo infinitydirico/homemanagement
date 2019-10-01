@@ -1,23 +1,10 @@
-﻿using HomeManagement.API.Filters;
-using HomeManagement.Data;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace HomeManagement.API.Controllers
 {
     [Route("api/[controller]")]
-    [Persistable]
     public class ValuesController : Controller
     {
-        private readonly IUserRepository userRepository;
-        private readonly ITransactionRepository transactionRepository;
-
-        public ValuesController(IUserRepository userRepository, ITransactionRepository transactionRepository)
-        {
-            this.userRepository = userRepository;
-            this.transactionRepository = transactionRepository;
-        }
-
         // GET api/values
         [HttpGet]
         public IActionResult Get()

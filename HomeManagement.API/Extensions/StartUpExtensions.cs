@@ -87,6 +87,10 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IPreferenceService, PreferenceService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IStorageService, StorageService>();
+            services.AddScoped<INotificationService, NotificationService>();
         }
 
         public static CorsPolicy BuildCorsPolicy(this CorsOptions corsOptions)
