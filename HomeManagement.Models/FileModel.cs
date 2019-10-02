@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 
 namespace HomeManagement.Models
 {
@@ -24,6 +25,8 @@ namespace HomeManagement.Models
         public string ContentType { get; private set; }
 
         public byte[] Contents { get; set; }
+
+        public Stream Stream { get; set; }
 
         private void SetExtension()
         {

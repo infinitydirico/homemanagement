@@ -1,15 +1,9 @@
-﻿using HomeManagement.API.Extensions;
+﻿using HomeManagement.API.Business;
+using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
-using HomeManagement.Data;
-using HomeManagement.Domain;
-using HomeManagement.FilesStore;
-using HomeManagement.Mapper;
-using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace HomeManagement.API.Controllers.Global
@@ -20,155 +14,70 @@ namespace HomeManagement.API.Controllers.Global
     [Route("api/Storage")]
     public class StorageController : Controller
     {
-        private readonly IStorageItemMapper storageItemMapper;
-        private readonly IStorageItemRepository storageItemRepository;
-        private readonly IStorageClient storageClient;
-        private readonly IUserRepository userRepository;
-        private readonly ITransactionRepository transactionRepository;
-        private readonly IAccountRepository accountRepository;
-        private readonly IPreferencesRepository preferencesRepository;
+        private readonly IStorageService storageService;
 
-        public StorageController(IStorageItemMapper storageItemMapper,
-            IStorageItemRepository storageItemRepository,
-            IStorageClient storageClient,
-            IUserRepository userRepository,
-            ITransactionRepository transactionRepository,
-            IAccountRepository accountRepository,
-            IPreferencesRepository preferencesRepository)
+        public StorageController(IStorageService storageService)
         {
-            this.storageItemMapper = storageItemMapper;
-            this.storageItemRepository = storageItemRepository;
-            this.storageClient = storageClient;
-            this.userRepository = userRepository;
-            this.transactionRepository = transactionRepository;
-            this.accountRepository = accountRepository;
-            this.preferencesRepository = preferencesRepository;
+            this.storageService = storageService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        [StorageAuthorization]
+        public IActionResult Get()
         {
-            var user = userRepository.GetByEmail(HttpContext.GetEmailClaim().Value);
-
-            if (!storageClient.IsAuthorized(user.Id)) return Forbid();
-
-            var clientFiles = await storageClient.Get(user.Id);
-
-            var storageItems = GetRepoItems(user.Id);
-
-            if (clientFiles.All(x => storageItems.Exists(s => s.Name.Equals(x.Name))))
-            {
-                return Ok(storageItems.Select(x => storageItemMapper.ToModel(x)));
-            }
-
             //try to create missing files on repo
 
-            return Ok();
+            return Ok(storageService.GetStorageItems(HttpContext.GetEmailClaim().Value));
         }
 
         [HttpGet("getitems")]
+        [StorageAuthorization]
         public IActionResult GetItems()
         {
-            var user = userRepository.GetByEmail(HttpContext.GetEmailClaim().Value);
-
-            if (!storageClient.IsAuthorized(user.Id)) return Forbid();
-
-            return Ok(GetRepoItems(user.Id).Select(x => storageItemMapper.ToModel(x)));
+            return Ok(storageService.GetStorageItems(HttpContext.GetEmailClaim().Value));
         }
         
         [HttpGet("gettransactionfiles/{transactionId}")]
+        [StorageAuthorization]
         public IActionResult GetTransactionFiles(int transactionId)
         {
-            var user = userRepository.GetByEmail(HttpContext.GetEmailClaim().Value);
-
-            if (!storageClient.IsAuthorized(user.Id)) return Forbid();
-
-            return Ok(GetRepoItems(user.Id)
-                .Where(x => x.TransactionId.Equals(transactionId))
-                .Select(x => storageItemMapper.ToModel(x)));
+            return Ok(storageService.GetTransactionFiles(HttpContext.GetEmailClaim().Value, transactionId));
         }
 
         [HttpGet("connect")]
         public IActionResult Connect()
         {
-            var user = userRepository.GetByEmail(HttpContext.GetEmailClaim().Value);
-
-            var accessToken = storageClient.GetAccessToken(user.Id);
-
-            return Ok(accessToken.ToString());
+            return Ok(storageService.CreateAccessToken(HttpContext.GetEmailClaim().Value));
         }
 
         [HttpGet("authorize")]
         public async Task<IActionResult> Authorize([FromQuery(Name = "state")]string state, [FromQuery(Name = "code")]string code)
         {
-            var preference = preferencesRepository.FirstOrDefault(x => x.Value.Equals(state));
-
-            var user = userRepository.GetById(preference.UserId);
-
-            await storageClient.Authorize(user.Id, code, state);
+            var result = await storageService.Authorize(state, code);
 
             return Ok();
         }
 
         [HttpGet("download/{id}")]
+        [StorageAuthorization]
         public async Task<IActionResult> Download(int id)
         {
-            var claim = HttpContext.GetEmailClaim();
-
-            var user = userRepository.GetByEmail(claim.Value);
-
-            var item = storageItemRepository.GetById(id);
-
-            var fileStream = await storageClient.Download(user.Id, item.Path);
-
-            var file = new FileModel
-            {
-                Name = item.Name,
-            };
-            return new FileStreamResult(fileStream, file.ContentType);
+            var file = await storageService.Download(id, HttpContext.GetEmailClaim().Value);
+            return new FileStreamResult(file.Stream, file.ContentType);
         }
 
         [HttpPost("upload")]
+        [StorageAuthorization]
         public async Task<IActionResult> Upload()
         {
-            int transactionId = 0;
-            Account account = null;
-            Transaction transaction = null;
-
             var claim = HttpContext.GetEmailClaim();
 
-            var user = userRepository.GetByEmail(claim.Value);
-
-            if (!storageClient.IsAuthorized(user.Id)) return Forbid();
-
             var filename = HttpContext.GetHeader("filename");
+            var transactionId = int.Parse(HttpContext.GetHeader("transactionId"));
 
-            if (HttpContext.HasHeader("transactionId"))
-            {
-                transactionId = int.Parse(HttpContext.GetHeader("transactionId"));
-                transaction = transactionRepository.GetById(transactionId);
-                account = accountRepository.GetById(transaction.AccountId);
-            }
-
-            var storageItem = await storageClient.Upload(user.Id, filename,account.Name, transaction.Name, Request.Body);
-
-            storageItem.TransactionId = transactionId;
-
-            storageItemRepository.Add(storageItem);
-            storageItemRepository.Commit();
+            var storageItem = await storageService.Upload(filename, transactionId, Request.Body);
 
             return Ok(storageItem);
-        }
-
-        private List<StorageItem> GetRepoItems(int userId)
-        {
-            return (from storageItem in storageItemRepository.All
-                    join transaction in transactionRepository.All
-                    on storageItem.TransactionId equals transaction.Id
-                    join account in accountRepository.All
-                    on transaction.AccountId equals account.Id
-                    where account.UserId.Equals(userId)
-                    select storageItem).ToList();
         }
     }
 }

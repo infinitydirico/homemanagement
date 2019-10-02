@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Migrations\20190927114954_InitialCreate.cs" />
-    <Compile Include="Migrations\20190927114954_InitialCreate.Designer.cs" />
+    <Compile Include="Migrations\20191001235948_InitialCreate.cs" />
+    <Compile Include="Migrations\20191001235948_InitialCreate.Designer.cs" />
     <Compile Include="Migrations\WebAppDbContextModelSnapshot.cs" />
   </ItemGroup>
 

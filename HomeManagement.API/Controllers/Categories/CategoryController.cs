@@ -21,6 +21,14 @@ namespace HomeManagement.API.Controllers.Categories
             this.categoryService = categoryService;
         }
 
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var email = HttpContext.GetEmailClaim();
+
+            return Ok(categoryService.GetActive(email.Value));
+        }
+
         [HttpGet("active")]
         public IActionResult GetActiveCategories()
         {

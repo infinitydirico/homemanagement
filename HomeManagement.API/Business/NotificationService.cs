@@ -44,7 +44,7 @@ namespace HomeManagement.API.Business
             return OperationResult.Succeed();
         }
 
-        public OperationResult Delete(int id, string email)
+        public OperationResult DeleteReminder(int id, string email)
         {
             var reminder = reminderRepository.GetById(id);
 
@@ -70,7 +70,7 @@ namespace HomeManagement.API.Business
 
         public IEnumerable<NotificationModel> GetNotifications(string email)
         {
-            GetNotifications(email);
+            GenerateNotifications(email);
 
             var notifications = (from notification in notificationRepository.All
                                  join reminder in reminderRepository.All
@@ -187,6 +187,6 @@ namespace HomeManagement.API.Business
 
         OperationResult UpdateReminder(ReminderModel reminderModel, string email);
 
-        OperationResult Delete(int id, string email);
+        OperationResult DeleteReminder(int id, string email);
     }
 }

@@ -62,7 +62,7 @@ namespace HomeManagement.API.Controllers.Notifications
         {
             if (id <= 0) return BadRequest();
 
-            notificationService.Delete(id, HttpContext.GetEmailClaim().Value);
+            notificationService.DeleteReminder(id, HttpContext.GetEmailClaim().Value);
 
             return Ok();
         }

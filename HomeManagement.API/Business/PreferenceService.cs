@@ -1,6 +1,8 @@
 ﻿using HomeManagement.API.Data;
 using HomeManagement.Data;
 using HomeManagement.Domain;
+using HomeManagement.Mapper;
+using HomeManagement.Models;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,15 +16,20 @@ namespace HomeManagement.API.Business
         private readonly IUserCategoryRepository userCategoryRepository;
         private readonly ITransactionRepository transactionRepository;
         private readonly IAccountRepository accountRepository;
+        private readonly ICurrencyRepository currencyRepository;
+        private readonly ICurrencyMapper currencyMapper;
 
         private const string LanguageKey = "Language";
+        private const string PreferredCurrency = "PreferredCurrency";
 
         public PreferenceService(IUserRepository userRepository,
             IPreferencesRepository preferencesRepository,
             ICategoryRepository categoryRepository,
             IUserCategoryRepository userCategoryRepository,
             ITransactionRepository transactionRepository,
-            IAccountRepository accountRepository)
+            IAccountRepository accountRepository,
+            ICurrencyRepository currencyRepository,
+            ICurrencyMapper currencyMapper)
         {
             this.userRepository = userRepository;
             this.preferencesRepository = preferencesRepository;
@@ -30,6 +37,8 @@ namespace HomeManagement.API.Business
             this.userCategoryRepository = userCategoryRepository;
             this.transactionRepository = transactionRepository;
             this.accountRepository = accountRepository;
+            this.currencyRepository = currencyRepository;
+            this.currencyMapper = currencyMapper;
         }
 
         public void ChangeLanguage(string userEmail, string language)
@@ -115,6 +124,33 @@ namespace HomeManagement.API.Business
 
             transactionRepository.Commit();
         }
+
+        public void ChangeCurrency(CurrencyModel currency, string email)
+        {
+            var user = userRepository.FirstOrDefault(x => x.Email.Equals(email));
+            var currencyPreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(PreferredCurrency));
+
+            if (currencyPreference == null)
+            {
+                currencyPreference = new Preferences
+                {
+                    UserId = user.Id,
+                    Key = PreferredCurrency,
+                    Value = currency.Name,
+                };
+
+                preferencesRepository.Add(currencyPreference);
+            }
+            else
+            {
+                currencyPreference.Value = currency.Name;
+                preferencesRepository.Update(currencyPreference);
+            }
+
+            preferencesRepository.Commit();
+        }
+
+        public IEnumerable<CurrencyModel> GetCurrencies() => currencyRepository.GetAll().Select(x => currencyMapper.ToModel(x));
     }
 
     public interface IPreferenceService
@@ -122,5 +158,9 @@ namespace HomeManagement.API.Business
         void ChangeLanguage(string userEmail, string language);
 
         string GetUserLanguage(int userId);
+
+        void ChangeCurrency(CurrencyModel currency, string email);
+
+        IEnumerable<CurrencyModel> GetCurrencies();
     }
 }
