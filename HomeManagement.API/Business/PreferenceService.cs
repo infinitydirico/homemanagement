@@ -1,4 +1,5 @@
 ﻿using HomeManagement.API.Data;
+using HomeManagement.API.Services;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
@@ -16,8 +17,9 @@ namespace HomeManagement.API.Business
         private readonly IUserCategoryRepository userCategoryRepository;
         private readonly ITransactionRepository transactionRepository;
         private readonly IAccountRepository accountRepository;
-        private readonly ICurrencyRepository currencyRepository;
         private readonly ICurrencyMapper currencyMapper;
+        private readonly ICurrencyService currencyService;
+        private readonly IUserSessionService userService;
 
         private const string LanguageKey = "Language";
         private const string PreferredCurrency = "PreferredCurrency";
@@ -28,8 +30,9 @@ namespace HomeManagement.API.Business
             IUserCategoryRepository userCategoryRepository,
             ITransactionRepository transactionRepository,
             IAccountRepository accountRepository,
-            ICurrencyRepository currencyRepository,
-            ICurrencyMapper currencyMapper)
+            ICurrencyMapper currencyMapper,
+            ICurrencyService currencyService,
+            IUserSessionService userService)
         {
             this.userRepository = userRepository;
             this.preferencesRepository = preferencesRepository;
@@ -37,13 +40,14 @@ namespace HomeManagement.API.Business
             this.userCategoryRepository = userCategoryRepository;
             this.transactionRepository = transactionRepository;
             this.accountRepository = accountRepository;
-            this.currencyRepository = currencyRepository;
             this.currencyMapper = currencyMapper;
+            this.currencyService = currencyService;
+            this.userService = userService;
         }
 
-        public void ChangeLanguage(string userEmail, string language)
+        public void ChangeLanguage(string language)
         {
-            var user = userRepository.FirstOrDefault(x => x.Email.Equals(userEmail));
+            var user = userService.GetAuthenticatedUser();
 
             var userPreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id)) ?? new Preferences();
 
@@ -125,9 +129,9 @@ namespace HomeManagement.API.Business
             transactionRepository.Commit();
         }
 
-        public void ChangeCurrency(CurrencyModel currency, string email)
+        public void ChangeCurrency(CurrencyModel currency)
         {
-            var user = userRepository.FirstOrDefault(x => x.Email.Equals(email));
+            var user = userService.GetAuthenticatedUser();
             var currencyPreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(PreferredCurrency));
 
             if (currencyPreference == null)
@@ -150,16 +154,26 @@ namespace HomeManagement.API.Business
             preferencesRepository.Commit();
         }
 
-        public IEnumerable<CurrencyModel> GetCurrencies() => currencyRepository.GetAll().Select(x => currencyMapper.ToModel(x));
+        public IEnumerable<CurrencyModel> GetCurrencies() => currencyService.GetCurrencies().Select(x => currencyMapper.ToModel(x));
+
+        public CurrencyModel GetPreferredCurrency()
+        {
+            var user = userService.GetAuthenticatedUser();
+            var preferredCurrency = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(PreferredCurrency));
+            var currency = GetCurrencies().FirstOrDefault(x => x.Name.Equals(preferredCurrency.Value));
+            return currency;
+        }
     }
 
     public interface IPreferenceService
     {
-        void ChangeLanguage(string userEmail, string language);
+        void ChangeLanguage(string language);
 
         string GetUserLanguage(int userId);
 
-        void ChangeCurrency(CurrencyModel currency, string email);
+        void ChangeCurrency(CurrencyModel currency);
+
+        CurrencyModel GetPreferredCurrency();
 
         IEnumerable<CurrencyModel> GetCurrencies();
     }

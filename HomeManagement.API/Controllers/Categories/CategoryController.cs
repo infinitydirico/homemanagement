@@ -26,7 +26,7 @@ namespace HomeManagement.API.Controllers.Categories
         {
             var email = HttpContext.GetEmailClaim();
 
-            return Ok(categoryService.GetActive(email.Value));
+            return Ok(categoryService.GetActive());
         }
 
         [HttpGet("active")]
@@ -34,7 +34,7 @@ namespace HomeManagement.API.Controllers.Categories
         {
             var email = HttpContext.GetEmailClaim();
 
-            return Ok(categoryService.GetActive(email.Value));
+            return Ok(categoryService.GetActive());
         }
 
         [HttpPost]
@@ -42,7 +42,7 @@ namespace HomeManagement.API.Controllers.Categories
         {
             if (category == null) return BadRequest();
 
-            categoryService.Add(category, HttpContext.GetEmailClaim().Value);
+            categoryService.Add(category);
 
             return Ok();
         }
@@ -62,7 +62,7 @@ namespace HomeManagement.API.Controllers.Categories
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var result = categoryService.Delete(id, HttpContext.GetEmailClaim().Value);
+            var result = categoryService.Delete(id);
 
             if (result.Result.Equals(Result.Error)) return BadRequest(result.Errors);
 

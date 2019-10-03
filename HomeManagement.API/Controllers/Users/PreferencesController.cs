@@ -4,6 +4,7 @@ using HomeManagement.API.Filters;
 using HomeManagement.Localization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace HomeManagement.API.Controllers.Users
 {
@@ -27,7 +28,19 @@ namespace HomeManagement.API.Controllers.Users
 
             var emailClaim = HttpContext.GetEmailClaim();
 
-            preferenceService.ChangeLanguage(emailClaim.Value, language);
+            preferenceService.ChangeLanguage(language);
+
+            return Ok();
+        }
+
+        [HttpPost("changepreferredcurrency/{currency}")]
+        public IActionResult ChangePreferredCurrency(string currency)
+        {
+            var emailClaim = HttpContext.GetEmailClaim();
+
+            var currencyModel = preferenceService.GetCurrencies().First(x => x.Name.Equals(currency));
+
+            preferenceService.ChangeCurrency(currencyModel);
 
             return Ok();
         }

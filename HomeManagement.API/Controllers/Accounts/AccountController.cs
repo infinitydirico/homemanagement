@@ -1,5 +1,4 @@
 ﻿using HomeManagement.API.Business;
-using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
@@ -23,11 +22,7 @@ namespace HomeManagement.API.Controllers.Accounts
         [HttpGet]
         public IActionResult Get()
         {
-            var claim = HttpContext.GetEmailClaim();
-
-            if (claim == null) return BadRequest();
-
-            return Ok(accountService.GetAccounts(claim.Value));
+            return Ok(accountService.GetAccounts());
         }
 
         [HttpGet("{id}")]

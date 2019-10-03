@@ -26,7 +26,7 @@ namespace HomeManagement.API.Controllers.Notifications
         {
             var claim = HttpContext.GetEmailClaim();
 
-            return Ok(notificationService.GetNotifications(claim.Value));
+            return Ok(notificationService.GetNotifications());
         }
 
         [HttpPut]

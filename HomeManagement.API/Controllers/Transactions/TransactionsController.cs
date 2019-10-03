@@ -29,7 +29,7 @@ namespace HomeManagement.API.Controllers.Transactions
 
             if (claim == null) return BadRequest();
 
-            return Ok(transactionService.GetAll(claim.Value));
+            return Ok(transactionService.GetAll());
 
         }
 

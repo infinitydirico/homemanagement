@@ -67,9 +67,17 @@ namespace HomeManagement.API.Controllers.Accounts
             var user = userRepository.FirstOrDefault(x => x.Email.Equals(email.Value));
 
             //todo missing year compare here and on actions below as well.
-            var total = transactionRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(DateTime.Now.Month) && c.TransactionType == TransactionType.Income);
+            var total = transactionRepository.Sum(c => decimal.Parse(c.Price.ToString()),
+                                                    c => c.Account.UserId.Equals(user.Id) &&
+                                                    c.Date.Month.Equals(DateTime.Now.Month) &&
+                                                    c.Date.Year.Equals(DateTime.Now.Year) &&
+                                                    c.TransactionType == TransactionType.Income);
 
-            var previousMonth = transactionRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) && c.TransactionType == TransactionType.Income);
+            var previousMonth = transactionRepository.Sum(c => decimal.Parse(c.Price.ToString()),
+                                                            c => c.Account.UserId.Equals(user.Id) && 
+                                                            c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) &&
+                                                            c.Date.Year.Equals(DateTime.Now.Year) &&
+                                                            c.TransactionType == TransactionType.Income);
 
             var percentage = total.CalculatePercentage(previousMonth);
 
@@ -87,9 +95,17 @@ namespace HomeManagement.API.Controllers.Accounts
 
             var user = userRepository.FirstOrDefault(x => x.Email.Equals(email.Value));
 
-            var total = transactionRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(DateTime.Now.Month) && c.TransactionType == TransactionType.Expense);
+            var total = transactionRepository.Sum(c => decimal.Parse(c.Price.ToString()),
+                                                    c => c.Account.UserId.Equals(user.Id) && 
+                                                    c.Date.Month.Equals(DateTime.Now.Month) &&
+                                                    c.Date.Year.Equals(DateTime.Now.Year) &&
+                                                    c.TransactionType == TransactionType.Expense);
 
-            var previousMonth = transactionRepository.Sum(c => decimal.Parse(c.Price.ToString()), c => c.Account.UserId.Equals(user.Id) && c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) && c.TransactionType == TransactionType.Expense);
+            var previousMonth = transactionRepository.Sum(c => decimal.Parse(c.Price.ToString()), 
+                                                            c => c.Account.UserId.Equals(user.Id) && 
+                                                            c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) &&
+                                                            c.Date.Year.Equals(DateTime.Now.Year) &&
+                                                            c.TransactionType == TransactionType.Expense);
 
             var percentage = total.CalculatePercentage(previousMonth);
 

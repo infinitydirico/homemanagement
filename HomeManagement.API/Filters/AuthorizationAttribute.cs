@@ -1,4 +1,5 @@
-﻿using HomeManagement.API.Data.Entities;
+﻿using HomeManagement.API.Business;
+using HomeManagement.API.Data.Entities;
 using HomeManagement.API.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -56,6 +57,10 @@ namespace HomeManagement.API.Filters
 
                 return;
             }
+
+            var userService = context.HttpContext.RequestServices.GetService(typeof(IUserSessionService)) as IUserSessionService;
+
+            userService.RegisterScopedUser(email.Value);
 
             context.HttpContext.User = new GenericPrincipal(new ClaimsIdentity(token.Claims), Array.Empty<string>());
 

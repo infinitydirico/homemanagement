@@ -26,7 +26,7 @@ namespace HomeManagement.API.Controllers.Notifications
         {
             var emailClaim = HttpContext.GetEmailClaim();
 
-            return Ok(notificationService.GetReminders(emailClaim.Value));
+            return Ok(notificationService.GetReminders());
         }
 
         [HttpGet("{id}")]
@@ -34,7 +34,7 @@ namespace HomeManagement.API.Controllers.Notifications
         {
             var emailClaim = HttpContext.GetEmailClaim();
 
-            return Ok(notificationService.GetReminder(id, emailClaim.Value));
+            return Ok(notificationService.GetReminder(id));
         }
 
         [HttpPost]
@@ -42,7 +42,7 @@ namespace HomeManagement.API.Controllers.Notifications
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            notificationService.AddReminder(model, HttpContext.GetEmailClaim().Value);
+            notificationService.AddReminder(model);
 
             return Ok();
         }
@@ -52,7 +52,7 @@ namespace HomeManagement.API.Controllers.Notifications
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            notificationService.UpdateReminder(model, HttpContext.GetEmailClaim().Value);
+            notificationService.UpdateReminder(model);
 
             return Ok();
         }
@@ -62,7 +62,7 @@ namespace HomeManagement.API.Controllers.Notifications
         {
             if (id <= 0) return BadRequest();
 
-            notificationService.DeleteReminder(id, HttpContext.GetEmailClaim().Value);
+            notificationService.DeleteReminder(id);
 
             return Ok();
         }

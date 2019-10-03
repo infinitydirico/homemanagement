@@ -19,6 +19,7 @@ namespace HomeManagement.API.Business
         private readonly ITransactionRepository transactionRepository;
         private readonly IAccountRepository accountRepository;
         private readonly IPreferencesRepository preferencesRepository;
+        private readonly IUserSessionService userService;
 
         public StorageService(IStorageItemMapper storageItemMapper,
             IStorageItemRepository storageItemRepository,
@@ -26,7 +27,8 @@ namespace HomeManagement.API.Business
             IUserRepository userRepository,
             ITransactionRepository transactionRepository,
             IAccountRepository accountRepository,
-            IPreferencesRepository preferencesRepository)
+            IPreferencesRepository preferencesRepository,
+            IUserSessionService userService)
         {
             this.storageItemMapper = storageItemMapper;
             this.storageItemRepository = storageItemRepository;
@@ -35,6 +37,7 @@ namespace HomeManagement.API.Business
             this.transactionRepository = transactionRepository;
             this.accountRepository = accountRepository;
             this.preferencesRepository = preferencesRepository;
+            this.userService = userService;
         }
 
         public async Task<OperationResult> Authorize(string state, string code)
@@ -48,18 +51,18 @@ namespace HomeManagement.API.Business
             return OperationResult.Succeed();
         }
 
-        public string CreateAccessToken(string email)
+        public string CreateAccessToken()
         {
-            var user = userRepository.GetByEmail(email);
+            var user = userService.GetAuthenticatedUser();
 
             var accessToken = storageClient.GetAccessToken(user.Id);
 
             return accessToken.ToString();
         }
 
-        public async Task<FileModel> Download(int id, string email)
+        public async Task<FileModel> Download(int id)
         {
-            var user = userRepository.GetByEmail(email);
+            var user = userService.GetAuthenticatedUser();
 
             var item = storageItemRepository.GetById(id);
 
@@ -72,16 +75,16 @@ namespace HomeManagement.API.Business
             };
         }
 
-        public IEnumerable<StorageItemModel> GetStorageItems(string email)
+        public IEnumerable<StorageItemModel> GetStorageItems()
         {
-            var user = userRepository.FirstOrDefault(x => x.Email.Equals(email));
+            var user = userService.GetAuthenticatedUser();
             var items = GetRepoItems(user.Id).Select(x => storageItemMapper.ToModel(x));
             return items;
         }
 
-        public IEnumerable<StorageItemModel> GetTransactionFiles(string email, int transactionId)
+        public IEnumerable<StorageItemModel> GetTransactionFiles(int transactionId)
         {
-            var user = userRepository.FirstOrDefault(x => x.Email.Equals(email));
+            var user = userService.GetAuthenticatedUser();
 
             var items = GetRepoItems(user.Id)
                 .Where(x => x.TransactionId.Equals(transactionId))
@@ -123,15 +126,15 @@ namespace HomeManagement.API.Business
     {
         bool IsAuthorized(int userId);
 
-        IEnumerable<StorageItemModel> GetStorageItems(string email);
+        IEnumerable<StorageItemModel> GetStorageItems();
 
-        IEnumerable<StorageItemModel> GetTransactionFiles(string email, int transactionId);
+        IEnumerable<StorageItemModel> GetTransactionFiles(int transactionId);
 
-        string CreateAccessToken(string email);
+        string CreateAccessToken();
 
         Task<OperationResult> Authorize(string state, string code);
 
-        Task<FileModel> Download(int id, string email);
+        Task<FileModel> Download(int id);
 
         Task<StorageItemModel> Upload(string filename, int transactionId, Stream stream);
     }

@@ -34,6 +34,8 @@ namespace HomeManagement.API.Business
         private readonly IPreferenceService preferenceService;
         private readonly ITokenRepository tokenRepository;
 
+        private User user;
+
         public UserService(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IConfiguration configuration,
@@ -90,7 +92,10 @@ namespace HomeManagement.API.Business
                     CurrencyId = 1
                 });
 
-                preferenceService.ChangeLanguage(user.Email, user.Language);
+                preferenceService.ChangeLanguage(user.Language);
+
+                var currencies = preferenceService.GetCurrencies();
+                preferenceService.ChangeCurrency(currencies.First(x => x.Name.Equals("USD")));
 
                 accountRepository.Commit();
 

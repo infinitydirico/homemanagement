@@ -21,6 +21,7 @@ namespace HomeManagement.API.Business
         private readonly ITransactionMapper transactionMapper;
         private readonly ICategoryMapper categoryMapper;
         private readonly IExportableTransaction exportableTransaction;
+        private readonly IUserSessionService userService;
 
         public TransactionService(IAccountRepository accountRepository,
             ITransactionRepository transactionRepository,
@@ -29,7 +30,8 @@ namespace HomeManagement.API.Business
             ICategoryMapper categoryMapper,
             IUserRepository userRepository,
             IPreferenceService preferenceService,
-            IExportableTransaction exportableTransaction)
+            IExportableTransaction exportableTransaction,
+            IUserSessionService userService)
         {
             this.accountRepository = accountRepository;
             this.transactionRepository = transactionRepository;
@@ -39,6 +41,7 @@ namespace HomeManagement.API.Business
             this.userRepository = userRepository;
             this.preferenceService = preferenceService;
             this.exportableTransaction = exportableTransaction;
+            this.userService = userService;
         }
 
         public void Add(TransactionModel transaction)
@@ -94,14 +97,16 @@ namespace HomeManagement.API.Business
             transactionRepository.Commit();
         }
 
-        public IEnumerable<TransactionModel> GetAll(string userEmail)
+        public IEnumerable<TransactionModel> GetAll()
         {
+            var authenticatedUser = userService.GetAuthenticatedUser();
+
             var transactions = (from transaction in transactionRepository.All
                                 join account in accountRepository.All
                                 on transaction.AccountId equals account.Id
                                 join user in userRepository.All
                                 on account.UserId equals user.Id
-                                where user.Email.Equals(userEmail)
+                                where user.Email.Equals(authenticatedUser.Email)
                                 select transactionMapper.ToModel(transaction)).ToList();
 
             return transactions;
@@ -128,7 +133,7 @@ namespace HomeManagement.API.Business
             return transactionMapper.ToModel(result);
         }
 
-        public void Import(int accountId, string email, IFormFile formFile)
+        public void Import(int accountId, IFormFile formFile)
         {
             var account = accountRepository.FirstOrDefault(x => x.Id.Equals(accountId));
 
@@ -149,7 +154,7 @@ namespace HomeManagement.API.Business
             accountRepository.Commit();
         }
 
-        public ExportFile Export(int accountId, string email)
+        public ExportFile Export(int accountId)
         {
             var transactions = transactionRepository.Where(x => x.AccountId.Equals(accountId)).ToList();
 
@@ -173,13 +178,13 @@ namespace HomeManagement.API.Business
 
         void Delete(int id);
 
-        IEnumerable<TransactionModel> GetAll(string userEmail);
+        IEnumerable<TransactionModel> GetAll();
 
         TransactionModel Get(int id);
 
-        void Import(int accountId, string email, IFormFile formFile);
+        void Import(int accountId, IFormFile formFile);
 
-        ExportFile Export(int accountId, string email);
+        ExportFile Export(int accountId);
     }
 
     public class ExportFile

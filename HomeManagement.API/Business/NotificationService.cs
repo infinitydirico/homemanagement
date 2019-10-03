@@ -15,27 +15,32 @@ namespace HomeManagement.API.Business
         private readonly INotificationRepository notificationRepository;
         private readonly INotificationMapper notificationMapper;
         private readonly IReminderMapper reminderMapper;
+        private readonly IUserSessionService userService;
 
         public NotificationService(IReminderRepository reminderRepository,
             IUserRepository userRepository,
             INotificationMapper notificationMapper,
             INotificationRepository notificationRepository,
-            IReminderMapper reminderMapper)
+            IReminderMapper reminderMapper,
+            IUserSessionService userService)
         {
             this.reminderRepository = reminderRepository;
             this.userRepository = userRepository;
             this.notificationMapper = notificationMapper;
             this.notificationRepository = notificationRepository;
             this.reminderMapper = reminderMapper;
+            this.userService = userService;
         }
 
-        public OperationResult AddReminder(ReminderModel reminderModel, string email)
+        public OperationResult AddReminder(ReminderModel reminderModel)
         {
+            var authenticatedUser = userService.GetAuthenticatedUser();
+
             var reminder = reminderMapper.ToEntity(reminderModel);
 
             if (reminder.UserId == 0)
             {
-                reminder.UserId = GetUserId(email);
+                reminder.UserId = authenticatedUser.Id;
             }
 
             reminderRepository.Add(reminder);
@@ -44,11 +49,13 @@ namespace HomeManagement.API.Business
             return OperationResult.Succeed();
         }
 
-        public OperationResult DeleteReminder(int id, string email)
+        public OperationResult DeleteReminder(int id)
         {
+            var authenticatedUser = userService.GetAuthenticatedUser();
+
             var reminder = reminderRepository.GetById(id);
 
-            var userId = GetUserId(email);
+            var userId = authenticatedUser.Id;
 
             if (reminder.UserId != userId) return OperationResult.Error("UserId does not match");
 
@@ -68,16 +75,18 @@ namespace HomeManagement.API.Business
             notificationRepository.Commit();
         }
 
-        public IEnumerable<NotificationModel> GetNotifications(string email)
+        public IEnumerable<NotificationModel> GetNotifications()
         {
-            GenerateNotifications(email);
+            var authenticatedUser = userService.GetAuthenticatedUser();
+
+            GenerateNotifications(authenticatedUser.Email);
 
             var notifications = (from notification in notificationRepository.All
                                  join reminder in reminderRepository.All
                                  on notification.ReminderId equals reminder.Id
                                  join user in userRepository.All
                                  on reminder.UserId equals user.Id
-                                 where user.Email.Equals(email)
+                                 where user.Email.Equals(authenticatedUser.Email)
                                         && !notification.Dismissed
                                         && notification.CreatedOn.Month.Equals(DateTime.Now.Month)
                                  select new NotificationModel
@@ -94,36 +103,42 @@ namespace HomeManagement.API.Business
             return notifications;
         }
 
-        public ReminderModel GetReminder(int id, string email)
+        public ReminderModel GetReminder(int id)
         {
+            var authenticatedUser = userService.GetAuthenticatedUser();
+
             var reminderModel = (from reminder in reminderRepository.All
                                  join user in userRepository.All
                                  on reminder.UserId equals user.Id
-                                 where user.Email.Equals(email)
+                                 where user.Email.Equals(authenticatedUser.Email)
                                         && reminder.Id.Equals(id)
                                  select reminderMapper.ToModel(reminder)).FirstOrDefault();
 
             return reminderModel;
         }
 
-        public IEnumerable<ReminderModel> GetReminders(string email)
+        public IEnumerable<ReminderModel> GetReminders()
         {
+            var authenticatedUser = userService.GetAuthenticatedUser();
+
             var reminders = (from reminder in reminderRepository.All
                              join user in userRepository.All
                              on reminder.UserId equals user.Id
-                             where user.Email.Equals(email)
+                             where user.Email.Equals(authenticatedUser.Email)
                              select reminderMapper.ToModel(reminder)).ToList();
 
             return reminders;
         }
 
-        public OperationResult UpdateReminder(ReminderModel reminderModel, string email)
+        public OperationResult UpdateReminder(ReminderModel reminderModel)
         {
+            var authenticatedUser = userService.GetAuthenticatedUser();
+
             var reminder = reminderMapper.ToEntity(reminderModel);
 
             if (reminder.UserId == 0)
             {
-                reminder.UserId = GetUserId(email);
+                reminder.UserId = authenticatedUser.Id;
             }
 
             reminderRepository.Update(reminder);
@@ -164,29 +179,22 @@ namespace HomeManagement.API.Business
             }
             notificationRepository.Commit();
         }
-
-        private int GetUserId(string email)
-        {
-            var user = userRepository.FirstOrDefault(x => x.Email.Equals(email));
-
-            return user.Id;
-        }
     }
 
     public interface INotificationService
     {
-        IEnumerable<NotificationModel> GetNotifications(string email);
+        IEnumerable<NotificationModel> GetNotifications();
 
         void Dismiss(NotificationModel model);
 
-        IEnumerable<ReminderModel> GetReminders(string email);
+        IEnumerable<ReminderModel> GetReminders();
 
-        ReminderModel GetReminder(int id, string email);
+        ReminderModel GetReminder(int id);
 
-        OperationResult AddReminder(ReminderModel reminderModel, string email);
+        OperationResult AddReminder(ReminderModel reminderModel);
 
-        OperationResult UpdateReminder(ReminderModel reminderModel, string email);
+        OperationResult UpdateReminder(ReminderModel reminderModel);
 
-        OperationResult DeleteReminder(int id, string email);
+        OperationResult DeleteReminder(int id);
     }
 }

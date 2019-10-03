@@ -15,6 +15,7 @@ namespace HomeManagement.API.Business
         private readonly ITransactionMapper transactionMapper;
         private readonly ICategoryMapper categoryMapper;
         private readonly IUserCategoryRepository userCategoryRepository;
+        private readonly IUserSessionService userService;
 
         public CategoryService(IAccountRepository accountRepository,
                                     ITransactionRepository transactionRepository,
@@ -22,7 +23,8 @@ namespace HomeManagement.API.Business
                                     ITransactionMapper transactionMapper,
                                     ICategoryMapper categoryMapper,
                                     IUserRepository userRepository,
-                                    IUserCategoryRepository userCategoryRepository)
+                                    IUserCategoryRepository userCategoryRepository,
+                                    IUserSessionService userService)
         {
             this.accountRepository = accountRepository;
             this.transactionRepository = transactionRepository;
@@ -31,12 +33,13 @@ namespace HomeManagement.API.Business
             this.categoryMapper = categoryMapper;
             this.userRepository = userRepository;
             this.userCategoryRepository = userCategoryRepository;
+            this.userService = userService;
         }
 
-        public OperationResult Add(CategoryModel categoryModel, string userEmail)
+        public OperationResult Add(CategoryModel categoryModel)
         {
             var entity = categoryMapper.ToEntity(categoryModel);
-            var user = userRepository.FirstOrDefault(x => x.Email.Equals(userEmail));
+            var user = userService.GetAuthenticatedUser();
 
             categoryRepository.Add(entity, user);
             categoryRepository.Commit();
@@ -44,7 +47,7 @@ namespace HomeManagement.API.Business
             return OperationResult.Succeed();
         }
 
-        public OperationResult Delete(int id, string userEmail)
+        public OperationResult Delete(int id)
         {
             var category = categoryRepository.GetById(id);
 
@@ -54,7 +57,7 @@ namespace HomeManagement.API.Business
 
             if (transactionsWithThisCategory > default(int)) return OperationResult.Error($"Category {category.Name} has associated transactions");
 
-            var user = userRepository.FirstOrDefault(x => x.Email.Equals(userEmail));
+            var user = userService.GetAuthenticatedUser();
 
             categoryRepository.Remove(id, user);
             categoryRepository.Commit();
@@ -62,14 +65,16 @@ namespace HomeManagement.API.Business
             return OperationResult.Succeed();
         }
 
-        public IEnumerable<CategoryModel> GetActive(string userEmail)
+        public IEnumerable<CategoryModel> GetActive()
         {
+            var authenticatedUser = userService.GetAuthenticatedUser();
+
             var categories = (from category in categoryRepository.All
                               join userCategory in userCategoryRepository.All
                               on category.Id equals userCategory.CategoryId
                               join user in userRepository.All
                               on userCategory.UserId equals user.Id
-                              where user.Email.Equals(userEmail) && category.IsActive
+                              where user.Email.Equals(authenticatedUser.Email) && category.IsActive
                               select categoryMapper.ToModel(category)).ToList();
 
             return categories;
@@ -86,12 +91,12 @@ namespace HomeManagement.API.Business
 
     public interface ICategoryService
     {
-        OperationResult Add(CategoryModel categoryModel, string userEmail);
+        OperationResult Add(CategoryModel categoryModel);
 
         OperationResult Update(CategoryModel categoryModel);
 
-        OperationResult Delete(int id, string userEmail);
+        OperationResult Delete(int id);
 
-        IEnumerable<CategoryModel> GetActive(string userEmail);
+        IEnumerable<CategoryModel> GetActive();
     }
 }

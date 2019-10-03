@@ -27,27 +27,27 @@ namespace HomeManagement.API.Controllers.Global
         {
             //try to create missing files on repo
 
-            return Ok(storageService.GetStorageItems(HttpContext.GetEmailClaim().Value));
+            return Ok(storageService.GetStorageItems());
         }
 
         [HttpGet("getitems")]
         [StorageAuthorization]
         public IActionResult GetItems()
         {
-            return Ok(storageService.GetStorageItems(HttpContext.GetEmailClaim().Value));
+            return Ok(storageService.GetStorageItems());
         }
         
         [HttpGet("gettransactionfiles/{transactionId}")]
         [StorageAuthorization]
         public IActionResult GetTransactionFiles(int transactionId)
         {
-            return Ok(storageService.GetTransactionFiles(HttpContext.GetEmailClaim().Value, transactionId));
+            return Ok(storageService.GetTransactionFiles(transactionId));
         }
 
         [HttpGet("connect")]
         public IActionResult Connect()
         {
-            return Ok(storageService.CreateAccessToken(HttpContext.GetEmailClaim().Value));
+            return Ok(storageService.CreateAccessToken());
         }
 
         [HttpGet("authorize")]
@@ -62,7 +62,7 @@ namespace HomeManagement.API.Controllers.Global
         [StorageAuthorization]
         public async Task<IActionResult> Download(int id)
         {
-            var file = await storageService.Download(id, HttpContext.GetEmailClaim().Value);
+            var file = await storageService.Download(id);
             return new FileStreamResult(file.Stream, file.ContentType);
         }
 

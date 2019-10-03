@@ -24,7 +24,7 @@ namespace HomeManagement.API.Controllers.Transactions
         [HttpGet("download/{accountId}")]
         public IActionResult DownloadCategories(int accountId)
         {
-            var fileResult = transactionService.Export(accountId, HttpContext.GetEmailClaim().Value);
+            var fileResult = transactionService.Export(accountId);
 
             var result = this.CreateCsvFile(fileResult.Content, fileResult.Filename);
 
@@ -39,7 +39,7 @@ namespace HomeManagement.API.Controllers.Transactions
 
             foreach (IFormFile formFile in Request.Form.Files)
             {
-                transactionService.Import(accountId, HttpContext.GetEmailClaim().Value, formFile);
+                transactionService.Import(accountId, formFile);
             }
 
             return Ok();

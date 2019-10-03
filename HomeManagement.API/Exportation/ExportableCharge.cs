@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HomeManagement.API.Business;
+using System.Globalization;
 
 namespace HomeManagement.API.Exportation
 {
@@ -17,10 +19,16 @@ namespace HomeManagement.API.Exportation
     public class ExportableTransaction : Exportable<Transaction>, IExportableTransaction
     {
         ICategoryRepository categoryRepository;
+        IPreferenceService preferenceService;
+        IUserSessionService userService;
 
-        public ExportableTransaction(ICategoryRepository categoryRepository)
+        public ExportableTransaction(ICategoryRepository categoryRepository,
+            IPreferenceService preferenceService,
+            IUserSessionService userService)
         {
             this.categoryRepository = categoryRepository;
+            this.preferenceService = preferenceService;
+            this.userService = userService;
         }
 
         protected override Transaction CreateInstanceOf(List<string> exportableEntity)
@@ -30,13 +38,11 @@ namespace HomeManagement.API.Exportation
             transaction.Name = exportableEntity[0];
             transaction.Price = double.Parse(exportableEntity[1]);
 
-            //TODO use user settings (table settings) to fetch user default language
-            DateTime date;
-            if (!DateTime.TryParse(exportableEntity[2], out date))
-            {                
-                date = ForceParsingDateTime(exportableEntity[2]);
-            }
-            transaction.Date = date;
+            var user = userService.GetAuthenticatedUser();
+            var language = preferenceService.GetUserLanguage(user.Id);
+            var culture = new CultureInfo(language);
+
+            transaction.Date = DateTime.Parse(exportableEntity[2], culture);
 
             transaction.TransactionType = exportableEntity[3].ToEnum<TransactionType>();
 
@@ -102,6 +108,10 @@ namespace HomeManagement.API.Exportation
 
             StringBuilder sb = new StringBuilder();
 
+            var user = userService.GetAuthenticatedUser();
+            var language = preferenceService.GetUserLanguage(user.Id);
+            var culture = new CultureInfo(language);
+
             foreach (var header in headers)
             {
                 switch (header)
@@ -113,7 +123,7 @@ namespace HomeManagement.API.Exportation
                         sb.Append(exportableEntity.Price.ToString() + divider);
                         break;
                     case nameof(Transaction.Date):
-                        sb.Append(exportableEntity.Date.ToString() + divider);
+                        sb.Append(exportableEntity.Date.ToString(culture) + divider);
                         break;
                     case nameof(Transaction.TransactionType):
                         sb.Append(exportableEntity.TransactionType.ToString() + divider);

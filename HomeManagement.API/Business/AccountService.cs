@@ -12,16 +12,19 @@ namespace HomeManagement.API.Business
         private readonly ITransactionRepository transactionRepository;
         private readonly IAccountMapper accountMapper;
         private readonly IUserRepository userRepository;
+        private readonly IUserSessionService userService;
 
         public AccountService(IAccountRepository accountRepository,
             ITransactionRepository transactionRepository,
             IAccountMapper accountMapper,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IUserSessionService userService)
         {
             this.accountRepository = accountRepository;
             this.transactionRepository = transactionRepository;
             this.accountMapper = accountMapper;
             this.userRepository = userRepository;
+            this.userService = userService;
         }
 
         public OperationResult Add(AccountModel accountModel)
@@ -55,12 +58,14 @@ namespace HomeManagement.API.Business
             return accountMapper.ToModel(account);
         }
 
-        public IEnumerable<AccountModel> GetAccounts(string userEmail)
+        public IEnumerable<AccountModel> GetAccounts()
         {
+            var authenticatedUser = userService.GetAuthenticatedUser();
+
             var accounts = (from account in accountRepository.All
                             join user in userRepository.All
                             on account.UserId equals user.Id
-                            where user.Email.Equals(userEmail)
+                            where user.Email.Equals(authenticatedUser.Email)
                             select accountMapper.ToModel(account))
                             .ToList();
 
@@ -86,7 +91,7 @@ namespace HomeManagement.API.Business
 
         OperationResult Delete(int id);
 
-        IEnumerable<AccountModel> GetAccounts(string userEmail);
+        IEnumerable<AccountModel> GetAccounts();
 
         AccountModel Get(int id);
     }
