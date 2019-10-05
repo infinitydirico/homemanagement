@@ -34,8 +34,6 @@
                 public const string AccountsEvolution = ACCOUNT + "accountsevolution";
 
                 public const string AccountEvolution = "accountevolution";
-
-                public const string Metric = "chartbytransactiontype";
             }
 
             public class Transaction

@@ -24,16 +24,12 @@ namespace HomeManagement.API.Controllers.Notifications
         [HttpGet]
         public IActionResult Get()
         {
-            var emailClaim = HttpContext.GetEmailClaim();
-
             return Ok(notificationService.GetReminders());
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var emailClaim = HttpContext.GetEmailClaim();
-
             return Ok(notificationService.GetReminder(id));
         }
 

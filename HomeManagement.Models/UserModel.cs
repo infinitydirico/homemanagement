@@ -15,5 +15,7 @@ namespace HomeManagement.Models
         public string Token { get; set; }
 
         public string Language { get; set; }
+
+        public string Currency { get; set; }
     }
 }

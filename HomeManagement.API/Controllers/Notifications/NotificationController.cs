@@ -30,9 +30,13 @@ namespace HomeManagement.API.Controllers.Notifications
         }
 
         [HttpPut]
-        public void Put([FromBody]NotificationModel model)
+        public IActionResult Put([FromBody]NotificationModel model)
         {
+            if (!ModelState.IsValid) return BadRequest();
+
             notificationService.Dismiss(model);
+
+            return Ok();
         }
     }
 }

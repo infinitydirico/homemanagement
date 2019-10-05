@@ -72,36 +72,6 @@ namespace HomeManagement.API.Exportation
             return transaction;
         }
 
-        private DateTime ForceParsingDateTime(string v)
-        {
-            try
-            {
-                return DateTime.Parse(v, new System.Globalization.CultureInfo("es-ar"));
-            }
-            catch
-            {
-                return LastResort(v);
-            }
-        }
-
-        private DateTime LastResort(string v)
-        {
-            var splitted = v.Split("/");
-
-            var yearAndTime = splitted[2].Split(" ");
-            var year = Convert.ToInt32(yearAndTime[0]);
-            var month = Convert.ToInt32(splitted[0]);
-            var day = Convert.ToInt32(splitted[1]);
-
-            if (month > 12)
-            {
-                month = day;
-                day = Convert.ToInt32(splitted[0]);
-            }
-
-            return new DateTime(year, month, day);
-        }
-
         protected override string GetValues(Transaction exportableEntity)
         {
             var headers = GetProperties();

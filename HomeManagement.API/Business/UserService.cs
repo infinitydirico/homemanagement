@@ -33,8 +33,7 @@ namespace HomeManagement.API.Business
         private readonly ITransactionRepository transactionRepository;
         private readonly IPreferenceService preferenceService;
         private readonly ITokenRepository tokenRepository;
-
-        private User user;
+        private readonly IUserSessionService userSessionService;
 
         public UserService(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -48,7 +47,8 @@ namespace HomeManagement.API.Business
             IUserCategoryRepository userCategoryRepository,
             ITransactionRepository transactionRepository,
             IPreferenceService preferenceService,
-            ITokenRepository tokenRepository)
+            ITokenRepository tokenRepository,
+            IUserSessionService userSessionService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -63,6 +63,7 @@ namespace HomeManagement.API.Business
             this.transactionRepository = transactionRepository;
             this.preferenceService = preferenceService;
             this.tokenRepository = tokenRepository;
+            this.userSessionService = userSessionService;
         }
 
         public async Task<OperationResult> CreateUser(UserModel user)
@@ -83,6 +84,8 @@ namespace HomeManagement.API.Business
                 };
 
                 await userRepository.AddAsync(userEntity);
+
+                userSessionService.RegisterScopedUser(applicationUser.Email);
 
                 accountRepository.Add(new Account
                 {
@@ -175,12 +178,15 @@ namespace HomeManagement.API.Business
 
             var token = RenewToken(appUser.Id, userEntity.Id);
 
+            userSessionService.RegisterScopedUser(userEntity.Email);
+
             return new UserModel
             {
                 Id = userEntity.Id,
                 Email = userEntity.Email,
                 Token = token,
-                Language = preferenceService.GetUserLanguage(userEntity.Id)
+                Language = preferenceService.GetUserLanguage(userEntity.Id),
+                Currency = preferenceService.GetPreferredCurrency().Name
             };
         }
 

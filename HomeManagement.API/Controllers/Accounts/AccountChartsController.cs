@@ -40,24 +40,6 @@ namespace HomeManagement.API.Controllers.Accounts
             this.categoryMapper = categoryMapper;
         }
 
-
-        [HttpGet("{id}/chartbytransactiontype")]
-        public IActionResult ChartData(int id)
-        {
-            var accountTransactions = (from c in transactionRepository.All
-                                  join a in accountRepository.All
-                                  on c.AccountId equals a.Id
-                                  where a.Measurable && a.Id.Equals(id)
-                                  select c);
-
-            return Ok(new AccountOverviewModel
-            {
-                TotalTransactions = accountTransactions.Count(),
-                ExpenseTransactions = accountTransactions.Count(c => c.TransactionType == TransactionType.Expense),
-                IncomeTransactions = accountTransactions.Count(c => c.TransactionType == (int)TransactionType.Income)
-            });
-        }
-
         [HttpGet("accountsevolution")]
         public IActionResult AccountsEvolution()
         {

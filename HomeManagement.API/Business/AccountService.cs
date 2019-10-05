@@ -72,6 +72,29 @@ namespace HomeManagement.API.Business
             return accounts;
         }
 
+        public AccountPageModel Page(AccountPageModel model)
+        {
+            if (model.TotalPages.Equals(default(int)))
+            {
+                var total = (double)accountRepository.All.Count(c => c.UserId.Equals(model.UserId));
+                var totalPages = System.Math.Ceiling(total / (double)model.PageCount);
+                model.TotalPages = int.Parse(totalPages.ToString());
+            }
+
+            var currentPage = model.CurrentPage - 1;
+
+            model.Accounts = accountRepository
+                .All
+                .Where(x => x.UserId.Equals(model.UserId))
+                .OrderByDescending(x => x.Id)
+                .Skip(model.PageCount * currentPage)
+                .Take(model.PageCount)
+                .Select(x => accountMapper.ToModel(x))
+                .ToList();
+
+            return model;
+        }
+
         public OperationResult Update(AccountModel accountModel)
         {
             var entity = accountMapper.ToEntity(accountModel);
@@ -94,5 +117,7 @@ namespace HomeManagement.API.Business
         IEnumerable<AccountModel> GetAccounts();
 
         AccountModel Get(int id);
+
+        AccountPageModel Page(AccountPageModel model);
     }
 }

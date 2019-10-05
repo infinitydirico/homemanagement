@@ -25,8 +25,6 @@ namespace HomeManagement.API.Controllers.Global
         [StorageAuthorization]
         public IActionResult Get()
         {
-            //try to create missing files on repo
-
             return Ok(storageService.GetStorageItems());
         }
 
@@ -41,6 +39,8 @@ namespace HomeManagement.API.Controllers.Global
         [StorageAuthorization]
         public IActionResult GetTransactionFiles(int transactionId)
         {
+            if (transactionId < 1) return BadRequest();
+
             return Ok(storageService.GetTransactionFiles(transactionId));
         }
 
@@ -53,6 +53,8 @@ namespace HomeManagement.API.Controllers.Global
         [HttpGet("authorize")]
         public async Task<IActionResult> Authorize([FromQuery(Name = "state")]string state, [FromQuery(Name = "code")]string code)
         {
+            if (string.IsNullOrEmpty(state) || string.IsNullOrEmpty(code)) return BadRequest();
+
             var result = await storageService.Authorize(state, code);
 
             return Ok();
@@ -62,6 +64,8 @@ namespace HomeManagement.API.Controllers.Global
         [StorageAuthorization]
         public async Task<IActionResult> Download(int id)
         {
+            if (id < 1) return BadRequest();
+
             var file = await storageService.Download(id);
             return new FileStreamResult(file.Stream, file.ContentType);
         }
@@ -70,7 +74,10 @@ namespace HomeManagement.API.Controllers.Global
         [StorageAuthorization]
         public async Task<IActionResult> Upload()
         {
-            var claim = HttpContext.GetEmailClaim();
+            if(!(HttpContext.HasHeader("filename") && HttpContext.HasHeader("transactionId")))
+            {
+                return BadRequest();
+            }
 
             var filename = HttpContext.GetHeader("filename");
             var transactionId = int.Parse(HttpContext.GetHeader("transactionId"));
