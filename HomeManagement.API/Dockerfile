@@ -23,6 +23,7 @@ FROM build AS publish
 RUN dotnet publish "HomeManagement.API.csproj" -c Release -o /app
 
 FROM base AS final
+ENV ASPNETCORE_URLS http://*:5000 
 WORKDIR /app
 COPY --from=publish /app .
 ENTRYPOINT ["dotnet", "HomeManagement.API.dll"]
