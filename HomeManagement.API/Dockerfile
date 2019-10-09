@@ -4,7 +4,7 @@ EXPOSE 80
 
 FROM microsoft/aspnetcore-build:2.0 AS build
 WORKDIR /src
-COPY ["HomeManagement.API/HomeManagement.API.csproj", "HomeManagement.API/"]
+COPY ["HomeManagement.API.csproj", ""]
 COPY ["HomeManagement.Data/HomeManagement.Data.csproj", "HomeManagement.Data/"]
 COPY ["HomeManagement.Data.Contracts/HomeManagement.Data.Contracts.csproj", "HomeManagement.Data.Contracts/"]
 COPY ["HomeManagement.Domain/HomeManagement.Domain.csproj", "HomeManagement.Domain/"]
