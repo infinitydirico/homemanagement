@@ -5,16 +5,16 @@ EXPOSE 80
 FROM microsoft/aspnetcore-build:2.0 AS build
 WORKDIR /src
 COPY ["HomeManagement.API.csproj", ""]
-COPY ["HomeManagement.Data/HomeManagement.Data.csproj", "HomeManagement.Data/"]
-COPY ["HomeManagement.Data.Contracts/HomeManagement.Data.Contracts.csproj", "HomeManagement.Data.Contracts/"]
-COPY ["HomeManagement.Domain/HomeManagement.Domain.csproj", "HomeManagement.Domain/"]
-COPY ["HomeManagement.Contracts/HomeManagement.Contracts.csproj", "HomeManagement.Contracts/"]
-COPY ["HomeManagement.Localization/HomeManagement.Localization.csproj", "HomeManagement.Localization/"]
-COPY ["HomeManagement.FilesStore/HomeManagement.FilesStore.csproj", "HomeManagement.FilesStore/"]
-COPY ["HomeManagement.Core/HomeManagement.Core.csproj", "HomeManagement.Core/"]
-COPY ["HomeManagement.Mapper/HomeManagement.Mapper.csproj", "HomeManagement.Mapper/"]
-COPY ["HomeManagement.Models/HomeManagement.Models.csproj", "HomeManagement.Models/"]
-RUN dotnet restore "HomeManagement.API/HomeManagement.API.csproj"
+COPY ["../HomeManagement.Data/HomeManagement.Data.csproj", "HomeManagement.Data/"]
+COPY ["../HomeManagement.Data.Contracts/HomeManagement.Data.Contracts.csproj", ""]
+COPY ["../HomeManagement.Domain/HomeManagement.Domain.csproj", ""]
+COPY ["../HomeManagement.Contracts/HomeManagement.Contracts.csproj", ""]
+COPY ["../HomeManagement.Localization/HomeManagement.Localization.csproj", ""]
+COPY ["../HomeManagement.FilesStore/HomeManagement.FilesStore.csproj", ""]
+COPY ["../HomeManagement.Core/HomeManagement.Core.csproj", ""]
+COPY ["../HomeManagement.Mapper/HomeManagement.Mapper.csproj", ""]
+COPY ["../HomeManagement.Models/HomeManagement.Models.csproj", ""]
+RUN dotnet restore "HomeManagement.API.csproj"
 COPY . .
 WORKDIR "/src/HomeManagement.API"
 RUN dotnet build "HomeManagement.API.csproj" -c Release -o /app
