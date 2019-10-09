@@ -5,4 +5,4 @@ services:
     image: ${DOCKER_REGISTRY}homemanagementapi
     build:
       context: .
-      dockerfile: .\HomeManagement.API\Dockerfile
+      dockerfile: ./HomeManagement.API/Dockerfile
