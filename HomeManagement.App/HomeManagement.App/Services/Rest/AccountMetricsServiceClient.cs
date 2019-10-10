@@ -12,7 +12,7 @@ namespace HomeManagement.App.Services.Rest
         {
             return await RestClientFactory
                 .CreateAuthenticatedClient()
-                .GetAsync($"{Constants.Endpoints.Accounts.ACCOUNT}/{accountId}/{Constants.Endpoints.Accounts.AccountEvolution}")
+                .GetAsync($"{Constants.Endpoints.Accounts.ACCOUNT}{accountId}/{Constants.Endpoints.Accounts.AccountEvolution}")
                 .ReadContent<AccountEvolutionModel>();
         }
 
@@ -20,7 +20,7 @@ namespace HomeManagement.App.Services.Rest
         {
             return await RestClientFactory
                 .CreateAuthenticatedClient()
-                .GetAsync(Constants.Endpoints.Accounts.AccountsEvolution)
+                .GetAsync($"{Constants.Endpoints.Accounts.AccountsEvolution}")
                 .ReadContent<AccountsEvolutionModel>();
         }
 
@@ -34,17 +34,23 @@ namespace HomeManagement.App.Services.Rest
 
         public async Task<OverPricedCategories> GetMostExpensiveCategories()
         {
-            return await RestClientFactory
+            var apiUrl = $"{Constants.Endpoints.Accounts.ACCOUNT}{Constants.Endpoints.Accounts.AccountTopTransactions}/{DateTime.Now.Month}";
+            var response = await RestClientFactory
                 .CreateAuthenticatedClient()
-                .GetAsync($"{Constants.Endpoints.Accounts.ACCOUNT}/{Constants.Endpoints.Accounts.AccountTopTransactions}/{DateTime.Now.Month}")
-                .ReadContent<OverPricedCategories>();
+                .GetAsync(apiUrl);
+
+            response.EnsureSuccessStatusCode();
+            var content = await response.Content.ReadAsStringAsync();
+            var objectResult = Newtonsoft.Json.JsonConvert.DeserializeObject<OverPricedCategories>(content);
+
+            return objectResult;
         }
 
         public async Task<IEnumerable<OverPricedCategory2>> GetMostExpensiveCategories(int accountId)
         {
             return await RestClientFactory
                 .CreateAuthenticatedClient()
-                .GetAsync($"{Constants.Endpoints.Accounts.ACCOUNT}/{accountId}/{Constants.Endpoints.Accounts.AccountTopTransactions}/{DateTime.Now.Month}")
+                .GetAsync($"{Constants.Endpoints.Accounts.ACCOUNT}{accountId}/{Constants.Endpoints.Accounts.AccountTopTransactions}/{DateTime.Now.Month}")
                 .ReadContent<IEnumerable<OverPricedCategory2>>();
         }
 
@@ -52,7 +58,7 @@ namespace HomeManagement.App.Services.Rest
         {
             return await RestClientFactory
                 .CreateAuthenticatedClient()
-                .GetAsync(Constants.Endpoints.Accounts.TotalIncome)
+                .GetAsync($"/{Constants.Endpoints.Accounts.TotalIncome}")
                 .ReadContent<MetricValueDto>();
         }
 
@@ -60,7 +66,7 @@ namespace HomeManagement.App.Services.Rest
         {
             return await RestClientFactory
                 .CreateAuthenticatedClient()
-                .GetAsync(Constants.Endpoints.Accounts.TotalOutcome)
+                .GetAsync($"/{Constants.Endpoints.Accounts.TotalOutcome}")
                 .ReadContent<MetricValueDto>();
         }
     }

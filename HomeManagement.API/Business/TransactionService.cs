@@ -193,7 +193,7 @@ namespace HomeManagement.API.Business
             page.Transactions = transactionRepository
                             .All
                             .Where(filter)
-                            .OrderByDescending(x => x.Id)
+                            .OrderByDescending(x => x.Date)
                             .Skip(page.PageCount * currentPage)
                             .Take(page.PageCount)
                             .Select(x => transactionMapper.ToModel(x))

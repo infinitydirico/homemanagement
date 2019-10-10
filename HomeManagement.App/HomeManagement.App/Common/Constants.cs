@@ -5,7 +5,8 @@
         public class Endpoints
         {
             //public const string BASEURL = "http://localhost:60424/";
-            public const string BASEURL = "http://homemanagement-api.azurewebsites.net/";
+            //public const string BASEURL = "http://homemanagement-api.azurewebsites.net/";
+            public const string BASEURL = "http://69.55.59.144/";
             public const string API = "api/";
 
             public class Auth
@@ -23,7 +24,7 @@
 
                 public const string PAGE = ACCOUNT + "paging";
 
-                public const string AccountTopTransactions = "/toptransactions/";
+                public const string AccountTopTransactions = "toptransactions";
                 
                 public const string TotalIncome = ACCOUNT + "incomes";
 

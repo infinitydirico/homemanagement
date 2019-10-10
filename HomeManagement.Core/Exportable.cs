@@ -59,7 +59,7 @@ namespace HomeManagement.Core
         public virtual List<TExport> ToEntities(byte[] rawData)
         {
             var text = Encoding.ASCII.GetString(rawData);
-            var rows = text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+            var rows = text.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.None).ToList();
 
             var header = rows.FirstOrDefault();
             var headerValues = header.Split(new string[] { divider }, StringSplitOptions.None).ToList();
