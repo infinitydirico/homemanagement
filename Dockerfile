@@ -4,6 +4,9 @@ EXPOSE 80
 
 FROM microsoft/aspnetcore-build:2.0 AS build
 WORKDIR /src
+
+#COPY *.csproj ./
+#COPY ./HomeManagement.*.csproj ./
 COPY ["HomeManagement.API/HomeManagement.API.csproj", "HomeManagement.API/"]
 COPY ["HomeManagement.Data/HomeManagement.Data.csproj", "HomeManagement.Data/"]
 COPY ["HomeManagement.Data.Contracts/HomeManagement.Data.Contracts.csproj", "HomeManagement.Data.Contracts/"]
@@ -16,11 +19,11 @@ COPY ["HomeManagement.Mapper/HomeManagement.Mapper.csproj", "HomeManagement.Mapp
 COPY ["HomeManagement.Models/HomeManagement.Models.csproj", "HomeManagement.Models/"]
 RUN dotnet restore "HomeManagement.API/HomeManagement.API.csproj"
 COPY . .
-WORKDIR "/src/HomeManagement.API"
-RUN dotnet build "HomeManagement.API.csproj" -c Release -o /app
+#WORKDIR "/src/HomeManagement.API"
+RUN dotnet build "HomeManagement.API/HomeManagement.API.csproj" -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish "HomeManagement.API.csproj" -c Release -o /app
+RUN dotnet publish "HomeManagement.API/HomeManagement.API.csproj" -c Release -o /app
 
 FROM base AS final
 WORKDIR /app
