@@ -83,9 +83,7 @@ namespace HomeManagement.API.Business
                     Email = applicationUser.Email,
                 };
 
-                await userRepository.AddAsync(userEntity);
-
-                userSessionService.RegisterScopedUser(applicationUser.Email);
+                userRepository.Add(userEntity);                
 
                 accountRepository.Add(new Account
                 {
@@ -94,6 +92,9 @@ namespace HomeManagement.API.Business
                     AccountType = Domain.AccountType.Cash,
                     CurrencyId = 1
                 });
+                userRepository.Commit();
+
+                userSessionService.RegisterScopedUser(applicationUser.Email);
 
                 preferenceService.ChangeLanguage(user.Language);
 

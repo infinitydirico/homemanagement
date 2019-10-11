@@ -15,11 +15,9 @@ namespace HomeManagement.API.Data
 
         public DbContext CreateContext()
         {
-            var options = new DbContextOptionsBuilder<WebAppDbContext>()
-                                    .UseSqlite("Data Source=HomeManagement.db")
-                                    .Options;
-
-            dbContext = new WebAppDbContext(options);
+            var optionsBuilder = new DbContextOptionsBuilder<WebAppDbContext>();
+            optionsBuilder.UseSqlite(optionsBuilder.GetDatabaseFilePath());
+            dbContext = new WebAppDbContext(optionsBuilder.Options);
 
             return dbContext;
         }
@@ -30,20 +28,16 @@ namespace HomeManagement.API.Data
             {
                 if (dbContext == null)
                 {
-                    var options = new DbContextOptionsBuilder<WebAppDbContext>()
-                                    .UseSqlite("Data Source=HomeManagement.db")
-                                    .Options;
-
-                    dbContext = new WebAppDbContext(options);
+                    var optionsBuilder = new DbContextOptionsBuilder<WebAppDbContext>();
+                    optionsBuilder.UseSqlite(optionsBuilder.GetDatabaseFilePath());
+                    dbContext = new WebAppDbContext(optionsBuilder.Options);
                 }
 
                 if (((WebAppDbContext)dbContext).Disposed)
                 {
-                    var options = new DbContextOptionsBuilder<WebAppDbContext>()
-                                    .UseSqlite("Data Source=HomeManagement.db")
-                                    .Options;
-
-                    dbContext = new WebAppDbContext(options);
+                    var optionsBuilder = new DbContextOptionsBuilder<WebAppDbContext>();
+                    optionsBuilder.UseSqlite(optionsBuilder.GetDatabaseFilePath());
+                    dbContext = new WebAppDbContext(optionsBuilder.Options);
                 }
             }
 

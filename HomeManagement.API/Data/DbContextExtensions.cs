@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.IO;
 
 namespace HomeManagement.API.Data
 {
@@ -22,6 +24,25 @@ namespace HomeManagement.API.Data
 
                 context.SeedCategories();
             }
+        }
+
+        public static string GetDatabaseFilePath(this DbContextOptionsBuilder options)
+        {
+            var dataSource = $"Data Source = {CreateDatabaseFilePath(null)}";
+            return dataSource;
+        }
+
+        public static string CreateDatabaseFilePath(this IApplicationBuilder applicationBuilder)
+        {
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            var finalPath = $@"{path}\HomeManagement";
+
+            if (!Directory.Exists(finalPath))
+            {
+                Directory.CreateDirectory(finalPath);
+            }
+
+            return $@"{finalPath}\HomeManagement.db";
         }
     }
 }
