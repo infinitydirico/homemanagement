@@ -3,11 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace HomeManagement.API.Data
 {
     public static class DbContextExtensions
     {
+        private const string volumeDirectory = "homemgmtdb";
+
         public static void EnsureDatabaseCreated(this IApplicationBuilder applicationBuilder, bool autoMigrateDatabase = false)
         {
             using (var serviceScope = applicationBuilder.ApplicationServices
@@ -34,15 +38,23 @@ namespace HomeManagement.API.Data
 
         public static string CreateDatabaseFilePath(this IApplicationBuilder applicationBuilder)
         {
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            var finalPath = $@"{path}\HomeManagement";
+            string path = string.Empty;
 
-            if (!Directory.Exists(finalPath))
+            var currentDirectory = Directory.CreateDirectory(Environment.CurrentDirectory);
+            var parent = currentDirectory.Parent;
+
+            if (!parent.EnumerateDirectories().Any(x => x.FullName.Equals(volumeDirectory)))
             {
-                Directory.CreateDirectory(finalPath);
+                var createdDirectory = parent.CreateSubdirectory(volumeDirectory);
+                path = createdDirectory.FullName;
+            }
+            else
+            {
+                var volDir = Directory.CreateDirectory($@"{parent.FullName}\{volumeDirectory}");
+                path = volDir.FullName;
             }
 
-            return $@"{finalPath}\HomeManagement.db";
+            return $@"{path}\HomeManagement.db";
         }
     }
 }
