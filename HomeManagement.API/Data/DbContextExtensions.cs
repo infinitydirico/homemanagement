@@ -50,11 +50,13 @@ namespace HomeManagement.API.Data
             }
             else
             {
-                var volDir = Directory.CreateDirectory($@"{parent.FullName}\{volumeDirectory}");
+                var volDir = Directory.CreateDirectory($@"{parent.FullName}{GetOsSlash()}{volumeDirectory}");
                 path = volDir.FullName;
             }
 
-            return $@"{path}\HomeManagement.db";
+            return $@"{path}{GetOsSlash()}HomeManagement.db";
         }
+
+        public static string GetOsSlash() => RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "/" : @"\";
     }
 }
