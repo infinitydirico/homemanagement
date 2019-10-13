@@ -10,6 +10,8 @@ namespace HomeManagement.API.Business
 
         public IEnumerable<string> Errors { get; set; } = Enumerable.Empty<string>();
 
+        public bool IsSuccess => Result.Equals(Result.Succeed);
+
         public static OperationResult Succeed()
             => new OperationResult { Result = Result.Succeed };
 

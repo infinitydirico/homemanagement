@@ -19,14 +19,18 @@ namespace HomeManagement.API.Services
 
     public class CurrencyService : ICurrencyService
     {
+        private const string ApiUrlKey = "CurrencyService_API";
+        private const string AppIdKey = "CurrencyService_AppId";
+        private readonly IConfigurationSettingsRepository configurationSettingsRepository;
         private readonly ICurrencyRepository currencyRepository;
         private readonly IConfiguration configuration;
         private readonly List<string> supportedCurrencies = new List<string> { "USD", "EUR", "ARS" };
 
-        public CurrencyService(ICurrencyRepository currencyRepository, IConfiguration configuration)
+        public CurrencyService(ICurrencyRepository currencyRepository,
+            IConfigurationSettingsRepository configurationSettingsRepository)
         {
             this.currencyRepository = currencyRepository;
-            this.configuration = configuration;
+            this.configurationSettingsRepository = configurationSettingsRepository;
         }
 
         public Currency GetCurrency(string name)
@@ -79,17 +83,12 @@ namespace HomeManagement.API.Services
 
         private async Task<List<Currency>> GetApiCurrencies()
         {
-            if (!IsCurrencySettingsAvaible()) return CreateDefault().ToList();
+            if (!IsConfigued()) return CreateDefault().ToList();
 
             using (var httpClient = new HttpClient())
             {
-                var baseUrl = configuration
-                    .GetSection("CurrenciesSettings")
-                    .GetValue<string>("API");
-
-                var apiKey = configuration
-                    .GetSection("CurrenciesSettings")
-                    .GetValue<string>("AppId");
+                var baseUrl = configurationSettingsRepository.GetValue(ApiUrlKey);
+                var apiKey = configurationSettingsRepository.GetValue(AppIdKey);
 
                 httpClient.BaseAddress = new Uri(baseUrl);
 
@@ -114,11 +113,18 @@ namespace HomeManagement.API.Services
             }
         }
 
-        private bool IsCurrencySettingsAvaible()
+        private bool IsConfigued()
         {
-            var section = configuration.GetSection("CurrenciesSettings");
+            var exists = configurationSettingsRepository.Exists(ApiUrlKey) && configurationSettingsRepository.Exists(AppIdKey);
 
-            return section != null && section.Exists();
+            if (exists)
+            {
+                var apiValue = configurationSettingsRepository.GetValue(ApiUrlKey);
+                var appIdValue = configurationSettingsRepository.GetValue(AppIdKey);
+
+                return !string.IsNullOrEmpty(apiValue) && !string.IsNullOrEmpty(appIdValue);
+            }
+            return false;
         }
 
         private IEnumerable<Currency> CreateDefault()

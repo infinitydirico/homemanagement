@@ -19,17 +19,17 @@ namespace HomeManagement.FilesStore.DropboxFileStore
         //3 when API gets called validate and then in someway the tab should be closed 
 
         private readonly IPreferencesRepository preferenceRepository;
+        private readonly IConfigurationSettingsRepository configurationSettingsRepository;
 
-        private readonly Configuration configuration;
+        private Configuration configuration;
 
         private DropboxClient dropboxClient;
 
-        public RestClient(Configuration configuration, IPreferencesRepository preferenceRepository)
+        public RestClient(IConfigurationSettingsRepository configurationSettingsRepository, 
+            IPreferencesRepository preferenceRepository)
         {
-            if (!configuration.IsInitialzed()) throw new ArgumentException($"The parameter {nameof(configuration)} has not been initialized.");
-
-            this.configuration = configuration;
-            this.preferenceRepository = preferenceRepository ?? throw new NullReferenceException($"The parameter{nameof(preferenceRepository)} is null.");
+            this.preferenceRepository = preferenceRepository;
+            this.configurationSettingsRepository = configurationSettingsRepository;
         }
 
         public string RedirectUri { get; set; } = "http://localhost:60424/api/storage/authorize";
@@ -42,6 +42,8 @@ namespace HomeManagement.FilesStore.DropboxFileStore
             {
                 throw new Exception("Missing access token for dropbox.");
             }
+
+            configuration = GetDropboxConfig();
 
             var response = await DropboxOAuth2Helper.ProcessCodeFlowAsync(
                 code,
@@ -87,6 +89,8 @@ namespace HomeManagement.FilesStore.DropboxFileStore
                 Key = Constants.DropboxState,
                 Value = state
             });
+
+            configuration = GetDropboxConfig();
 
             return DropboxOAuth2Helper.GetAuthorizeUri(OAuthResponseType.Code, configuration.AppId, RedirectUri, state: state);
         }
@@ -212,6 +216,23 @@ namespace HomeManagement.FilesStore.DropboxFileStore
                     Path = folder.PathDisplay,
                 };
             }
+        }
+
+        private Configuration GetDropboxConfig()
+        {
+            var appIdConfig = configurationSettingsRepository.FirstOrDefault(x => x.Name.Equals(Constants.DropboxAppId));
+            var appSecretConfig = configurationSettingsRepository.FirstOrDefault(x => x.Name.Equals(Constants.DropboxAppSecret));
+
+            if (appIdConfig == null || appSecretConfig == null)
+            {
+                throw new ArgumentNullException($"Dropbox configs cannot be null.");
+            }
+
+            return new Configuration
+            {
+                AppId = appIdConfig.Value,
+                AppSecret = appSecretConfig.Value
+            };
         }
     }
 }

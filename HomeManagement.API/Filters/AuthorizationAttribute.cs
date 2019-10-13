@@ -19,7 +19,7 @@ namespace HomeManagement.API.Filters
     {
         private JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
 
-        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        public virtual async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             if (IsDropboxRequest(context.HttpContext.Request.QueryString))
             {

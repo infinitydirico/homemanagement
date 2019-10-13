@@ -50,6 +50,10 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
 
             services.AddScoped<IStorageItemRepository, StorageItemRepository>();
+
+            services.AddScoped<IConfigurationSettingsRepository, ConfigurationSettingsRepository>();
+
+            services.AddScoped<IRolesRepository, RolesRepository>();
             
             //with the throttle filter with persisted repo, the requests take around 100ms to respond
             //with memory values, it takes 30ms
@@ -73,6 +77,8 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<ICurrencyMapper, CurrencyMapper>();
 
             services.AddScoped<IStorageItemMapper, StorageItemMapper>();
+
+            services.AddScoped<IConfigurationSettingsMapper, ConfigurationSettingsMapper>();
         }
 
         public static void AddExportableComponents(this IServiceCollection services)
@@ -93,6 +99,7 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IUserSessionService, UserSessionService>();
             services.AddScoped<IMetricsService, MetricsService>();
+            services.AddScoped<IConfigurationSettingsService, ConfigurationSettingsService>();
         }
 
         public static CorsPolicy BuildCorsPolicy(this CorsOptions corsOptions)

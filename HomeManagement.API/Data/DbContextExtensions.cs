@@ -17,16 +17,21 @@ namespace HomeManagement.API.Data
             using (var serviceScope = applicationBuilder.ApplicationServices
                                         .GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                var context = serviceScope.ServiceProvider.GetService<WebAppDbContext>();
-
-                var created = context.Database.EnsureCreated();
+                var context = serviceScope.ServiceProvider.GetService<WebAppDbContext>();                
 
                 if (autoMigrateDatabase)
                 {
+                    var pendingMigrations = context.Database.GetPendingMigrations();
                     context.Database.Migrate();
+                }
+                else
+                {
+                    var created = context.Database.EnsureCreated();
                 }
 
                 context.SeedCategories();
+                context.SeedRoles();
+                context.SeedSettings();
             }
         }
 

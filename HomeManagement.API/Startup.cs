@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using HomeManagement.API.Data;
+﻿using HomeManagement.API.Data;
 using HomeManagement.API.Data.Entities;
-using HomeManagement.API.Filters;
-using HomeManagement.API.Infraestructure;
 using HomeManagement.API.Extensions;
+using HomeManagement.API.Filters;
+using HomeManagement.API.Services;
+using HomeManagement.FilesStore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,10 +16,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
-using HomeManagement.API.Services;
-using HomeManagement.FilesStore;
-using HomeManagement.Data;
-using Microsoft.AspNetCore.Http.Features;
+using System.Collections.Generic;
+using System.Text;
 
 namespace HomeManagement.API
 {
@@ -67,17 +65,6 @@ namespace HomeManagement.API
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddScoped<IStorageClient, FilesStore.DropboxFileStore.RestClient>((serviceProvider) =>
-            {
-                var section = Configuration.GetSection("Dropbox");
-
-                return new FilesStore.DropboxFileStore.RestClient(new FilesStore.DropboxFileStore.Configuration
-                {
-                    AppId = section.GetValue<string>("AppKey"),
-                    AppSecret = section.GetValue<string>("AppSecret")
-                }, serviceProvider.GetRequiredService<IPreferencesRepository>());
-            });
-
             services.AddRepositories();
             services.AddMiddleware();
             services.AddMappers();
@@ -85,6 +72,8 @@ namespace HomeManagement.API
             services.AddCustomServices();
 
             services.AddScoped<ICurrencyService, CurrencyService>();
+
+            services.AddScoped<IStorageClient, FilesStore.DropboxFileStore.RestClient>();
 
             services.AddMvc(options =>
             {
@@ -137,7 +126,7 @@ namespace HomeManagement.API
             }
 
             app.CreateDatabaseFilePath();
-            app.EnsureDatabaseCreated();
+            app.EnsureDatabaseCreated(true);
 
             app.UseStaticFiles();
 

@@ -2,7 +2,6 @@
 using HomeManagement.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace HomeManagement.API.Data
 {
@@ -31,11 +30,13 @@ namespace HomeManagement.API.Data
 
         public DbSet<StorageItem> StorageItems { get; set; }
 
+        public DbSet<ConfigurationSetting> ConfigurationSettings { get; set; }
+
         public bool Disposed { get; set; }
 
         public WebAppDbContext(DbContextOptions<WebAppDbContext> options)
             : base(options)
-        {            
+        {
         }
 
         public override void Dispose()
@@ -76,7 +77,7 @@ namespace HomeManagement.API.Data
 
             modelBuilder.Entity<Preferences>().HasOne(x => x.User);
 
-            //modelBuilder.Entity<StorageItem>().has
+            modelBuilder.Entity<ConfigurationSetting>().ToTable(nameof(WebAppDbContext.ConfigurationSettings)).HasKey(x => x.Id);
 
             modelBuilder.Ignore<Share>();
             modelBuilder.Ignore<Role>();

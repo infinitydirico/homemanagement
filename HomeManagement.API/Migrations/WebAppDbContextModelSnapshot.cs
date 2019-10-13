@@ -144,6 +144,20 @@ namespace HomeManagement.API.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("HomeManagement.Domain.ConfigurationSetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ConfigurationSettings");
+                });
+
             modelBuilder.Entity("HomeManagement.Domain.Currency", b =>
                 {
                     b.Property<int>("Id")
