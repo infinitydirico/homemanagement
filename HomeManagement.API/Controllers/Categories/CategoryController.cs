@@ -59,7 +59,7 @@ namespace HomeManagement.API.Controllers.Categories
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             var result = categoryService.Delete(id);

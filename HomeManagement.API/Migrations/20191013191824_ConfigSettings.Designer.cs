@@ -12,9 +12,10 @@ using System;
 namespace HomeManagement.API.Migrations
 {
     [DbContext(typeof(WebAppDbContext))]
-    partial class WebAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191013191824_ConfigSettings")]
+    partial class ConfigSettings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,28 +233,6 @@ namespace HomeManagement.API.Migrations
                     b.ToTable("Reminders");
                 });
 
-            modelBuilder.Entity("HomeManagement.Domain.ScheduledTransaction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("CategoryId");
-
-                    b.Property<string>("Name");
-
-                    b.Property<double>("Price");
-
-                    b.Property<int>("TransactionType");
-
-                    b.Property<int>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ScheduledTransactions");
-                });
-
             modelBuilder.Entity("HomeManagement.Domain.StorageItem", b =>
                 {
                     b.Property<int>("Id")
@@ -466,14 +445,6 @@ namespace HomeManagement.API.Migrations
                 });
 
             modelBuilder.Entity("HomeManagement.Domain.Reminder", b =>
-                {
-                    b.HasOne("HomeManagement.Domain.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("HomeManagement.Domain.ScheduledTransaction", b =>
                 {
                     b.HasOne("HomeManagement.Domain.User", "User")
                         .WithMany()

@@ -32,6 +32,8 @@ namespace HomeManagement.API.Data
 
         public DbSet<ConfigurationSetting> ConfigurationSettings { get; set; }
 
+        public DbSet<ScheduledTransaction> ScheduledTransactions { get; set; }
+
         public bool Disposed { get; set; }
 
         public WebAppDbContext(DbContextOptions<WebAppDbContext> options)
@@ -78,6 +80,10 @@ namespace HomeManagement.API.Data
             modelBuilder.Entity<Preferences>().HasOne(x => x.User);
 
             modelBuilder.Entity<ConfigurationSetting>().ToTable(nameof(WebAppDbContext.ConfigurationSettings)).HasKey(x => x.Id);
+
+            modelBuilder.Entity<ScheduledTransaction>().HasKey(x => x.Id);
+
+            modelBuilder.Entity<ScheduledTransaction>().HasOne(x => x.User);
 
             modelBuilder.Ignore<Share>();
             modelBuilder.Ignore<Role>();

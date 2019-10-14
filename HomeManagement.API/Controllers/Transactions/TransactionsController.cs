@@ -59,7 +59,7 @@ namespace HomeManagement.API.Controllers.Transactions
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             if (id < 1) return BadRequest();

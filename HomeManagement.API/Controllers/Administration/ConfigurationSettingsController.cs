@@ -40,19 +40,7 @@ namespace HomeManagement.API.Controllers.Administration
             return BadRequest();
         }
 
-        [HttpPut]
-        public IActionResult Put([FromBody] ConfigurationSettingModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = configurationSettingsService.Save(model);
-
-                if (result.IsSuccess) return Ok();
-            }
-            return BadRequest();
-        }
-
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             var result = configurationSettingsService.Delete(id);

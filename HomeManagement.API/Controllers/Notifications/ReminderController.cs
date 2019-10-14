@@ -1,9 +1,7 @@
 ﻿using HomeManagement.API.Business;
-using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeManagement.API.Controllers.Notifications
