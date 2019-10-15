@@ -19,13 +19,13 @@ namespace HomeManagement.AI.Vision.Tests
 
             var engine = new Engine
             {
-                Criterias = new List<ILookUpCriteria>()
+                Criterias = new List<IMatch>()
                 {
                     new TextLookUpCriteria()
                 }
             };
 
-            var text = engine.GetAllMatches(vision.RecognitionResult).ToList();
+            var text = engine.GetAllMatches(vision.RecognitionResult.First()).ToList();
 
             Assert.IsNotNull(text);
         }
@@ -37,14 +37,14 @@ namespace HomeManagement.AI.Vision.Tests
 
             var engine = new Engine
             {
-                Criterias = new List<ILookUpCriteria>()
+                Criterias = new List<IMatch>()
                 {
                     new NumberLookUpCriteria(),
-                    new MoneyLookUpCriteria { SearchNearRows = true}
+                    new MoneyLookUpCriteria()
                 }
             };
 
-            var numbers = engine.GetAllMatches(vision.RecognitionResult).ToList();
+            var numbers = engine.GetAllMatches(vision.RecognitionResult.First()).ToList();
 
             Assert.IsNotNull(numbers);
         }
@@ -56,13 +56,13 @@ namespace HomeManagement.AI.Vision.Tests
 
             var engine = new Engine
             {
-                Criterias = new List<ILookUpCriteria>()
+                Criterias = new List<IMatch>()
                 {
                     new DateLookUpCriteria()
                 }
             };
 
-            var dates = engine.GetAllMatches(vision.RecognitionResult).ToList();
+            var dates = engine.GetAllMatches(vision.RecognitionResult.First()).ToList();
 
             Assert.IsNotNull(dates);
         }

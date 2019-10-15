@@ -8,37 +8,27 @@ namespace HomeManagement.AI.Vision.Analysis
 {
     public class Engine
     {
-        public IEnumerable<ILookUpCriteria> Criterias { get; set; }
+        public IEnumerable<IMatch> Criterias { get; set; }
 
         public IEnumerable<string> GetAllMatches(VisionRecognitionResult visionRecognitionResult)
         {
-            foreach (var line in visionRecognitionResult.Lines)
-            {
-                int criteriasMatching = 0;
-                foreach (var criteria in Criterias)
-                {
-                    if((line.Text.RemoveEmptySpaces().All(x => !char.IsWhiteSpace(x) && criteria.IsMatch(x)) && !criteria.TryDeepParsing) ||
-                        (criteria.SearchNearRows && HasNearByMatchingCriteria(visionRecognitionResult.Lines, line, criteria) && !criteria.TryDeepParsing) ||
-                        (criteria.TryDeepParsing && criteria.IsParseable(line.Text)))
-                    {
-                        criteriasMatching++;
-                        continue;
-                    }
-                }
+            var possibleMatches = visionRecognitionResult.Lines
+                .Where(IsMatch)
+                .Select(x => x.Text)
+                .ToList();
 
-                if (criteriasMatching.Equals(Criterias.Count()))
-                {
-                    yield return line.Text;
-                }
-            }
+            return possibleMatches;
         }
 
-        private bool HasNearByMatchingCriteria(List<Line> lines, Line line, ILookUpCriteria criteria)
+        public bool IsMatch(Box line)
         {
-            return (from l in lines
-                    where !line.Equals(l) &&
-                             (l.IsOnSameColumn(line) || l.IsOnSameRow(line))
-                    select l).All(z => z.Text.RemoveEmptySpaces().Any(x => criteria.IsMatch(x)));
+            foreach (var criteria in Criterias)
+            {
+                var match = criteria.IsMatch(line.Text);
+
+                if (match) return true;
+            }
+            return false;
         }
     }
 }

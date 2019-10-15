@@ -1,13 +1,15 @@
-﻿namespace HomeManagement.AI.Vision.Analysis.Criterias
+﻿using System.Linq;
+
+namespace HomeManagement.AI.Vision.Analysis.Criterias
 {
-    public class NumberLookUpCriteria : ILookUpCriteria
+    public class NumberLookUpCriteria : IMatchingCriteria, IMatch
     {
-        public bool SearchNearRows { get; set; }
+        public bool IsMatch(char c1) => char.IsNumber(c1);
 
-        public bool TryDeepParsing => false;
-
-        public bool IsMatch(char c1) => char.IsNumber(c1) || char.IsPunctuation(c1);
-
-        public bool IsParseable(string value) => false;
+        public bool IsMatch(string value)
+        {
+            var match = value.Any(x => IsMatch(x));
+            return match;
+        }
     }
 }

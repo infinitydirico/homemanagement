@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace HomeManagement.AI.Vision.Entities
 {
@@ -13,7 +14,7 @@ namespace HomeManagement.AI.Vision.Entities
         [JsonProperty("finished")]
         public bool Finished { get; set; }
 
-        [JsonProperty("recognitionResult")]
-        public VisionRecognitionResult RecognitionResult { get; set; }
+        [JsonProperty("recognitionResults")]
+        public List<VisionRecognitionResult> RecognitionResult { get; set; }
     }
 }

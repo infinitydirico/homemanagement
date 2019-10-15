@@ -1,15 +1,24 @@
 ﻿using System;
+using System.Globalization;
 
 namespace HomeManagement.AI.Vision.Analysis.Criterias
 {
-    public class DateLookUpCriteria : ILookUpCriteria
+    public class DateLookUpCriteria : IMatch
     {
-        public bool SearchNearRows { get; set; }
+        public bool IsMatch(string value)
+        {
+            var divider = value.Contains("/") ? "/" : "-";
 
-        public bool TryDeepParsing => true;
+            var templateDate = $"dd{divider}MM{divider}yyyy";
 
-        public bool IsMatch(char c1) => false;
+            templateDate = value.Length.Equals(templateDate.Length) ?
+                templateDate : 
+                templateDate.Substring(0, templateDate.Length - 2);
 
-        public bool IsParseable(string value) => DateTime.TryParse(value, out DateTime date) || TimeSpan.TryParse(value, out TimeSpan timeSpan);
+            var canParse = DateTime.TryParseExact(value, templateDate,
+                CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var date);
+
+            return canParse;
+        }
     }
 }
