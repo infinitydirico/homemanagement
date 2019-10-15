@@ -7,10 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="litoral_gas.txt" />
     <None Remove="mock.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="litoral_gas.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="mock.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>

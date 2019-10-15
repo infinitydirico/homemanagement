@@ -32,7 +32,7 @@ namespace HomeManagement.API.Data
 
         public DbSet<ConfigurationSetting> ConfigurationSettings { get; set; }
 
-        public DbSet<ScheduledTransaction> ScheduledTransactions { get; set; }
+        public DbSet<MonthlyExpense> MonthlyExpenses { get; set; }
 
         public bool Disposed { get; set; }
 
@@ -81,9 +81,9 @@ namespace HomeManagement.API.Data
 
             modelBuilder.Entity<ConfigurationSetting>().ToTable(nameof(WebAppDbContext.ConfigurationSettings)).HasKey(x => x.Id);
 
-            modelBuilder.Entity<ScheduledTransaction>().HasKey(x => x.Id);
+            modelBuilder.Entity<MonthlyExpense>().HasKey(x => x.Id);
 
-            modelBuilder.Entity<ScheduledTransaction>().HasOne(x => x.User);
+            modelBuilder.Entity<MonthlyExpense>().HasOne(x => x.User);
 
             modelBuilder.Ignore<Share>();
             modelBuilder.Ignore<Role>();

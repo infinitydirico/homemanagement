@@ -1,6 +1,6 @@
 ﻿namespace HomeManagement.Domain
 {
-    public class ScheduledTransaction
+    public class MonthlyExpense
     {
         public int Id { get; set; }
 

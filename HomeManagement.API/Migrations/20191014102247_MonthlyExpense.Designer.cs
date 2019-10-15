@@ -12,8 +12,8 @@ using System;
 namespace HomeManagement.API.Migrations
 {
     [DbContext(typeof(WebAppDbContext))]
-    [Migration("20191014004045_ScheduledTransactions")]
-    partial class ScheduledTransactions
+    [Migration("20191014102247_MonthlyExpense")]
+    partial class MonthlyExpense
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -175,6 +175,28 @@ namespace HomeManagement.API.Migrations
                     b.ToTable("Currencies");
                 });
 
+            modelBuilder.Entity("HomeManagement.Domain.MonthlyExpense", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("CategoryId");
+
+                    b.Property<string>("Name");
+
+                    b.Property<double>("Price");
+
+                    b.Property<int>("TransactionType");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("MonthlyExpenses");
+                });
+
             modelBuilder.Entity("HomeManagement.Domain.Notification", b =>
                 {
                     b.Property<int>("Id")
@@ -231,28 +253,6 @@ namespace HomeManagement.API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Reminders");
-                });
-
-            modelBuilder.Entity("HomeManagement.Domain.ScheduledTransaction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("CategoryId");
-
-                    b.Property<string>("Name");
-
-                    b.Property<double>("Price");
-
-                    b.Property<int>("TransactionType");
-
-                    b.Property<int>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ScheduledTransactions");
                 });
 
             modelBuilder.Entity("HomeManagement.Domain.StorageItem", b =>
@@ -450,6 +450,14 @@ namespace HomeManagement.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("HomeManagement.Domain.MonthlyExpense", b =>
+                {
+                    b.HasOne("HomeManagement.Domain.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("HomeManagement.Domain.Notification", b =>
                 {
                     b.HasOne("HomeManagement.Domain.Reminder", "Reminder")
@@ -467,14 +475,6 @@ namespace HomeManagement.API.Migrations
                 });
 
             modelBuilder.Entity("HomeManagement.Domain.Reminder", b =>
-                {
-                    b.HasOne("HomeManagement.Domain.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("HomeManagement.Domain.ScheduledTransaction", b =>
                 {
                     b.HasOne("HomeManagement.Domain.User", "User")
                         .WithMany()

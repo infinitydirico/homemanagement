@@ -3,7 +3,7 @@ using HomeManagement.Domain;
 
 namespace HomeManagement.Data
 {
-    public interface IScheduledTransactionRepository : IRepository<ScheduledTransaction>
+    public interface IMonthlyExpenseRepository : IRepository<MonthlyExpense>
     {
 
     }

@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace HomeManagement.API.Migrations
 {
-    public partial class ScheduledTransactions : Migration
+    public partial class MonthlyExpense : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ScheduledTransactions",
+                name: "MonthlyExpenses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -22,9 +22,9 @@ namespace HomeManagement.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ScheduledTransactions", x => x.Id);
+                    table.PrimaryKey("PK_MonthlyExpenses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ScheduledTransactions_UsersSet_UserId",
+                        name: "FK_MonthlyExpenses_UsersSet_UserId",
                         column: x => x.UserId,
                         principalTable: "UsersSet",
                         principalColumn: "Id",
@@ -32,15 +32,15 @@ namespace HomeManagement.API.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ScheduledTransactions_UserId",
-                table: "ScheduledTransactions",
+                name: "IX_MonthlyExpenses_UserId",
+                table: "MonthlyExpenses",
                 column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ScheduledTransactions");
+                name: "MonthlyExpenses");
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace HomeManagement.Models
 {
-    public class ScheduledTransactionModel
+    public class MonthlyExpenseModel
     {
         public int Id { get; set; }
 

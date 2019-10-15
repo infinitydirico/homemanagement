@@ -9,30 +9,30 @@ namespace HomeManagement.API.Controllers.Transactions
     [Authorization]
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
-    [Route("api/ScheduledTransactions")]
-    public class ScheduledTransactionsController : Controller
+    [Route("api/MonthlyExpenses")]
+    public class MonthlyExpensesController : Controller
     {
-        private readonly IScheduledTransactionService scheduledTransactionService;
+        private readonly IMonthlyExpenseService MonthlyExpenseService;
 
-        public ScheduledTransactionsController(IScheduledTransactionService scheduledTransactionService)
+        public MonthlyExpensesController(IMonthlyExpenseService MonthlyExpenseService)
         {
-            this.scheduledTransactionService = scheduledTransactionService;
+            this.MonthlyExpenseService = MonthlyExpenseService;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            var result = scheduledTransactionService.GetScheduledTransactions();
+            var result = MonthlyExpenseService.GetMonthlyExpenses();
 
             return Ok(result);
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] ScheduledTransactionModel model)
+        public IActionResult Post([FromBody] MonthlyExpenseModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = scheduledTransactionService.Save(model);
+                var result = MonthlyExpenseService.Save(model);
 
                 if (result.IsSuccess) return Ok();
             }
@@ -42,7 +42,7 @@ namespace HomeManagement.API.Controllers.Transactions
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = scheduledTransactionService.Remove(id);
+            var result = MonthlyExpenseService.Remove(id);
             if (result.IsSuccess) return Ok();
             else return BadRequest();
         }

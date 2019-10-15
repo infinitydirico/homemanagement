@@ -69,7 +69,7 @@ namespace HomeManagement.AI.Vision.Tests
 
         private VisionResponse ReadMock()
         {
-            var lines = File.ReadAllLines("mock.txt");
+            var lines = File.ReadAllLines("litoral_gas.txt");
 
             var sb = new StringBuilder();
             foreach (var line in lines)

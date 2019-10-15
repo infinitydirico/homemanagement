@@ -22,8 +22,8 @@
     <Compile Include="Migrations\20191001235948_InitialCreate.Designer.cs" />
     <Compile Include="Migrations\20191013191824_ConfigSettings.cs" />
     <Compile Include="Migrations\20191013191824_ConfigSettings.Designer.cs" />
-    <Compile Include="Migrations\20191014004045_ScheduledTransactions.cs" />
-    <Compile Include="Migrations\20191014004045_ScheduledTransactions.Designer.cs" />
+    <Compile Include="Migrations\20191014102247_MonthlyExpense.cs" />
+    <Compile Include="Migrations\20191014102247_MonthlyExpense.Designer.cs" />
     <Compile Include="Migrations\WebAppDbContextModelSnapshot.cs" />
   </ItemGroup>
 
