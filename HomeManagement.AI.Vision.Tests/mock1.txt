@@ -1,0 +1,136 @@
+{
+   "language": "es",
+   "textAngle": 0,
+   "orientation": "NotDetected",
+   "regions": [
+      {
+         "boundingBox": "37,15,249,274",
+         "lines": [
+            {
+               "boundingBox": "37,15,249,25",
+               "words": [
+                  {
+                     "boundingBox": "37,15,153,25",
+                     "text": "Comprobante"
+                  },
+                  {
+                     "boundingBox": "197,15,27,20",
+                     "text": "de"
+                  },
+                  {
+                     "boundingBox": "231,21,55,19",
+                     "text": "pago"
+                  }
+               ]
+            },
+            {
+               "boundingBox": "45,57,186,30",
+               "words": [
+                  {
+                     "boundingBox": "45,57,106,30",
+                     "text": "Litoral"
+                  },
+                  {
+                     "boundingBox": "165,58,66,29",
+                     "text": "Gas"
+                  }
+               ]
+            },
+            {
+               "boundingBox": "38,153,71,19",
+               "words": [
+                  {
+                     "boundingBox": "38,153,71,19",
+                     "text": "Importe"
+                  }
+               ]
+            },
+            {
+               "boundingBox": "44,175,135,33",
+               "words": [
+                  {
+                     "boundingBox": "44,175,17,32",
+                     "text": "$"
+                  },
+                  {
+                     "boundingBox": "73,178,106,30",
+                     "text": "594,58"
+                  }
+               ]
+            },
+            {
+               "boundingBox": "37,237,135,20",
+               "words": [
+                  {
+                     "boundingBox": "37,237,56,16",
+                     "text": "Medio"
+                  },
+                  {
+                     "boundingBox": "99,237,22,16",
+                     "text": "de"
+                  },
+                  {
+                     "boundingBox": "127,242,45,15",
+                     "text": "pago"
+                  }
+               ]
+            },
+            {
+               "boundingBox": "42,267,190,22",
+               "words": [
+                  {
+                     "boundingBox": "42,270,30,17",
+                     "text": "CA"
+                  },
+                  {
+                     "boundingBox": "84,267,12,22",
+                     "text": "S"
+                  },
+                  {
+                     "boundingBox": "103,270,129,17",
+                     "text": "0816195846"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "boundingBox": "37,349,101,49",
+         "lines": [
+            {
+               "boundingBox": "37,349,48,14",
+               "words": [
+                  {
+                     "boundingBox": "37,349,48,14",
+                     "text": "Fecha"
+                  }
+               ]
+            },
+            {
+               "boundingBox": "43,380,95,18",
+               "words": [
+                  {
+                     "boundingBox": "43,380,95,18",
+                     "text": "10/09/19"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "boundingBox": "240,349,38,14",
+         "lines": [
+            {
+               "boundingBox": "240,349,38,14",
+               "words": [
+                  {
+                     "boundingBox": "240,349,38,14",
+                     "text": "Hora"
+                  }
+               ]
+            }
+         ]
+      }
+   ]
+}
+

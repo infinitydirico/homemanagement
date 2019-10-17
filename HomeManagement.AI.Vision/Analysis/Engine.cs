@@ -10,6 +10,21 @@ namespace HomeManagement.AI.Vision.Analysis
     {
         public IEnumerable<IMatch> Criterias { get; set; }
 
+        public IEnumerable<string> GetAllMatches(IEnumerable<VisionRecognitionResult> visionRecognitionResults)
+        {
+            List<string> possibleMatches = new List<string>();
+            foreach (var visionRecognitionResult in visionRecognitionResults)
+            {
+                var matches = visionRecognitionResult.Lines
+                    .Where(IsMatch)
+                    .Select(x => x.Text)
+                    .ToList();
+
+                possibleMatches.AddRange(matches);
+            }
+            return possibleMatches;
+        }
+
         public IEnumerable<string> GetAllMatches(VisionRecognitionResult visionRecognitionResult)
         {
             var possibleMatches = visionRecognitionResult.Lines
@@ -20,7 +35,7 @@ namespace HomeManagement.AI.Vision.Analysis
             return possibleMatches;
         }
 
-        public bool IsMatch(Box line)
+        public bool IsMatch(Line line)
         {
             foreach (var criteria in Criterias)
             {

@@ -23,6 +23,7 @@ namespace HomeManagement.API.Business
 
         private const string LanguageKey = "Language";
         private const string PreferredCurrency = "PreferredCurrency";
+        private const string UserCountry = "UserCountry";
 
         public PreferenceService(IUserRepository userRepository,
             IPreferencesRepository preferencesRepository,
@@ -163,6 +164,52 @@ namespace HomeManagement.API.Business
             var currency = GetCurrencies().FirstOrDefault(x => x.Name.Equals(preferredCurrency.Value));
             return currency;
         }
+
+        public void SaveCountry(string country)
+        {
+            var user = userService.GetAuthenticatedUser();
+            var countryPreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(UserCountry));
+
+            if (countryPreference == null)
+            {
+                countryPreference = new Preferences
+                {
+                    UserId = user.Id,
+                    Key = UserCountry,
+                    Value = country,
+                };
+
+                preferencesRepository.Add(countryPreference);
+            }
+            else
+            {
+                countryPreference.Value = country;
+                preferencesRepository.Update(countryPreference);
+            }
+
+            preferencesRepository.Commit();
+        }
+
+        public string GetUserCountry()
+        {
+            var user = userService.GetAuthenticatedUser();
+            var countryPreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(UserCountry));
+            return countryPreference?.Value;
+        }
+
+        public string GetUserCountryCode()
+        {
+            var country = GetUserCountry();
+            var parts = country.Split(" ");
+            if (parts.Count() > 1)
+            {
+                return parts.First().Substring(0, 1) + parts.Last().Substring(0, 1);
+            }
+            else
+            {
+                return country.ToUpper().Substring(0, 2);
+            }
+        }
     }
 
     public interface IPreferenceService
@@ -176,5 +223,11 @@ namespace HomeManagement.API.Business
         CurrencyModel GetPreferredCurrency();
 
         IEnumerable<CurrencyModel> GetCurrencies();
+
+        void SaveCountry(string country);
+
+        string GetUserCountry();
+
+        string GetUserCountryCode();
     }
 }

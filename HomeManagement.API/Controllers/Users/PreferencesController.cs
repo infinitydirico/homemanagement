@@ -44,5 +44,12 @@ namespace HomeManagement.API.Controllers.Users
 
             return Ok();
         }
+
+        [HttpPost("savecountry/{country}")]
+        public IActionResult SaveCountry(string country)
+        {
+            preferenceService.SaveCountry(country);
+            return Ok();
+        }
     }
 }

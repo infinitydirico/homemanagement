@@ -3,6 +3,7 @@ using HomeManagement.Mapper;
 using HomeManagement.Models;
 using System.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace HomeManagement.API.Business
 {
@@ -29,6 +30,15 @@ namespace HomeManagement.API.Business
             configurationSettingsRepository.Commit();
 
             return OperationResult.Succeed();
+        }
+
+        public ConfigurationSettingModel GetConfig(string name)
+        {
+            var entity = configurationSettingsRepository.FirstOrDefault(x => x.Name.Equals(name));
+
+            if (entity == null) throw new NullReferenceException($"no entity found for {name}");
+
+            return configurationSettingsMapper.ToModel(entity);
         }
 
         public IEnumerable<ConfigurationSettingModel> GetConfigs()
@@ -64,6 +74,8 @@ namespace HomeManagement.API.Business
     public interface IConfigurationSettingsService
     {
         IEnumerable<ConfigurationSettingModel> GetConfigs();
+
+        ConfigurationSettingModel GetConfig(string name);
 
         OperationResult Save(ConfigurationSettingModel model);
 

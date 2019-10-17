@@ -39,7 +39,7 @@ namespace HomeManagement.AI.Vision.Tests
             {
                 Criterias = new List<IMatch>()
                 {
-                    new NumberLookUpCriteria(),
+                    //new NumberLookUpCriteria(),
                     new MoneyLookUpCriteria()
                 }
             };
@@ -62,14 +62,14 @@ namespace HomeManagement.AI.Vision.Tests
                 }
             };
 
-            var dates = engine.GetAllMatches(vision.RecognitionResult.First()).ToList();
+            var dates = engine.GetAllMatches(vision.RecognitionResult).ToList();
 
             Assert.IsNotNull(dates);
         }
 
-        private VisionResponse ReadMock()
+        private VisionResponseV2 ReadMock()
         {
-            var lines = File.ReadAllLines("litoral_gas.txt");
+            var lines = File.ReadAllLines("mock1.txt");
 
             var sb = new StringBuilder();
             foreach (var line in lines)
@@ -77,7 +77,7 @@ namespace HomeManagement.AI.Vision.Tests
                 sb.AppendLine(line);
             }
 
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<VisionResponse>(sb.ToString());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<VisionResponseV2>(sb.ToString());
         }
     }
 }
