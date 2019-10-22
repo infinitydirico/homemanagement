@@ -12,8 +12,10 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace HomeManagement.API.Business
 {
@@ -34,6 +36,7 @@ namespace HomeManagement.API.Business
         private readonly IPreferenceService preferenceService;
         private readonly ITokenRepository tokenRepository;
         private readonly IUserSessionService userSessionService;
+        private readonly ITransactionService transactionService;
 
         public UserService(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -48,7 +51,8 @@ namespace HomeManagement.API.Business
             ITransactionRepository transactionRepository,
             IPreferenceService preferenceService,
             ITokenRepository tokenRepository,
-            IUserSessionService userSessionService)
+            IUserSessionService userSessionService,
+            ITransactionService transactionService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -64,6 +68,7 @@ namespace HomeManagement.API.Business
             this.preferenceService = preferenceService;
             this.tokenRepository = tokenRepository;
             this.userSessionService = userSessionService;
+            this.transactionService = transactionService;
         }
 
         public async Task<OperationResult> CreateUser(UserModel user)
@@ -165,6 +170,31 @@ namespace HomeManagement.API.Business
             return jwtSecurityToken.WriteToken(token);
         }
 
+        public MemoryStream DownloadUserData()
+        {
+            var user = userSessionService.GetAuthenticatedUser();
+            var accounts = accountRepository.All.Where(x => x.UserId.Equals(user.Id));
+
+            var stream = new MemoryStream();
+            using (var zip = new ZipArchive(stream, ZipArchiveMode.Update, true))
+            {
+                foreach (var account in accounts)
+                {
+                    var entry = zip.CreateEntry($"{account.Name}.csv");
+                    var file = transactionService.Export(account.Id);
+
+                    using (var entryStream = entry.Open())
+                    {
+                        var st = new MemoryStream(file.Content);
+
+                        st.CopyTo(entryStream);
+                    }
+                }
+            }
+            stream.Position = 0;
+            return stream;
+        }
+
         public async Task<UserModel> SignIn(UserModel userModel)
         {
             var password = cryptography.Decrypt(userModel.Password);
@@ -210,5 +240,7 @@ namespace HomeManagement.API.Business
         Task SignOut(UserModel userModel);
 
         string RenewToken(string appUserId, int userId);
+
+        MemoryStream DownloadUserData();
     }
 }

@@ -1,4 +1,5 @@
-﻿using HomeManagement.API.Extensions;
+﻿using HomeManagement.API.Business;
+using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
@@ -16,11 +17,15 @@ namespace HomeManagement.API.Controllers.Users
     {
         private readonly IUserRepository userRepository;
         private readonly IUserMapper userMapper;
+        private readonly IUserService userService;
 
-        public UserController(IUserRepository userRepository, IUserMapper userMapper)
+        public UserController(IUserRepository userRepository, 
+            IUserMapper userMapper,
+            IUserService userService)
         {
             this.userRepository = userRepository;
             this.userMapper = userMapper;
+            this.userService = userService;
         }
 
         [HttpGet]
@@ -31,6 +36,16 @@ namespace HomeManagement.API.Controllers.Users
             var user = userRepository.FirstOrDefault(x => x.Email.Equals(emailClaim.Value));
 
             return Ok(userMapper.ToModel(user));
+        }
+
+        [HttpGet("downloaduserdata")]
+        public IActionResult DownloadUserData()
+        {
+            var file = userService.DownloadUserData();
+
+            var contentType = "application/octet-stream";
+
+            return File(file.GetBytes(), contentType, "userdata.zip");
         }
     }
 }
