@@ -6,7 +6,7 @@
         {
             //public const string BASEURL = "http://localhost:60424/";
             //public const string BASEURL = "http://homemanagement-api.azurewebsites.net/";
-            public const string BASEURL = "http://69.55.59.144/";
+            public const string BASEURL = "http://206.189.239.38:5100/";
             public const string API = "api/";
 
             public class Auth

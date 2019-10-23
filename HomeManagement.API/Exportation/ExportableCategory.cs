@@ -21,6 +21,7 @@ namespace HomeManagement.API.Exportation
             category.IsActive = bool.Parse(exportableEntity[1]);
             category.Icon = exportableEntity[2];
             category.IsDefault = bool.Parse(exportableEntity[3]);
+            category.Measurable = bool.Parse(exportableEntity[4]);
 
             return category;
         }
@@ -46,6 +47,9 @@ namespace HomeManagement.API.Exportation
                         break;
                     case nameof(Category.IsDefault):
                         sb.Append(exportableEntity.IsDefault.ToString() + divider);
+                        break;
+                    case nameof(Category.Measurable):
+                        sb.Append(exportableEntity.Measurable.ToString() + divider);
                         break;
                     default:
                         break;

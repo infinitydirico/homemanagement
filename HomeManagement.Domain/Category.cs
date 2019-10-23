@@ -10,7 +10,8 @@ namespace HomeManagement.Domain
             nameof(Name),
             nameof(IsActive),
             nameof(Icon),
-            nameof(IsDefault)
+            nameof(IsDefault),
+            nameof(Measurable)
         };
 
         public Category()

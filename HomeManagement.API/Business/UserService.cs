@@ -16,6 +16,7 @@ using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Collections.Generic;
 
 namespace HomeManagement.API.Business
 {
@@ -37,6 +38,7 @@ namespace HomeManagement.API.Business
         private readonly ITokenRepository tokenRepository;
         private readonly IUserSessionService userSessionService;
         private readonly ITransactionService transactionService;
+        private readonly ICategoryService categoryService;
 
         public UserService(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -52,7 +54,8 @@ namespace HomeManagement.API.Business
             IPreferenceService preferenceService,
             ITokenRepository tokenRepository,
             IUserSessionService userSessionService,
-            ITransactionService transactionService)
+            ITransactionService transactionService,
+            ICategoryService categoryService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -69,6 +72,7 @@ namespace HomeManagement.API.Business
             this.tokenRepository = tokenRepository;
             this.userSessionService = userSessionService;
             this.transactionService = transactionService;
+            this.categoryService = categoryService;
         }
 
         public async Task<OperationResult> CreateUser(UserModel user)
@@ -173,6 +177,7 @@ namespace HomeManagement.API.Business
         public MemoryStream DownloadUserData()
         {
             var user = userSessionService.GetAuthenticatedUser();
+
             var accounts = accountRepository.All.Where(x => x.UserId.Equals(user.Id));
 
             var stream = new MemoryStream();
@@ -189,6 +194,16 @@ namespace HomeManagement.API.Business
 
                         st.CopyTo(entryStream);
                     }
+                }
+
+                var categoryEntry = zip.CreateEntry("categories.csv");
+                var categoryFile = categoryService.Export();
+
+                using (var entryStream = categoryEntry.Open())
+                {
+                    var st = new MemoryStream(categoryFile.Contents);
+
+                    st.CopyTo(entryStream);
                 }
             }
             stream.Position = 0;
