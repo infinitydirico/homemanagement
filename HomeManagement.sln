@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29020.237
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.API", "HomeManagement.API\HomeManagement.API.csproj", "{E59051A9-B41F-4006-8C8A-5BEDFF11CA6A}"
 EndProject
@@ -36,6 +36,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.AI.Vision.Tests", "HomeManagement.AI.Vision.Tests\HomeManagement.AI.Vision.Tests.csproj", "{06778896-2CAE-4103-8291-26B5184E5323}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.AI.Vision", "HomeManagement.AI.Vision\HomeManagement.AI.Vision.csproj", "{EA8D4968-0C81-4050-8EE9-528D8AAB0DDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeManagement.AdminSite", "HomeManagement.AdminSite\HomeManagement.AdminSite.csproj", "{BB9D078B-E026-4947-9012-74C1215E9E91}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -335,6 +337,22 @@ Global
 		{EA8D4968-0C81-4050-8EE9-528D8AAB0DDD}.Release|x64.Build.0 = Release|Any CPU
 		{EA8D4968-0C81-4050-8EE9-528D8AAB0DDD}.Release|x86.ActiveCfg = Release|Any CPU
 		{EA8D4968-0C81-4050-8EE9-528D8AAB0DDD}.Release|x86.Build.0 = Release|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Debug|ARM.Build.0 = Debug|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Debug|x64.Build.0 = Debug|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Debug|x86.Build.0 = Debug|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Release|ARM.ActiveCfg = Release|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Release|ARM.Build.0 = Release|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Release|x64.ActiveCfg = Release|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Release|x64.Build.0 = Release|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Release|x86.ActiveCfg = Release|Any CPU
+		{BB9D078B-E026-4947-9012-74C1215E9E91}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
