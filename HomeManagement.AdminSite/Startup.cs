@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HomeManagement.AdminSite.Services;
+﻿using HomeManagement.AdminSite.Services;
 using HomeManagement.Contracts;
 using HomeManagement.Core.Cryptography;
 using Microsoft.AspNetCore.Builder;
@@ -36,6 +32,7 @@ namespace HomeManagement.AdminSite
             services.AddScoped<IAuthenticationService, AuthenticationApiService>();
             services.AddScoped<IConfigurationSettingsService, ConfigurationSettingsService>();
             services.AddScoped<ICryptography, AesCryptographyService>();
+            services.AddScoped<ICurrencyService, CurrencyService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
         }
