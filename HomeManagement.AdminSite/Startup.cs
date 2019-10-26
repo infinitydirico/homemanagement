@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace HomeManagement.AdminSite
 {
@@ -29,16 +30,19 @@ namespace HomeManagement.AdminSite
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddLogging();
+
             services.AddScoped<IAuthenticationService, AuthenticationApiService>();
             services.AddScoped<IConfigurationSettingsService, ConfigurationSettingsService>();
             services.AddScoped<ICryptography, AesCryptographyService>();
             services.AddScoped<ICurrencyService, CurrencyService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -48,6 +52,8 @@ namespace HomeManagement.AdminSite
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            loggerFactory.AddFile("logs/logfile-{Date}.txt");
 
             app.UseStaticFiles();
             app.UseCookiePolicy();
