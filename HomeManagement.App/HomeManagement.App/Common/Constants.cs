@@ -55,6 +55,11 @@
             {
                 public const string CURRENCY = API + "currency";
             }
+
+            public class Notifications
+            {
+                public const string Notification = API + "Notification";
+            }
         }
 
         public class Keys
