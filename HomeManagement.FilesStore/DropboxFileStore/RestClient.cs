@@ -234,5 +234,14 @@ namespace HomeManagement.FilesStore.DropboxFileStore
                 AppSecret = appSecretConfig.Value
             };
         }
+
+        public bool IsConfigured()
+        {
+            var appIdConfig = configurationSettingsRepository.FirstOrDefault(x => x.Name.Equals(Constants.DropboxAppId));
+            var appSecretConfig = configurationSettingsRepository.FirstOrDefault(x => x.Name.Equals(Constants.DropboxAppSecret));
+
+            return appIdConfig != null && !string.IsNullOrEmpty(appIdConfig.Value) &&
+                appSecretConfig != null && !string.IsNullOrEmpty(appSecretConfig.Value);
+        }
     }
 }

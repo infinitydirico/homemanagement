@@ -20,6 +20,12 @@ namespace HomeManagement.API.Controllers.Global
             this.imageService = imageService;
         }
 
+        [HttpGet("isconfigured")]
+        public IActionResult IsConfigured()
+        {
+            return Ok(imageService.IsConfigured());
+        }
+
         [HttpPost]
         public async Task<IActionResult> GetText()
         {

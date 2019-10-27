@@ -21,5 +21,7 @@ namespace HomeManagement.FilesStore
         Task<StorageItem> Upload(int userId, string filename,string accountName, string chargeName, Stream stream);
 
         Task<Stream> Download(int userId, string path);
+
+        bool IsConfigured();
     }
 }

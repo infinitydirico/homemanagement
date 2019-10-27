@@ -95,6 +95,8 @@ namespace HomeManagement.API.Business
 
         public bool IsAuthorized(int userId) => storageClient.IsAuthorized(userId);
 
+        public bool IsConfigured() => storageClient.IsConfigured();
+
         public async Task<StorageItemModel> Upload(string filename, int transactionId, Stream stream)
         {
             var transaction = transactionRepository.GetById(transactionId);
@@ -137,5 +139,7 @@ namespace HomeManagement.API.Business
         Task<FileModel> Download(int id);
 
         Task<StorageItemModel> Upload(string filename, int transactionId, Stream stream);
+
+        bool IsConfigured();
     }
 }
