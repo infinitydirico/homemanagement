@@ -45,8 +45,8 @@
                         <Beh:TranslationBehavior LanguageKey="SignIn" />
                     </Button.Behaviors>
                 </Button>
-                <!--<Label Text="Or"  HorizontalOptions="Center" />
-                <Button Text="Sign Up" Clicked="SignUpClicked" VerticalOptions="Center"  BackgroundColor="{StaticResource ControlLight}" />-->
+                <Label Text="Or"  HorizontalOptions="Center" />
+                <Button Text="Sign Up" Clicked="SignUpClicked" VerticalOptions="Center"  BackgroundColor="{StaticResource ControlLight}" />
             </StackLayout>
             <ActivityIndicator x:Name="indicator" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="White" />
         </StackLayout>

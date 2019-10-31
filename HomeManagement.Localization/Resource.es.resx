@@ -279,4 +279,7 @@
   <data name="Notifications" xml:space="preserve">
     <value>Notificaciones</value>
   </data>
+  <data name="SignUp" xml:space="preserve">
+    <value>Registrarse</value>
+  </data>
 </root>
