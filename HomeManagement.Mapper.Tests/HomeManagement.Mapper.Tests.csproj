@@ -56,9 +56,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\HomeManagement.Domain\HomeManagement.Domain.csproj">
       <Project>{8f105c75-c687-48c6-a846-85d65e179253}</Project>
       <Name>HomeManagement.Domain</Name>
@@ -71,6 +68,9 @@
       <Project>{195eb52d-66fd-4f7d-b4b1-8a0c65b6bc99}</Project>
       <Name>HomeManagement.Models</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
