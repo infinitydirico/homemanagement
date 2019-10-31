@@ -101,6 +101,7 @@ namespace HomeManagement.App
             builder.RegisterType<MetricsManager>().As<IMetricsManager>();
             builder.RegisterType<CategoryManager>().As<ICategoryManager>();
             builder.RegisterType<LocalizationManager>().As<ILocalizationManager>();
+            builder.RegisterType<NotificationManager>().As<INotificationManager>();
         }
 
         private void RegisterServiceClients(ContainerBuilder builder)
@@ -111,6 +112,7 @@ namespace HomeManagement.App
             builder.RegisterType<AccountMetricsServiceClient>().As<IAccountMetricsServiceClient>();
             builder.RegisterType<CategoryServiceClient>().As<ICategoryServiceClient>();
             builder.RegisterType<CurrencyServiceClient>().As<ICurrencyServiceClient>();
+            builder.RegisterType<NotificationServiceClient>().As<INotificationServiceClient>();
         }
 
         private void InitializeDefaultValues()

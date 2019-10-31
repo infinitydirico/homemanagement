@@ -14,7 +14,8 @@
             <StackLayout HorizontalOptions="FillAndExpand" Margin="20,0,20,0">
                 <Label Text="{Binding UsernameText}" />
 
-                <Entry  Text="{Binding Username}" IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource LayoutDark}" />
+                <Entry x:Name="usernameEntry" Text="{Binding Username}" 
+                       IsEnabled="{Binding NotBusy}" BackgroundColor="{StaticResource LayoutDark}" />
 
                 <Label Text="{Binding PasswordText}"  />
 

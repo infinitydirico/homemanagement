@@ -155,7 +155,9 @@ namespace HomeManagement.API.Business
         {
             var subscriptionKey = configurationSettingsService.GetConfig("VisionApiKey");
             var apiEndpoint = configurationSettingsService.GetConfig("VisionApiEndpoint");
-            return subscriptionKey != null && apiEndpoint != null;
+
+            return subscriptionKey != null && !string.IsNullOrEmpty(subscriptionKey.Value) && 
+                apiEndpoint != null && !string.IsNullOrEmpty(apiEndpoint.Value);
         }
     }
 

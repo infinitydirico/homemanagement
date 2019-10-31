@@ -26,7 +26,11 @@ namespace HomeManagement.App.ViewModels.Statistics
         {
             var expensiveCategories = await accountMetricsServiceClient.GetMostExpensiveCategories();
 
-            MostExpensiveCategories.AddRange(from value in expensiveCategories.Categories
+            var avg = expensiveCategories.Categories.Average(x => x.Price);
+
+            var filteredCategories = expensiveCategories.Categories.Where(x => x.Price > avg);
+
+            MostExpensiveCategories.AddRange(from value in filteredCategories
                                              select new SeriesValue
                                              {
                                                  Label = value.Category.Name,

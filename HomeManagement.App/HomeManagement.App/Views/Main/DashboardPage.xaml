@@ -19,6 +19,9 @@
             <Conv:TranslationConverter x:Key="Translation" />
         </ResourceDictionary>
     </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Icon="notifications_none_24dp.png" />
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <ScrollView>
             <StackLayout Orientation="Vertical">

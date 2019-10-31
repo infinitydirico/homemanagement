@@ -28,6 +28,9 @@ namespace HomeManagement.API.Controllers.Global
             return Ok(storageService.GetStorageItems());
         }
 
+        [HttpGet("isconfigured")]
+        public IActionResult IsConfigured() => Ok(storageService.IsConfigured());
+
         [HttpGet("getitems")]
         [StorageAuthorization]
         public IActionResult GetItems()

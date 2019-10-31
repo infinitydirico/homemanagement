@@ -6,6 +6,7 @@ using HomeManagement.App.Views.AccountPages;
 using HomeManagement.App.Views.Controls;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -32,6 +33,8 @@ namespace HomeManagement.App.Views.Transactions
 
             Title = account.Name;
             InitializeComponent();
+
+            AddFilterItem();
         }
 
         private void ViewModel_OnInitializationError(object sender, EventArgs e)
@@ -118,7 +121,6 @@ namespace HomeManagement.App.Views.Transactions
 
         private async void Rotate(StackLayout parent)
         {
-            uint length = 250;
             var layouts = parent.Children.ToList();
 
             var infoLayout = layouts.First();
@@ -127,24 +129,71 @@ namespace HomeManagement.App.Views.Transactions
             var actionsVisible = actionsLayout.IsVisible;
             if (actionsVisible)
             {
-                await actionsLayout.RotateXTo(-90, length, Easing.SpringIn);
-
-                actionsLayout.IsVisible = false;
-                infoLayout.IsVisible = true;
-
-                infoLayout.RotationX = -90;
-                await infoLayout.RotateXTo(0, length, Easing.SpringOut);
+                await ChangeVisibility(actionsLayout, infoLayout);
             }
             else
             {
-                await infoLayout.RotateXTo(-90, length, Easing.SpringIn);
-
-                infoLayout.IsVisible = false;
-                actionsLayout.IsVisible = true;
-
-                actionsLayout.RotationX = -90;
-                await actionsLayout.RotateXTo(0, length, Easing.SpringOut);
+                await ChangeVisibility(infoLayout, actionsLayout);
             }
+        }
+
+        private async void DisplayFilters(object sender, EventArgs e)
+        {
+            await ChangeVisibility(pageButtons, filters);
+            RemoveToolbarItem("filter_list_24dp.png");
+            AddClearFilterItem();
+        }
+
+        private async void ClearFilters(object sender, EventArgs e)
+        {
+            await ChangeVisibility(filters, pageButtons);
+            RemoveToolbarItem("clear_all_24dp.png");
+            AddFilterItem();
+        }
+
+        private async Task ChangeVisibility(View source, View target)
+        {
+            uint length = 250;
+            await source.RotateXTo(-90, length, Easing.SpringIn);
+
+            source.IsVisible = false;
+            target.IsVisible = true;
+
+            target.RotationX = -90;
+            await target.RotateXTo(0, length, Easing.SpringOut);
+        }
+
+        private void AddClearFilterItem()
+        {
+            var clearFilterItem = new ToolbarItem
+            {
+                Icon = "clear_all_24dp.png"
+            };
+
+            clearFilterItem.Clicked += ClearFilters;
+            ToolbarItems.Add(clearFilterItem);
+        }
+
+        private void AddFilterItem()
+        {
+            var filterItem = new ToolbarItem
+            {
+                Icon = "filter_list_24dp.png"
+            };
+
+            filterItem.Clicked += DisplayFilters;
+            ToolbarItems.Add(filterItem);
+        }
+
+        private void RemoveToolbarItem(string icon)
+        {
+            var item = ToolbarItems.First(x => x.Icon.File.Equals(icon));
+            ToolbarItems.Remove(item);
+        }
+
+        private void OnFilterFocusChanged(object sender, FocusEventArgs e)
+        {
+            transactionsFrame.IsVisible = !e.IsFocused;
         }
     }
 }

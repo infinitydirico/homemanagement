@@ -116,8 +116,9 @@ namespace HomeManagement.API.Business
             foreach (var entity in categories)
             {
                 if (entity == null) continue;
+                var category = categoryRepository.FirstOrDefault(x => x.Name.Equals(entity.Name));
 
-                if (categoryRepository.Exists(entity)) continue;
+                if (category != null && userCategoryRepository.All.Any(x => x.CategoryId.Equals(category.Id) && x.UserId.Equals(authenticatedUser.Id))) continue;
 
                 entity.Id = 0;
 

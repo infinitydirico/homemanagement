@@ -22,6 +22,8 @@ namespace HomeManagement.App.Views.Main
 
             dashboardViewModel.OnInitializationError += DashboardViewModel_OnError;
 
+            dashboardViewModel.OnInitializationFinished += OnInitialized;
+
             dashboardViewModel.OnBalancesChanged += (s, e) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
@@ -38,10 +40,14 @@ namespace HomeManagement.App.Views.Main
                         var accountEvolution = new AccountEvolutionFrame
                         {
                             AccountName = evolution.AccountName,
-                            Series = evolution.Series
+                            Series = evolution.Series,
+                            Opacity = 0
                         };
 
                         grid.Children.Add(accountEvolution, 0, 2, index, index + 1);
+
+                        accountEvolution.FadeTo(0.5, 500, Easing.SpringIn);
+                        accountEvolution.FadeTo(1, 500, easing: Easing.SpringOut);
                         index++;
                     }
                 });
@@ -56,6 +62,28 @@ namespace HomeManagement.App.Views.Main
         private void Button_Clicked(object sender, System.EventArgs e)
         {
             Navigation.PushAsync(new AccountPages.AccountPage());
+        }
+
+        private void OnInitialized(object sender, System.EventArgs e)
+        {
+            if (dashboardViewModel.Notifications.Any())
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    ToolbarItems.Clear();
+                    var item = new ToolbarItem
+                    {
+                        Icon = "notifications_24dp.png"
+                    };
+
+                    item.Clicked += (s, ev) =>
+                    {
+                        Navigation.PushAsync(new NotificationsPage());
+                    };
+
+                    ToolbarItems.Add(item);
+                });                
+            }
         }
     }
 }
