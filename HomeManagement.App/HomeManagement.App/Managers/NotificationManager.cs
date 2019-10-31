@@ -12,6 +12,14 @@ namespace HomeManagement.App.Managers
         private readonly INotificationServiceClient notificationServiceClient = App._container.Resolve<INotificationServiceClient>();
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
 
+        public async Task Dismiss(NotificationModel notificationModel)
+        {
+            notificationModel.Dismissed = true;
+            await notificationServiceClient.UpdateNotification(notificationModel);
+
+            cachingService.Remove(nameof(NotificationManager.GetNotifications));
+        }
+
         public async Task<IEnumerable<NotificationModel>> GetNotifications()
         {
             if(cachingService.Exists(nameof(NotificationManager.GetNotifications)))
@@ -30,5 +38,7 @@ namespace HomeManagement.App.Managers
     public interface INotificationManager
     {
         Task<IEnumerable<NotificationModel>> GetNotifications();
+
+        Task Dismiss(NotificationModel notificationModel);
     }
 }

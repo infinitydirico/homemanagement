@@ -25,6 +25,8 @@ namespace HomeManagement.App.Managers
 
         Task<IEnumerable<Transaction>> PreviousPageAsync();
 
+        Task<IEnumerable<Transaction>> FilterByName(string property, string value);
+
         Task AddTransactionAsync(Transaction transaction);
 
         Task DeleteTransactionAsync(Transaction transaction);
@@ -73,6 +75,9 @@ namespace HomeManagement.App.Managers
         public virtual async Task<IEnumerable<Transaction>> Load(int accountId)
         {
             page.AccountId = accountId;
+            page.FilterValue = string.Empty;
+            page.Property = string.Empty;
+            page.Operator = 0;
 
             return await Paginate();
         }
@@ -97,6 +102,17 @@ namespace HomeManagement.App.Managers
             }
 
             return await base.PreviousPageAsync();
+        }
+
+        public async Task<IEnumerable<Transaction>> FilterByName(string property, string value)
+        {
+            page.CurrentPage = 1;
+            page.FilterValue = value;
+            page.Property = property;
+            page.Operator = property.Equals("Name") ? 5 : 0;
+
+            var results = await Paginate();
+            return results;
         }
 
         protected override async Task<IEnumerable<Transaction>> Paginate()

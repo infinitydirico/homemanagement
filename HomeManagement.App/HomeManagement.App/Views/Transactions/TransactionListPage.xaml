@@ -17,11 +17,11 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
-            <Frame Margin="5, 5, 5, 5">
+            <Frame Margin="5, 5, 5, 5" x:Name="transactionsFrame">
                 <StackLayout>
                     <ListView x:Name="TransactionsList" ItemsSource="{Binding Transactions}" 
                                 IsVisible="{Binding !IsBusy}" RowHeight="70"
-                                IsPullToRefreshEnabled="False" RefreshCommand="{Binding RefreshCommand}"
+                                IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}"
                                 SeparatorVisibility="None" IsRefreshing="{Binding IsBusy}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
@@ -63,7 +63,7 @@
                 </StackLayout>
             </Frame>
 
-            <Frame Margin="5, 5, 5, 5">
+            <Frame x:Name="pageButtons" Margin="5, 5, 5, 5">
                 <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
                     <StackLayout HorizontalOptions="Start">
                         <Button Image="chart_36dp.png"
@@ -92,6 +92,22 @@
                         </StackLayout>
                     </StackLayout>
                 </StackLayout>
+            </Frame>
+            <Frame x:Name="filters" Margin="5, 5, 5, 5" IsVisible="False">
+                <StackLayout Orientation="Horizontal">
+                    <Picker ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" 
+                        HorizontalOptions="StartAndExpand" WidthRequest="100"/>
+                    
+                    <Entry x:Name="nameEntry" HorizontalOptions="StartAndExpand" WidthRequest="150" 
+                           Focused="OnFilterFocusChanged" Unfocused="OnFilterFocusChanged"
+                           Text="{Binding FilterByName}" IsVisible="{Binding FilterByNameVisibile}"/>
+                    
+                    <Picker WidthRequest="150"  ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding Categories}" 
+                            SelectedItem="{Binding SelectedCategory}" IsVisible="{Binding FilterByCategoryVisibile}"
+                            Focused="OnFilterFocusChanged" Unfocused="OnFilterFocusChanged"/>
+                    
+                    <Button Image="check_18dp" VerticalOptions="Center" Command="{Binding FilterCommand}"/>
+                </StackLayout>                
             </Frame>
         </StackLayout>
     </ContentPage.Content>

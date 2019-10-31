@@ -8,8 +8,8 @@
         <ToolbarItem Icon="red_trash_18dp.png" Clicked="ClearFiles" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <StackLayout>
+        <ScrollView>
             <Label x:Name="logtext" />
-        </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

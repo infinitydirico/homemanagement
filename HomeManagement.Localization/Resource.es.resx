@@ -276,4 +276,7 @@
   <data name="TransactionType" xml:space="preserve">
     <value>Tipo de Transaccion</value>
   </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notificaciones</value>
+  </data>
 </root>

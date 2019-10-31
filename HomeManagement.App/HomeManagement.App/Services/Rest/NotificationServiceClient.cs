@@ -16,9 +16,13 @@ namespace HomeManagement.App.Services.Rest
                 .ReadContent<IEnumerable<NotificationModel>>();
         }
 
-        public Task UpdateNotification()
+        public async Task UpdateNotification(NotificationModel notificationModel)
         {
-            throw new NotImplementedException();
+            var result = await RestClientFactory
+                .CreateAuthenticatedClient()
+                .PutAsync($"{Constants.Endpoints.Notifications.Notification}", notificationModel.SerializeToJson());
+
+            result.EnsureSuccessStatusCode();
         }
     }
 
@@ -26,6 +30,6 @@ namespace HomeManagement.App.Services.Rest
     {
         Task<IEnumerable<NotificationModel>> GetNotifications();
 
-        Task UpdateNotification();
+        Task UpdateNotification(NotificationModel notificationModel);
     }
 }

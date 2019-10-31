@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="{StaticResource TabBarColor}"
+             xmlns:viewmodels="clr-namespace:HomeManagement.App.ViewModels.Main"
+             x:Class="HomeManagement.App.Views.Main.NotificationsPage"
+             xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
+             Title="{Binding TitleText, Converter={StaticResource Translation}}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Conv:TranslationConverter x:Key="Translation" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.BindingContext>
+        <viewmodels:NotificationsViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Content>       
+        <ListView x:Name="notificationsList" Margin="10, 10, 10, 10"
+                  ItemsSource="{Binding Notifications}" ItemTapped="NotificationsList_ItemTapped">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding Title}" FontSize="Large" HorizontalOptions="StartAndExpand"/>
+                            <Label Text="{Binding DueDay}" FontSize="Large" HorizontalOptions="EndAndExpand"/>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </ContentPage.Content>
+</ContentPage>

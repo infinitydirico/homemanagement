@@ -71,10 +71,17 @@ namespace HomeManagement.App.Views.Main
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     ToolbarItems.Clear();
-                    ToolbarItems.Add(new ToolbarItem
+                    var item = new ToolbarItem
                     {
                         Icon = "notifications_24dp.png"
-                    });
+                    };
+
+                    item.Clicked += (s, ev) =>
+                    {
+                        Navigation.PushAsync(new NotificationsPage());
+                    };
+
+                    ToolbarItems.Add(item);
                 });                
             }
         }
