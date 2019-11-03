@@ -6,6 +6,7 @@ using HomeManagement.Mapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace HomeManagement.API.Controllers.Users
 {
@@ -46,6 +47,21 @@ namespace HomeManagement.API.Controllers.Users
             var contentType = "application/octet-stream";
 
             return File(file.GetBytes(), contentType, "userdata.zip");
+        }
+
+        [AdminAuthorization]
+        [HttpGet("getusers")]
+        public IActionResult GetUsers()
+        {
+            return Ok(userService.GetUsers());
+        }
+
+        [AdminAuthorization]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await userService.DeleteUser(id);
+            return Ok();
         }
     }
 }
