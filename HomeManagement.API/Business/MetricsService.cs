@@ -1,11 +1,11 @@
-﻿using HomeManagement.Data;
+﻿using HomeManagement.Core.Extensions;
+using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HomeManagement.Core.Extensions;
 
 namespace HomeManagement.API.Business
 {
@@ -44,22 +44,18 @@ namespace HomeManagement.API.Business
 
             var months = DateTime.Now.MonthsInYear(DateTime.Now.Month);
 
-            var query = from c in transactionRepository.All
-                        join a in accountRepository.All
-                        on c.AccountId equals a.Id
-                        join month in months
-                        on c.Date.Month equals month
-                        where a.Measurable && a.Id.Equals(accountId)
-                        select c;
-
-            var incomeTransactions = query
-                .Where(x => x.TransactionType == TransactionType.Income)
+            var incomeTransactions = transactionRepository
+                .Where(x => months.Any(m => x.Date.Month.Equals(m)) &&
+                        x.AccountId.Equals(accountId) && x.Account.Measurable &&
+                        x.TransactionType == TransactionType.Income)
                 .GroupBy(x => x.Date.Month)
                 .Select(z => z.Sum(x => x.Price.ParseNoDecimals()))
                 .ToList();
 
-            var outcomeTransactions = query
-                .Where(x => x.TransactionType == TransactionType.Expense)
+            var outcomeTransactions = transactionRepository
+                .Where(x => months.Any(m => x.Date.Month.Equals(m)) &&
+                        x.AccountId.Equals(accountId) && x.Account.Measurable &&
+                        x.TransactionType == TransactionType.Expense)
                 .GroupBy(x => x.Date.Month)
                 .Select(z => z.Sum(x => decimal.ToInt32(x.Price.ParseNoDecimals())))
                 .ToList();
@@ -83,11 +79,7 @@ namespace HomeManagement.API.Business
 
         public AccountOverviewModel GetAccountOverview(int accountId)
         {
-            var accountTransactions = (from c in transactionRepository.All
-                                       join a in accountRepository.All
-                                       on c.AccountId equals a.Id
-                                       where a.Measurable && a.Id.Equals(accountId)
-                                       select c);
+            var accountTransactions = transactionRepository.GetByMeasurableAccount(accountId);
 
             return new AccountOverviewModel
             {
@@ -103,7 +95,7 @@ namespace HomeManagement.API.Business
 
             var auhtenticatedUser = userSessionService.GetAuthenticatedUser();
 
-            var accounts = accountRepository.Where(c => c.UserId.Equals(auhtenticatedUser.Id)).ToList();
+            var accounts = accountRepository.GetAllByUser(auhtenticatedUser.Email);
 
             int low = 0;
             int high = 0;
@@ -116,21 +108,20 @@ namespace HomeManagement.API.Business
 
                 for (int i = 1; i <= DateTime.Now.Month; i++)
                 {
-                    var accountTransactions = (from c in transactionRepository.All
-                                               join a in accountRepository.All
-                                               on c.AccountId equals a.Id
-                                               where a.Measurable &&
-                                                     a.Id.Equals(account.Id) &&
-                                                     c.Date.Month.Equals(i) &&
-                                                     c.Date.Year.Equals(DateTime.Now.Year)
-                                               select c);
-
-                    var incomeTransactions = accountTransactions
-                        .Where(x => x.TransactionType == TransactionType.Income)
+                    var incomeTransactions = transactionRepository
+                        .Where(x => x.AccountId.Equals(account.Id) &&
+                                    x.Account.Measurable &&
+                                    x.TransactionType == TransactionType.Income &&
+                                    x.Date.Month.Equals(i) &&
+                                    x.Date.Year.Equals(DateTime.Now.Year))
                         .Sum(x => x.Price.ParseNoDecimals());
 
-                    var outcomeTransactions = accountTransactions
-                        .Where(x => x.TransactionType == TransactionType.Expense)
+                    var outcomeTransactions = transactionRepository
+                        .Where(x => x.AccountId.Equals(account.Id) &&
+                                    x.Account.Measurable &&
+                                    x.TransactionType == TransactionType.Expense &&
+                                    x.Date.Month.Equals(i) &&
+                                    x.Date.Year.Equals(DateTime.Now.Year))
                         .Sum(x => x.Price.ParseNoDecimals());
 
                     accountEvoModel.AccountId = account.Id;
@@ -161,13 +152,21 @@ namespace HomeManagement.API.Business
 
         public MetricValueDto GetIncomesMetric()
         {
-            var total = QueryCurrentMonthTransacctions()
-                .Where(x => x.TransactionType.Equals(TransactionType.Income))
-                .Sum(x => decimal.Parse(x.Price.ToString()));
+            var user = userSessionService.GetAuthenticatedUser();
 
-            var previous = QueryPreviousMonthTransacctions()
-                .Where(x => x.TransactionType.Equals(TransactionType.Income))
-                .Sum(x => decimal.Parse(x.Price.ToString()));
+            var total = transactionRepository
+                .Sum(x => decimal.Parse(x.Price.ToString()),
+                     c => c.Account.UserId.Equals(user.Id) &&
+                          c.TransactionType.Equals(TransactionType.Income) &&
+                          c.Date.Month.Equals(DateTime.Now.Month) &&
+                          c.Date.Year.Equals(DateTime.Now.Year));
+
+            var previous = transactionRepository
+                .Sum(x => decimal.Parse(x.Price.ToString()),
+                     c => c.Account.UserId.Equals(user.Id) &&
+                          c.TransactionType.Equals(TransactionType.Income) &&
+                          c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) &&
+                          c.Date.Year.Equals(DateTime.Now.Year));
 
             var percentage = total.CalculatePercentage(previous);
 
@@ -180,13 +179,21 @@ namespace HomeManagement.API.Business
 
         public MetricValueDto GetOutcomesMetric()
         {
-            var total = QueryCurrentMonthTransacctions()
-                .Where(x => x.TransactionType.Equals(TransactionType.Expense))
-                .Sum(x => decimal.Parse(x.Price.ToString()));
+            var user = userSessionService.GetAuthenticatedUser();
 
-            var previous = QueryPreviousMonthTransacctions()
-                .Where(x => x.TransactionType.Equals(TransactionType.Expense))
-                .Sum(x => decimal.Parse(x.Price.ToString()));
+            var total = transactionRepository
+                .Sum(x => decimal.Parse(x.Price.ToString()),
+                     c => c.Account.UserId.Equals(user.Id) &&
+                          c.TransactionType.Equals(TransactionType.Expense) &&
+                          c.Date.Month.Equals(DateTime.Now.Month) &&
+                          c.Date.Year.Equals(DateTime.Now.Year));
+
+            var previous = transactionRepository
+                .Sum(x => decimal.Parse(x.Price.ToString()),
+                     c => c.Account.UserId.Equals(user.Id) &&
+                          c.TransactionType.Equals(TransactionType.Expense) &&
+                          c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) &&
+                          c.Date.Year.Equals(DateTime.Now.Year));
 
             var percentage = total.CalculatePercentage(previous);
 
@@ -213,27 +220,23 @@ namespace HomeManagement.API.Business
                 month = DateTime.Now.Month;
             }
 
-            var result = (from c in transactionRepository.All
-                          join a in accountRepository.All
-                          on c.AccountId equals a.Id
-                          join ca in categoryRepository.All
-                          on c.CategoryId equals ca.Id
-                          where a.Measurable &&
-                                a.Id.Equals(accountId) &&
-                                c.Date.Month.Equals(month) &&
-                                c.Date.Year.Equals(DateTime.Now.Year) &&
-                                c.TransactionType == TransactionType.Expense &&
-                                ca.Measurable
-                          select new { c, ca })
-                     .GroupBy(x => x.c.CategoryId)
-                     .Select(x => new MonthlyCategory
-                     {
-                         Category = categoryMapper.ToModel(x.First().ca),
-                         Price = x.Sum(d => d.c.Price)
-                     })
-                     .ToList();
+            var userCategories = categoryRepository.GetActiveUserCategories(auhtenticatedUser.Email);
 
-            return result;
+            var accountTransactions = transactionRepository
+                        .Where(x => x.AccountId.Equals(accountId) &&
+                                    x.Account.Measurable &&
+                                    x.Date.Month.Equals(month) &&
+                                    x.Date.Year.Equals(DateTime.Now.Year) &&
+                                    x.TransactionType == TransactionType.Expense &&
+                                    x.Category.Measurable)
+                        .GroupBy(x => x.CategoryId)
+                        .Select(x => new MonthlyCategory
+                        {
+                            Category = categoryMapper.ToModel(userCategories.First(uc => uc.Id.Equals(x.First().CategoryId))),
+                            Price = x.Sum(d => d.Price)
+                        });
+
+            return accountTransactions;
         }
 
         public OverPricedCategories TopTransactionsByMonth(int month)
@@ -244,28 +247,22 @@ namespace HomeManagement.API.Business
             {
                 month = DateTime.Now.Month;
             }
+            var userCategories = categoryRepository.GetActiveUserCategories(auhtenticatedUser.Email);
 
-            var result = (from transaction in transactionRepository.All
-                          join account in accountRepository.All
-                          on transaction.AccountId equals account.Id
-                          join user in userRepository.All
-                          on account.UserId equals user.Id
-                          join category in categoryRepository.All
-                          on transaction.CategoryId equals category.Id
-                          where user.Email.Equals(auhtenticatedUser.Email)
-                                   && transaction.TransactionType.Equals(TransactionType.Expense)
-                                   && transaction.Date.Month.Equals(month)
-                                   && transaction.Date.Year.Equals(DateTime.Now.Year)
-                                   && account.Measurable
-                                   && category.Measurable
-                          select new { Transaction = transaction, Category = category })
-                         .GroupBy(x => x.Category.Id)
-                         .Select(x => new OverPricedCategory
-                         {
-                             Category = categoryMapper.ToModel(x.FirstOrDefault().Category),
-                             Price = x.Sum(c => c.Transaction.Price)
-                         })
-                         .ToList();
+            var result = transactionRepository
+                .Where(x => x.Account.User.Email.Equals(auhtenticatedUser.Email) &&
+                            x.Account.Measurable &&
+                            x.Date.Month.Equals(month) &&
+                            x.Date.Year.Equals(DateTime.Now.Year) &&
+                            x.TransactionType == TransactionType.Expense &&
+                            x.Category.Measurable)
+                .GroupBy(x => x.CategoryId)
+                .Select(x => new OverPricedCategory
+                {
+                    Category = categoryMapper.ToModel(userCategories.First(uc => uc.Id.Equals(x.First().CategoryId))),
+                    Price = x.Sum(d => d.Price)
+                })
+                .ToList();
 
             var model = new OverPricedCategories
             {
@@ -275,28 +272,6 @@ namespace HomeManagement.API.Business
             };
 
             return model;
-        }
-
-        private IQueryable<Transaction> QueryCurrentMonthTransacctions()
-        {
-            var user = userSessionService.GetAuthenticatedUser();
-
-            var query = transactionRepository.All
-                .Where(c => c.Account.UserId.Equals(user.Id) &&
-                            c.Date.Month.Equals(DateTime.Now.Month) &&
-                            c.Date.Year.Equals(DateTime.Now.Year));
-            return query;
-        }
-
-        private IQueryable<Transaction> QueryPreviousMonthTransacctions()
-        {
-            var user = userSessionService.GetAuthenticatedUser();
-
-            var query = transactionRepository.All
-                .Where(c => c.Account.UserId.Equals(user.Id) &&
-                            c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) &&
-                            c.Date.Year.Equals(DateTime.Now.Year));
-            return query;
         }
     }
 

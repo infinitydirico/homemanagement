@@ -38,7 +38,7 @@ namespace HomeManagement.API.Controllers.Accounts
         [HttpPost]
         public IActionResult Post([FromBody]AccountModel model)
         {
-            if (model == null && !ModelState.IsValid) return BadRequest();
+            if (model == null || !ModelState.IsValid) return BadRequest();
 
             accountService.Add(model);
 
@@ -48,7 +48,7 @@ namespace HomeManagement.API.Controllers.Accounts
         [HttpPut]
         public IActionResult Put([FromBody]AccountModel model)
         {
-            if (model == null && !ModelState.IsValid) return BadRequest();
+            if (model == null || !ModelState.IsValid) return BadRequest();
 
             accountService.Update(model);
 

@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Collections.Generic;
 using HomeManagement.Mapper;
+using HomeManagement.Contracts.Repositories;
 
 namespace HomeManagement.API.Business
 {
@@ -43,6 +44,7 @@ namespace HomeManagement.API.Business
         private readonly IReminderRepository reminderRepository;
         private readonly INotificationRepository notificationRepository;
         private readonly IUserMapper userMapper;
+        private readonly IUnitOfWork unitOfWork;
 
         public UserService(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -62,7 +64,8 @@ namespace HomeManagement.API.Business
             ICategoryService categoryService,
             IReminderRepository reminderRepository,
             INotificationRepository notificationRepository,
-            IUserMapper userMapper)
+            IUserMapper userMapper,
+            IUnitOfWork unitOfWork)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -83,6 +86,7 @@ namespace HomeManagement.API.Business
             this.reminderRepository = reminderRepository;
             this.notificationRepository = notificationRepository;
             this.userMapper = userMapper;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<OperationResult> CreateUser(UserModel user)
@@ -111,7 +115,7 @@ namespace HomeManagement.API.Business
                     AccountType = Domain.AccountType.Cash,
                     CurrencyId = 1
                 });
-                userRepository.Commit();
+                unitOfWork.Commit();
 
                 userSessionService.RegisterScopedUser(applicationUser.Email);
 
@@ -120,7 +124,7 @@ namespace HomeManagement.API.Business
                 var currencies = preferenceService.GetCurrencies();
                 preferenceService.ChangeCurrency(currencies.First(x => x.Name.Equals("USD")));
 
-                accountRepository.Commit();
+                unitOfWork.Commit();
 
                 return OperationResult.Succeed();
             }
@@ -145,7 +149,7 @@ namespace HomeManagement.API.Business
                 var dbToken = tokenRepository.FirstOrDefault(x => x.UserId.Equals(appUserId));
 
                 tokenRepository.Remove(appUserId);
-                tokenRepository.Commit();
+                unitOfWork.Commit();
             }
 
             tokenValue = CreateToken(user.Email);
@@ -157,7 +161,7 @@ namespace HomeManagement.API.Business
                 Name = nameof(JwtSecurityToken),
                 Value = tokenValue
             });
-            tokenRepository.Commit();
+            unitOfWork.Commit();
 
             return tokenValue;
         }
@@ -188,7 +192,7 @@ namespace HomeManagement.API.Business
         {
             var user = userSessionService.GetAuthenticatedUser();
 
-            var accounts = accountRepository.All.Where(x => x.UserId.Equals(user.Id));
+            var accounts = accountRepository.Where(x => x.UserId.Equals(user.Id));
 
             var stream = new MemoryStream();
             using (var zip = new ZipArchive(stream, ZipArchiveMode.Update, true))
@@ -273,7 +277,7 @@ namespace HomeManagement.API.Business
                 }
 
                 accountRepository.Remove(account);
-                accountRepository.Commit();
+                unitOfWork.Commit();
             }
 
             var userCategories = userCategoryRepository.Where(x => x.UserId.Equals(user.Id));
@@ -283,7 +287,7 @@ namespace HomeManagement.API.Business
                 categoryRepository.Remove(userCategory.CategoryId, user);
             }
 
-            userCategoryRepository.Commit();
+            unitOfWork.Commit();
 
             var reminders = reminderRepository.Where(x => x.UserId.Equals(user.Id));
 
@@ -297,7 +301,7 @@ namespace HomeManagement.API.Business
                 }
 
                 reminderRepository.Remove(reminder);
-                reminderRepository.Commit();
+                unitOfWork.Commit();
             }
 
             var userPreferences = preferencesRepository.Where(x => x.UserId.Equals(user.Id));
@@ -306,10 +310,10 @@ namespace HomeManagement.API.Business
             {
                 preferencesRepository.Remove(userPreference);
             }
-            preferencesRepository.Commit();
+            unitOfWork.Commit();
 
             userRepository.Remove(user.Id);
-            userRepository.Commit();
+            unitOfWork.Commit();
 
             await userManager.DeleteAsync(appUser);
         }

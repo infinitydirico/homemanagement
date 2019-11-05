@@ -14,8 +14,6 @@ namespace HomeManagement.API.Data.Repositories
 
     public class DataLogRepository : IDataLogRepository
     {
-        public IQueryable<DataLog> All => throw new NotImplementedException();
-
         public void Add(DataLog entity)
         {
             Task.Run(async () =>
@@ -145,6 +143,26 @@ namespace HomeManagement.API.Data.Repositories
         }
 
         public void Commit()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Add(IEnumerable<DataLog> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove(IEnumerable<DataLog> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<DataLog> Paginate<TOrder>(Func<DataLog, bool> filter, Func<DataLog, TOrder> orderBy, int skip, int take)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IUnitOfWork CreateUnitOfWork()
         {
             throw new NotImplementedException();
         }

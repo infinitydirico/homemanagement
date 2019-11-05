@@ -4,6 +4,7 @@ using HomeManagement.Models;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using HomeManagement.Contracts.Repositories;
 
 namespace HomeManagement.API.Business
 {
@@ -11,12 +12,15 @@ namespace HomeManagement.API.Business
     {
         private readonly IConfigurationSettingsRepository configurationSettingsRepository;
         private readonly IConfigurationSettingsMapper configurationSettingsMapper;
+        private readonly IUnitOfWork unitOfWork;
 
         public ConfigurationSettingsService(IConfigurationSettingsRepository configurationSettingsRepository,
-            IConfigurationSettingsMapper configurationSettingsMapper)
+            IConfigurationSettingsMapper configurationSettingsMapper,
+            IUnitOfWork unitOfWork)
         {
             this.configurationSettingsRepository = configurationSettingsRepository;
             this.configurationSettingsMapper = configurationSettingsMapper;
+            this.unitOfWork = unitOfWork;
         }
 
         public OperationResult Delete(int id)
@@ -27,7 +31,7 @@ namespace HomeManagement.API.Business
 
             configurationSettingsRepository.Remove(id);
 
-            configurationSettingsRepository.Commit();
+            unitOfWork.Commit();
 
             return OperationResult.Succeed();
         }
@@ -65,7 +69,7 @@ namespace HomeManagement.API.Business
                 entity.Value = model.Value;
             }
 
-            configurationSettingsRepository.Commit();
+            unitOfWork.Commit();
 
             return OperationResult.Succeed();
         }

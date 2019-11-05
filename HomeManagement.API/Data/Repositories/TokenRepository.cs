@@ -37,16 +37,16 @@ namespace HomeManagement.API.Data.Repositories
             dbContext.SaveChanges();
         }
 
+        public void Add(IEnumerable<IdentityUserToken<string>> entities)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task AddAsync(IdentityUserToken<string> entity)
         {
             var dbContext = platformContext.GetDbContext();
 
             await dbContext.Set<IdentityUserToken<string>>().AddAsync(entity);
-        }
-
-        public void Commit()
-        {
-            platformContext.GetDbContext().SaveChanges();
         }
 
         public int Count()
@@ -59,10 +59,7 @@ namespace HomeManagement.API.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public IDbTransaction CreateTransaction()
-        {
-            throw new NotImplementedException();
-        }
+        public IUnitOfWork CreateUnitOfWork() => new UnitOfWork(platformContext);
 
         public bool Exists(IdentityUserToken<string> entity) => FirstOrDefault(x => x.UserId.Equals(entity.UserId)) != null;
 
@@ -74,6 +71,11 @@ namespace HomeManagement.API.Data.Repositories
         public IEnumerable<IdentityUserToken<string>> GetAll() => platformContext.GetDbContext().Set<IdentityUserToken<string>>().ToList();
 
         public IdentityUserToken<string> GetById(int id) => FirstOrDefault(x => x.UserId.Equals(id));
+
+        public IEnumerable<IdentityUserToken<string>> Paginate<TOrder>(Func<IdentityUserToken<string>, bool> filter, Func<IdentityUserToken<string>, TOrder> orderBy, int skip, int take)
+        {
+            throw new NotImplementedException();
+        }
 
         public void Remove(IdentityUserToken<string> entity)
         {
@@ -94,6 +96,11 @@ namespace HomeManagement.API.Data.Repositories
             var entity = FirstOrDefault(x => x.UserId.Equals(appUserId));
 
             Remove(entity);
+        }
+
+        public void Remove(IEnumerable<IdentityUserToken<string>> entities)
+        {
+            throw new NotImplementedException();
         }
 
         public decimal Sum(Expression<Func<IdentityUserToken<string>, int>> selector, Expression<Func<IdentityUserToken<string>, bool>> predicate = null)

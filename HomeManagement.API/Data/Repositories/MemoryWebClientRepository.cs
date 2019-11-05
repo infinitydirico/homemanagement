@@ -1,4 +1,5 @@
 ﻿using HomeManagement.API.Data.Entities;
+using HomeManagement.Contracts.Repositories;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -18,6 +19,11 @@ namespace HomeManagement.API.Data.Repositories
         public void Add(WebClient entity)
         {
             clients.Add(entity);
+        }
+
+        public void Add(IEnumerable<WebClient> entities)
+        {
+            throw new NotImplementedException();
         }
 
         public Task AddAsync(WebClient entity)
@@ -45,6 +51,11 @@ namespace HomeManagement.API.Data.Repositories
             throw new NotImplementedException();
         }
 
+        public IUnitOfWork CreateUnitOfWork()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Exists(WebClient entity) => clients.FirstOrDefault(x => x.Id.Equals(entity.Id)) != null;
 
         public WebClient FirstOrDefault() => clients.FirstOrDefault();
@@ -57,6 +68,11 @@ namespace HomeManagement.API.Data.Repositories
 
         public WebClient GetByIp(string ip) => clients.FirstOrDefault(x => x.Ip.Equals(ip));
 
+        public IEnumerable<WebClient> Paginate<TOrder>(Func<WebClient, bool> filter, Func<WebClient, TOrder> orderBy, int skip, int take)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Remove(WebClient entity)
         {
             clients.TryTake(out entity);
@@ -66,6 +82,11 @@ namespace HomeManagement.API.Data.Repositories
         {
             var entity = GetById(id);
             clients.TryTake(out entity);
+        }
+
+        public void Remove(IEnumerable<WebClient> entities)
+        {
+            throw new NotImplementedException();
         }
 
         public decimal Sum(Expression<Func<WebClient, int>> selector, Expression<Func<WebClient, bool>> predicate = null)

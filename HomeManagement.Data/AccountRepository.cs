@@ -1,4 +1,5 @@
 ﻿using HomeManagement.Domain;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace HomeManagement.Data
@@ -11,19 +12,19 @@ namespace HomeManagement.Data
 
         public override bool Exists(Account entity) => GetById(entity.Id) != null;
 
-        public override Account GetById(int id)
+        public IEnumerable<Account> GetAllByUser(string username)
         {
-            return platformContext.GetDbContext().Set<Account>().FirstOrDefault(x => x.Id.Equals(id));
-        }
-    }
+            var accountSet = platformContext.GetDbContext().Set<Account>().AsQueryable();
+            var userSet = platformContext.GetDbContext().Set<User>().AsQueryable();
 
-    public class AccountTransactionalRepository : TransactionalRepository<Account>, IAccountRepository
-    {
-        public AccountTransactionalRepository(IPlatformContext platformContext) : base(platformContext)
-        {
-        }
+            var accounts = from account in accountSet
+                           join user in userSet
+                           on account.UserId equals user.Id
+                           where user.Email.Equals(username)
+                           select account;
 
-        public override bool Exists(Account entity) => GetById(entity.Id) != null;
+            return accounts.ToList();
+        }
 
         public override Account GetById(int id)
         {

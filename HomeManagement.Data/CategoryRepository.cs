@@ -1,5 +1,6 @@
 ﻿using HomeManagement.Domain;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace HomeManagement.Data
@@ -71,5 +72,47 @@ namespace HomeManagement.Data
         }
 
         public override bool Exists(Category entity) => GetById(entity.Id) != null;
+
+        public IEnumerable<Category> GetUserCategories(string username)
+        {
+            var context = platformContext.GetDbContext();
+
+            var categoryQuery = context.Set<Category>().AsQueryable();
+
+            var userCategoryQuery = context.Set<UserCategory>().AsQueryable();
+
+            var userQuery = context.Set<User>().AsQueryable();
+
+            var categories = (from category in categoryQuery
+                              join userCategory in userCategoryQuery
+                              on category.Id equals userCategory.CategoryId
+                              join user in userQuery
+                              on userCategory.UserId equals user.Id
+                              where user.Email.Equals(username)
+                              select category).ToList();
+
+            return categories;
+        }
+
+        public IEnumerable<Category> GetActiveUserCategories(string username)
+        {
+            var context = platformContext.GetDbContext();
+
+            var categoryQuery = context.Set<Category>().AsQueryable();
+
+            var userCategoryQuery = context.Set<UserCategory>().AsQueryable();
+
+            var userQuery = context.Set<User>().AsQueryable();
+
+            var categories = (from category in categoryQuery
+                              join userCategory in userCategoryQuery
+                              on category.Id equals userCategory.CategoryId
+                              join user in userQuery
+                              on userCategory.UserId equals user.Id
+                              where user.Email.Equals(username) && category.IsActive
+                              select category).ToList();
+
+            return categories;
+        }
     }
 }

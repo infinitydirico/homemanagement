@@ -1,5 +1,6 @@
 ﻿using HomeManagement.API.Data;
 using HomeManagement.API.Services;
+using HomeManagement.Contracts.Repositories;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
@@ -20,6 +21,7 @@ namespace HomeManagement.API.Business
         private readonly ICurrencyMapper currencyMapper;
         private readonly ICurrencyService currencyService;
         private readonly IUserSessionService userService;
+        private readonly IUnitOfWork unitOfWork;
 
         private const string LanguageKey = "Language";
         private const string PreferredCurrency = "PreferredCurrency";
@@ -33,7 +35,8 @@ namespace HomeManagement.API.Business
             IAccountRepository accountRepository,
             ICurrencyMapper currencyMapper,
             ICurrencyService currencyService,
-            IUserSessionService userService)
+            IUserSessionService userService,
+            IUnitOfWork unitOfWork)
         {
             this.userRepository = userRepository;
             this.preferencesRepository = preferencesRepository;
@@ -44,6 +47,7 @@ namespace HomeManagement.API.Business
             this.currencyMapper = currencyMapper;
             this.currencyService = currencyService;
             this.userService = userService;
+            this.unitOfWork = unitOfWork;
         }
 
         public void ChangeLanguage(string language)
@@ -65,11 +69,11 @@ namespace HomeManagement.API.Business
                 preferencesRepository.Add(userPreference);
             }
 
-            preferencesRepository.Commit();
+            unitOfWork.Commit();
 
             UpdateUserCategories(user, language);
 
-            UpdateTransactions(user, language);
+            UpdateTransactions(user);
         }
 
         public string GetUserLanguage(int userId)
@@ -81,17 +85,13 @@ namespace HomeManagement.API.Business
 
         private void UpdateUserCategories(User user, string language)
         {
-            var userCategories = (from category in categoryRepository.All
-                                  join userCategory in userCategoryRepository.All
-                                  on category.Id equals userCategory.CategoryId
-                                  where userCategory.UserId.Equals(user.Id)
-                                  select category).ToList();
+            var userCategories = categoryRepository.GetUserCategories(user.Email);
 
             foreach (var category in userCategories)
             {
                 categoryRepository.Remove(category.Id, user);                
             }
-            categoryRepository.Commit();
+            unitOfWork.Commit();
 
             var defaultCategories = CategoryInitializer.GetDefaultCategories(new System.Globalization.CultureInfo(language));
 
@@ -99,35 +99,27 @@ namespace HomeManagement.API.Business
             {
                 categoryRepository.Add(category, user);
             }
-            categoryRepository.Commit();
+            unitOfWork.Commit();
         }
 
-        private void UpdateTransactions(User user, string language)
+        private void UpdateTransactions(User user)
         {
-            var transactionsWithOldCategories = (from transaction in transactionRepository.All
-                                                 join account in accountRepository.All
-                                                 on transaction.AccountId equals account.Id
-                                                 where account.UserId.Equals(user.Id) &&
-                                                         userCategoryRepository.All.Any(x => x.CategoryId != transaction.CategoryId)
-                                                 select transaction);
+            var transactionsWithOldCategories = transactionRepository.GetByUser(user.Email);
+
+            var userCategories = categoryRepository.GetActiveUserCategories(user.Email);
 
             foreach (var transaction in transactionsWithOldCategories)
             {
                 var oldCategory = categoryRepository.FirstOrDefault(x => x.Id.Equals(transaction.CategoryId));
 
-                var newCategory = (from userCategory in userCategoryRepository.All
-                                   join category in categoryRepository.All
-                                   on userCategory.CategoryId equals category.Id
-                                   where userCategory.UserId.Equals(user.Id) &&
-                                            category.Icon.Equals(oldCategory.Icon)
-                                   select category).FirstOrDefault();
+                var newCategory = userCategories.First(x => x.Icon.Equals(oldCategory.Icon));
 
                 transaction.CategoryId = newCategory.Id;
 
                 transactionRepository.Update(transaction);
             }
 
-            transactionRepository.Commit();
+            unitOfWork.Commit();
         }
 
         public void ChangeCurrency(CurrencyModel currency)
@@ -152,7 +144,7 @@ namespace HomeManagement.API.Business
                 preferencesRepository.Update(currencyPreference);
             }
 
-            preferencesRepository.Commit();
+            unitOfWork.Commit();
         }
 
         public IEnumerable<CurrencyModel> GetCurrencies() => currencyService.GetCurrencies().Select(x => currencyMapper.ToModel(x));
@@ -187,7 +179,7 @@ namespace HomeManagement.API.Business
                 preferencesRepository.Update(countryPreference);
             }
 
-            preferencesRepository.Commit();
+            unitOfWork.Commit();
         }
 
         public string GetUserCountry()

@@ -1,4 +1,5 @@
-﻿using HomeManagement.Data;
+﻿using HomeManagement.Contracts.Repositories;
+using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.FilesStore;
 using HomeManagement.Mapper;
@@ -20,6 +21,7 @@ namespace HomeManagement.API.Business
         private readonly IAccountRepository accountRepository;
         private readonly IPreferencesRepository preferencesRepository;
         private readonly IUserSessionService userService;
+        private readonly IUnitOfWork unitOfWork;
 
         public StorageService(IStorageItemMapper storageItemMapper,
             IStorageItemRepository storageItemRepository,
@@ -28,7 +30,8 @@ namespace HomeManagement.API.Business
             ITransactionRepository transactionRepository,
             IAccountRepository accountRepository,
             IPreferencesRepository preferencesRepository,
-            IUserSessionService userService)
+            IUserSessionService userService,
+            IUnitOfWork unitOfWork)
         {
             this.storageItemMapper = storageItemMapper;
             this.storageItemRepository = storageItemRepository;
@@ -38,6 +41,7 @@ namespace HomeManagement.API.Business
             this.accountRepository = accountRepository;
             this.preferencesRepository = preferencesRepository;
             this.userService = userService;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<OperationResult> Authorize(string state, string code)
@@ -107,20 +111,14 @@ namespace HomeManagement.API.Business
             storageItem.TransactionId = transactionId;
 
             storageItemRepository.Add(storageItem);
-            storageItemRepository.Commit();
+            unitOfWork.Commit();
 
             return storageItemMapper.ToModel(storageItem);
         }
 
         private List<StorageItem> GetRepoItems(int userId)
         {
-            return (from storageItem in storageItemRepository.All
-                    join transaction in transactionRepository.All
-                    on storageItem.TransactionId equals transaction.Id
-                    join account in accountRepository.All
-                    on transaction.AccountId equals account.Id
-                    where account.UserId.Equals(userId)
-                    select storageItem).ToList();
+            throw new System.NotImplementedException("pending change");
         }
     }
 
