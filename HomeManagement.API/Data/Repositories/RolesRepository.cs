@@ -56,9 +56,12 @@ namespace HomeManagement.API.Data.Repositories
             dbContext.Set<IdentityRole<string>>().Update(role);
         }
 
-        public IEnumerable<IdentityRole<string>> Where(Expression<Func<IdentityRole<string>, bool>> predicate) => All.Where(predicate);
+        public void Commit()
+        {
+            platformContext.Commit();
+        }
 
-        public IUnitOfWork CreateUnitOfWork() => new UnitOfWork(platformContext);
+        public IEnumerable<IdentityRole<string>> Where(Expression<Func<IdentityRole<string>, bool>> predicate) => All.Where(predicate);
 
         #region Unimplemented methods
 

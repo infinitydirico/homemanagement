@@ -1,5 +1,4 @@
-﻿using HomeManagement.Contracts.Repositories;
-using HomeManagement.Data;
+﻿using HomeManagement.Data;
 using HomeManagement.Domain;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -26,15 +25,15 @@ namespace HomeManagement.API.Services
         private readonly ICurrencyRepository currencyRepository;
         private readonly IConfiguration configuration;
         private readonly List<string> supportedCurrencies = new List<string> { "USD", "EUR", "ARS" };
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IPlatformContext platformContext;
 
         public CurrencyService(ICurrencyRepository currencyRepository,
             IConfigurationSettingsRepository configurationSettingsRepository,
-            IUnitOfWork unitOfWork)
+            IPlatformContext platformContext)
         {
             this.currencyRepository = currencyRepository;
             this.configurationSettingsRepository = configurationSettingsRepository;
-            this.unitOfWork = unitOfWork;
+            this.platformContext = platformContext;
         }
 
         public Currency GetCurrency(string name)
@@ -82,7 +81,7 @@ namespace HomeManagement.API.Services
                 currencyRepository.Update(currency);
             }
 
-            unitOfWork.Commit();
+            platformContext.Commit();
         }
 
         private async Task<List<Currency>> GetApiCurrencies()

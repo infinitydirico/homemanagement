@@ -21,7 +21,6 @@ namespace HomeManagement.API.Business
         private readonly IAccountRepository accountRepository;
         private readonly IPreferencesRepository preferencesRepository;
         private readonly IUserSessionService userService;
-        private readonly IUnitOfWork unitOfWork;
 
         public StorageService(IStorageItemMapper storageItemMapper,
             IStorageItemRepository storageItemRepository,
@@ -30,8 +29,7 @@ namespace HomeManagement.API.Business
             ITransactionRepository transactionRepository,
             IAccountRepository accountRepository,
             IPreferencesRepository preferencesRepository,
-            IUserSessionService userService,
-            IUnitOfWork unitOfWork)
+            IUserSessionService userService)
         {
             this.storageItemMapper = storageItemMapper;
             this.storageItemRepository = storageItemRepository;
@@ -41,7 +39,6 @@ namespace HomeManagement.API.Business
             this.accountRepository = accountRepository;
             this.preferencesRepository = preferencesRepository;
             this.userService = userService;
-            this.unitOfWork = unitOfWork;
         }
 
         public async Task<OperationResult> Authorize(string state, string code)
@@ -111,7 +108,7 @@ namespace HomeManagement.API.Business
             storageItem.TransactionId = transactionId;
 
             storageItemRepository.Add(storageItem);
-            unitOfWork.Commit();
+            storageItemRepository.Commit();
 
             return storageItemMapper.ToModel(storageItem);
         }

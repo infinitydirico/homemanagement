@@ -5,43 +5,31 @@ namespace HomeManagement.API.Data
 {
     public class WebAppLayerContext : IPlatformContext
     {
-        DbContext dbContext;
-        private static object Locker = new object();
-
-        public WebAppLayerContext()
-        {
-
-        }
-
-        public DbContext CreateContext()
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<WebAppDbContext>();
-            optionsBuilder.UseSqlite(optionsBuilder.GetDatabaseFilePath());
-            dbContext = new WebAppDbContext(optionsBuilder.Options);
-
-            return dbContext;
-        }
+        WebAppDbContext dbContext;
 
         public DbContext GetDbContext()
         {
-            lock (Locker)
+            if (dbContext == null || dbContext.Disposed)
             {
-                if (dbContext == null)
-                {
-                    var optionsBuilder = new DbContextOptionsBuilder<WebAppDbContext>();
-                    optionsBuilder.UseSqlite(optionsBuilder.GetDatabaseFilePath());
-                    dbContext = new WebAppDbContext(optionsBuilder.Options);
-                }
-
-                if (((WebAppDbContext)dbContext).Disposed)
-                {
-                    var optionsBuilder = new DbContextOptionsBuilder<WebAppDbContext>();
-                    optionsBuilder.UseSqlite(optionsBuilder.GetDatabaseFilePath());
-                    dbContext = new WebAppDbContext(optionsBuilder.Options);
-                }
+                dbContext = CreateContext();
             }
 
             return dbContext;
+        }
+
+        public void Commit()
+        {
+            if (dbContext.ChangeTracker.HasChanges())
+            {
+                dbContext.SaveChanges();
+            }
+        }
+
+        private WebAppDbContext CreateContext()
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<WebAppDbContext>();
+            optionsBuilder.UseSqlite(optionsBuilder.GetDatabaseFilePath());
+            return new WebAppDbContext(optionsBuilder.Options);
         }
     }
 }

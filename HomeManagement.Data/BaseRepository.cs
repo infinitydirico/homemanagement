@@ -12,8 +12,7 @@ namespace HomeManagement.Data
         where T : class
     {
         protected IPlatformContext platformContext;
-        protected IUnitOfWork<DbContext> unitOfWork;
-        protected DbContext dbContext => unitOfWork.Context;
+        protected DbContext dbContext => platformContext.GetDbContext();
 
         public BaseRepository(IPlatformContext platformContext)
         {
@@ -94,10 +93,9 @@ namespace HomeManagement.Data
             return result;
         }
 
-        public IUnitOfWork CreateUnitOfWork()
+        public void Commit()
         {
-            unitOfWork = new UnitOfWork(platformContext);
-            return unitOfWork;
+            platformContext.Commit();
         }
     }
 }

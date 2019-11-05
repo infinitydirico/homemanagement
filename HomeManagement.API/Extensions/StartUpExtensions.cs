@@ -26,8 +26,6 @@ namespace HomeManagement.API.Extensions
         {
             services.AddScoped<IPlatformContext, WebAppLayerContext>();
 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<IAccountRepository, AccountRepository>();

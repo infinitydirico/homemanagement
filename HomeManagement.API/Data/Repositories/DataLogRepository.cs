@@ -161,10 +161,5 @@ namespace HomeManagement.API.Data.Repositories
         {
             throw new NotImplementedException();
         }
-
-        public IUnitOfWork CreateUnitOfWork()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -32,11 +32,8 @@ namespace HomeManagement.API.Business
         {
             var entity = accountMapper.ToEntity(accountModel);
 
-            using (var unitOfWork = accountRepository.CreateUnitOfWork())
-            {
-                accountRepository.Add(entity);
-                unitOfWork.Commit();
-            }
+            accountRepository.Add(entity);
+            accountRepository.Commit();
 
             return OperationResult.Succeed();
         }
@@ -47,11 +44,8 @@ namespace HomeManagement.API.Business
 
             if (transaction != null) return OperationResult.Error("The account has transactions");
 
-            using (var unitOfWork = accountRepository.CreateUnitOfWork())
-            {
-                accountRepository.Remove(id);
-                unitOfWork.Commit();
-            }
+            accountRepository.Remove(id);
+            accountRepository.Commit();
 
             return OperationResult.Succeed();
         }
@@ -99,11 +93,8 @@ namespace HomeManagement.API.Business
         {
             var entity = accountMapper.ToEntity(accountModel);
 
-            using (var unitOfWork = accountRepository.CreateUnitOfWork())
-            {
-                accountRepository.Update(entity);
-                unitOfWork.Commit();
-            }
+            accountRepository.Update(entity);
+            accountRepository.Commit();
 
             return OperationResult.Succeed();
         }

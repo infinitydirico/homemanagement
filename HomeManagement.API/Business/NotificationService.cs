@@ -1,5 +1,4 @@
-﻿using HomeManagement.Contracts.Repositories;
-using HomeManagement.Data;
+﻿using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
@@ -17,15 +16,13 @@ namespace HomeManagement.API.Business
         private readonly INotificationMapper notificationMapper;
         private readonly IReminderMapper reminderMapper;
         private readonly IUserSessionService userService;
-        private readonly IUnitOfWork unitOfWork;
 
         public NotificationService(IReminderRepository reminderRepository,
             IUserRepository userRepository,
             INotificationMapper notificationMapper,
             INotificationRepository notificationRepository,
             IReminderMapper reminderMapper,
-            IUserSessionService userService,
-            IUnitOfWork unitOfWork)
+            IUserSessionService userService)
         {
             this.reminderRepository = reminderRepository;
             this.userRepository = userRepository;
@@ -33,7 +30,6 @@ namespace HomeManagement.API.Business
             this.notificationRepository = notificationRepository;
             this.reminderMapper = reminderMapper;
             this.userService = userService;
-            this.unitOfWork = unitOfWork;
         }
 
         public OperationResult AddReminder(ReminderModel reminderModel)
@@ -48,7 +44,7 @@ namespace HomeManagement.API.Business
             }
 
             reminderRepository.Add(reminder);
-            unitOfWork.Commit();
+            reminderRepository.Commit();
 
             return OperationResult.Succeed();
         }
@@ -64,7 +60,7 @@ namespace HomeManagement.API.Business
             if (reminder.UserId != userId) return OperationResult.Error("UserId does not match");
 
             reminderRepository.Remove(reminder);
-            unitOfWork.Commit();
+            reminderRepository.Commit();
 
             return OperationResult.Succeed();
         }
@@ -76,7 +72,7 @@ namespace HomeManagement.API.Business
             notification.Dismissed = model.Dismissed;
 
             notificationRepository.Update(notification);
-            unitOfWork.Commit();
+            reminderRepository.Commit();
         }
 
         public IEnumerable<NotificationModel> GetNotifications()
@@ -134,7 +130,7 @@ namespace HomeManagement.API.Business
             }
 
             reminderRepository.Update(reminder);
-            unitOfWork.Commit();
+            reminderRepository.Commit();
 
             return OperationResult.Succeed();
         }
@@ -161,7 +157,7 @@ namespace HomeManagement.API.Business
 
                 notificationRepository.Add(notification);
             }
-            unitOfWork.Commit();
+            reminderRepository.Commit();
         }
     }
 

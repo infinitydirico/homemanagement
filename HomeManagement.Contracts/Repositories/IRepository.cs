@@ -11,7 +11,7 @@ namespace HomeManagement.Contracts.Repositories
 
         void Remove(int id);
 
-        IUnitOfWork CreateUnitOfWork();
+        void Commit();
     }
 
     public interface IRepository<T> : IRepository

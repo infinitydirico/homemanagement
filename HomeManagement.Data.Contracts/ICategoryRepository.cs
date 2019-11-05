@@ -8,7 +8,11 @@ namespace HomeManagement.Data
     {
         Category Add(Category entity, User user);
 
+        void Add(IEnumerable<Category> categories, User user);
+
         void Remove(int categoryId, User user);
+
+        void Remove(IEnumerable<Category> categories, User user);
 
         IEnumerable<Category> GetUserCategories(string username);
 

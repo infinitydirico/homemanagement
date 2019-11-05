@@ -3,7 +3,6 @@ using HomeManagement.Data;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -49,6 +48,11 @@ namespace HomeManagement.API.Data.Repositories
             await dbContext.Set<IdentityUserToken<string>>().AddAsync(entity);
         }
 
+        public void Commit()
+        {
+            platformContext.Commit();
+        }
+
         public int Count()
         {
             throw new NotImplementedException();
@@ -58,8 +62,6 @@ namespace HomeManagement.API.Data.Repositories
         {
             throw new NotImplementedException();
         }
-
-        public IUnitOfWork CreateUnitOfWork() => new UnitOfWork(platformContext);
 
         public bool Exists(IdentityUserToken<string> entity) => FirstOrDefault(x => x.UserId.Equals(entity.UserId)) != null;
 

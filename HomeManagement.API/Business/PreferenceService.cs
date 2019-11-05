@@ -1,12 +1,12 @@
 ﻿using HomeManagement.API.Data;
 using HomeManagement.API.Services;
-using HomeManagement.Contracts.Repositories;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HomeManagement.API.Business
 {
@@ -21,7 +21,6 @@ namespace HomeManagement.API.Business
         private readonly ICurrencyMapper currencyMapper;
         private readonly ICurrencyService currencyService;
         private readonly IUserSessionService userService;
-        private readonly IUnitOfWork unitOfWork;
 
         private const string LanguageKey = "Language";
         private const string PreferredCurrency = "PreferredCurrency";
@@ -35,8 +34,7 @@ namespace HomeManagement.API.Business
             IAccountRepository accountRepository,
             ICurrencyMapper currencyMapper,
             ICurrencyService currencyService,
-            IUserSessionService userService,
-            IUnitOfWork unitOfWork)
+            IUserSessionService userService)
         {
             this.userRepository = userRepository;
             this.preferencesRepository = preferencesRepository;
@@ -47,7 +45,6 @@ namespace HomeManagement.API.Business
             this.currencyMapper = currencyMapper;
             this.currencyService = currencyService;
             this.userService = userService;
-            this.unitOfWork = unitOfWork;
         }
 
         public void ChangeLanguage(string language)
@@ -69,11 +66,14 @@ namespace HomeManagement.API.Business
                 preferencesRepository.Add(userPreference);
             }
 
-            unitOfWork.Commit();
+            preferencesRepository.Commit();
 
-            UpdateUserCategories(user, language);
+            Task.Run(() =>
+            {
+                UpdateUserCategories(user, language);
 
-            UpdateTransactions(user);
+                UpdateTransactions(user);
+            });
         }
 
         public string GetUserLanguage(int userId)
@@ -89,9 +89,9 @@ namespace HomeManagement.API.Business
 
             foreach (var category in userCategories)
             {
-                categoryRepository.Remove(category.Id, user);                
+                categoryRepository.Remove(category.Id, user);
             }
-            unitOfWork.Commit();
+            categoryRepository.Commit();
 
             var defaultCategories = CategoryInitializer.GetDefaultCategories(new System.Globalization.CultureInfo(language));
 
@@ -99,7 +99,7 @@ namespace HomeManagement.API.Business
             {
                 categoryRepository.Add(category, user);
             }
-            unitOfWork.Commit();
+            categoryRepository.Commit();
         }
 
         private void UpdateTransactions(User user)
@@ -119,7 +119,7 @@ namespace HomeManagement.API.Business
                 transactionRepository.Update(transaction);
             }
 
-            unitOfWork.Commit();
+            preferencesRepository.Commit();
         }
 
         public void ChangeCurrency(CurrencyModel currency)
@@ -144,7 +144,7 @@ namespace HomeManagement.API.Business
                 preferencesRepository.Update(currencyPreference);
             }
 
-            unitOfWork.Commit();
+            preferencesRepository.Commit();
         }
 
         public IEnumerable<CurrencyModel> GetCurrencies() => currencyService.GetCurrencies().Select(x => currencyMapper.ToModel(x));
@@ -179,7 +179,7 @@ namespace HomeManagement.API.Business
                 preferencesRepository.Update(countryPreference);
             }
 
-            unitOfWork.Commit();
+            preferencesRepository.Commit();
         }
 
         public string GetUserCountry()

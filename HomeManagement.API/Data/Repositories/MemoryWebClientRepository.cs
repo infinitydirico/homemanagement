@@ -1,5 +1,4 @@
 ﻿using HomeManagement.API.Data.Entities;
-using HomeManagement.Contracts.Repositories;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -47,11 +46,6 @@ namespace HomeManagement.API.Data.Repositories
         }
 
         public IDbTransaction CreateTransaction()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IUnitOfWork CreateUnitOfWork()
         {
             throw new NotImplementedException();
         }

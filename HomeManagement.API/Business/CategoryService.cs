@@ -1,5 +1,4 @@
 ﻿using HomeManagement.API.Exportation;
-using HomeManagement.Contracts.Repositories;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
@@ -20,7 +19,6 @@ namespace HomeManagement.API.Business
         private readonly IUserCategoryRepository userCategoryRepository;
         private readonly IUserSessionService userService;
         private readonly IExportableCategory exportableCategory;
-        private readonly IUnitOfWork unitOfWork;
 
         public CategoryService(IAccountRepository accountRepository,
                                     ITransactionRepository transactionRepository,
@@ -30,8 +28,7 @@ namespace HomeManagement.API.Business
                                     IUserRepository userRepository,
                                     IUserCategoryRepository userCategoryRepository,
                                     IUserSessionService userService,
-                                    IExportableCategory exportableCategory,
-                                    IUnitOfWork unitOfWork)
+                                    IExportableCategory exportableCategory)
         {
             this.accountRepository = accountRepository;
             this.transactionRepository = transactionRepository;
@@ -42,7 +39,6 @@ namespace HomeManagement.API.Business
             this.userCategoryRepository = userCategoryRepository;
             this.userService = userService;
             this.exportableCategory = exportableCategory;
-            this.unitOfWork = unitOfWork;
         }
 
         public OperationResult Add(CategoryModel categoryModel)
@@ -51,7 +47,7 @@ namespace HomeManagement.API.Business
             var user = userService.GetAuthenticatedUser();
 
             categoryRepository.Add(entity, user);
-            unitOfWork.Commit();
+            categoryRepository.Commit();
 
             return OperationResult.Succeed();
         }
@@ -69,7 +65,7 @@ namespace HomeManagement.API.Business
             var user = userService.GetAuthenticatedUser();
 
             categoryRepository.Remove(id, user);
-            unitOfWork.Commit();
+            categoryRepository.Commit();
 
             return OperationResult.Succeed();
         }
@@ -119,13 +115,13 @@ namespace HomeManagement.API.Business
 
                 categoryRepository.Add(entity, authenticatedUser);
             }
-            unitOfWork.Commit();
+            categoryRepository.Commit();
         }
 
         public OperationResult Update(CategoryModel categoryModel)
         {
             categoryRepository.Update(categoryMapper.ToEntity(categoryModel));
-            unitOfWork.Commit();
+            categoryRepository.Commit();
 
             return OperationResult.Succeed();
         }

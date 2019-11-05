@@ -1,5 +1,4 @@
-﻿using HomeManagement.Contracts.Repositories;
-using HomeManagement.Data;
+﻿using HomeManagement.Data;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
 using System.Collections.Generic;
@@ -12,17 +11,14 @@ namespace HomeManagement.API.Business
         private readonly IMonthlyExpenseRepository monthlyExpenseRepository;
         private readonly IMonthlyExpenseMapper monthlyExpenseMapper;
         private readonly IUserSessionService userSessionService;
-        private readonly IUnitOfWork unitOfWork;
 
         public MonthlyExpenseService(IMonthlyExpenseRepository monthlyExpenseRepository,
             IMonthlyExpenseMapper monthlyExpenseMapper,
-            IUserSessionService userSessionService,
-            IUnitOfWork unitOfWork)
+            IUserSessionService userSessionService)
         {
             this.monthlyExpenseRepository = monthlyExpenseRepository;
             this.monthlyExpenseMapper = monthlyExpenseMapper;
             this.userSessionService = userSessionService;
-            this.unitOfWork = unitOfWork;
         }
 
         public IEnumerable<MonthlyExpenseModel> GetMonthlyExpenses()
@@ -47,7 +43,7 @@ namespace HomeManagement.API.Business
 
             monthlyExpenseRepository.Remove(id);
 
-            unitOfWork.Commit();
+            monthlyExpenseRepository.Commit();
 
             return OperationResult.Succeed();
         }
@@ -72,7 +68,7 @@ namespace HomeManagement.API.Business
                 monthlyExpenseRepository.Update(entity);
             }
 
-            unitOfWork.Commit();
+            monthlyExpenseRepository.Commit();
 
             return OperationResult.Succeed();
         }

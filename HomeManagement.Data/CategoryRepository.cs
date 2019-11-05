@@ -44,6 +44,31 @@ namespace HomeManagement.Data
             return category;
         }
 
+        public void Add(IEnumerable<Category> categories, User user)
+        {
+            var categorySet = dbContext.Set<Category>();
+            var userCategorySet = dbContext.Set<UserCategory>();
+
+            var missingCategories = (from c in categorySet
+                                    join ca in categories
+                                    on c.Name equals ca.Name
+                                    where c.IsDefault
+                                    select c).ToList();
+
+            if (missingCategories.Any())
+            {
+                categorySet.AddRange(missingCategories);
+            }
+
+            var userCategories = missingCategories.Select(x => new UserCategory
+            {
+                CategoryId = x.Id,
+                UserId = user.Id
+            }).ToList();
+
+            userCategorySet.AddRange(userCategories);
+        }
+
         public override void Remove(int id)
         {
             throw new ArgumentException($"there is no argument for type {nameof(User)}");
@@ -69,6 +94,26 @@ namespace HomeManagement.Data
             if (userCategorySet.Any(x => x.CategoryId.Equals(entity.Id))) return;
 
             set.Remove(entity);
+        }
+
+        public void Remove(IEnumerable<Category> categories, User user)
+        {
+            var categorySet = dbContext.Set<Category>();
+            var userCategorySet = dbContext.Set<UserCategory>();
+
+            var userCategories = (from uc in userCategorySet
+                                 join c in categories
+                                 on uc.CategoryId equals c.Id
+                                 where uc.UserId.Equals(user.Id)
+                                 select uc).ToList();
+
+            userCategorySet.RemoveRange(userCategories);
+
+            var categoriesToRemove = (from uc in userCategories
+                                      where !(from c in categorySet select c.Id).Contains(uc.CategoryId)
+                                      select uc.Category).ToList();
+
+            categorySet.RemoveRange(categories);
         }
 
         public override bool Exists(Category entity) => GetById(entity.Id) != null;

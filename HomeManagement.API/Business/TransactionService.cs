@@ -1,5 +1,4 @@
 ﻿using HomeManagement.API.Exportation;
-using HomeManagement.Contracts.Repositories;
 using HomeManagement.Core.Extensions;
 using HomeManagement.Data;
 using HomeManagement.Domain;
@@ -24,7 +23,6 @@ namespace HomeManagement.API.Business
         private readonly ICategoryMapper categoryMapper;
         private readonly IExportableTransaction exportableTransaction;
         private readonly IUserSessionService userService;
-        private readonly IUnitOfWork unitOfWork;
 
         public TransactionService(IAccountRepository accountRepository,
             ITransactionRepository transactionRepository,
@@ -34,8 +32,7 @@ namespace HomeManagement.API.Business
             IUserRepository userRepository,
             IPreferenceService preferenceService,
             IExportableTransaction exportableTransaction,
-            IUserSessionService userService,
-            IUnitOfWork unitOfWork)
+            IUserSessionService userService)
         {
             this.accountRepository = accountRepository;
             this.transactionRepository = transactionRepository;
@@ -46,7 +43,6 @@ namespace HomeManagement.API.Business
             this.preferenceService = preferenceService;
             this.exportableTransaction = exportableTransaction;
             this.userService = userService;
-            this.unitOfWork = unitOfWork;
         }
 
         public void Add(TransactionModel transaction)
@@ -67,7 +63,7 @@ namespace HomeManagement.API.Business
 
             UpdateBalance(entity);
 
-            unitOfWork.Commit();
+            transactionRepository.Commit();
         }
 
         public void Update(TransactionModel transaction)
@@ -88,7 +84,7 @@ namespace HomeManagement.API.Business
 
             UpdateBalance(current);
 
-            unitOfWork.Commit();
+            transactionRepository.Commit();
         }
 
         public void Delete(int id)
@@ -99,7 +95,7 @@ namespace HomeManagement.API.Business
 
             UpdateBalance(entity, true);
 
-            unitOfWork.Commit();
+            transactionRepository.Commit();
         }
 
         public IEnumerable<TransactionModel> GetAll()
@@ -153,7 +149,7 @@ namespace HomeManagement.API.Business
                 accountRepository.Update(account);
             }
 
-            unitOfWork.Commit();
+            transactionRepository.Commit();
         }
 
         public ExportFile Export(int accountId)
