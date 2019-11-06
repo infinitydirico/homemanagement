@@ -321,6 +321,18 @@ namespace HomeManagement.API.Business
                 .Select(x => userMapper.ToModel(x))
                 .ToList();
         }
+
+        public async Task<OperationResult> ChangePassword(string currentPassword, string newPassword)
+        {
+            var user = userSessionService.GetAuthenticatedUser();
+            var appUser = await userManager.FindByEmailAsync(user.Email);
+            var result = await userManager.ChangePasswordAsync(appUser, currentPassword, newPassword);
+            return new OperationResult
+            {
+                Result = result.Succeeded ? Result.Succeed : Result.Error,
+                Errors = result.Errors.Select(x => x.Description).ToList()
+            };
+        }
     }
 
     public interface IUserService
@@ -338,5 +350,7 @@ namespace HomeManagement.API.Business
         Task DeleteUser(int userId);
 
         IEnumerable<UserModel> GetUsers();
+
+        Task<OperationResult> ChangePassword(string currentPassword, string newPassword);
     }
 }
