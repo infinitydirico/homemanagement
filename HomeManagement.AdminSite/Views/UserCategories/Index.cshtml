@@ -1,0 +1,51 @@
+﻿@model IEnumerable<HomeManagement.Models.UserCategoryModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<partial name="/Views/Shared/_Header.cshtml" />
+<div class="container">
+    <partial name="_CookieConsentPartial" />
+    <main role="main" class="pb-3">
+        <h1>Users Categories</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.User.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category.Icon)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category.IsActive)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category.Measurable)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category.IsDefault)
+                        </td>
+                        <td>
+                            <a asp-action="Remove" asp-route-id="">Remove</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </main>
+</div>
+<partial name="/Views/Shared/_Footer.cshtml" />

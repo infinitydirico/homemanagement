@@ -36,6 +36,8 @@ namespace HomeManagement.AdminSite
             services.AddScoped<IConfigurationSettingsService, ConfigurationSettingsService>();
             services.AddScoped<ICryptography, AesCryptographyService>();
             services.AddScoped<ICurrencyService, CurrencyService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICategoryService, CategoryService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
