@@ -29,6 +29,7 @@ namespace HomeManagement.Models
 
         public AccountType AccountType { get; set; }
 
+        [Range(1, int.MaxValue)]
         public int CurrencyId { get; set; }
 
         public CurrencyModel Currency { get; set; }

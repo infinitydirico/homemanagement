@@ -1,9 +1,7 @@
 ﻿using HomeManagement.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -14,19 +12,21 @@ namespace HomeManagement.Data
         where T : class
     {
         protected IPlatformContext platformContext;
-        protected DbContext dbContext;
+        protected DbContext dbContext => platformContext.GetDbContext();
 
         public BaseRepository(IPlatformContext platformContext)
         {
             this.platformContext = platformContext ?? throw new ArgumentNullException($"{nameof(platformContext)} is null");
-            dbContext = platformContext.GetDbContext();
         }
-
-        public IQueryable<T> All => dbContext.Set<T>().AsQueryable<T>();
 
         public virtual void Add(T entity)
         {
             dbContext.Set<T>().Add(entity);
+        }
+
+        public void Add(IEnumerable<T> entities)
+        {
+            dbContext.Set<T>().AddRange(entities);
         }
 
         public async Task AddAsync(T entity)
@@ -62,6 +62,11 @@ namespace HomeManagement.Data
             dbContext.Set<T>().Remove(entity);
         }
 
+        public void Remove(IEnumerable<T> entities)
+        {
+            dbContext.Set<T>().RemoveRange(entities);
+        }
+
         public decimal Sum(Expression<Func<T, int>> selector, Expression<Func<T, bool>> predicate = null) =>
             predicate == null ? dbContext.Set<T>().Sum(selector) : dbContext.Set<T>().Where(predicate).Sum(selector);
 
@@ -75,17 +80,22 @@ namespace HomeManagement.Data
 
         public IEnumerable<T> Where(Expression<Func<T, bool>> predicate) => dbContext.Set<T>().Where(predicate).ToList();
 
-        public IDbTransaction CreateTransaction()
+        public IEnumerable<T> Paginate<TOrder>(Func<T, bool> filter, Func<T, TOrder> orderBy, int skip, int take)
         {
-            return dbContext.Database.BeginTransaction().GetDbTransaction();
+            var set = dbContext.Set<T>();
+
+            var result = set.Where(filter)
+                            .OrderByDescending(orderBy)
+                            .Skip(skip)
+                            .Take(take)
+                            .ToList();
+
+            return result;
         }
 
         public void Commit()
         {
-            if (dbContext.ChangeTracker.HasChanges())
-            {
-                dbContext.SaveChanges();
-            }
+            platformContext.Commit();
         }
     }
 }

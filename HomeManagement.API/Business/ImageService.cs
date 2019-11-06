@@ -107,7 +107,6 @@ namespace HomeManagement.API.Business
             var matches = engine.GetAllMatches(visionResponse.RecognitionResult);
 
             var transactions = transactionRepository
-                .All
                 .Where(t => matches.Any(m => m.Contains(t.Name)))
                 .ToList();
 

@@ -20,6 +20,11 @@ namespace HomeManagement.API.Data.Repositories
             clients.Add(entity);
         }
 
+        public void Add(IEnumerable<WebClient> entities)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task AddAsync(WebClient entity)
         {
             throw new NotImplementedException();
@@ -57,6 +62,11 @@ namespace HomeManagement.API.Data.Repositories
 
         public WebClient GetByIp(string ip) => clients.FirstOrDefault(x => x.Ip.Equals(ip));
 
+        public IEnumerable<WebClient> Paginate<TOrder>(Func<WebClient, bool> filter, Func<WebClient, TOrder> orderBy, int skip, int take)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Remove(WebClient entity)
         {
             clients.TryTake(out entity);
@@ -66,6 +76,11 @@ namespace HomeManagement.API.Data.Repositories
         {
             var entity = GetById(id);
             clients.TryTake(out entity);
+        }
+
+        public void Remove(IEnumerable<WebClient> entities)
+        {
+            throw new NotImplementedException();
         }
 
         public decimal Sum(Expression<Func<WebClient, int>> selector, Expression<Func<WebClient, bool>> predicate = null)

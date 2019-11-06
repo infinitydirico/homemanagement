@@ -3,7 +3,6 @@ using HomeManagement.Data;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -37,6 +36,11 @@ namespace HomeManagement.API.Data.Repositories
             dbContext.SaveChanges();
         }
 
+        public void Add(IEnumerable<IdentityUserToken<string>> entities)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task AddAsync(IdentityUserToken<string> entity)
         {
             var dbContext = platformContext.GetDbContext();
@@ -46,7 +50,7 @@ namespace HomeManagement.API.Data.Repositories
 
         public void Commit()
         {
-            platformContext.GetDbContext().SaveChanges();
+            platformContext.Commit();
         }
 
         public int Count()
@@ -55,11 +59,6 @@ namespace HomeManagement.API.Data.Repositories
         }
 
         public int Count(Expression<Func<IdentityUserToken<string>, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IDbTransaction CreateTransaction()
         {
             throw new NotImplementedException();
         }
@@ -74,6 +73,11 @@ namespace HomeManagement.API.Data.Repositories
         public IEnumerable<IdentityUserToken<string>> GetAll() => platformContext.GetDbContext().Set<IdentityUserToken<string>>().ToList();
 
         public IdentityUserToken<string> GetById(int id) => FirstOrDefault(x => x.UserId.Equals(id));
+
+        public IEnumerable<IdentityUserToken<string>> Paginate<TOrder>(Func<IdentityUserToken<string>, bool> filter, Func<IdentityUserToken<string>, TOrder> orderBy, int skip, int take)
+        {
+            throw new NotImplementedException();
+        }
 
         public void Remove(IdentityUserToken<string> entity)
         {
@@ -94,6 +98,11 @@ namespace HomeManagement.API.Data.Repositories
             var entity = FirstOrDefault(x => x.UserId.Equals(appUserId));
 
             Remove(entity);
+        }
+
+        public void Remove(IEnumerable<IdentityUserToken<string>> entities)
+        {
+            throw new NotImplementedException();
         }
 
         public decimal Sum(Expression<Func<IdentityUserToken<string>, int>> selector, Expression<Func<IdentityUserToken<string>, bool>> predicate = null)

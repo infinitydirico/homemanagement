@@ -6,6 +6,6 @@ namespace HomeManagement.Data
     {
         DbContext GetDbContext();
 
-        DbContext CreateContext();
+        void Commit();
     }
 }

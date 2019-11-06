@@ -74,15 +74,9 @@ namespace HomeManagement.API.Business
         {
             var authenticatedUser = userService.GetAuthenticatedUser();
 
-            var categories = (from category in categoryRepository.All
-                              join userCategory in userCategoryRepository.All
-                              on category.Id equals userCategory.CategoryId
-                              join user in userRepository.All
-                              on userCategory.UserId equals user.Id
-                              where user.Email.Equals(authenticatedUser.Email)
-                              select category).ToList();
+            var categories = categoryRepository.GetUserCategories(authenticatedUser.Email);
 
-            var csv = exportableCategory.ToCsv(categories);
+            var csv = exportableCategory.ToCsv(categories.ToList());
 
             var filename = "categories_" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".csv";
 
@@ -97,15 +91,43 @@ namespace HomeManagement.API.Business
         {
             var authenticatedUser = userService.GetAuthenticatedUser();
 
-            var categories = (from category in categoryRepository.All
-                              join userCategory in userCategoryRepository.All
-                              on category.Id equals userCategory.CategoryId
-                              join user in userRepository.All
-                              on userCategory.UserId equals user.Id
-                              where user.Email.Equals(authenticatedUser.Email) && category.IsActive
-                              select categoryMapper.ToModel(category)).ToList();
+            var categories = categoryRepository
+                .GetActiveUserCategories(authenticatedUser.Email)
+                .Select(x => categoryMapper.ToModel(x))
+                .ToList();
 
             return categories;
+        }
+
+        public IEnumerable<UserCategoryModel> GetUsersCategories()
+        {
+            var users = userRepository.GetAll();
+
+            var uc = userCategoryRepository.GetAll();
+
+            var userCategories = from u in users
+                                 join c in uc
+                                 on u.Id equals c.UserId
+                                 let category = categoryRepository.GetById(c.CategoryId)
+                                 select new UserCategoryModel
+                                 {
+                                     User = new UserModel
+                                     {
+                                         Id = u.Id,
+                                         Email = u.Email
+                                     },
+                                     Category = new CategoryModel
+                                     {
+                                         Id = c.CategoryId,
+                                         IsActive = category.IsActive,
+                                         Name = category.Name,
+                                         Icon = category.Icon,
+                                         IsDefault = category.IsDefault,
+                                         Measurable = category.Measurable
+                                     }
+                                 };
+
+            return userCategories.ToList();
         }
 
         public void Import(byte[] contents)
@@ -118,7 +140,7 @@ namespace HomeManagement.API.Business
                 if (entity == null) continue;
                 var category = categoryRepository.FirstOrDefault(x => x.Name.Equals(entity.Name));
 
-                if (category != null && userCategoryRepository.All.Any(x => x.CategoryId.Equals(category.Id) && x.UserId.Equals(authenticatedUser.Id))) continue;
+                if (category != null && userCategoryRepository.UserHasAssociatedCategory(authenticatedUser.Id, category.Id)) continue;
 
                 entity.Id = 0;
 
@@ -145,6 +167,8 @@ namespace HomeManagement.API.Business
         OperationResult Delete(int id);
 
         IEnumerable<CategoryModel> GetActive();
+
+        IEnumerable<UserCategoryModel> GetUsersCategories();
 
         FileModel Export();
 

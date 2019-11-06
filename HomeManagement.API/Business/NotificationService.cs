@@ -72,7 +72,7 @@ namespace HomeManagement.API.Business
             notification.Dismissed = model.Dismissed;
 
             notificationRepository.Update(notification);
-            notificationRepository.Commit();
+            reminderRepository.Commit();
         }
 
         public IEnumerable<NotificationModel> GetNotifications()
@@ -81,24 +81,18 @@ namespace HomeManagement.API.Business
 
             GenerateNotifications(authenticatedUser.Email);
 
-            var notifications = (from notification in notificationRepository.All
-                                 join reminder in reminderRepository.All
-                                 on notification.ReminderId equals reminder.Id
-                                 join user in userRepository.All
-                                 on reminder.UserId equals user.Id
-                                 where user.Email.Equals(authenticatedUser.Email)
-                                        && !notification.Dismissed
-                                        && notification.CreatedOn.Month.Equals(DateTime.Now.Month)
-                                 select new NotificationModel
-                                 {
-                                     Id = notification.Id,
-                                     ReminderId = notification.ReminderId,
-                                     Title = reminder.Title,
-                                     Description = reminder.Description,
-                                     Dismissed = notification.Dismissed,
-                                     DueDay = 5
-                                 })
-                                 .ToList();
+            var notifications = notificationRepository
+                .GetPendingNotifications(authenticatedUser.Id)
+                .Select(x => new NotificationModel
+                {
+                    Id = x.Id,
+                    Title = x.Reminder.Title,
+                    Description = x.Reminder.Description,
+                    Dismissed = false,
+                    DueDay = 5,
+                    ReminderId = x.ReminderId
+                })
+                .ToList();
 
             return notifications;
         }
@@ -107,25 +101,19 @@ namespace HomeManagement.API.Business
         {
             var authenticatedUser = userService.GetAuthenticatedUser();
 
-            var reminderModel = (from reminder in reminderRepository.All
-                                 join user in userRepository.All
-                                 on reminder.UserId equals user.Id
-                                 where user.Email.Equals(authenticatedUser.Email)
-                                        && reminder.Id.Equals(id)
-                                 select reminderMapper.ToModel(reminder)).FirstOrDefault();
+            var reminder = reminderRepository.FirstOrDefault(r => r.Id.Equals(id));
 
-            return reminderModel;
+            return reminderMapper.ToModel(reminder);
         }
 
         public IEnumerable<ReminderModel> GetReminders()
         {
             var authenticatedUser = userService.GetAuthenticatedUser();
 
-            var reminders = (from reminder in reminderRepository.All
-                             join user in userRepository.All
-                             on reminder.UserId equals user.Id
-                             where user.Email.Equals(authenticatedUser.Email)
-                             select reminderMapper.ToModel(reminder)).ToList();
+            var reminders = reminderRepository
+                .Where(r => r.User.Email.Equals(authenticatedUser.Email))
+                .Select(r => reminderMapper.ToModel(r))
+                .ToList();
 
             return reminders;
         }
@@ -149,22 +137,14 @@ namespace HomeManagement.API.Business
 
         private void GenerateNotifications(string email)
         {
-            var reminders = (from reminder in reminderRepository.All
-                             join user in userRepository.All
-                             on reminder.UserId equals user.Id
-                             where user.Email.Equals(email)
-                                    && reminder.Active
-                             select reminder)
-                                 .ToList();
+            var reminders = reminderRepository.GetUserActiveReminders(email);
 
-            var notifications = (from notification in notificationRepository.All
-                                 join reminder in reminders
-                                 on notification.ReminderId equals reminder.Id
-                                 where notification.CreatedOn < DateTime.Now
-                                       && notification.CreatedOn.Month.Equals(DateTime.Now.Month)
-                                 select notification).ToList();
+            var notifications = notificationRepository
+                .Where(n => n.Reminder.User.Email.Equals(email) &&
+                            n.CreatedOn < DateTime.Now &&
+                            n.CreatedOn.Month.Equals(DateTime.Now.Month));
 
-            if (notifications.Count > 0 && reminders.Count.Equals(notifications.Count)) return;
+            if (notifications.Count() > 0 && reminders.Count().Equals(notifications.Count())) return;
 
             foreach (var reminder in reminders.Where(x => !notifications.Any(y => y.ReminderId.Equals(x.Id))))
             {
@@ -177,7 +157,7 @@ namespace HomeManagement.API.Business
 
                 notificationRepository.Add(notification);
             }
-            notificationRepository.Commit();
+            reminderRepository.Commit();
         }
     }
 

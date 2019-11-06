@@ -1,4 +1,5 @@
-﻿using HomeManagement.Data;
+﻿using HomeManagement.Contracts.Repositories;
+using HomeManagement.Data;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
 using System.Collections.Generic;
@@ -62,12 +63,10 @@ namespace HomeManagement.API.Business
         {
             var authenticatedUser = userService.GetAuthenticatedUser();
 
-            var accounts = (from account in accountRepository.All
-                            join user in userRepository.All
-                            on account.UserId equals user.Id
-                            where user.Email.Equals(authenticatedUser.Email)
-                            select accountMapper.ToModel(account))
-                            .ToList();
+            var accounts = accountRepository
+                .GetAllByUser(authenticatedUser.Email)
+                .Select(account => accountMapper.ToModel(account))
+                .ToList();            
 
             return accounts;
         }
@@ -76,21 +75,16 @@ namespace HomeManagement.API.Business
         {
             if (model.TotalPages.Equals(default(int)))
             {
-                var total = (double)accountRepository.All.Count(c => c.UserId.Equals(model.UserId));
+                var total = (double)accountRepository.Count(c => c.UserId.Equals(model.UserId));
                 var totalPages = System.Math.Ceiling(total / (double)model.PageCount);
                 model.TotalPages = int.Parse(totalPages.ToString());
             }
 
             var currentPage = model.CurrentPage - 1;
 
-            model.Accounts = accountRepository
-                .All
-                .Where(x => x.UserId.Equals(model.UserId))
-                .OrderByDescending(x => x.Id)
-                .Skip(model.PageCount * currentPage)
-                .Take(model.PageCount)
-                .Select(x => accountMapper.ToModel(x))
-                .ToList();
+            var results = accountRepository.Paginate(x => x.UserId.Equals(model.UserId), x => x.Id, model.PageCount * currentPage, model.PageCount);
+
+            model.Accounts = accountMapper.ToModels(results).ToList();
 
             return model;
         }

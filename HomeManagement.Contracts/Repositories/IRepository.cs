@@ -1,30 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace HomeManagement.Contracts.Repositories
 {
-    public interface IRepository : IUnitOfWork
+    public interface IRepository
     {
         int Count();
 
         void Remove(int id);
 
-        IDbTransaction CreateTransaction();
+        void Commit();
     }
 
     public interface IRepository<T> : IRepository
     {
-        IQueryable<T> All { get; }
-
         void Add(T entity);
+
+        void Add(IEnumerable<T> entities);
 
         Task AddAsync(T entity);
 
         void Remove(T entity);
+
+        void Remove(IEnumerable<T> entities);
 
         void Update(T entity);
 
@@ -45,5 +45,7 @@ namespace HomeManagement.Contracts.Repositories
         decimal Sum(Expression<Func<T, decimal>> selector, Expression<Func<T, bool>> predicate = null);
 
         int Count(Expression<Func<T, bool>> predicate);
+
+        IEnumerable<T> Paginate<TOrder>(Func<T, bool> filter, Func<T, TOrder> orderBy, int skip, int take);
     }
 }

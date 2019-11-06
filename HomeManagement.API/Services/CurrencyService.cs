@@ -25,12 +25,15 @@ namespace HomeManagement.API.Services
         private readonly ICurrencyRepository currencyRepository;
         private readonly IConfiguration configuration;
         private readonly List<string> supportedCurrencies = new List<string> { "USD", "EUR", "ARS" };
+        private readonly IPlatformContext platformContext;
 
         public CurrencyService(ICurrencyRepository currencyRepository,
-            IConfigurationSettingsRepository configurationSettingsRepository)
+            IConfigurationSettingsRepository configurationSettingsRepository,
+            IPlatformContext platformContext)
         {
             this.currencyRepository = currencyRepository;
             this.configurationSettingsRepository = configurationSettingsRepository;
+            this.platformContext = platformContext;
         }
 
         public Currency GetCurrency(string name)
@@ -50,12 +53,12 @@ namespace HomeManagement.API.Services
                 UpdateCurrencies();
             }
 
-            return currencyRepository.All.ToList();
+            return currencyRepository.GetAll().ToList();
         }
 
         private bool IsUpToDate()
         {
-            var currencies = currencyRepository.All.ToList();
+            var currencies = currencyRepository.GetAll().ToList();
 
             return currencies.All(x => (DateTime.Now - x.ChangeStamp).TotalDays < 1.0);
         }
@@ -67,7 +70,7 @@ namespace HomeManagement.API.Services
                 .GetAwaiter()
                 .GetResult();
 
-            var currencies = currencyRepository.All.ToList();
+            var currencies = currencyRepository.GetAll().ToList();
 
             foreach (var currency in currencies)
             {
@@ -78,7 +81,7 @@ namespace HomeManagement.API.Services
                 currencyRepository.Update(currency);
             }
 
-            currencyRepository.Commit();
+            platformContext.Commit();
         }
 
         private async Task<List<Currency>> GetApiCurrencies()

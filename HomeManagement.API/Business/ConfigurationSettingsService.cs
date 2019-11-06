@@ -1,9 +1,9 @@
 ﻿using HomeManagement.Data;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
-using System.Linq;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HomeManagement.API.Business
 {

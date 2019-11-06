@@ -3,20 +3,21 @@ using HomeManagement.API.Data.Repositories;
 using HomeManagement.Contracts;
 using HomeManagement.Data;
 using HomeManagement.Domain;
+using HomeManagement.Mapper;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Security.Claims;
-using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
-using System.Collections.Generic;
 
 namespace HomeManagement.API.Business
 {
@@ -39,6 +40,9 @@ namespace HomeManagement.API.Business
         private readonly IUserSessionService userSessionService;
         private readonly ITransactionService transactionService;
         private readonly ICategoryService categoryService;
+        private readonly IReminderRepository reminderRepository;
+        private readonly INotificationRepository notificationRepository;
+        private readonly IUserMapper userMapper;
 
         public UserService(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -55,7 +59,10 @@ namespace HomeManagement.API.Business
             ITokenRepository tokenRepository,
             IUserSessionService userSessionService,
             ITransactionService transactionService,
-            ICategoryService categoryService)
+            ICategoryService categoryService,
+            IReminderRepository reminderRepository,
+            INotificationRepository notificationRepository,
+            IUserMapper userMapper)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -73,6 +80,9 @@ namespace HomeManagement.API.Business
             this.userSessionService = userSessionService;
             this.transactionService = transactionService;
             this.categoryService = categoryService;
+            this.reminderRepository = reminderRepository;
+            this.notificationRepository = notificationRepository;
+            this.userMapper = userMapper;
         }
 
         public async Task<OperationResult> CreateUser(UserModel user)
@@ -101,7 +111,7 @@ namespace HomeManagement.API.Business
                     AccountType = Domain.AccountType.Cash,
                     CurrencyId = 1
                 });
-                userRepository.Commit();
+                accountRepository.Commit();
 
                 userSessionService.RegisterScopedUser(applicationUser.Email);
 
@@ -135,7 +145,7 @@ namespace HomeManagement.API.Business
                 var dbToken = tokenRepository.FirstOrDefault(x => x.UserId.Equals(appUserId));
 
                 tokenRepository.Remove(appUserId);
-                tokenRepository.Commit();
+                accountRepository.Commit();
             }
 
             tokenValue = CreateToken(user.Email);
@@ -147,7 +157,7 @@ namespace HomeManagement.API.Business
                 Name = nameof(JwtSecurityToken),
                 Value = tokenValue
             });
-            tokenRepository.Commit();
+            accountRepository.Commit();
 
             return tokenValue;
         }
@@ -178,7 +188,7 @@ namespace HomeManagement.API.Business
         {
             var user = userSessionService.GetAuthenticatedUser();
 
-            var accounts = accountRepository.All.Where(x => x.UserId.Equals(user.Id));
+            var accounts = accountRepository.Where(x => x.UserId.Equals(user.Id));
 
             var stream = new MemoryStream();
             using (var zip = new ZipArchive(stream, ZipArchiveMode.Update, true))
@@ -244,6 +254,85 @@ namespace HomeManagement.API.Business
 
             if (tokenRepository.UserHasToken(appUser.Id)) tokenRepository.Remove(appUser.Id);
         }
+
+        public async Task DeleteUser(int userId)
+        {
+            var user = userRepository.GetById(userId);
+
+            var appUser = await userManager.FindByEmailAsync(user.Email);
+
+            var userAccounts = accountRepository.Where(x => x.UserId.Equals(user.Id));
+
+            foreach (var account in userAccounts)
+            {
+                var transactions = transactionRepository.Where(x => x.AccountId.Equals(account.Id));
+
+                foreach (var transaction in transactions)
+                {
+                    transactionRepository.Remove(transaction);
+                }
+
+                accountRepository.Remove(account);
+                accountRepository.Commit();
+            }
+
+            var userCategories = userCategoryRepository.Where(x => x.UserId.Equals(user.Id));
+
+            foreach (var userCategory in userCategories)
+            {
+                categoryRepository.Remove(userCategory.CategoryId, user);
+            }
+
+            accountRepository.Commit();
+
+            var reminders = reminderRepository.Where(x => x.UserId.Equals(user.Id));
+
+            foreach (var reminder in reminders)
+            {
+                var notifications = notificationRepository.Where(x => x.ReminderId.Equals(reminder.Id));
+
+                foreach (var notification in notifications)
+                {
+                    notificationRepository.Remove(notification);
+                }
+
+                reminderRepository.Remove(reminder);
+                accountRepository.Commit();
+            }
+
+            var userPreferences = preferencesRepository.Where(x => x.UserId.Equals(user.Id));
+
+            foreach (var userPreference in userPreferences)
+            {
+                preferencesRepository.Remove(userPreference);
+            }
+            preferencesRepository.Commit();
+
+            userRepository.Remove(user.Id);
+            userRepository.Commit();
+
+            await userManager.DeleteAsync(appUser);
+        }
+
+        public IEnumerable<UserModel> GetUsers()
+        {
+            return userRepository
+                .GetAll()
+                .Select(x => userMapper.ToModel(x))
+                .ToList();
+        }
+
+        public async Task<OperationResult> ChangePassword(string currentPassword, string newPassword)
+        {
+            var user = userSessionService.GetAuthenticatedUser();
+            var appUser = await userManager.FindByEmailAsync(user.Email);
+            var result = await userManager.ChangePasswordAsync(appUser, currentPassword, newPassword);
+            return new OperationResult
+            {
+                Result = result.Succeeded ? Result.Succeed : Result.Error,
+                Errors = result.Errors.Select(x => x.Description).ToList()
+            };
+        }
     }
 
     public interface IUserService
@@ -257,5 +346,11 @@ namespace HomeManagement.API.Business
         string RenewToken(string appUserId, int userId);
 
         MemoryStream DownloadUserData();
+
+        Task DeleteUser(int userId);
+
+        IEnumerable<UserModel> GetUsers();
+
+        Task<OperationResult> ChangePassword(string currentPassword, string newPassword);
     }
 }

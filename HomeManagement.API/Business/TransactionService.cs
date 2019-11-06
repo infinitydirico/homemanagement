@@ -49,7 +49,7 @@ namespace HomeManagement.API.Business
         {
             Category category;
 
-            if (transaction.CategoryId.Equals(default(int)) || categoryRepository.All.FirstOrDefault(x => x.Id.Equals(transaction.CategoryId)) == null)
+            if (transaction.CategoryId.Equals(default(int)) || categoryRepository.FirstOrDefault(x => x.Id.Equals(transaction.CategoryId)) == null)
             {
                 category = categoryRepository.FirstOrDefault();
                 transaction.CategoryId = category.Id;
@@ -102,13 +102,10 @@ namespace HomeManagement.API.Business
         {
             var authenticatedUser = userService.GetAuthenticatedUser();
 
-            var transactions = (from transaction in transactionRepository.All
-                                join account in accountRepository.All
-                                on transaction.AccountId equals account.Id
-                                join user in userRepository.All
-                                on account.UserId equals user.Id
-                                where user.Email.Equals(authenticatedUser.Email)
-                                select transactionMapper.ToModel(transaction)).ToList();
+            var transactions = transactionRepository
+                .Where(x => x.Account.User.Email.Equals(authenticatedUser.Email))
+                .Select(x => transactionMapper.ToModel(x))
+                .ToList();
 
             return transactions;
         }
@@ -152,7 +149,7 @@ namespace HomeManagement.API.Business
                 accountRepository.Update(account);
             }
 
-            accountRepository.Commit();
+            transactionRepository.Commit();
         }
 
         public ExportFile Export(int accountId)
@@ -190,14 +187,9 @@ namespace HomeManagement.API.Business
 
             var currentPage = page.CurrentPage - 1;
 
-            page.Transactions = transactionRepository
-                            .All
-                            .Where(filter)
-                            .OrderByDescending(x => x.Date)
-                            .Skip(page.PageCount * currentPage)
-                            .Take(page.PageCount)
-                            .Select(x => transactionMapper.ToModel(x))
-                            .ToList();
+            var results = transactionRepository.Paginate(filter, x => x.Date, page.PageCount * currentPage, page.PageCount);
+
+            page.Transactions = transactionMapper.ToModels(results).ToList();
 
             return page;
         }
@@ -206,7 +198,11 @@ namespace HomeManagement.API.Business
         {
             var authenticatedUser = userService.GetAuthenticatedUser();
 
-            var transactions = FilterTransactionsByDate(year, month).Select(x => transactionMapper.ToModel(x)).ToList();
+            var transactions = transactionRepository
+                .Where(x => x.Account.User.Email.Equals(authenticatedUser.Email) &&
+                            x.Date.Year.Equals(year) && x.Date.Month.Equals(month))
+                .OrderByDescending(t => t.Date)
+                .Select(x => transactionMapper.ToModel(x)).ToList();
 
             return transactions;
         }
@@ -215,28 +211,14 @@ namespace HomeManagement.API.Business
         {
             var authenticatedUser = userService.GetAuthenticatedUser();
 
-            var transactions = FilterTransactionsByDate(year, month)
-                .Where(x => x.AccountId.Equals(accountId))
+            var transactions = transactionRepository
+                .Where(x => x.Account.User.Email.Equals(authenticatedUser.Email) &&
+                            x.AccountId.Equals(accountId) &&
+                            x.Date.Year.Equals(year) && x.Date.Month.Equals(month))
+                .OrderByDescending(t => t.Date)
                 .Select(x => transactionMapper.ToModel(x))
                 .ToList();
 
-            return transactions;
-        }
-
-        private IQueryable<Transaction> FilterTransactionsByDate(int year, int month)
-        {
-            var authenticatedUser = userService.GetAuthenticatedUser();
-
-            var transactions = from user in userRepository.All
-                                join account in accountRepository.All
-                                on user.Id equals account.UserId
-                                join transaction in transactionRepository.All
-                                on account.Id equals transaction.AccountId
-                                where user.Email.Equals(authenticatedUser.Email) &&
-                                         transaction.Date.Year.Equals(year) &&
-                                         transaction.Date.Month.Equals(month)
-                                orderby transaction.Date descending
-                                select transaction;
             return transactions;
         }
 
@@ -244,21 +226,21 @@ namespace HomeManagement.API.Business
         {
             var authenticatedUser = userService.GetAuthenticatedUser();
 
-            var transactions = (from user in userRepository.All
-                               join account in accountRepository.All
-                               on user.Id equals account.UserId
-                               join transaction in transactionRepository.All
-                               on account.Id equals transaction.AccountId
-                               where user.Email.Equals(authenticatedUser.Email) && account.Id.Equals(accountId)
-                               orderby transaction.Date descending
-                               select transactionMapper.ToModel(transaction)).ToList();
-            return transactions;
+            var transactions = transactionRepository
+                .GetByAccount(accountId)
+                .OrderByDescending(x => x.Date);
+
+            return transactionMapper.ToModels(transactions);
         }
 
         public IEnumerable<MonthlyCategory> CategoryEvolution(int categoryId)
         {
-            var result = GetTransactionsOnThisYear()
-                .Where(x => x.CategoryId.Equals(categoryId))
+            var authenticatedUser = userService.GetAuthenticatedUser();
+
+            var result = transactionRepository
+                .Where(x => x.Account.User.Email.Equals(authenticatedUser.Email) &&
+                            x.Date.Year.Equals(DateTime.Now.Year) && x.Date < DateTime.Now &&
+                            x.CategoryId.Equals(categoryId))
                 .OrderBy(x => x.Date)
                 .GroupBy(x => x.Date.Month)
                 .Select(x => new MonthlyCategory
@@ -273,8 +255,12 @@ namespace HomeManagement.API.Business
 
         public IEnumerable<MonthlyCategory> CategoryEvolutionByAccount(int categoryId, int accountId)
         {
-            var result = GetTransactionsOnThisYear()
-                .Where(x => x.CategoryId.Equals(categoryId) && x.AccountId.Equals(accountId))
+            var authenticatedUser = userService.GetAuthenticatedUser();
+
+            var result = transactionRepository
+                .Where(x => x.Account.User.Email.Equals(authenticatedUser.Email) &&
+                            x.Date.Year.Equals(DateTime.Now.Year) && x.Date < DateTime.Now &&
+                            x.CategoryId.Equals(categoryId) && x.AccountId.Equals(accountId))
                 .OrderBy(x => x.Date)
                 .GroupBy(x => x.Date.Month)
                 .Select(x => new MonthlyCategory
@@ -285,24 +271,6 @@ namespace HomeManagement.API.Business
                 .ToList();
 
             return result;
-        }
-
-        private IQueryable<Transaction> GetTransactionsOnThisYear()
-        {
-            var authenticatedUser = userService.GetAuthenticatedUser();
-
-            var transactions = from user in userRepository.All
-                                join account in accountRepository.All
-                                on user.Id equals account.UserId
-                                join transaction in transactionRepository.All
-                                on account.Id equals transaction.AccountId
-                                where user.Email.Equals(authenticatedUser.Email) &&
-                                         transaction.Date.Year.Equals(DateTime.Now.Year) &&
-                                         transaction.Date < DateTime.Now
-                                orderby transaction.Date ascending
-                                select transaction;
-
-            return transactions;
         }
     }
 

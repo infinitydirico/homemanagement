@@ -28,13 +28,6 @@ namespace HomeManagement.API.Data.Repositories
             dbContext.Set<IdentityRole<string>>().Add(entity);
         }
 
-        public void Commit()
-        {
-            var dbContext = platformContext.GetDbContext();
-
-            dbContext.SaveChanges();
-        }
-
         public int Count(Expression<Func<IdentityRole<string>, bool>> predicate) => All.Count(predicate);
 
         public int Count() => All.Count();
@@ -61,6 +54,11 @@ namespace HomeManagement.API.Data.Repositories
             var role = FirstOrDefault(x => x.Id.Equals(entity.Id));
 
             dbContext.Set<IdentityRole<string>>().Update(role);
+        }
+
+        public void Commit()
+        {
+            platformContext.Commit();
         }
 
         public IEnumerable<IdentityRole<string>> Where(Expression<Func<IdentityRole<string>, bool>> predicate) => All.Where(predicate);
@@ -93,6 +91,21 @@ namespace HomeManagement.API.Data.Repositories
         }
 
         public bool Exists(IdentityRole<string> entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Add(IEnumerable<IdentityRole<string>> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove(IEnumerable<IdentityRole<string>> entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<IdentityRole<string>> Paginate<TOrder>(Func<IdentityRole<string>, bool> filter, Func<IdentityRole<string>, TOrder> orderBy, int skip, int take)
         {
             throw new NotImplementedException();
         }

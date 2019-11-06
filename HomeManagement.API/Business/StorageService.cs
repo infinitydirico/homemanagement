@@ -1,4 +1,5 @@
-﻿using HomeManagement.Data;
+﻿using HomeManagement.Contracts.Repositories;
+using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.FilesStore;
 using HomeManagement.Mapper;
@@ -114,13 +115,7 @@ namespace HomeManagement.API.Business
 
         private List<StorageItem> GetRepoItems(int userId)
         {
-            return (from storageItem in storageItemRepository.All
-                    join transaction in transactionRepository.All
-                    on storageItem.TransactionId equals transaction.Id
-                    join account in accountRepository.All
-                    on transaction.AccountId equals account.Id
-                    where account.UserId.Equals(userId)
-                    select storageItem).ToList();
+            throw new System.NotImplementedException("pending change");
         }
     }
 

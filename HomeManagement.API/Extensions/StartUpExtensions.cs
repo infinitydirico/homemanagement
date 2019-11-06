@@ -4,6 +4,7 @@ using HomeManagement.API.Data.Repositories;
 using HomeManagement.API.Exportation;
 using HomeManagement.API.Throttle;
 using HomeManagement.Contracts;
+using HomeManagement.Contracts.Repositories;
 using HomeManagement.Core.Cryptography;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
