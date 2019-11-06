@@ -37,6 +37,13 @@ namespace HomeManagement.API.Controllers.Categories
             return Ok(categoryService.GetActive());
         }
 
+        [AdminAuthorization]
+        [HttpGet("GetUsersCategories")]
+        public IActionResult GetUsersCategories()
+        {
+            return Ok(categoryService.GetUsersCategories());
+        }
+
         [HttpPost]
         public IActionResult Post([FromBody]CategoryModel category)
         {

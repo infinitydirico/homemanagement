@@ -99,6 +99,37 @@ namespace HomeManagement.API.Business
             return categories;
         }
 
+        public IEnumerable<UserCategoryModel> GetUsersCategories()
+        {
+            var users = userRepository.GetAll();
+
+            var uc = userCategoryRepository.GetAll();
+
+            var userCategories = from u in users
+                                 join c in uc
+                                 on u.Id equals c.UserId
+                                 let category = categoryRepository.GetById(c.CategoryId)
+                                 select new UserCategoryModel
+                                 {
+                                     User = new UserModel
+                                     {
+                                         Id = u.Id,
+                                         Email = u.Email
+                                     },
+                                     Category = new CategoryModel
+                                     {
+                                         Id = c.CategoryId,
+                                         IsActive = category.IsActive,
+                                         Name = category.Name,
+                                         Icon = category.Icon,
+                                         IsDefault = category.IsDefault,
+                                         Measurable = category.Measurable
+                                     }
+                                 };
+
+            return userCategories.ToList();
+        }
+
         public void Import(byte[] contents)
         {
             var authenticatedUser = userService.GetAuthenticatedUser();
@@ -136,6 +167,8 @@ namespace HomeManagement.API.Business
         OperationResult Delete(int id);
 
         IEnumerable<CategoryModel> GetActive();
+
+        IEnumerable<UserCategoryModel> GetUsersCategories();
 
         FileModel Export();
 
