@@ -24,4 +24,44 @@
     <ProjectReference Include="..\HomeManagement.Models\HomeManagement.Models.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Update="Views\DietCarbo.old\DietCarbo.UWP\App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\DietCarbo.old\DietCarbo.UWP\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\DietCarbo.old\DietCarbo.UWP\obj\ARM\Debug\App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\DietCarbo.old\DietCarbo.UWP\obj\ARM\Debug\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\DietCarbo.old\DietCarbo.UWP\obj\x64\Debug\App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\DietCarbo.old\DietCarbo.UWP\obj\x64\Debug\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\DietCarbo.old\DietCarbo.UWP\obj\x86\Debug\App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\DietCarbo.old\DietCarbo.UWP\obj\x86\Debug\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\DietCarbo.old\DietCarbo\App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\DietCarbo.old\DietCarbo\Dashboard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\DietCarbo.old\DietCarbo\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\DietCarbo.old\DietCarbo\RecipeDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
+
 </Project>

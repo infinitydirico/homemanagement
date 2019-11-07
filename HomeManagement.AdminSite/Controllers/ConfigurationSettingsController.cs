@@ -3,6 +3,7 @@ using HomeManagement.AdminSite.Services;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -88,7 +89,10 @@ namespace HomeManagement.AdminSite.Controllers
             configs = await configurationSettingsService.GetSettings();
 
             _cache.CreateEntry(nameof(ConfigurationSettingModel));
-            _cache.Set(nameof(ConfigurationSettingModel), configs);
+            _cache.Set(nameof(ConfigurationSettingModel), configs, new MemoryCacheEntryOptions
+            {
+                SlidingExpiration = TimeSpan.FromMinutes(10)
+            });
 
             return configs;
         }
