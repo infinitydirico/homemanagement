@@ -6,6 +6,7 @@ using HomeManagement.Core.Caching;
 using HomeManagement.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,6 +33,8 @@ namespace HomeManagement.App.Managers
         Task DeleteTransactionAsync(Transaction transaction);
 
         Task UpdateAsync(Transaction transaction);
+
+        Task<Transaction> CreateFromImage(Stream stream);
     }
 
     public class TransactionManager : BaseManager<Transaction, TransactionPageModel>, ITransactionManager
@@ -201,5 +204,18 @@ namespace HomeManagement.App.Managers
             Name = transaction.Name,
             Price = transaction.Price
         };
+
+        public async Task<Transaction> CreateFromImage(Stream stream)
+        {
+            var result = await transactionServiceClient.PostPicture(stream);
+            return new Transaction
+            {
+                Name = result.Name,
+                CategoryId = result.CategoryId,
+                Date = result.Date,
+                Price = result.Price,
+                TransactionType = TransactionType.Expense
+            };
+        }
     }
 }

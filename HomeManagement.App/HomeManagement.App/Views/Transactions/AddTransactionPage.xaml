@@ -16,6 +16,7 @@
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
         <ToolbarItem Icon="check_48dp.png" Command="{Binding AddTransactionCommand}" />
+        <!--<ToolbarItem Icon="add_photo_24dp.png" Command="{Binding TakePictureCommand}" />-->
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">

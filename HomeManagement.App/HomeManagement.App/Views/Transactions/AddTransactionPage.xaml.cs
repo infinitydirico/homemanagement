@@ -2,6 +2,7 @@
 using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
 using HomeManagement.App.ViewModels;
+using Plugin.Media;
 using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -29,6 +30,15 @@ namespace HomeManagement.App.Views.Transactions
             viewModel = new AddTransactionViewModel(account);
 
             BindingContext = viewModel;
+
+            if (CrossMedia.Current.IsCameraAvailable && CrossMedia.Current.IsTakePhotoSupported)
+            {
+                ToolbarItems.Add(new ToolbarItem
+                {
+                    Icon = "add_photo_24dp.png",
+                    Command = viewModel.TakePictureCommand
+                });
+            }
 
             viewModel.OnAdded += OnTransactionAdded;
 

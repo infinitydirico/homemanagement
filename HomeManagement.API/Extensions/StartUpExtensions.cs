@@ -44,8 +44,6 @@ namespace HomeManagement.API.Extensions
             
             services.AddScoped<ITokenRepository, TokenRepository>();
 
-            services.AddScoped<IWebClientRepository, WebClientRepository>();
-
             services.AddScoped<IDataLogRepository, DataLogRepository>();
 
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
@@ -59,7 +57,8 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IMonthlyExpenseRepository, MonthlyExpenseRepository>();
             //with the throttle filter with persisted repo, the requests take around 100ms to respond
             //with memory values, it takes 30ms
-            //services.AddScoped<IWebClientRepository, MemoryWebClientRepository>();            
+            services.AddScoped<IWebClientRepository, MemoryWebClientRepository>();   
+            //services.AddScoped<IWebClientRepository, WebClientRepository>();
         }
 
         public static void AddMappers(this IServiceCollection services)

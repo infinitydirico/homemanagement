@@ -102,12 +102,14 @@ namespace HomeManagement.API.Business
                     Email = applicationUser.Email,
                 };
 
-                userRepository.Add(userEntity);                
+                userRepository.Add(userEntity);
+
+                var language = user.Language ?? "en";
 
                 accountRepository.Add(new Account
                 {
                     UserId = userEntity.Id,
-                    Name = user.Language.Contains("en") ? "Cash" : "Efectivo",
+                    Name = language.Contains("en") ? "Cash" : "Efectivo",
                     AccountType = Domain.AccountType.Cash,
                     CurrencyId = 1
                 });
@@ -115,12 +117,10 @@ namespace HomeManagement.API.Business
 
                 userSessionService.RegisterScopedUser(applicationUser.Email);
 
-                preferenceService.ChangeLanguage(user.Language);
-
                 var currencies = preferenceService.GetCurrencies();
                 preferenceService.ChangeCurrency(currencies.First(x => x.Name.Equals("USD")));
 
-                accountRepository.Commit();
+                preferenceService.ChangeLanguage(language);
 
                 return OperationResult.Succeed();
             }

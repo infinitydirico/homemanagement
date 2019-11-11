@@ -60,6 +60,11 @@
             {
                 public const string Notification = API + "Notification";
             }
+
+            public class Images
+            {
+                public const string Image = API + "Images";
+            }
         }
 
         public class Keys
