@@ -1,9 +1,11 @@
-﻿namespace HomeManagement.Data
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace HomeManagement.Data
 {
     public class GenericRepository<T> : BaseRepository<T>
         where T : class
     {
-        public GenericRepository(IPlatformContext platformContext) : base(platformContext)
+        public GenericRepository(DbContext context) : base(context)
         {
         }
 

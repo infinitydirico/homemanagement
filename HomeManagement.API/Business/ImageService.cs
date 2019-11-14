@@ -18,19 +18,19 @@ namespace HomeManagement.API.Business
     public class ImageService : IImageService
     {
         private readonly IConfigurationSettingsService configurationSettingsService;
-        private readonly ITransactionRepository transactionRepository;
+        private readonly IRepositoryFactory repositoryFactory;
         private readonly ITransactionMapper transactionMapper;
         private readonly IPreferenceService preferenceService;
         private readonly IUserSessionService userSessionService;
 
         public ImageService(IConfigurationSettingsService configurationSettingsService,
-            ITransactionRepository transactionRepository,
+            IRepositoryFactory repositoryFactory,
             ITransactionMapper transactionMapper,
             IPreferenceService preferenceService,
             IUserSessionService userSessionService)
         {
             this.configurationSettingsService = configurationSettingsService;
-            this.transactionRepository = transactionRepository;
+            this.repositoryFactory = repositoryFactory;
             this.transactionMapper = transactionMapper;
             this.preferenceService = preferenceService;
             this.userSessionService = userSessionService;
@@ -106,11 +106,14 @@ namespace HomeManagement.API.Business
 
             var matches = engine.GetAllMatches(visionResponse.RecognitionResult);
 
-            var transactions = transactionRepository
+            using (var transactionRepository = repositoryFactory.CreateTransactionRepository())
+            {
+                var transactions = transactionRepository
                 .Where(t => matches.Any(m => m.Contains(t.Name)))
                 .ToList();
 
-            return transactions.FirstOrDefault();
+                return transactions.FirstOrDefault();
+            }
         }
 
         private double GetPrice(VisionResponseV2 visionResponse, CultureInfo culture)
@@ -155,7 +158,7 @@ namespace HomeManagement.API.Business
             var subscriptionKey = configurationSettingsService.GetConfig("VisionApiKey");
             var apiEndpoint = configurationSettingsService.GetConfig("VisionApiEndpoint");
 
-            return subscriptionKey != null && !string.IsNullOrEmpty(subscriptionKey.Value) && 
+            return subscriptionKey != null && !string.IsNullOrEmpty(subscriptionKey.Value) &&
                 apiEndpoint != null && !string.IsNullOrEmpty(apiEndpoint.Value);
         }
     }

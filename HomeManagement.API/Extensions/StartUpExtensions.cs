@@ -4,7 +4,6 @@ using HomeManagement.API.Data.Repositories;
 using HomeManagement.API.Exportation;
 using HomeManagement.API.Throttle;
 using HomeManagement.Contracts;
-using HomeManagement.Contracts.Repositories;
 using HomeManagement.Core.Cryptography;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
@@ -25,6 +24,10 @@ namespace HomeManagement.API.Extensions
         public static void AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IPlatformContext, WebAppLayerContext>();
+
+            services.AddScoped<IRepositoryFactory, RepositoryFactory>();
+
+            services.AddScoped<IApiRepositoryFactory, ApiRepositoryFactory>();
 
             services.AddScoped<IUserRepository, UserRepository>();
 

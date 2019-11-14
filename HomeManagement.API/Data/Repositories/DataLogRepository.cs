@@ -161,5 +161,10 @@ namespace HomeManagement.API.Data.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using HomeManagement.Contracts.Repositories;
-using HomeManagement.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,22 +18,16 @@ namespace HomeManagement.API.Data.Repositories
 
     public class TokenRepository : ITokenRepository
     {
-        private IPlatformContext platformContext;
+        private WebAppDbContext context;
 
-        public TokenRepository(IPlatformContext platformContext)
+        public TokenRepository(DbContext context)
         {
-            this.platformContext = platformContext ?? throw new ArgumentNullException($"{nameof(platformContext)} is null");
+            this.context = (WebAppDbContext)context;
         }
-
-        public IQueryable<IdentityUserToken<string>> All => platformContext.GetDbContext().Set<IdentityUserToken<string>>().AsQueryable();
 
         public void Add(IdentityUserToken<string> entity)
         {
-            var dbContext = platformContext.GetDbContext();
-
-            dbContext.Set<IdentityUserToken<string>>().Add(entity);
-
-            dbContext.SaveChanges();
+            context.Set<IdentityUserToken<string>>().Add(entity);
         }
 
         public void Add(IEnumerable<IdentityUserToken<string>> entities)
@@ -43,47 +37,31 @@ namespace HomeManagement.API.Data.Repositories
 
         public async Task AddAsync(IdentityUserToken<string> entity)
         {
-            var dbContext = platformContext.GetDbContext();
-
-            await dbContext.Set<IdentityUserToken<string>>().AddAsync(entity);
-        }
-
-        public void Commit()
-        {
-            platformContext.Commit();
-        }
-
-        public int Count()
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Count(Expression<Func<IdentityUserToken<string>, bool>> predicate)
-        {
-            throw new NotImplementedException();
+            await context.Set<IdentityUserToken<string>>().AddAsync(entity);
         }
 
         public bool Exists(IdentityUserToken<string> entity) => FirstOrDefault(x => x.UserId.Equals(entity.UserId)) != null;
 
-        public IdentityUserToken<string> FirstOrDefault() => All.FirstOrDefault();
+        public IdentityUserToken<string> FirstOrDefault()
+        {
+            return context.Set<IdentityUserToken<string>>().FirstOrDefault();
+        }
 
         public IdentityUserToken<string> FirstOrDefault(Expression<Func<IdentityUserToken<string>, bool>> predicate)
-            => All.FirstOrDefault(predicate);
+        {
+            return context.Set<IdentityUserToken<string>>().FirstOrDefault(predicate);
+        }
 
-        public IEnumerable<IdentityUserToken<string>> GetAll() => platformContext.GetDbContext().Set<IdentityUserToken<string>>().ToList();
+        public IEnumerable<IdentityUserToken<string>> GetAll()
+        {
+            return context.Set<IdentityUserToken<string>>().ToList();
+        }
 
         public IdentityUserToken<string> GetById(int id) => FirstOrDefault(x => x.UserId.Equals(id));
 
-        public IEnumerable<IdentityUserToken<string>> Paginate<TOrder>(Func<IdentityUserToken<string>, bool> filter, Func<IdentityUserToken<string>, TOrder> orderBy, int skip, int take)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Remove(IdentityUserToken<string> entity)
         {
-            var dbContext = platformContext.GetDbContext();
-
-            dbContext.Set<IdentityUserToken<string>>().Remove(entity);
+            context.Set<IdentityUserToken<string>>().Remove(entity);
         }
 
         public void Remove(int id)
@@ -100,6 +78,29 @@ namespace HomeManagement.API.Data.Repositories
             Remove(entity);
         }
 
+        public void Update(IdentityUserToken<string> entity)
+        {
+            context.Set<IdentityUserToken<string>>().Update(entity);
+        }
+
+        public bool UserHasToken(string appId) => FirstOrDefault(x => x.UserId.Equals(appId)) != null;
+
+        public IEnumerable<IdentityUserToken<string>> Where(Expression<Func<IdentityUserToken<string>, bool>> predicate)
+        {
+            return context.Set<IdentityUserToken<string>>().Where(predicate).ToList();
+        }
+
+        public void Commit()
+        {
+            
+        }
+        public void Dispose()
+        {
+            //throw new NotImplementedException();
+        }
+
+        #region Unimplemented methods
+
         public void Remove(IEnumerable<IdentityUserToken<string>> entities)
         {
             throw new NotImplementedException();
@@ -115,15 +116,19 @@ namespace HomeManagement.API.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public void Update(IdentityUserToken<string> entity)
+        public int Count()
         {
-            var dbContext = platformContext.GetDbContext();
-            dbContext.Set<IdentityUserToken<string>>().Update(entity);
+            throw new NotImplementedException();
         }
 
-        public bool UserHasToken(string appId) => FirstOrDefault(x => x.UserId.Equals(appId)) != null;
-
-        public IEnumerable<IdentityUserToken<string>> Where(Expression<Func<IdentityUserToken<string>, bool>> predicate)
-            => platformContext.GetDbContext().Set<IdentityUserToken<string>>().Where(predicate).ToList();
+        public int Count(Expression<Func<IdentityUserToken<string>, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+        public IEnumerable<IdentityUserToken<string>> Paginate<TOrder>(Func<IdentityUserToken<string>, bool> filter, Func<IdentityUserToken<string>, TOrder> orderBy, int skip, int take)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
     }
 }

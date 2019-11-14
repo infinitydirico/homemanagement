@@ -9,31 +9,36 @@ namespace HomeManagement.API.Business
 {
     public class ConfigurationSettingsService : IConfigurationSettingsService
     {
-        private readonly IConfigurationSettingsRepository configurationSettingsRepository;
+        private readonly IRepositoryFactory repositoryFactory;
         private readonly IConfigurationSettingsMapper configurationSettingsMapper;
 
-        public ConfigurationSettingsService(IConfigurationSettingsRepository configurationSettingsRepository,
+        public ConfigurationSettingsService(IRepositoryFactory repositoryFactory,
             IConfigurationSettingsMapper configurationSettingsMapper)
         {
-            this.configurationSettingsRepository = configurationSettingsRepository;
+            this.repositoryFactory = repositoryFactory;
             this.configurationSettingsMapper = configurationSettingsMapper;
         }
 
         public OperationResult Delete(int id)
         {
-            var entity = configurationSettingsRepository.GetById(id);
+            using (var configurationSettingsRepository = repositoryFactory.CreateConfigurationSettingsRepository())
+            {
+                var entity = configurationSettingsRepository.GetById(id);
 
-            if (entity == null) return OperationResult.Error("not found");
+                if (entity == null) return OperationResult.Error("not found");
 
-            configurationSettingsRepository.Remove(id);
+                configurationSettingsRepository.Remove(id);
 
-            configurationSettingsRepository.Commit();
+                configurationSettingsRepository.Commit();
 
-            return OperationResult.Succeed();
+                return OperationResult.Succeed();
+            }
         }
 
         public ConfigurationSettingModel GetConfig(string name)
         {
+            var configurationSettingsRepository = repositoryFactory.CreateConfigurationSettingsRepository();
+
             var entity = configurationSettingsRepository.FirstOrDefault(x => x.Name.Equals(name));
 
             if (entity == null) throw new NullReferenceException($"no entity found for {name}");
@@ -43,31 +48,36 @@ namespace HomeManagement.API.Business
 
         public IEnumerable<ConfigurationSettingModel> GetConfigs()
         {
+            var configurationSettingsRepository = repositoryFactory.CreateConfigurationSettingsRepository();
+
             return configurationSettingsRepository
-                .GetAll()
-                .Select(x => configurationSettingsMapper.ToModel(x))
-                .ToList();
+                    .GetAll()
+                    .Select(x => configurationSettingsMapper.ToModel(x))
+                    .ToList();
         }
 
         public OperationResult Save(ConfigurationSettingModel model)
         {
-            var entity = configurationSettingsRepository.GetById(model.Id);
-
-            if(entity == null)
+            using (var configurationSettingsRepository = repositoryFactory.CreateConfigurationSettingsRepository())
             {
-                entity = configurationSettingsMapper.ToEntity(model);
-                configurationSettingsRepository.Add(entity);
+                var entity = configurationSettingsRepository.GetById(model.Id);
+
+                if (entity == null)
+                {
+                    entity = configurationSettingsMapper.ToEntity(model);
+                    configurationSettingsRepository.Add(entity);
+                }
+                else
+                {
+                    if (!model.Name.Equals(entity.Name)) return OperationResult.Error("Config missmatch");
+
+                    entity.Value = model.Value;
+                }
+
+                configurationSettingsRepository.Commit();
+
+                return OperationResult.Succeed();
             }
-            else
-            {
-                if (!model.Name.Equals(entity.Name)) return OperationResult.Error("Config missmatch");
-
-                entity.Value = model.Value;
-            }
-
-            configurationSettingsRepository.Commit();
-
-            return OperationResult.Succeed();
         }
     }
 

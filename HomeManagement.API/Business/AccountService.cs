@@ -1,5 +1,4 @@
-﻿using HomeManagement.Contracts.Repositories;
-using HomeManagement.Data;
+﻿using HomeManagement.Data;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
 using System.Collections.Generic;
@@ -9,94 +8,106 @@ namespace HomeManagement.API.Business
 {
     public class AccountService : IAccountService
     {
-        private readonly IAccountRepository accountRepository;
-        private readonly ITransactionRepository transactionRepository;
         private readonly IAccountMapper accountMapper;
-        private readonly IUserRepository userRepository;
         private readonly IUserSessionService userService;
+        private readonly IRepositoryFactory repositoryFactory;
 
-        public AccountService(IAccountRepository accountRepository,
-            ITransactionRepository transactionRepository,
-            IAccountMapper accountMapper,
-            IUserRepository userRepository,
-            IUserSessionService userService)
+        public AccountService(IAccountMapper accountMapper,
+            IUserSessionService userService,
+            IRepositoryFactory repositoryFactory)
         {
-            this.accountRepository = accountRepository;
-            this.transactionRepository = transactionRepository;
             this.accountMapper = accountMapper;
-            this.userRepository = userRepository;
             this.userService = userService;
+            this.repositoryFactory = repositoryFactory;
         }
 
         public OperationResult Add(AccountModel accountModel)
         {
-            var entity = accountMapper.ToEntity(accountModel);
+            using (var accountRepository = repositoryFactory.CreateAccountRepository())
+            {
+                var entity = accountMapper.ToEntity(accountModel);
 
-            accountRepository.Add(entity);
-            accountRepository.Commit();
-
+                accountRepository.Add(entity);
+                accountRepository.Commit();
+            }
             return OperationResult.Succeed();
         }
 
         public OperationResult Delete(int id)
         {
-            var transaction = transactionRepository.FirstOrDefault(c => c.AccountId.Equals(id));
+            using (var accountRepository = repositoryFactory.CreateAccountRepository())
+            using (var transactionRepository = repositoryFactory.CreateTransactionRepository())
+            {
+                var transaction = transactionRepository.FirstOrDefault(c => c.AccountId.Equals(id));
 
-            if (transaction != null) return OperationResult.Error("The account has transactions");
+                if (transaction != null) return OperationResult.Error("The account has transactions");
 
-            accountRepository.Remove(id);
-            accountRepository.Commit();
+                accountRepository.Remove(id);
+                accountRepository.Commit();
+            }
 
             return OperationResult.Succeed();
         }
 
         public AccountModel Get(int id)
         {
-            var account = accountRepository.GetById(id);
+            using (var accountRepository = repositoryFactory.CreateAccountRepository())
+            {
+                var account = accountRepository.GetById(id);
 
-            if (account == null) return null;
+                if (account == null) return null;
 
-            return accountMapper.ToModel(account);
+                return accountMapper.ToModel(account);
+            }
         }
 
         public IEnumerable<AccountModel> GetAccounts()
         {
-            var authenticatedUser = userService.GetAuthenticatedUser();
+            using (var accountRepository = repositoryFactory.CreateAccountRepository())
+            {
+                var authenticatedUser = userService.GetAuthenticatedUser();
 
-            var accounts = accountRepository
-                .GetAllByUser(authenticatedUser.Email)
-                .Select(account => accountMapper.ToModel(account))
-                .ToList();            
+                var accounts = accountRepository
+                    .GetAllByUser(authenticatedUser.Email)
+                    .Select(account => accountMapper.ToModel(account))
+                    .ToList();
 
-            return accounts;
+                return accounts;
+            }
         }
 
         public AccountPageModel Page(AccountPageModel model)
         {
-            if (model.TotalPages.Equals(default(int)))
+            using (var accountRepository = repositoryFactory.CreateAccountRepository())
             {
-                var total = (double)accountRepository.Count(c => c.UserId.Equals(model.UserId));
-                var totalPages = System.Math.Ceiling(total / (double)model.PageCount);
-                model.TotalPages = int.Parse(totalPages.ToString());
+                if (model.TotalPages.Equals(default(int)))
+                {
+                    var total = (double)accountRepository.Count(c => c.UserId.Equals(model.UserId));
+                    var totalPages = System.Math.Ceiling(total / (double)model.PageCount);
+                    model.TotalPages = int.Parse(totalPages.ToString());
+                }
+
+                var currentPage = model.CurrentPage - 1;
+
+                var results = accountRepository.Paginate(x => x.UserId.Equals(model.UserId), x => x.Id, model.PageCount * currentPage, model.PageCount);
+
+                model.Accounts = accountMapper.ToModels(results).ToList();
+
+                return model;
             }
-
-            var currentPage = model.CurrentPage - 1;
-
-            var results = accountRepository.Paginate(x => x.UserId.Equals(model.UserId), x => x.Id, model.PageCount * currentPage, model.PageCount);
-
-            model.Accounts = accountMapper.ToModels(results).ToList();
-
-            return model;
         }
 
         public OperationResult Update(AccountModel accountModel)
         {
-            var entity = accountMapper.ToEntity(accountModel);
+            using (var accountRepository = repositoryFactory.CreateAccountRepository())
+            {
+                var entity = accountMapper.ToEntity(accountModel);
 
-            accountRepository.Update(entity);
-            accountRepository.Commit();
+                accountRepository.Update(entity);
+                accountRepository.Commit();
 
-            return OperationResult.Succeed();
+                return OperationResult.Succeed();
+            }
         }
     }
 

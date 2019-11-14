@@ -10,73 +10,78 @@ namespace HomeManagement.API.Business
 {
     public class NotificationService : INotificationService
     {
-        private readonly IReminderRepository reminderRepository;
-        private readonly IUserRepository userRepository;
-        private readonly INotificationRepository notificationRepository;
+        private readonly IRepositoryFactory repositoryFactory;
         private readonly INotificationMapper notificationMapper;
         private readonly IReminderMapper reminderMapper;
         private readonly IUserSessionService userService;
 
-        public NotificationService(IReminderRepository reminderRepository,
-            IUserRepository userRepository,
+        public NotificationService(IRepositoryFactory repositoryFactory,
             INotificationMapper notificationMapper,
-            INotificationRepository notificationRepository,
             IReminderMapper reminderMapper,
             IUserSessionService userService)
         {
-            this.reminderRepository = reminderRepository;
-            this.userRepository = userRepository;
+            this.repositoryFactory = repositoryFactory;
             this.notificationMapper = notificationMapper;
-            this.notificationRepository = notificationRepository;
             this.reminderMapper = reminderMapper;
             this.userService = userService;
         }
 
         public OperationResult AddReminder(ReminderModel reminderModel)
         {
-            var authenticatedUser = userService.GetAuthenticatedUser();
-
-            var reminder = reminderMapper.ToEntity(reminderModel);
-
-            if (reminder.UserId == 0)
+            using (var reminderRepository = repositoryFactory.CreateReminderRepository())
             {
-                reminder.UserId = authenticatedUser.Id;
+                var authenticatedUser = userService.GetAuthenticatedUser();
+
+                var reminder = reminderMapper.ToEntity(reminderModel);
+
+                if (reminder.UserId == 0)
+                {
+                    reminder.UserId = authenticatedUser.Id;
+                }
+
+                reminderRepository.Add(reminder);
+                reminderRepository.Commit();
+
+                return OperationResult.Succeed();
             }
-
-            reminderRepository.Add(reminder);
-            reminderRepository.Commit();
-
-            return OperationResult.Succeed();
         }
 
         public OperationResult DeleteReminder(int id)
         {
-            var authenticatedUser = userService.GetAuthenticatedUser();
+            using (var reminderRepository = repositoryFactory.CreateReminderRepository())
+            {
+                var authenticatedUser = userService.GetAuthenticatedUser();
 
-            var reminder = reminderRepository.GetById(id);
+                var reminder = reminderRepository.GetById(id);
 
-            var userId = authenticatedUser.Id;
+                var userId = authenticatedUser.Id;
 
-            if (reminder.UserId != userId) return OperationResult.Error("UserId does not match");
+                if (reminder.UserId != userId) return OperationResult.Error("UserId does not match");
 
-            reminderRepository.Remove(reminder);
-            reminderRepository.Commit();
+                reminderRepository.Remove(reminder);
+                reminderRepository.Commit();
 
-            return OperationResult.Succeed();
+                return OperationResult.Succeed();
+            }
         }
 
         public void Dismiss(NotificationModel model)
         {
-            var notification = notificationRepository.GetById(model.Id);
+            using (var notificationRepository = repositoryFactory.CreateNotificationRepository())
+            {
+                var notification = notificationRepository.GetById(model.Id);
 
-            notification.Dismissed = model.Dismissed;
+                notification.Dismissed = model.Dismissed;
 
-            notificationRepository.Update(notification);
-            reminderRepository.Commit();
+                notificationRepository.Update(notification);
+                notificationRepository.Commit();
+            }
         }
 
         public IEnumerable<NotificationModel> GetNotifications()
         {
+            var notificationRepository = repositoryFactory.CreateNotificationRepository();
+
             var authenticatedUser = userService.GetAuthenticatedUser();
 
             GenerateNotifications(authenticatedUser.Email);
@@ -99,44 +104,56 @@ namespace HomeManagement.API.Business
 
         public ReminderModel GetReminder(int id)
         {
-            var authenticatedUser = userService.GetAuthenticatedUser();
+            using (var reminderRepository = repositoryFactory.CreateReminderRepository())
+            {
+                var authenticatedUser = userService.GetAuthenticatedUser();
 
-            var reminder = reminderRepository.FirstOrDefault(r => r.Id.Equals(id));
+                var reminder = reminderRepository.FirstOrDefault(r => r.Id.Equals(id));
 
-            return reminderMapper.ToModel(reminder);
+                return reminderMapper.ToModel(reminder);
+            }
         }
 
         public IEnumerable<ReminderModel> GetReminders()
         {
-            var authenticatedUser = userService.GetAuthenticatedUser();
+            using (var reminderRepository = repositoryFactory.CreateReminderRepository())
+            {
+                var authenticatedUser = userService.GetAuthenticatedUser();
 
-            var reminders = reminderRepository
-                .Where(r => r.User.Email.Equals(authenticatedUser.Email))
-                .Select(r => reminderMapper.ToModel(r))
-                .ToList();
+                var reminders = reminderRepository
+                    .Where(r => r.User.Email.Equals(authenticatedUser.Email))
+                    .Select(r => reminderMapper.ToModel(r))
+                    .ToList();
 
-            return reminders;
+                return reminders;
+            }
         }
 
         public OperationResult UpdateReminder(ReminderModel reminderModel)
         {
-            var authenticatedUser = userService.GetAuthenticatedUser();
-
-            var reminder = reminderMapper.ToEntity(reminderModel);
-
-            if (reminder.UserId == 0)
+            using (var reminderRepository = repositoryFactory.CreateReminderRepository())
             {
-                reminder.UserId = authenticatedUser.Id;
+                var authenticatedUser = userService.GetAuthenticatedUser();
+
+                var reminder = reminderMapper.ToEntity(reminderModel);
+
+                if (reminder.UserId == 0)
+                {
+                    reminder.UserId = authenticatedUser.Id;
+                }
+
+                reminderRepository.Update(reminder);
+                reminderRepository.Commit();
+
+                return OperationResult.Succeed();
             }
-
-            reminderRepository.Update(reminder);
-            reminderRepository.Commit();
-
-            return OperationResult.Succeed();
         }
 
         private void GenerateNotifications(string email)
         {
+            var reminderRepository = repositoryFactory.CreateReminderRepository();
+            var notificationRepository = repositoryFactory.CreateNotificationRepository();
+
             var reminders = reminderRepository.GetUserActiveReminders(email);
 
             var notifications = notificationRepository
@@ -157,7 +174,7 @@ namespace HomeManagement.API.Business
 
                 notificationRepository.Add(notification);
             }
-            reminderRepository.Commit();
+            notificationRepository.Commit();
         }
     }
 

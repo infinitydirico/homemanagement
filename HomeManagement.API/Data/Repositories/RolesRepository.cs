@@ -19,41 +19,70 @@ namespace HomeManagement.API.Data.Repositories
             this.platformContext = platformContext ?? throw new ArgumentNullException($"{nameof(platformContext)} is null");
         }
 
-        public IQueryable<IdentityRole<string>> All => platformContext.GetDbContext().Set<IdentityRole<string>>().AsQueryable();
-
         public void Add(IdentityRole<string> entity)
         {
-            var dbContext = platformContext.GetDbContext();
-
-            dbContext.Set<IdentityRole<string>>().Add(entity);
+            using (var context = platformContext.CreateDbContext())
+            {
+                context.Set<IdentityRole<string>>().Add(entity);
+            }
         }
 
-        public int Count(Expression<Func<IdentityRole<string>, bool>> predicate) => All.Count(predicate);
+        public int Count(Expression<Func<IdentityRole<string>, bool>> predicate)
+        {
+            using (var context = platformContext.CreateDbContext())
+            {
+                return context.Set<IdentityRole<string>>().Count(predicate);
+            }
+        }
 
-        public int Count() => All.Count();
+        public int Count()
+        {
+            using (var context = platformContext.CreateDbContext())
+            {
+                return context.Set<IdentityRole<string>>().Count();
+            }
+        }
 
-        public IdentityRole<string> FirstOrDefault() => All.FirstOrDefault();
+        public IdentityRole<string> FirstOrDefault()
+        {
+            using (var context = platformContext.CreateDbContext())
+            {
+                return context.Set<IdentityRole<string>>().FirstOrDefault();
+            }
+        }
 
-        public IdentityRole<string> FirstOrDefault(Expression<Func<IdentityRole<string>, bool>> predicate) => All.FirstOrDefault(predicate);
+        public IdentityRole<string> FirstOrDefault(Expression<Func<IdentityRole<string>, bool>> predicate)
+        {
+            using (var context = platformContext.CreateDbContext())
+            {
+                return context.Set<IdentityRole<string>>().FirstOrDefault(predicate);
+            }
+        }
 
-        public IEnumerable<IdentityRole<string>> GetAll() => All.ToList();
+        public IEnumerable<IdentityRole<string>> GetAll()
+        {
+            using (var context = platformContext.CreateDbContext())
+            {
+                return context.Set<IdentityRole<string>>().ToList();
+            }
+        }
 
         public void Remove(IdentityRole<string> entity)
         {
-            var dbContext = platformContext.GetDbContext();
-
-            var role = FirstOrDefault(x => x.Id.Equals(entity.Id));
-
-            dbContext.Set<IdentityRole<string>>().Remove(role);
+            using (var context = platformContext.CreateDbContext())
+            {
+                var role = FirstOrDefault(x => x.Id.Equals(entity.Id));
+                context.Set<IdentityRole<string>>().Remove(role);
+            }
         }
 
         public void Update(IdentityRole<string> entity)
         {
-            var dbContext = platformContext.GetDbContext();
-
-            var role = FirstOrDefault(x => x.Id.Equals(entity.Id));
-
-            dbContext.Set<IdentityRole<string>>().Update(role);
+            using (var context = platformContext.CreateDbContext())
+            {
+                var role = FirstOrDefault(x => x.Id.Equals(entity.Id));
+                context.Set<IdentityRole<string>>().Update(role);
+            }
         }
 
         public void Commit()
@@ -61,7 +90,13 @@ namespace HomeManagement.API.Data.Repositories
             platformContext.Commit();
         }
 
-        public IEnumerable<IdentityRole<string>> Where(Expression<Func<IdentityRole<string>, bool>> predicate) => All.Where(predicate);
+        public IEnumerable<IdentityRole<string>> Where(Expression<Func<IdentityRole<string>, bool>> predicate)
+        {
+            using (var context = platformContext.CreateDbContext())
+            {
+                return context.Set<IdentityRole<string>>().Where(predicate).ToList();
+            }
+        }
 
         #region Unimplemented methods
 
@@ -106,6 +141,11 @@ namespace HomeManagement.API.Data.Repositories
         }
 
         public IEnumerable<IdentityRole<string>> Paginate<TOrder>(Func<IdentityRole<string>, bool> filter, Func<IdentityRole<string>, TOrder> orderBy, int skip, int take)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Dispose()
         {
             throw new NotImplementedException();
         }

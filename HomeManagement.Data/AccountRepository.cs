@@ -1,4 +1,5 @@
 ﻿using HomeManagement.Domain;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,16 +7,18 @@ namespace HomeManagement.Data
 {
     public class AccountRepository : BaseRepository<Account>, IAccountRepository
     {
-        public AccountRepository(IPlatformContext platformContext) : base(platformContext)
+        public AccountRepository(DbContext context)
+            :base(context)
         {
+
         }
 
         public override bool Exists(Account entity) => GetById(entity.Id) != null;
 
         public IEnumerable<Account> GetAllByUser(string username)
         {
-            var accountSet = platformContext.GetDbContext().Set<Account>().AsQueryable();
-            var userSet = platformContext.GetDbContext().Set<User>().AsQueryable();
+            var accountSet = context.Set<Account>().AsQueryable();
+            var userSet = context.Set<User>().AsQueryable();
 
             var accounts = from account in accountSet
                            join user in userSet
@@ -28,7 +31,7 @@ namespace HomeManagement.Data
 
         public override Account GetById(int id)
         {
-            return platformContext.GetDbContext().Set<Account>().FirstOrDefault(x => x.Id.Equals(id));
+            return context.Set<Account>().FirstOrDefault(x => x.Id.Equals(id));
         }
     }
 }

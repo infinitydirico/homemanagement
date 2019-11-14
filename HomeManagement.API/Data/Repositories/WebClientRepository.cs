@@ -1,6 +1,7 @@
 ﻿using HomeManagement.API.Data.Entities;
 using HomeManagement.Contracts.Repositories;
 using HomeManagement.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeManagement.API.Data.Repositories
 {
@@ -11,7 +12,7 @@ namespace HomeManagement.API.Data.Repositories
 
     public class WebClientRepository : BaseRepository<WebClient>, IWebClientRepository
     {
-        public WebClientRepository(IPlatformContext platformContext) : base(platformContext)
+        public WebClientRepository(DbContext context) : base(context)
         {
         }
 

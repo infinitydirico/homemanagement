@@ -1,5 +1,4 @@
-﻿using HomeManagement.Contracts.Repositories;
-using HomeManagement.Data;
+﻿using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.FilesStore;
 using HomeManagement.Mapper;
@@ -14,42 +13,34 @@ namespace HomeManagement.API.Business
     public class StorageService : IStorageService
     {
         private readonly IStorageItemMapper storageItemMapper;
-        private readonly IStorageItemRepository storageItemRepository;
+        private readonly IRepositoryFactory repositoryFactory;
         private readonly IStorageClient storageClient;
-        private readonly IUserRepository userRepository;
-        private readonly ITransactionRepository transactionRepository;
-        private readonly IAccountRepository accountRepository;
-        private readonly IPreferencesRepository preferencesRepository;
         private readonly IUserSessionService userService;
 
         public StorageService(IStorageItemMapper storageItemMapper,
-            IStorageItemRepository storageItemRepository,
+            IRepositoryFactory repositoryFactory,
             IStorageClient storageClient,
-            IUserRepository userRepository,
-            ITransactionRepository transactionRepository,
-            IAccountRepository accountRepository,
-            IPreferencesRepository preferencesRepository,
             IUserSessionService userService)
         {
             this.storageItemMapper = storageItemMapper;
-            this.storageItemRepository = storageItemRepository;
+            this.repositoryFactory = repositoryFactory;
             this.storageClient = storageClient;
-            this.userRepository = userRepository;
-            this.transactionRepository = transactionRepository;
-            this.accountRepository = accountRepository;
-            this.preferencesRepository = preferencesRepository;
             this.userService = userService;
         }
 
         public async Task<OperationResult> Authorize(string state, string code)
         {
-            var preference = preferencesRepository.FirstOrDefault(x => x.Value.Equals(state));
+            using (var preferencesRepository = repositoryFactory.CreatePreferencesRepository())
+            using (var userRepository = repositoryFactory.CreateUserRepository())
+            {
+                var preference = preferencesRepository.FirstOrDefault(x => x.Value.Equals(state));
 
-            var user = userRepository.GetById(preference.UserId);
+                var user = userRepository.GetById(preference.UserId);
 
-            await storageClient.Authorize(user.Id, code, state);
+                await storageClient.Authorize(user.Id, code, state);
 
-            return OperationResult.Succeed();
+                return OperationResult.Succeed();
+            }
         }
 
         public string CreateAccessToken()
@@ -63,17 +54,20 @@ namespace HomeManagement.API.Business
 
         public async Task<FileModel> Download(int id)
         {
-            var user = userService.GetAuthenticatedUser();
-
-            var item = storageItemRepository.GetById(id);
-
-            var fileStream = await storageClient.Download(user.Id, item.Path);
-
-            return new FileModel
+            using (var storageItemRepository = repositoryFactory.CreateStorageItemRepository())
             {
-                Name = item.Name,
-                Stream = fileStream
-            };
+                var user = userService.GetAuthenticatedUser();
+
+                var item = storageItemRepository.GetById(id);
+
+                var fileStream = await storageClient.Download(user.Id, item.Path);
+
+                return new FileModel
+                {
+                    Name = item.Name,
+                    Stream = fileStream
+                };
+            }
         }
 
         public IEnumerable<StorageItemModel> GetStorageItems()
@@ -100,17 +94,22 @@ namespace HomeManagement.API.Business
 
         public async Task<StorageItemModel> Upload(string filename, int transactionId, Stream stream)
         {
-            var transaction = transactionRepository.GetById(transactionId);
-            var account = accountRepository.GetById(transaction.AccountId);
+            using (var transactionRepository = repositoryFactory.CreateTransactionRepository())
+            using (var accountRepository = repositoryFactory.CreateAccountRepository())
+            using (var storageItemRepository = repositoryFactory.CreateStorageItemRepository())
+            {
+                var transaction = transactionRepository.GetById(transactionId);
+                var account = accountRepository.GetById(transaction.AccountId);
 
-            var storageItem = await storageClient.Upload(account.UserId, filename, account.Name, transaction.Name, stream);
+                var storageItem = await storageClient.Upload(account.UserId, filename, account.Name, transaction.Name, stream);
 
-            storageItem.TransactionId = transactionId;
+                storageItem.TransactionId = transactionId;
 
-            storageItemRepository.Add(storageItem);
-            storageItemRepository.Commit();
+                storageItemRepository.Add(storageItem);
+                storageItemRepository.Commit();
 
-            return storageItemMapper.ToModel(storageItem);
+                return storageItemMapper.ToModel(storageItem);
+            }
         }
 
         private List<StorageItem> GetRepoItems(int userId)

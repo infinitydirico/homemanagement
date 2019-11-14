@@ -5,18 +5,19 @@ namespace HomeManagement.API.Business
 {
     public class UserSessionService : IUserSessionService
     {
-        private readonly IUserRepository userRepository;
+        private readonly IRepositoryFactory repositoryFactory;
         User user;
 
-        public UserSessionService(IUserRepository userRepository)
+        public UserSessionService(IRepositoryFactory repositoryFactory)
         {
-            this.userRepository = userRepository;
+            this.repositoryFactory = repositoryFactory;
         }
 
         public User GetAuthenticatedUser() => user;
 
         public void RegisterScopedUser(string email)
         {
+            var userRepository = repositoryFactory.CreateUserRepository();
             user = userRepository.GetByEmail(email);
         }
     }

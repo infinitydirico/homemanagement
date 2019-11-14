@@ -1,4 +1,5 @@
 ﻿using HomeManagement.Domain;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,17 +7,18 @@ namespace HomeManagement.Data
 {
     public class TransactionRepository : BaseRepository<Transaction>, ITransactionRepository
     {
-        public TransactionRepository(IPlatformContext platformContext) : base(platformContext)
+        public TransactionRepository(DbContext context)
+            : base(context)
         {
-        }
 
+        }
         public override bool Exists(Transaction entity) => GetById(entity.Id) != null;
 
         public IEnumerable<Transaction> GetByAccount(int accountId)
         {
-            var transactionSet = platformContext.GetDbContext().Set<Transaction>().AsQueryable();
+            var transactionSet = context.Set<Transaction>().AsQueryable();
 
-            var accountSet = platformContext.GetDbContext().Set<Account>().AsQueryable();
+            var accountSet = context.Set<Account>().AsQueryable();
 
             return (from t in transactionSet
                     join a in accountSet
@@ -25,13 +27,13 @@ namespace HomeManagement.Data
                     select t).ToList();
         }
 
-        public override Transaction GetById(int id) => dbContext.Set<Transaction>().FirstOrDefault(x => x.Id.Equals(id));
+        public override Transaction GetById(int id) => context.Set<Transaction>().FirstOrDefault(x => x.Id.Equals(id));
 
         public IEnumerable<Transaction> GetByMeasurableAccount(int accountId)
         {
-            var transactionSet = platformContext.GetDbContext().Set<Transaction>().AsQueryable();
+            var transactionSet = context.Set<Transaction>().AsQueryable();
 
-            var accountSet = platformContext.GetDbContext().Set<Account>().AsQueryable();
+            var accountSet = context.Set<Account>().AsQueryable();
 
             var transactions = (from t in transactionSet
                                 join a in accountSet
@@ -44,11 +46,11 @@ namespace HomeManagement.Data
 
         public IEnumerable<Transaction> GetByUser(string email)
         {
-            var transactionSet = platformContext.GetDbContext().Set<Transaction>().AsQueryable();
+            var transactionSet = context.Set<Transaction>().AsQueryable();
 
-            var accountSet = platformContext.GetDbContext().Set<Account>().AsQueryable();
+            var accountSet = context.Set<Account>().AsQueryable();
 
-            var userSet = platformContext.GetDbContext().Set<User>().AsQueryable();
+            var userSet = context.Set<User>().AsQueryable();
 
             var transaction = from t in transactionSet
                               join a in accountSet
@@ -59,6 +61,11 @@ namespace HomeManagement.Data
                               select t;
 
             return transaction.ToList();
+        }
+
+        public void DeleteAllByAccount(int accountId)
+        {
+            context.Database.ExecuteSqlCommand($"DELETE FROM Transactions WHERE AccountId = {accountId}");
         }
     }
 }

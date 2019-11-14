@@ -12,12 +12,7 @@ namespace HomeManagement.API.Business
 {
     public class PreferenceService : IPreferenceService
     {
-        private readonly IUserRepository userRepository;
-        private readonly IPreferencesRepository preferencesRepository;
-        private readonly ICategoryRepository categoryRepository;
-        private readonly IUserCategoryRepository userCategoryRepository;
-        private readonly ITransactionRepository transactionRepository;
-        private readonly IAccountRepository accountRepository;
+        private readonly IRepositoryFactory repositoryFactory;
         private readonly ICurrencyMapper currencyMapper;
         private readonly ICurrencyService currencyService;
         private readonly IUserSessionService userService;
@@ -26,22 +21,12 @@ namespace HomeManagement.API.Business
         private const string PreferredCurrency = "PreferredCurrency";
         private const string UserCountry = "UserCountry";
 
-        public PreferenceService(IUserRepository userRepository,
-            IPreferencesRepository preferencesRepository,
-            ICategoryRepository categoryRepository,
-            IUserCategoryRepository userCategoryRepository,
-            ITransactionRepository transactionRepository,
-            IAccountRepository accountRepository,
+        public PreferenceService(IRepositoryFactory repositoryFactory,
             ICurrencyMapper currencyMapper,
             ICurrencyService currencyService,
             IUserSessionService userService)
         {
-            this.userRepository = userRepository;
-            this.preferencesRepository = preferencesRepository;
-            this.categoryRepository = categoryRepository;
-            this.userCategoryRepository = userCategoryRepository;
-            this.transactionRepository = transactionRepository;
-            this.accountRepository = accountRepository;
+            this.repositoryFactory = repositoryFactory;
             this.currencyMapper = currencyMapper;
             this.currencyService = currencyService;
             this.userService = userService;
@@ -49,35 +34,40 @@ namespace HomeManagement.API.Business
 
         public void ChangeLanguage(string language)
         {
-            var user = userService.GetAuthenticatedUser();
-
-            var userPreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id)) ?? new Preferences();
-
-            userPreference.Key = LanguageKey;
-            userPreference.Value = language;
-            userPreference.UserId = user.Id;
-
-            if (userPreference.Id > 0)
+            using (var preferencesRepository = repositoryFactory.CreatePreferencesRepository())
             {
-                preferencesRepository.Update(userPreference);
+                var user = userService.GetAuthenticatedUser();
+
+                var userPreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id)) ?? new Preferences();
+
+                userPreference.Key = LanguageKey;
+                userPreference.Value = language;
+                userPreference.UserId = user.Id;
+
+                if (userPreference.Id > 0)
+                {
+                    preferencesRepository.Update(userPreference);
+                }
+                else
+                {
+                    preferencesRepository.Add(userPreference);
+                }
+
+                preferencesRepository.Commit();
+
+                Task.Run(() =>
+                {
+                    UpdateUserCategories(user, language);
+
+                    UpdateTransactions(user);
+                });
             }
-            else
-            {
-                preferencesRepository.Add(userPreference);
-            }
-
-            preferencesRepository.Commit();
-
-            Task.Run(() =>
-            {
-                UpdateUserCategories(user, language);
-
-                UpdateTransactions(user);
-            });
         }
 
         public string GetUserLanguage(int userId)
         {
+            var preferencesRepository = repositoryFactory.CreatePreferencesRepository();
+
             var languagePreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(userId) && x.Key.Equals(LanguageKey));
 
             return languagePreference?.Value ?? "en";
@@ -85,108 +75,126 @@ namespace HomeManagement.API.Business
 
         private void UpdateUserCategories(User user, string language)
         {
-            var userCategories = categoryRepository.GetUserCategories(user.Email);
-
-            foreach (var category in userCategories)
+            using (var categoryRepository = repositoryFactory.CreateCategoryRepository())
             {
-                categoryRepository.Remove(category.Id, user);
-            }
-            categoryRepository.Commit();
+                var userCategories = categoryRepository.GetUserCategories(user.Email);
 
-            var defaultCategories = CategoryInitializer.GetDefaultCategories(new System.Globalization.CultureInfo(language));
+                foreach (var category in userCategories)
+                {
+                    categoryRepository.Remove(category.Id, user);
+                }
+                categoryRepository.Commit();
 
-            foreach (var category in defaultCategories)
-            {
-                categoryRepository.Add(category, user);
+                var defaultCategories = CategoryInitializer.GetDefaultCategories(new System.Globalization.CultureInfo(language));
+
+                foreach (var category in defaultCategories)
+                {
+                    categoryRepository.Add(category, user);
+                }
+                categoryRepository.Commit();
             }
-            categoryRepository.Commit();
         }
 
         private void UpdateTransactions(User user)
         {
-            var transactionsWithOldCategories = transactionRepository.GetByUser(user.Email);
-
-            var userCategories = categoryRepository.GetActiveUserCategories(user.Email);
-
-            foreach (var transaction in transactionsWithOldCategories)
+            using (var categoryRepository = repositoryFactory.CreateCategoryRepository())
+            using (var transactionRepository = repositoryFactory.CreateTransactionRepository())
             {
-                var oldCategory = categoryRepository.FirstOrDefault(x => x.Id.Equals(transaction.CategoryId));
+                var transactionsWithOldCategories = transactionRepository.GetByUser(user.Email);
 
-                var newCategory = userCategories.First(x => x.Icon.Equals(oldCategory.Icon));
+                var userCategories = categoryRepository.GetActiveUserCategories(user.Email);
 
-                transaction.CategoryId = newCategory.Id;
+                foreach (var transaction in transactionsWithOldCategories)
+                {
+                    var oldCategory = categoryRepository.FirstOrDefault(x => x.Id.Equals(transaction.CategoryId));
 
-                transactionRepository.Update(transaction);
+                    var newCategory = userCategories.First(x => x.Icon.Equals(oldCategory.Icon));
+
+                    transaction.CategoryId = newCategory.Id;
+
+                    transactionRepository.Update(transaction);
+                }
+
+                transactionRepository.Commit();
             }
-
-            preferencesRepository.Commit();
         }
 
         public void ChangeCurrency(CurrencyModel currency)
         {
-            var user = userService.GetAuthenticatedUser();
-            var currencyPreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(PreferredCurrency));
-
-            if (currencyPreference == null)
+            using (var preferencesRepository = repositoryFactory.CreatePreferencesRepository())
             {
-                currencyPreference = new Preferences
+                var user = userService.GetAuthenticatedUser();
+                var currencyPreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(PreferredCurrency));
+
+                if (currencyPreference == null)
                 {
-                    UserId = user.Id,
-                    Key = PreferredCurrency,
-                    Value = currency.Name,
-                };
+                    currencyPreference = new Preferences
+                    {
+                        UserId = user.Id,
+                        Key = PreferredCurrency,
+                        Value = currency.Name,
+                    };
 
-                preferencesRepository.Add(currencyPreference);
-            }
-            else
-            {
-                currencyPreference.Value = currency.Name;
-                preferencesRepository.Update(currencyPreference);
-            }
+                    preferencesRepository.Add(currencyPreference);
+                }
+                else
+                {
+                    currencyPreference.Value = currency.Name;
+                    preferencesRepository.Update(currencyPreference);
+                }
 
-            preferencesRepository.Commit();
+                preferencesRepository.Commit();
+            }
         }
 
         public IEnumerable<CurrencyModel> GetCurrencies() => currencyService.GetCurrencies().Select(x => currencyMapper.ToModel(x));
 
         public CurrencyModel GetPreferredCurrency()
         {
+            var preferencesRepository = repositoryFactory.CreatePreferencesRepository();
             var user = userService.GetAuthenticatedUser();
             var preferredCurrency = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(PreferredCurrency));
-            var currency = GetCurrencies().FirstOrDefault(x => x.Name.Equals(preferredCurrency.Value));
-            return currency;
+            var currencyRepository = repositoryFactory.CreateCurrencyRepository();
+            var currency = currencyRepository.FirstOrDefault(x => x.Name.Equals(preferredCurrency.Value));
+            return currencyMapper.ToModel(currency);
         }
 
         public void SaveCountry(string country)
         {
-            var user = userService.GetAuthenticatedUser();
-            var countryPreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(UserCountry));
-
-            if (countryPreference == null)
+            using (var preferencesRepository = repositoryFactory.CreatePreferencesRepository())
             {
-                countryPreference = new Preferences
+                var user = userService.GetAuthenticatedUser();
+                var countryPreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(UserCountry));
+
+                if (countryPreference == null)
                 {
-                    UserId = user.Id,
-                    Key = UserCountry,
-                    Value = country,
-                };
+                    countryPreference = new Preferences
+                    {
+                        UserId = user.Id,
+                        Key = UserCountry,
+                        Value = country,
+                    };
 
-                preferencesRepository.Add(countryPreference);
-            }
-            else
-            {
-                countryPreference.Value = country;
-                preferencesRepository.Update(countryPreference);
-            }
+                    preferencesRepository.Add(countryPreference);
+                }
+                else
+                {
+                    countryPreference.Value = country;
+                    preferencesRepository.Update(countryPreference);
+                }
 
-            preferencesRepository.Commit();
+                preferencesRepository.Commit();
+            }
         }
 
         public string GetUserCountry()
         {
-            var user = userService.GetAuthenticatedUser();
-            var countryPreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(UserCountry));
-            return countryPreference?.Value;
+            using (var preferencesRepository = repositoryFactory.CreatePreferencesRepository())
+            {
+                var user = userService.GetAuthenticatedUser();
+                var countryPreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(UserCountry));
+                return countryPreference?.Value;
+            }
         }
 
         public string GetUserCountryCode()

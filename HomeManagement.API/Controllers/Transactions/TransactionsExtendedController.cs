@@ -85,12 +85,7 @@ namespace HomeManagement.API.Controllers.Transactions
         {
             if (accountId < 1) return BadRequest();
 
-            var transactions = transactionService.GetByAccountId(accountId);
-
-            foreach (var transaction in transactions)
-            {
-                transactionService.Delete(transaction.Id);
-            }
+            transactionService.BatchDelete(accountId);
 
             return Ok();
         }

@@ -14,92 +14,113 @@ namespace HomeManagement.API.Business
 {
     public class TransactionService : ITransactionService
     {
-        private readonly IAccountRepository accountRepository;
-        private readonly ITransactionRepository transactionRepository;
-        private readonly IUserRepository userRepository;
         private readonly IPreferenceService preferenceService;
-        private readonly ICategoryRepository categoryRepository;
         private readonly ITransactionMapper transactionMapper;
         private readonly ICategoryMapper categoryMapper;
         private readonly IExportableTransaction exportableTransaction;
         private readonly IUserSessionService userService;
+        private readonly IRepositoryFactory repositoryFactory;
 
-        public TransactionService(IAccountRepository accountRepository,
-            ITransactionRepository transactionRepository,
-            ICategoryRepository categoryRepository,
-            ITransactionMapper transactionMapper,
+        public TransactionService(ITransactionMapper transactionMapper,
             ICategoryMapper categoryMapper,
-            IUserRepository userRepository,
             IPreferenceService preferenceService,
             IExportableTransaction exportableTransaction,
-            IUserSessionService userService)
+            IUserSessionService userService,
+            IRepositoryFactory repositoryFactory)
         {
-            this.accountRepository = accountRepository;
-            this.transactionRepository = transactionRepository;
-            this.categoryRepository = categoryRepository;
             this.transactionMapper = transactionMapper;
             this.categoryMapper = categoryMapper;
-            this.userRepository = userRepository;
             this.preferenceService = preferenceService;
             this.exportableTransaction = exportableTransaction;
             this.userService = userService;
+            this.repositoryFactory = repositoryFactory;
         }
 
         public void Add(TransactionModel transaction)
         {
             Category category;
 
-            if (transaction.CategoryId.Equals(default(int)) || categoryRepository.FirstOrDefault(x => x.Id.Equals(transaction.CategoryId)) == null)
+            using (var transactionRepository = repositoryFactory.CreateTransactionRepository())
+            using (var accountRepository = repositoryFactory.CreateAccountRepository())
+            using (var categoryRepository = repositoryFactory.CreateCategoryRepository())
             {
-                category = categoryRepository.FirstOrDefault();
-                transaction.CategoryId = category.Id;
+                if (transaction.CategoryId.Equals(default(int)) || categoryRepository.FirstOrDefault(x => x.Id.Equals(transaction.CategoryId)) == null)
+                {
+                    category = categoryRepository.FirstOrDefault();
+                    transaction.CategoryId = category.Id;
+                }
+
+                var entity = transactionMapper.ToEntity(transaction);
+
+                transactionRepository.Add(entity);
+
+                var account = accountRepository.FirstOrDefault(x => x.Id.Equals(entity.AccountId));
+                account.Balance = entity.TransactionType.Equals(TransactionType.Income) ?
+                    account.Balance + entity.Price :
+                    account.Balance - entity.Price;
+
+                accountRepository.Update(account);
+
+                transactionRepository.Commit();
             }
-
-            var account = accountRepository.GetById(transaction.AccountId);
-
-            var entity = transactionMapper.ToEntity(transaction);
-
-            transactionRepository.Add(entity);
-
-            UpdateBalance(entity);
-
-            transactionRepository.Commit();
         }
 
         public void Update(TransactionModel transaction)
         {
-            var entity = transactionMapper.ToEntity(transaction);
+            using (var transactionRepository = repositoryFactory.CreateTransactionRepository())
+            using (var accountRepository = repositoryFactory.CreateAccountRepository())
+            {
+                var entity = transactionMapper.ToEntity(transaction);
 
-            var current = transactionRepository.GetById(entity.Id);
+                var current = transactionRepository.GetById(entity.Id);
 
-            UpdateBalance(current, true);
+                var account = accountRepository.FirstOrDefault(x => x.Id.Equals(entity.AccountId));
+                var price = -entity.Price;
+                account.Balance = entity.TransactionType.Equals(TransactionType.Income) ?
+                    account.Balance + price :
+                    account.Balance - price;
 
-            current.Name = entity.Name;
-            current.Price = entity.Price;
-            current.TransactionType = entity.TransactionType;
-            current.CategoryId = entity.CategoryId;
-            current.Date = entity.Date;
+                current.Name = entity.Name;
+                current.Price = entity.Price;
+                current.TransactionType = entity.TransactionType;
+                current.CategoryId = entity.CategoryId;
+                current.Date = entity.Date;
 
-            transactionRepository.Update(current);            
+                transactionRepository.Update(current);
 
-            UpdateBalance(current);
+                account.Balance = entity.TransactionType.Equals(TransactionType.Income) ?
+                    account.Balance + entity.Price :
+                    account.Balance - entity.Price;
 
-            transactionRepository.Commit();
+                transactionRepository.Commit();
+            }
         }
 
         public void Delete(int id)
         {
-            var entity = transactionRepository.GetById(id);
+            using (var transactionRepository = repositoryFactory.CreateTransactionRepository())
+            using (var accountRepository = repositoryFactory.CreateAccountRepository())
+            {
+                var entity = transactionRepository.GetById(id);
 
-            transactionRepository.Remove(entity);
+                transactionRepository.Remove(entity);
 
-            UpdateBalance(entity, true);
+                var account = accountRepository.FirstOrDefault(x => x.Id.Equals(entity.AccountId));
+                var price = -entity.Price;
+                account.Balance = entity.TransactionType.Equals(TransactionType.Income) ?
+                    account.Balance + price :
+                    account.Balance - price;
 
-            transactionRepository.Commit();
+                accountRepository.Update(account);
+
+                transactionRepository.Commit();
+            }
         }
 
         public IEnumerable<TransactionModel> GetAll()
         {
+            var transactionRepository = repositoryFactory.CreateTransactionRepository();
+
             var authenticatedUser = userService.GetAuthenticatedUser();
 
             var transactions = transactionRepository
@@ -110,22 +131,10 @@ namespace HomeManagement.API.Business
             return transactions;
         }
 
-        private void UpdateBalance(Transaction c, bool reverse = false)
-        {
-            var account = accountRepository.FirstOrDefault(x => x.Id.Equals(c.AccountId));
-
-            var price = c.Price;
-            if (reverse)
-            {
-                price = -c.Price;
-            }
-
-            account.Balance = c.TransactionType.Equals(TransactionType.Income) ? account.Balance + price : account.Balance - price;
-            accountRepository.Update(account);
-        }
-
         public TransactionModel Get(int id)
         {
+            var transactionRepository = repositoryFactory.CreateTransactionRepository();
+
             var result = transactionRepository.GetById(id);
 
             return transactionMapper.ToModel(result);
@@ -133,27 +142,37 @@ namespace HomeManagement.API.Business
 
         public void Import(int accountId, IFormFile formFile)
         {
-            var account = accountRepository.FirstOrDefault(x => x.Id.Equals(accountId));
-
-            foreach (var entity in exportableTransaction.ToEntities(formFile.OpenReadStream().GetBytes()))
+            using (var transactionRepository = repositoryFactory.CreateTransactionRepository())
+            using (var accountRepository = repositoryFactory.CreateAccountRepository())
             {
-                if (entity == null) continue;
+                var account = accountRepository.FirstOrDefault(x => x.Id.Equals(accountId));
 
-                if (transactionRepository.Exists(entity)) continue;
+                foreach (var entity in exportableTransaction.ToEntities(formFile.OpenReadStream().GetBytes()))
+                {
+                    if (entity == null) continue;
 
-                entity.Id = 0;
-                entity.AccountId = accountId;
-                transactionRepository.Add(entity);
+                    if (transactionRepository.Exists(entity)) continue;
 
-                account.Balance = entity.TransactionType.Equals(TransactionType.Income) ? account.Balance + entity.Price : account.Balance - entity.Price;
-                accountRepository.Update(account);
+                    entity.Id = 0;
+                    entity.AccountId = accountId;
+                    transactionRepository.Add(entity);
+
+                    account.Balance = entity.TransactionType.Equals(TransactionType.Income) ?
+                        account.Balance + entity.Price :
+                        account.Balance - entity.Price;
+
+                    accountRepository.Update(account);
+                }
+
+                transactionRepository.Commit();
             }
-
-            transactionRepository.Commit();
         }
 
         public ExportFile Export(int accountId)
         {
+            var transactionRepository = repositoryFactory.CreateTransactionRepository();
+            var accountRepository = repositoryFactory.CreateAccountRepository();
+
             var transactions = transactionRepository.Where(x => x.AccountId.Equals(accountId)).ToList();
 
             var account = accountRepository.GetById(accountId);
@@ -169,6 +188,8 @@ namespace HomeManagement.API.Business
 
         public TransactionPageModel Page(TransactionPageModel page)
         {
+            var transactionRepository = repositoryFactory.CreateTransactionRepository();
+
             Expression<Func<Transaction, bool>> predicate = o => o.AccountId.Equals(page.AccountId);
             Func<Transaction, bool> filter = predicate.Compile();
 
@@ -196,6 +217,8 @@ namespace HomeManagement.API.Business
 
         public IEnumerable<TransactionModel> FilterByDate(int year, int month)
         {
+            var transactionRepository = repositoryFactory.CreateTransactionRepository();
+
             var authenticatedUser = userService.GetAuthenticatedUser();
 
             var transactions = transactionRepository
@@ -209,6 +232,8 @@ namespace HomeManagement.API.Business
 
         public IEnumerable<TransactionModel> FilterByDateAndAccount(int year, int month, int accountId)
         {
+            var transactionRepository = repositoryFactory.CreateTransactionRepository();
+
             var authenticatedUser = userService.GetAuthenticatedUser();
 
             var transactions = transactionRepository
@@ -224,6 +249,8 @@ namespace HomeManagement.API.Business
 
         public IEnumerable<TransactionModel> GetByAccountId(int accountId)
         {
+            var transactionRepository = repositoryFactory.CreateTransactionRepository();
+
             var authenticatedUser = userService.GetAuthenticatedUser();
 
             var transactions = transactionRepository
@@ -231,10 +258,13 @@ namespace HomeManagement.API.Business
                 .OrderByDescending(x => x.Date);
 
             return transactionMapper.ToModels(transactions);
+
         }
 
         public IEnumerable<MonthlyCategory> CategoryEvolution(int categoryId)
         {
+            var transactionRepository = repositoryFactory.CreateTransactionRepository();
+
             var authenticatedUser = userService.GetAuthenticatedUser();
 
             var result = transactionRepository
@@ -251,10 +281,13 @@ namespace HomeManagement.API.Business
                 .ToList();
 
             return result;
+
         }
 
         public IEnumerable<MonthlyCategory> CategoryEvolutionByAccount(int categoryId, int accountId)
         {
+            var transactionRepository = repositoryFactory.CreateTransactionRepository();
+
             var authenticatedUser = userService.GetAuthenticatedUser();
 
             var result = transactionRepository
@@ -272,6 +305,18 @@ namespace HomeManagement.API.Business
 
             return result;
         }
+
+        public void BatchDelete(int accountId)
+        {
+            using (var accountRepository = repositoryFactory.CreateAccountRepository())
+            using (var transactionRepository = repositoryFactory.CreateTransactionRepository())
+            {
+                var account = accountRepository.GetById(accountId);
+                account.Balance = 0;
+                transactionRepository.DeleteAllByAccount(accountId);
+                accountRepository.Commit();
+            }
+        }
     }
 
     public interface ITransactionService
@@ -281,6 +326,8 @@ namespace HomeManagement.API.Business
         void Update(TransactionModel transaction);
 
         void Delete(int id);
+
+        void BatchDelete(int accountId);
 
         IEnumerable<TransactionModel> GetAll();
 

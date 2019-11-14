@@ -11,78 +11,78 @@ namespace HomeManagement.Data
     public abstract class BaseRepository<T> : IRepository<T>
         where T : class
     {
+        protected DbContext context;
         protected IPlatformContext platformContext;
-        protected DbContext dbContext => platformContext.GetDbContext();
 
-        public BaseRepository(IPlatformContext platformContext)
+        public BaseRepository(DbContext context)
         {
-            this.platformContext = platformContext ?? throw new ArgumentNullException($"{nameof(platformContext)} is null");
+            this.context = context;
         }
 
         public virtual void Add(T entity)
         {
-            dbContext.Set<T>().Add(entity);
+            context.Set<T>().Add(entity);
         }
 
         public void Add(IEnumerable<T> entities)
         {
-            dbContext.Set<T>().AddRange(entities);
+            context.Set<T>().AddRange(entities);
         }
 
         public async Task AddAsync(T entity)
         {
-            await dbContext.Set<T>().AddAsync(entity);
+            await context.Set<T>().AddAsync(entity);
 
-            await dbContext.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
-        public int Count() => dbContext.Set<T>().Count();
+        public int Count() => context.Set<T>().Count();
 
-        public int Count(Expression<Func<T, bool>> predicate) => dbContext.Set<T>().Count(predicate);
+        public int Count(Expression<Func<T, bool>> predicate) => context.Set<T>().Count(predicate);
 
         public abstract bool Exists(T entity);
 
-        public T FirstOrDefault() => dbContext.Set<T>().FirstOrDefault();
+        public T FirstOrDefault() => context.Set<T>().FirstOrDefault();
 
-        public T FirstOrDefault(Expression<Func<T, bool>> predicate) => dbContext.Set<T>().FirstOrDefault(predicate);
+        public T FirstOrDefault(Expression<Func<T, bool>> predicate) => context.Set<T>().FirstOrDefault(predicate);
 
-        public IEnumerable<T> GetAll() => dbContext.Set<T>().ToList();
+        public IEnumerable<T> GetAll() => context.Set<T>().ToList();
 
         public abstract T GetById(int id);
 
         public virtual void Remove(T entity)
         {
-            dbContext.Set<T>().Remove(entity);
+            context.Set<T>().Remove(entity);
         }
 
         public virtual void Remove(int id)
         {
             var entity = GetById(id);
 
-            dbContext.Set<T>().Remove(entity);
+            context.Set<T>().Remove(entity);
         }
 
         public void Remove(IEnumerable<T> entities)
         {
-            dbContext.Set<T>().RemoveRange(entities);
+            context.Set<T>().RemoveRange(entities);
         }
 
         public decimal Sum(Expression<Func<T, int>> selector, Expression<Func<T, bool>> predicate = null) =>
-            predicate == null ? dbContext.Set<T>().Sum(selector) : dbContext.Set<T>().Where(predicate).Sum(selector);
+            predicate == null ? context.Set<T>().Sum(selector) : context.Set<T>().Where(predicate).Sum(selector);
 
         public decimal Sum(Expression<Func<T, decimal>> selector, Expression<Func<T, bool>> predicate = null) =>
-            predicate == null ? dbContext.Set<T>().Sum(selector) : dbContext.Set<T>().Where(predicate).Sum(selector);
+            predicate == null ? context.Set<T>().Sum(selector) : context.Set<T>().Where(predicate).Sum(selector);
 
         public virtual void Update(T entity)
         {
-            dbContext.Set<T>().Update(entity);
+            context.Set<T>().Update(entity);
         }
 
-        public IEnumerable<T> Where(Expression<Func<T, bool>> predicate) => dbContext.Set<T>().Where(predicate).ToList();
+        public IEnumerable<T> Where(Expression<Func<T, bool>> predicate) => context.Set<T>().Where(predicate).ToList();
 
         public IEnumerable<T> Paginate<TOrder>(Func<T, bool> filter, Func<T, TOrder> orderBy, int skip, int take)
         {
-            var set = dbContext.Set<T>();
+            var set = context.Set<T>();
 
             var result = set.Where(filter)
                             .OrderByDescending(orderBy)
@@ -95,7 +95,28 @@ namespace HomeManagement.Data
 
         public void Commit()
         {
-            platformContext.Commit();
+            context.SaveChanges();
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    context.Dispose();
+                }
+                context = null;
+                disposedValue = true;
+            }
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 }

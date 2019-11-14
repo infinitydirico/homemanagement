@@ -33,5 +33,19 @@ namespace HomeManagement.API.Controllers.Global
             return Ok(models);
         }
 
+        [AdminAuthorization]
+        [HttpPost]
+        public IActionResult UpdateCurrencies()
+        {
+            if (currencyService.IsUpToDate())
+            {
+                return Ok("Currencies are already up to date.");
+            }
+
+            currencyService.UpdateCurrencies();
+
+            return Ok("Currencies were updated.");
+        }
+
     }
 }

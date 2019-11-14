@@ -15,73 +15,67 @@ namespace HomeManagement.API.Services
         Currency GetCurrency(string name);
 
         List<Currency> GetCurrencies();
+
+        bool IsUpToDate();
+
+        void UpdateCurrencies();
     }
 
     public class CurrencyService : ICurrencyService
     {
         private const string ApiUrlKey = "CurrencyService_API";
         private const string AppIdKey = "CurrencyService_AppId";
-        private readonly IConfigurationSettingsRepository configurationSettingsRepository;
-        private readonly ICurrencyRepository currencyRepository;
-        private readonly IConfiguration configuration;
         private readonly List<string> supportedCurrencies = new List<string> { "USD", "EUR", "ARS" };
-        private readonly IPlatformContext platformContext;
+        private readonly IRepositoryFactory repositoryFactory;
 
-        public CurrencyService(ICurrencyRepository currencyRepository,
-            IConfigurationSettingsRepository configurationSettingsRepository,
-            IPlatformContext platformContext)
+        public CurrencyService(IRepositoryFactory repositoryFactory)
         {
-            this.currencyRepository = currencyRepository;
-            this.configurationSettingsRepository = configurationSettingsRepository;
-            this.platformContext = platformContext;
+            this.repositoryFactory = repositoryFactory;
         }
 
         public Currency GetCurrency(string name)
         {
-            if (!IsUpToDate())
-            {
-                UpdateCurrencies();
-            }
+            var currencyRepository = repositoryFactory.CreateCurrencyRepository();
 
             return currencyRepository.FirstOrDefault(x => x.Name.Equals(name));
         }
 
         public List<Currency> GetCurrencies()
         {
-            if (!IsUpToDate())
-            {
-                UpdateCurrencies();
-            }
-
+            var currencyRepository = repositoryFactory.CreateCurrencyRepository();
             return currencyRepository.GetAll().ToList();
         }
 
-        private bool IsUpToDate()
+        public bool IsUpToDate()
         {
+            var currencyRepository = repositoryFactory.CreateCurrencyRepository();
             var currencies = currencyRepository.GetAll().ToList();
 
             return currencies.All(x => (DateTime.Now - x.ChangeStamp).TotalDays < 1.0);
         }
 
-        private void UpdateCurrencies()
+        public void UpdateCurrencies()
         {
-            var apiCurrencies = GetApiCurrencies()
+            using (var currencyRepository = repositoryFactory.CreateCurrencyRepository())
+            {
+                var apiCurrencies = GetApiCurrencies()
                 .ConfigureAwait(false)
                 .GetAwaiter()
                 .GetResult();
 
-            var currencies = currencyRepository.GetAll().ToList();
+                var currencies = currencyRepository.GetAll().ToList();
 
-            foreach (var currency in currencies)
-            {
-                var currenctApiValue = apiCurrencies.FirstOrDefault(x => x.Name.Equals(currency.Name));
-                currency.ChangeStamp = DateTime.Now;
-                currency.Value = currenctApiValue.Value;
+                foreach (var currency in currencies)
+                {
+                    var currenctApiValue = apiCurrencies.FirstOrDefault(x => x.Name.Equals(currency.Name));
+                    currency.ChangeStamp = DateTime.Now;
+                    currency.Value = currenctApiValue.Value;
 
-                currencyRepository.Update(currency);
+                    currencyRepository.Update(currency);
+                }
+
+                currencyRepository.Commit();
             }
-
-            platformContext.Commit();
         }
 
         private async Task<List<Currency>> GetApiCurrencies()
@@ -89,6 +83,7 @@ namespace HomeManagement.API.Services
             if (!IsConfigued()) return CreateDefault().ToList();
 
             using (var httpClient = new HttpClient())
+            using (var configurationSettingsRepository = repositoryFactory.CreateConfigurationSettingsRepository())
             {
                 var baseUrl = configurationSettingsRepository.GetValue(ApiUrlKey);
                 var apiKey = configurationSettingsRepository.GetValue(AppIdKey);
@@ -118,6 +113,8 @@ namespace HomeManagement.API.Services
 
         private bool IsConfigued()
         {
+            var configurationSettingsRepository = repositoryFactory.CreateConfigurationSettingsRepository();
+
             var exists = configurationSettingsRepository.Exists(ApiUrlKey) && configurationSettingsRepository.Exists(AppIdKey);
 
             if (exists)

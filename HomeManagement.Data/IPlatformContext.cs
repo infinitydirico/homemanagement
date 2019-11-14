@@ -4,7 +4,7 @@ namespace HomeManagement.Data
 {
     public interface IPlatformContext
     {
-        DbContext GetDbContext();
+        DbContext CreateDbContext();
 
         void Commit();
     }

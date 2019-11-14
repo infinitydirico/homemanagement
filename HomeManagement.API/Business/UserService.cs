@@ -1,4 +1,5 @@
-﻿using HomeManagement.API.Data.Entities;
+﻿using HomeManagement.API.Data;
+using HomeManagement.API.Data.Entities;
 using HomeManagement.API.Data.Repositories;
 using HomeManagement.Contracts;
 using HomeManagement.Data;
@@ -27,62 +28,41 @@ namespace HomeManagement.API.Business
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IConfiguration configuration;
         private readonly JwtSecurityTokenHandler jwtSecurityToken = new JwtSecurityTokenHandler();
-        private readonly IAccountRepository accountRepository;
-        private readonly IUserRepository userRepository;
-        private readonly ICategoryRepository categoryRepository;
         private readonly IServiceScopeFactory serviceScopeFactory;
-        private readonly IPreferencesRepository preferencesRepository;
         private readonly ICryptography cryptography;
-        private readonly IUserCategoryRepository userCategoryRepository;
-        private readonly ITransactionRepository transactionRepository;
         private readonly IPreferenceService preferenceService;
-        private readonly ITokenRepository tokenRepository;
         private readonly IUserSessionService userSessionService;
         private readonly ITransactionService transactionService;
         private readonly ICategoryService categoryService;
-        private readonly IReminderRepository reminderRepository;
-        private readonly INotificationRepository notificationRepository;
+        private readonly IRepositoryFactory repositoryFactory;
+        private readonly IApiRepositoryFactory apiRepositoryFactory;
         private readonly IUserMapper userMapper;
 
         public UserService(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IConfiguration configuration,
-            IAccountRepository accountRepository,
-            ICategoryRepository categoryRepository,
-            IUserRepository userRepository,
             IServiceScopeFactory serviceScopeFactory,
-            IPreferencesRepository preferencesRepository,
             ICryptography cryptography,
-            IUserCategoryRepository userCategoryRepository,
-            ITransactionRepository transactionRepository,
             IPreferenceService preferenceService,
-            ITokenRepository tokenRepository,
             IUserSessionService userSessionService,
             ITransactionService transactionService,
             ICategoryService categoryService,
-            IReminderRepository reminderRepository,
-            INotificationRepository notificationRepository,
+            IRepositoryFactory repositoryFactory,
+            IApiRepositoryFactory apiRepositoryFactory,
             IUserMapper userMapper)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.configuration = configuration;
-            this.accountRepository = accountRepository;
-            this.categoryRepository = categoryRepository;
-            this.userRepository = userRepository;
             this.serviceScopeFactory = serviceScopeFactory;
-            this.preferencesRepository = preferencesRepository;
             this.cryptography = cryptography;
-            this.userCategoryRepository = userCategoryRepository;
-            this.transactionRepository = transactionRepository;
             this.preferenceService = preferenceService;
-            this.tokenRepository = tokenRepository;
             this.userSessionService = userSessionService;
             this.transactionService = transactionService;
             this.categoryService = categoryService;
-            this.reminderRepository = reminderRepository;
-            this.notificationRepository = notificationRepository;
+            this.repositoryFactory = repositoryFactory;
             this.userMapper = userMapper;
+            this.apiRepositoryFactory = apiRepositoryFactory;
         }
 
         public async Task<OperationResult> CreateUser(UserModel user)
@@ -102,18 +82,22 @@ namespace HomeManagement.API.Business
                     Email = applicationUser.Email,
                 };
 
-                userRepository.Add(userEntity);
-
                 var language = user.Language ?? "en";
 
-                accountRepository.Add(new Account
+                using (var userRepository = repositoryFactory.CreateUserRepository())
+                using (var accountRepository = repositoryFactory.CreateAccountRepository())
                 {
-                    UserId = userEntity.Id,
-                    Name = language.Contains("en") ? "Cash" : "Efectivo",
-                    AccountType = Domain.AccountType.Cash,
-                    CurrencyId = 1
-                });
-                accountRepository.Commit();
+                    userRepository.Add(userEntity);
+
+                    accountRepository.Add(new Account
+                    {
+                        UserId = userEntity.Id,
+                        Name = language.Contains("en") ? "Cash" : "Efectivo",
+                        AccountType = Domain.AccountType.Cash,
+                        CurrencyId = 1
+                    });
+                    accountRepository.Commit();
+                }
 
                 userSessionService.RegisterScopedUser(applicationUser.Email);
 
@@ -136,30 +120,32 @@ namespace HomeManagement.API.Business
 
         public string RenewToken(string appUserId, int userId)
         {
-            string tokenValue = string.Empty;
-
-            var user = userRepository.FirstOrDefault(x => x.Id.Equals(userId));
-
-            if (tokenRepository.UserHasToken(appUserId))
+            using (var userRepository = repositoryFactory.CreateUserRepository())
+            using (var tokenRepository = apiRepositoryFactory.CreateTokenRepository())
             {
-                var dbToken = tokenRepository.FirstOrDefault(x => x.UserId.Equals(appUserId));
+                string tokenValue = string.Empty;
 
-                tokenRepository.Remove(appUserId);
-                accountRepository.Commit();
+                var user = userRepository.FirstOrDefault(x => x.Id.Equals(userId));
+
+                if (tokenRepository.UserHasToken(appUserId))
+                {
+                    var dbToken = tokenRepository.FirstOrDefault(x => x.UserId.Equals(appUserId));
+
+                    tokenRepository.Remove(appUserId);
+                }
+
+                tokenValue = CreateToken(user.Email);
+
+                tokenRepository.Add(new IdentityUserToken<string>
+                {
+                    UserId = appUserId,
+                    LoginProvider = nameof(JwtSecurityToken),
+                    Name = nameof(JwtSecurityToken),
+                    Value = tokenValue
+                });
+
+                return tokenValue;
             }
-
-            tokenValue = CreateToken(user.Email);
-
-            tokenRepository.Add(new IdentityUserToken<string>
-            {
-                UserId = appUserId,
-                LoginProvider = nameof(JwtSecurityToken),
-                Name = nameof(JwtSecurityToken),
-                Value = tokenValue
-            });
-            accountRepository.Commit();
-
-            return tokenValue;
         }
 
         private string CreateToken(string email)
@@ -186,6 +172,8 @@ namespace HomeManagement.API.Business
 
         public MemoryStream DownloadUserData()
         {
+            var accountRepository = repositoryFactory.CreateAccountRepository();
+
             var user = userSessionService.GetAuthenticatedUser();
 
             var accounts = accountRepository.Where(x => x.UserId.Equals(user.Id));
@@ -222,28 +210,38 @@ namespace HomeManagement.API.Business
 
         public async Task<UserModel> SignIn(UserModel userModel)
         {
-            var password = cryptography.Decrypt(userModel.Password);
-
-            var result = await signInManager.PasswordSignInAsync(userModel.Email, password, true, false);
-
-            if (!result.Succeeded) return null;
-
-            var appUser = await userManager.FindByEmailAsync(userModel.Email);
-
-            var userEntity = userRepository.FirstOrDefault(x => x.Email.Equals(userModel.Email));
-
-            var token = RenewToken(appUser.Id, userEntity.Id);
-
-            userSessionService.RegisterScopedUser(userEntity.Email);
-
-            return new UserModel
+            using (var userRepository = repositoryFactory.CreateUserRepository())
+            using (var tokenRepository = apiRepositoryFactory.CreateTokenRepository())
+            using (var currencyRepository = repositoryFactory.CreateCurrencyRepository())
             {
-                Id = userEntity.Id,
-                Email = userEntity.Email,
-                Token = token,
-                Language = preferenceService.GetUserLanguage(userEntity.Id),
-                Currency = preferenceService.GetPreferredCurrency().Name
-            };
+                var password = cryptography.Decrypt(userModel.Password);
+
+                var result = await signInManager.PasswordSignInAsync(userModel.Email, password, true, false);
+
+                if (!result.Succeeded) return null;
+
+                var appUser = await userManager.FindByEmailAsync(userModel.Email);
+
+                var userEntity = userRepository.FirstOrDefault(x => x.Email.Equals(userModel.Email));
+
+                userSessionService.RegisterScopedUser(userEntity.Email);
+
+                var language = preferenceService.GetUserLanguage(userEntity.Id);
+                var preferredCurrency = preferenceService.GetPreferredCurrency();
+
+                var token = RenewToken(appUser.Id, userEntity.Id);
+
+                //userRepository.Commit();
+
+                return new UserModel
+                {
+                    Id = userEntity.Id,
+                    Email = userEntity.Email,
+                    Token = token,
+                    Language = language,
+                    Currency = preferredCurrency.Name
+                };
+            }
         }
 
         public async Task SignOut(UserModel userModel)
@@ -251,75 +249,90 @@ namespace HomeManagement.API.Business
             await signInManager.SignOutAsync();
 
             var appUser = await userManager.FindByEmailAsync(userModel.Email);
-
-            if (tokenRepository.UserHasToken(appUser.Id)) tokenRepository.Remove(appUser.Id);
+            using (var tokenRepository = apiRepositoryFactory.CreateTokenRepository())
+            {
+                if (tokenRepository.UserHasToken(appUser.Id)) tokenRepository.Remove(appUser.Id);
+            }
         }
 
         public async Task DeleteUser(int userId)
         {
-            var user = userRepository.GetById(userId);
-
-            var appUser = await userManager.FindByEmailAsync(user.Email);
-
-            var userAccounts = accountRepository.Where(x => x.UserId.Equals(user.Id));
-
-            foreach (var account in userAccounts)
+            using (var userRepository = repositoryFactory.CreateUserRepository())
+            using (var accountRepository = repositoryFactory.CreateAccountRepository())
+            using (var preferencesRepository = repositoryFactory.CreatePreferencesRepository())
+            using (var transactionRepository = repositoryFactory.CreateTransactionRepository())
+            using (var userCategoryRepository = repositoryFactory.CreateUserCategoryRepository())
+            using (var categoryRepository = repositoryFactory.CreateCategoryRepository())
+            using (var reminderRepository = repositoryFactory.CreateReminderRepository())
+            using (var notificationRepository = repositoryFactory.CreateNotificationRepository())
             {
-                var transactions = transactionRepository.Where(x => x.AccountId.Equals(account.Id));
+                var user = userRepository.GetById(userId);
 
-                foreach (var transaction in transactions)
+                var appUser = await userManager.FindByEmailAsync(user.Email);
+
+                var userAccounts = accountRepository.Where(x => x.UserId.Equals(user.Id));
+
+                foreach (var account in userAccounts)
                 {
-                    transactionRepository.Remove(transaction);
+                    var transactions = transactionRepository.Where(x => x.AccountId.Equals(account.Id));
+
+                    foreach (var transaction in transactions)
+                    {
+                        transactionRepository.Remove(transaction);
+                    }
+
+                    accountRepository.Remove(account);
+                    accountRepository.Commit();
                 }
 
-                accountRepository.Remove(account);
-                accountRepository.Commit();
-            }
+                var userCategories = userCategoryRepository.Where(x => x.UserId.Equals(user.Id));
 
-            var userCategories = userCategoryRepository.Where(x => x.UserId.Equals(user.Id));
-
-            foreach (var userCategory in userCategories)
-            {
-                categoryRepository.Remove(userCategory.CategoryId, user);
-            }
-
-            accountRepository.Commit();
-
-            var reminders = reminderRepository.Where(x => x.UserId.Equals(user.Id));
-
-            foreach (var reminder in reminders)
-            {
-                var notifications = notificationRepository.Where(x => x.ReminderId.Equals(reminder.Id));
-
-                foreach (var notification in notifications)
+                foreach (var userCategory in userCategories)
                 {
-                    notificationRepository.Remove(notification);
+                    categoryRepository.Remove(userCategory.CategoryId, user);
                 }
 
-                reminderRepository.Remove(reminder);
                 accountRepository.Commit();
+
+                var reminders = reminderRepository.Where(x => x.UserId.Equals(user.Id));
+
+                foreach (var reminder in reminders)
+                {
+                    var notifications = notificationRepository.Where(x => x.ReminderId.Equals(reminder.Id));
+
+                    foreach (var notification in notifications)
+                    {
+                        notificationRepository.Remove(notification);
+                    }
+
+                    reminderRepository.Remove(reminder);
+                    accountRepository.Commit();
+                }
+
+                var userPreferences = preferencesRepository.Where(x => x.UserId.Equals(user.Id));
+
+                foreach (var userPreference in userPreferences)
+                {
+                    preferencesRepository.Remove(userPreference);
+                }
+                preferencesRepository.Commit();
+
+                userRepository.Remove(user.Id);
+                userRepository.Commit();
+
+                await userManager.DeleteAsync(appUser);
             }
-
-            var userPreferences = preferencesRepository.Where(x => x.UserId.Equals(user.Id));
-
-            foreach (var userPreference in userPreferences)
-            {
-                preferencesRepository.Remove(userPreference);
-            }
-            preferencesRepository.Commit();
-
-            userRepository.Remove(user.Id);
-            userRepository.Commit();
-
-            await userManager.DeleteAsync(appUser);
         }
 
         public IEnumerable<UserModel> GetUsers()
         {
-            return userRepository
+            using (var userRepository = repositoryFactory.CreateUserRepository())
+            {
+                return userRepository
                 .GetAll()
                 .Select(x => userMapper.ToModel(x))
                 .ToList();
+            }
         }
 
         public async Task<OperationResult> ChangePassword(string currentPassword, string newPassword)

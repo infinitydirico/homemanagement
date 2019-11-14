@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace HomeManagement.Contracts.Repositories
 {
-    public interface IRepository
+    public interface IRepository : IDisposable
     {
         int Count();
 

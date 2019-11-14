@@ -8,69 +8,78 @@ namespace HomeManagement.API.Business
 {
     public class MonthlyExpenseService : IMonthlyExpenseService
     {
-        private readonly IMonthlyExpenseRepository monthlyExpenseRepository;
+        private readonly IRepositoryFactory repositoryFactory;
         private readonly IMonthlyExpenseMapper monthlyExpenseMapper;
         private readonly IUserSessionService userSessionService;
 
-        public MonthlyExpenseService(IMonthlyExpenseRepository monthlyExpenseRepository,
+        public MonthlyExpenseService(IRepositoryFactory repositoryFactory,
             IMonthlyExpenseMapper monthlyExpenseMapper,
             IUserSessionService userSessionService)
         {
-            this.monthlyExpenseRepository = monthlyExpenseRepository;
+            this.repositoryFactory = repositoryFactory;
             this.monthlyExpenseMapper = monthlyExpenseMapper;
             this.userSessionService = userSessionService;
         }
 
         public IEnumerable<MonthlyExpenseModel> GetMonthlyExpenses()
         {
-            var user = userSessionService.GetAuthenticatedUser();
+            using (var monthlyExpenseRepository = repositoryFactory.CreateMonthlyExpenseRepository())
+            {
+                var user = userSessionService.GetAuthenticatedUser();
 
-            var MonthlyExpenses = monthlyExpenseRepository
-                .Where(x => x.UserId.Equals(user.Id))
-                .Select(x => monthlyExpenseMapper.ToModel(x))
-                .ToList();
+                var MonthlyExpenses = monthlyExpenseRepository
+                    .Where(x => x.UserId.Equals(user.Id))
+                    .Select(x => monthlyExpenseMapper.ToModel(x))
+                    .ToList();
 
-            return MonthlyExpenses;
+                return MonthlyExpenses;
+            }
         }
 
         public OperationResult Remove(int id)
         {
-            var user = userSessionService.GetAuthenticatedUser();
+            using (var monthlyExpenseRepository = repositoryFactory.CreateMonthlyExpenseRepository())
+            {
+                var user = userSessionService.GetAuthenticatedUser();
 
-            var entity = monthlyExpenseRepository.GetById(id);
+                var entity = monthlyExpenseRepository.GetById(id);
 
-            if (!user.Id.Equals(entity.UserId)) return OperationResult.Error("Not allowed");
+                if (!user.Id.Equals(entity.UserId)) return OperationResult.Error("Not allowed");
 
-            monthlyExpenseRepository.Remove(id);
+                monthlyExpenseRepository.Remove(id);
 
-            monthlyExpenseRepository.Commit();
+                monthlyExpenseRepository.Commit();
 
-            return OperationResult.Succeed();
+                return OperationResult.Succeed();
+            }
         }
 
         public OperationResult Save(MonthlyExpenseModel model)
         {
-            var user = userSessionService.GetAuthenticatedUser();
-
-            var entity = monthlyExpenseRepository.GetById(model.Id);
-
-            if (entity == null)
+            using (var monthlyExpenseRepository = repositoryFactory.CreateMonthlyExpenseRepository())
             {
-                entity = monthlyExpenseMapper.ToEntity(model);
-                entity.UserId = user.Id;
+                var user = userSessionService.GetAuthenticatedUser();
 
-                monthlyExpenseRepository.Add(entity);
+                var entity = monthlyExpenseRepository.GetById(model.Id);
+
+                if (entity == null)
+                {
+                    entity = monthlyExpenseMapper.ToEntity(model);
+                    entity.UserId = user.Id;
+
+                    monthlyExpenseRepository.Add(entity);
+                }
+                else
+                {
+                    if (!user.Id.Equals(entity.Id)) return OperationResult.Error("Not allowed");
+
+                    monthlyExpenseRepository.Update(entity);
+                }
+
+                monthlyExpenseRepository.Commit();
+
+                return OperationResult.Succeed();
             }
-            else
-            {
-                if (!user.Id.Equals(entity.Id)) return OperationResult.Error("Not allowed");
-
-                monthlyExpenseRepository.Update(entity);
-            }
-
-            monthlyExpenseRepository.Commit();
-
-            return OperationResult.Succeed();
         }
     }
 

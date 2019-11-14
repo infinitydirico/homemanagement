@@ -1,4 +1,5 @@
 ﻿using HomeManagement.Domain;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,19 +8,20 @@ namespace HomeManagement.Data
 {
     public class NotificationRepository : BaseRepository<Notification>, INotificationRepository
     {
-        public NotificationRepository(IPlatformContext platformContext) : base(platformContext)
+        public NotificationRepository(DbContext context)
+            : base(context)
         {
-        }
 
+        }
         public override bool Exists(Notification entity) => GetById(entity.Id) != null;
 
         public override Notification GetById(int id) => FirstOrDefault(x => x.Id.Equals(id));
 
         public IEnumerable<Notification> GetPendingNotifications(int userId)
         {
-            var reminderSet = platformContext.GetDbContext().Set<Reminder>();
+            var reminderSet = context.Set<Reminder>();
 
-            var notificationSet = platformContext.GetDbContext().Set<Notification>();
+            var notificationSet = context.Set<Notification>();
 
             var notifications = from n in notificationSet
                                 join r in reminderSet

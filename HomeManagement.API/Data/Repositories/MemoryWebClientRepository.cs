@@ -50,6 +50,11 @@ namespace HomeManagement.API.Data.Repositories
             throw new NotImplementedException();
         }
 
+        public void Dispose()
+        {
+            //throw new NotImplementedException();
+        }
+
         public bool Exists(WebClient entity) => clients.FirstOrDefault(x => x.Id.Equals(entity.Id)) != null;
 
         public WebClient FirstOrDefault() => clients.FirstOrDefault();

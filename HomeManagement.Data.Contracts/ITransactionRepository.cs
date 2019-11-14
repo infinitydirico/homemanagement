@@ -11,5 +11,7 @@ namespace HomeManagement.Data
         IEnumerable<Transaction> GetByMeasurableAccount(int accountId);
 
         IEnumerable<Transaction> GetByUser(string email);
+
+        void DeleteAllByAccount(int accountId);
     }
 }

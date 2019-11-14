@@ -1,4 +1,5 @@
 ﻿using HomeManagement.Domain;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,12 @@ namespace HomeManagement.Data
 {
     public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
     {
-        public CategoryRepository(IPlatformContext platformContext) : base(platformContext)
+        public CategoryRepository(DbContext context)
+            : base(context)
         {
-        }
 
-        public override Category GetById(int id) => platformContext.GetDbContext().Set<Category>().FirstOrDefault(x => x.Id.Equals(id));
+        }
+        public override Category GetById(int id) => context.Set<Category>().FirstOrDefault(x => x.Id.Equals(id));
 
         public override void Add(Category entity)
         {
@@ -20,8 +22,6 @@ namespace HomeManagement.Data
 
         public Category Add(Category entity, User user)
         {
-            var context = platformContext.GetDbContext();
-
             Category category = null;
 
             var set = context.Set<Category>();
@@ -46,8 +46,8 @@ namespace HomeManagement.Data
 
         public void Add(IEnumerable<Category> categories, User user)
         {
-            var categorySet = dbContext.Set<Category>();
-            var userCategorySet = dbContext.Set<UserCategory>();
+            var categorySet = context.Set<Category>();
+            var userCategorySet = context.Set<UserCategory>();
 
             var missingCategories = (from c in categorySet
                                     join ca in categories
@@ -76,8 +76,6 @@ namespace HomeManagement.Data
 
         public void Remove(int categoryId, User user)
         {
-            var context = platformContext.GetDbContext();
-
             var userCategorySet = context.Set<UserCategory>();
 
             var userCategory = userCategorySet.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.CategoryId.Equals(categoryId));
@@ -98,8 +96,8 @@ namespace HomeManagement.Data
 
         public void Remove(IEnumerable<Category> categories, User user)
         {
-            var categorySet = dbContext.Set<Category>();
-            var userCategorySet = dbContext.Set<UserCategory>();
+            var categorySet = context.Set<Category>();
+            var userCategorySet = context.Set<UserCategory>();
 
             var userCategories = (from uc in userCategorySet
                                  join c in categories
@@ -120,8 +118,6 @@ namespace HomeManagement.Data
 
         public IEnumerable<Category> GetUserCategories(string username)
         {
-            var context = platformContext.GetDbContext();
-
             var categoryQuery = context.Set<Category>().AsQueryable();
 
             var userCategoryQuery = context.Set<UserCategory>().AsQueryable();
@@ -141,8 +137,6 @@ namespace HomeManagement.Data
 
         public IEnumerable<Category> GetActiveUserCategories(string username)
         {
-            var context = platformContext.GetDbContext();
-
             var categoryQuery = context.Set<Category>().AsQueryable();
 
             var userCategoryQuery = context.Set<UserCategory>().AsQueryable();

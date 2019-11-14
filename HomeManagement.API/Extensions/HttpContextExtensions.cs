@@ -16,7 +16,5 @@ namespace HomeManagement.API.Extensions
         public static string GetAuthorizationHeader(this HttpContext httpContext) => httpContext?.Request?.Headers?["Authorization"].FirstOrDefault();
 
         public static Claim GetEmailClaim(this HttpContext httpContext) => httpContext?.User?.Claims?.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
-
-        public static IRepository GetRepository(this HttpContext httpContext) => (IUserRepository)httpContext.RequestServices.GetService(typeof(IUserRepository));
     }
 }

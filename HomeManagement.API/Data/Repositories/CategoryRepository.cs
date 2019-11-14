@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using HomeManagement.Data;
+﻿using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HomeManagement.API.Data.Repositories
 {
@@ -12,15 +12,13 @@ namespace HomeManagement.API.Data.Repositories
     {
         private readonly ICategoryMapper categoryMapper;
 
-        public CategoryRepository(IPlatformContext platformContext, ICategoryMapper categoryMapper) : base(platformContext)
+        public CategoryRepository(IPlatformContext platformContext) 
+            : base(platformContext.CreateDbContext())
         {
-            this.categoryMapper = categoryMapper;
         }
 
         public OverPricedCategories GetMostOverPricedCategories(TransactionType transactionType)
         {
-            var context = platformContext.GetDbContext();
-
             var query = (from category in context.Set<Category>()
                          join transaction in context.Set<Transaction>()
                          on category.Id equals transaction.CategoryId
@@ -54,8 +52,6 @@ namespace HomeManagement.API.Data.Repositories
 
         public IEnumerable<Category> GetUserCategories(int userId)
         {
-            var context = platformContext.GetDbContext();
-
             var query = (from c in context.Set<Category>()
                          join uc in context.Set<UserCategory>()
                          on c.Id equals uc.CategoryId
@@ -68,8 +64,6 @@ namespace HomeManagement.API.Data.Repositories
 
         public IEnumerable<Category> GetUserActiveCategories(int userId)
         {
-            var context = platformContext.GetDbContext();
-
             var query = (from c in context.Set<Category>()
                          join uc in context.Set<UserCategory>()
                          on c.Id equals uc.CategoryId
