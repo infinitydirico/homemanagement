@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.AI.Vision.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.AI.Vision", "HomeManagement.AI.Vision\HomeManagement.AI.Vision.csproj", "{EA8D4968-0C81-4050-8EE9-528D8AAB0DDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeManagement.AdminSite", "HomeManagement.AdminSite\HomeManagement.AdminSite.csproj", "{BB9D078B-E026-4947-9012-74C1215E9E91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.AdminSite", "HomeManagement.AdminSite\HomeManagement.AdminSite.csproj", "{BB9D078B-E026-4947-9012-74C1215E9E91}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

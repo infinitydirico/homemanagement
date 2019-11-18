@@ -2,6 +2,7 @@
 using HomeManagement.API.Data.Entities;
 using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
+using HomeManagement.API.Schedule;
 using HomeManagement.API.Services;
 using HomeManagement.FilesStore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
@@ -75,6 +77,9 @@ namespace HomeManagement.API
 
             services.AddScoped<IStorageClient, FilesStore.DropboxFileStore.RestClient>();
 
+            services.AddSingleton<IHostedService, NotificationGeneratorHostedService>();
+            services.AddSingleton<IHostedService, CurrencyUpdaterHostedService>();
+
             services.AddMvc(options =>
             {
                 options.Filters.Add(typeof(ThrottleFilter));
@@ -110,12 +115,12 @@ namespace HomeManagement.API
                 x.ValueLengthLimit = int.MaxValue;
                 x.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
                 x.MemoryBufferThreshold = int.MaxValue;
-                
+
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, 
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
             ILoggerFactory loggerFactory, IApplicationLifetime applicationLifetime)
         {
             //loggerFactory.AddProvider(new DatabaseLoggerProvider(app.ApplicationServices));

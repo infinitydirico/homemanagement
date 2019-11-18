@@ -78,13 +78,39 @@ namespace HomeManagement.API.Business
             }
         }
 
+        public void GenerateNotifications()
+        {
+            using (var reminderRepository = repositoryFactory.CreateReminderRepository())
+            using (var notificationRepository = repositoryFactory.CreateNotificationRepository())
+            {
+                var reminders = reminderRepository.GetAll();
+
+                var notifications = notificationRepository
+                    .Where(n => n.CreatedOn < DateTime.Now &&
+                                n.CreatedOn.Month.Equals(DateTime.Now.Month));
+
+                if (notifications.Count() > 0 && reminders.Count().Equals(notifications.Count())) return;
+
+                foreach (var reminder in reminders.Where(x => !notifications.Any(y => y.ReminderId.Equals(x.Id))))
+                {
+                    var notification = new Notification
+                    {
+                        ReminderId = reminder.Id,
+                        CreatedOn = DateTime.Now,
+                        Dismissed = false,
+                    };
+
+                    notificationRepository.Add(notification);
+                }
+                notificationRepository.Commit();
+            }
+        }
+
         public IEnumerable<NotificationModel> GetNotifications()
         {
             var notificationRepository = repositoryFactory.CreateNotificationRepository();
 
             var authenticatedUser = userService.GetAuthenticatedUser();
-
-            GenerateNotifications(authenticatedUser.Email);
 
             var notifications = notificationRepository
                 .GetPendingNotifications(authenticatedUser.Id)
@@ -148,34 +174,6 @@ namespace HomeManagement.API.Business
                 return OperationResult.Succeed();
             }
         }
-
-        private void GenerateNotifications(string email)
-        {
-            var reminderRepository = repositoryFactory.CreateReminderRepository();
-            var notificationRepository = repositoryFactory.CreateNotificationRepository();
-
-            var reminders = reminderRepository.GetUserActiveReminders(email);
-
-            var notifications = notificationRepository
-                .Where(n => n.Reminder.User.Email.Equals(email) &&
-                            n.CreatedOn < DateTime.Now &&
-                            n.CreatedOn.Month.Equals(DateTime.Now.Month));
-
-            if (notifications.Count() > 0 && reminders.Count().Equals(notifications.Count())) return;
-
-            foreach (var reminder in reminders.Where(x => !notifications.Any(y => y.ReminderId.Equals(x.Id))))
-            {
-                var notification = new Notification
-                {
-                    ReminderId = reminder.Id,
-                    CreatedOn = DateTime.Now,
-                    Dismissed = false,
-                };
-
-                notificationRepository.Add(notification);
-            }
-            notificationRepository.Commit();
-        }
     }
 
     public interface INotificationService
@@ -193,5 +191,7 @@ namespace HomeManagement.API.Business
         OperationResult UpdateReminder(ReminderModel reminderModel);
 
         OperationResult DeleteReminder(int id);
+
+        void GenerateNotifications();
     }
 }
