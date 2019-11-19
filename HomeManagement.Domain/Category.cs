@@ -10,14 +10,8 @@ namespace HomeManagement.Domain
             nameof(Name),
             nameof(IsActive),
             nameof(Icon),
-            nameof(IsDefault),
             nameof(Measurable)
         };
-
-        public Category()
-        {
-            UserCategories = new List<UserCategory>();
-        }
 
         public int Id { get; set; }
 
@@ -29,9 +23,9 @@ namespace HomeManagement.Domain
 
         public string Icon { get; set; }
 
-        public bool IsDefault { get; set; }
+        public int UserId { get; set; }
 
-        public virtual List<UserCategory> UserCategories { get; set; }
+        public User User { get; set; }
 
         public IList<string> GetProperties() => exportableHeaders;
     }

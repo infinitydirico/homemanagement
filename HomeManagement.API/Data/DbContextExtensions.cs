@@ -29,9 +29,10 @@ namespace HomeManagement.API.Data
                     var created = context.Database.EnsureCreated();
                 }
 
-                context.SeedCategories();
+                //context.SeedCategories();
                 context.SeedRoles();
                 context.SeedSettings();
+                CurrencySeed.SeedCurrencies(context);
             }
         }
 

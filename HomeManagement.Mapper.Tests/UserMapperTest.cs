@@ -29,8 +29,7 @@ namespace HomeManagement.Mapper.Tests
             var entity = userMapper.ToModel(new Domain.User
             {
                 Id = 1,
-                Email = "email@email.com",
-                Password = "1234"
+                Email = "email@email.com"
             });
 
             Assert.IsNotNull(entity);

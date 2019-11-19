@@ -18,7 +18,6 @@ namespace HomeManagement.Mapper.Tests
             {
                 Id = 1,
                 IsActive = true,
-                IsDefault = false,
                 Icon = "icon.png",
                 Name = "Services",                
             });
@@ -38,7 +37,6 @@ namespace HomeManagement.Mapper.Tests
             {
                 Id = 1,
                 IsActive = true,
-                IsDefault = false,
                 Icon = "icon.png",
                 Name = "Services",
             });

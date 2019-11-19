@@ -32,6 +32,18 @@ namespace HomeManagement.API.Data
                 Value = string.Empty
             });
 
+            context.ConfigurationSettings.Add(new Domain.ConfigurationSetting
+            {
+                Name = "VisionApiKey",
+                Value = string.Empty
+            });
+
+            context.ConfigurationSettings.Add(new Domain.ConfigurationSetting
+            {
+                Name = "VisionApiEndpoint",
+                Value = string.Empty
+            });
+
             context.SaveChanges();
         }
     }

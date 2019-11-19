@@ -26,7 +26,7 @@ namespace HomeManagement.API.Controllers.Categories
         {
             var email = HttpContext.GetEmailClaim();
 
-            return Ok(categoryService.GetActive());
+            return Ok(categoryService.Get());
         }
 
         [HttpGet("active")]

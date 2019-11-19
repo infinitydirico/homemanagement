@@ -18,8 +18,6 @@ namespace HomeManagement.API.Data
 
         public DbSet<WebClient> WebClients { get; set; }
 
-        public DbSet<UserCategory> UserCategories { get; set; }
-
         public DbSet<Reminder> Reminders { get; set; }
 
         public DbSet<Notification> Notifications { get; set; }
@@ -51,7 +49,7 @@ namespace HomeManagement.API.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>().Ignore(x => x.Token);
+            modelBuilder.Entity<User>().HasKey(x => x.Id);
 
             modelBuilder.Entity<WebClient>().HasKey(x => x.Id);
 
@@ -59,15 +57,11 @@ namespace HomeManagement.API.Data
 
             modelBuilder.Entity<Transaction>().HasOne(x => x.Account).WithMany(x => x.Transactions).HasForeignKey(x => x.AccountId);
 
-            modelBuilder.Entity<Transaction>().HasOne(x => x.Category);
-
-            modelBuilder.Entity<UserCategory>().HasKey(x => new { x.UserId, x.CategoryId });
-
-            modelBuilder.Entity<UserCategory>().HasOne(x => x.Category).WithMany(x => x.UserCategories).HasForeignKey(x => x.CategoryId);
-
-            modelBuilder.Entity<UserCategory>().HasOne(x => x.User).WithMany(x => x.UserCategories).HasForeignKey(x => x.UserId);
+            modelBuilder.Entity<Transaction>().HasOne(x => x.Category);            
 
             modelBuilder.Entity<Category>().HasKey(x => x.Id);
+
+            modelBuilder.Entity<Category>().HasOne(x => x.User).WithMany(x => x.Categories).HasForeignKey(x => x.UserId);
 
             modelBuilder.Entity<Reminder>().HasKey(x => x.Id);
 
@@ -86,10 +80,8 @@ namespace HomeManagement.API.Data
             modelBuilder.Entity<MonthlyExpense>().HasOne(x => x.User);
 
             modelBuilder.Ignore<Share>();
-            modelBuilder.Ignore<Role>();
             modelBuilder.Ignore<Tax>();
             modelBuilder.Ignore<Token>();
-            modelBuilder.Ignore<UserInRole>();
         }
     }
 }

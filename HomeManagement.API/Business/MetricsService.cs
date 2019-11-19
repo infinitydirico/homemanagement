@@ -235,13 +235,15 @@ namespace HomeManagement.API.Business
 
                 var userCategories = categoryRepository.GetActiveUserCategories(auhtenticatedUser.Email);
 
-                var accountTransactions = transactionRepository
+                var transactions = transactionRepository
                             .Where(x => x.AccountId.Equals(accountId) &&
                                         x.Account.Measurable &&
                                         x.Date.Month.Equals(month) &&
                                         x.Date.Year.Equals(DateTime.Now.Year) &&
                                         x.TransactionType == TransactionType.Expense &&
-                                        x.Category.Measurable)
+                                        x.Category.Measurable);
+
+                var accountTransactions = transactions
                             .GroupBy(x => x.CategoryId)
                             .Select(x => new MonthlyCategory
                             {

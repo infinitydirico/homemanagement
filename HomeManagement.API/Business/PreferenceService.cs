@@ -1,12 +1,10 @@
-﻿using HomeManagement.API.Data;
-using HomeManagement.API.Services;
+﻿using HomeManagement.API.Services;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace HomeManagement.API.Business
 {
@@ -54,13 +52,6 @@ namespace HomeManagement.API.Business
                 }
 
                 preferencesRepository.Commit();
-
-                Task.Run(() =>
-                {
-                    UpdateUserCategories(user, language);
-
-                    UpdateTransactions(user);
-                });
             }
         }
 
@@ -71,52 +62,6 @@ namespace HomeManagement.API.Business
             var languagePreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(userId) && x.Key.Equals(LanguageKey));
 
             return languagePreference?.Value ?? "en";
-        }
-
-        private void UpdateUserCategories(User user, string language)
-        {
-            using (var categoryRepository = repositoryFactory.CreateCategoryRepository())
-            {
-                var userCategories = categoryRepository.GetUserCategories(user.Email);
-
-                foreach (var category in userCategories)
-                {
-                    categoryRepository.Remove(category.Id, user);
-                }
-                categoryRepository.Commit();
-
-                var defaultCategories = CategoryInitializer.GetDefaultCategories(new System.Globalization.CultureInfo(language));
-
-                foreach (var category in defaultCategories)
-                {
-                    categoryRepository.Add(category, user);
-                }
-                categoryRepository.Commit();
-            }
-        }
-
-        private void UpdateTransactions(User user)
-        {
-            using (var categoryRepository = repositoryFactory.CreateCategoryRepository())
-            using (var transactionRepository = repositoryFactory.CreateTransactionRepository())
-            {
-                var transactionsWithOldCategories = transactionRepository.GetByUser(user.Email);
-
-                var userCategories = categoryRepository.GetActiveUserCategories(user.Email);
-
-                foreach (var transaction in transactionsWithOldCategories)
-                {
-                    var oldCategory = categoryRepository.FirstOrDefault(x => x.Id.Equals(transaction.CategoryId));
-
-                    var newCategory = userCategories.First(x => x.Icon.Equals(oldCategory.Icon));
-
-                    transaction.CategoryId = newCategory.Id;
-
-                    transactionRepository.Update(transaction);
-                }
-
-                transactionRepository.Commit();
-            }
         }
 
         public void ChangeCurrency(CurrencyModel currency)
@@ -147,7 +92,7 @@ namespace HomeManagement.API.Business
             }
         }
 
-        public IEnumerable<CurrencyModel> GetCurrencies() => currencyService.GetCurrencies().Select(x => currencyMapper.ToModel(x));
+        public IEnumerable<CurrencyModel> GetCurrencies() => currencyService.GetCurrencies().Select(x => currencyMapper.ToModel(x)).ToList();
 
         public CurrencyModel GetPreferredCurrency()
         {

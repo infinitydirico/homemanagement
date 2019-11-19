@@ -1,4 +1,5 @@
 ﻿using HomeManagement.Domain;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -39,15 +40,15 @@ namespace HomeManagement.API.Data
             }
         }
 
-        public static IWebHost SeedData(this IWebHost host)
-        {
-            using (var scope = host.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetService<WebAppDbContext>();
+        //public static IWebHost SeedData(this IWebHost host)
+        //{
+        //    using (var scope = host.Services.CreateScope())
+        //    {
+        //        var context = scope.ServiceProvider.GetService<WebAppDbContext>();
 
-                SeedCurrencies(context);
-            }
-            return host;
-        }
+        //        SeedCurrencies(context);
+        //    }
+        //    return host;
+        //}
     }
 }

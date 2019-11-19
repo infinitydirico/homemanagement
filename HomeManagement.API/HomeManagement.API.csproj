@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <ServerGarbageCollection>false</ServerGarbageCollection>
@@ -14,7 +14,6 @@
     <Compile Remove="Migrations\**" />
     <Content Remove="Migrations\**" />
     <EmbeddedResource Remove="Migrations\**" />
-    <None Remove="Migrations\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,12 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Migrations\20191001235948_InitialCreate.cs" />
-    <Compile Include="Migrations\20191001235948_InitialCreate.Designer.cs" />
-    <Compile Include="Migrations\20191013191824_ConfigSettings.cs" />
-    <Compile Include="Migrations\20191013191824_ConfigSettings.Designer.cs" />
-    <Compile Include="Migrations\20191014102247_MonthlyExpense.cs" />
-    <Compile Include="Migrations\20191014102247_MonthlyExpense.Designer.cs" />
+    <Compile Include="Migrations\20191119113335_InitialCreate.cs" />
+    <Compile Include="Migrations\20191119113335_InitialCreate.Designer.cs" />
     <Compile Include="Migrations\WebAppDbContextModelSnapshot.cs" />
   </ItemGroup>
 
@@ -36,8 +31,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="2.8.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.4.10" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.4" />
@@ -51,8 +48,8 @@
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" />
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.0" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>

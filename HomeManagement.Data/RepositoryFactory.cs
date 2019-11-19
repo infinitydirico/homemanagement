@@ -33,8 +33,6 @@ namespace HomeManagement.Data
 
         public ITransactionRepository CreateTransactionRepository() => new TransactionRepository(context);
 
-        public IUserCategoryRepository CreateUserCategoryRepository() => new UserCategoryRepository(context);
-
         public IUserRepository CreateUserRepository() => new UserRepository(context);
     }
 
@@ -59,8 +57,6 @@ namespace HomeManagement.Data
         IReminderRepository CreateReminderRepository();
 
         IStorageItemRepository CreateStorageItemRepository();
-
-        IUserCategoryRepository CreateUserCategoryRepository();
 
         IUserRepository CreateUserRepository();
     }

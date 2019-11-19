@@ -35,8 +35,9 @@ namespace HomeManagement.API.Business
             {
                 var entity = categoryMapper.ToEntity(categoryModel);
                 var user = userService.GetAuthenticatedUser();
+                entity.UserId = user.Id;
 
-                categoryRepository.Add(entity, user);
+                categoryRepository.Add(entity);
                 categoryRepository.Commit();
 
                 return OperationResult.Succeed();
@@ -58,8 +59,15 @@ namespace HomeManagement.API.Business
 
                 var user = userService.GetAuthenticatedUser();
 
-                categoryRepository.Remove(id, user);
-                categoryRepository.Commit();
+                if (user.Id.Equals(category.UserId))
+                {
+                    categoryRepository.Remove(id);
+                    categoryRepository.Commit();
+                }
+                else
+                {
+                    throw new ApplicationException("Cannot remove a category from another user.");
+                }
 
                 return OperationResult.Succeed();
             }
@@ -84,6 +92,17 @@ namespace HomeManagement.API.Business
             };
         }
 
+        public IEnumerable<CategoryModel> Get()
+        {
+            var authenticatedUser = userService.GetAuthenticatedUser();
+
+            var categoryRepository = repositoryFactory.CreateCategoryRepository();
+
+            var categories = categoryRepository.GetUserCategories(authenticatedUser.Email);
+
+            return categoryMapper.ToModels(categories);
+        }
+
         public IEnumerable<CategoryModel> GetActive()
         {
             var categoryRepository = repositoryFactory.CreateCategoryRepository();
@@ -96,49 +115,45 @@ namespace HomeManagement.API.Business
                 .ToList();
 
             return categories;
-
         }
 
         public IEnumerable<UserCategoryModel> GetUsersCategories()
         {
             using (var categoryRepository = repositoryFactory.CreateCategoryRepository())
-            using (var userCategoryRepository = repositoryFactory.CreateUserCategoryRepository())
             using (var userRepository = repositoryFactory.CreateUserRepository())
             {
                 var users = userRepository.GetAll();
 
-                var uc = userCategoryRepository.GetAll();
-
-                var userCategories = from u in users
-                                     join c in uc
-                                     on u.Id equals c.UserId
-                                     let category = categoryRepository.GetById(c.CategoryId)
-                                     select new UserCategoryModel
-                                     {
-                                         User = new UserModel
-                                         {
-                                             Id = u.Id,
-                                             Email = u.Email
-                                         },
-                                         Category = new CategoryModel
-                                         {
-                                             Id = c.CategoryId,
-                                             IsActive = category.IsActive,
-                                             Name = category.Name,
-                                             Icon = category.Icon,
-                                             IsDefault = category.IsDefault,
-                                             Measurable = category.Measurable
-                                         }
-                                     };
-
-                return userCategories.ToList();
+                return categoryRepository
+                    .GetAll()
+                    .Select(category =>
+                    {
+                        var u = users.First(x => x.Id.Equals(category.UserId));
+                        return new UserCategoryModel
+                        {
+                            User = new UserModel
+                            {
+                                Id = u.Id,
+                                Email = u.Email
+                            },
+                            Category = new CategoryModel
+                            {
+                                Id = category.Id,
+                                IsActive = category.IsActive,
+                                Name = category.Name,
+                                Icon = category.Icon,
+                                Measurable = category.Measurable,
+                                UserId = u.Id
+                            }
+                        };
+                    })
+                    .ToList();
             }
         }
 
         public void Import(byte[] contents)
         {
             using (var categoryRepository = repositoryFactory.CreateCategoryRepository())
-            using (var userCategoryRepository = repositoryFactory.CreateUserCategoryRepository())
             {
                 var authenticatedUser = userService.GetAuthenticatedUser();
                 var categories = exportableCategory.ToEntities(contents);
@@ -148,15 +163,13 @@ namespace HomeManagement.API.Business
                     if (entity == null) continue;
                     var category = categoryRepository.FirstOrDefault(x => x.Name.Equals(entity.Name));
 
-                    if (category != null && userCategoryRepository.UserHasAssociatedCategory(authenticatedUser.Id, category.Id)) continue;
-
                     entity.Id = 0;
+                    entity.UserId = authenticatedUser.Id;
 
-                    categoryRepository.Add(entity, authenticatedUser);
+                    categoryRepository.Add(entity);
                 }
                 categoryRepository.Commit();
             }
-
         }
 
         public OperationResult Update(CategoryModel categoryModel)
@@ -178,6 +191,8 @@ namespace HomeManagement.API.Business
         OperationResult Update(CategoryModel categoryModel);
 
         OperationResult Delete(int id);
+
+        IEnumerable<CategoryModel> Get();
 
         IEnumerable<CategoryModel> GetActive();
 

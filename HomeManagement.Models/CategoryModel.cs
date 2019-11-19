@@ -10,8 +10,8 @@
 
         public string Icon { get; set; }
 
-        public bool IsDefault { get; set; }
-
         public bool Measurable { get; set; }
+
+        public int UserId { get; set; }
     }
 }

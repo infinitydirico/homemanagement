@@ -64,7 +64,7 @@ namespace HomeManagement.API.Exportation
             //default fallback
             if(transaction.CategoryId == 0)
             {
-                var category = categoryRepository.FirstOrDefault(x => x.IsDefault);
+                var category = categoryRepository.FirstOrDefault(x => x.UserId.Equals(user.Id));
 
                 transaction.CategoryId = category.Id;
             }

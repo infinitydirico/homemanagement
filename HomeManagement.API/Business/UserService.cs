@@ -1,6 +1,5 @@
 ﻿using HomeManagement.API.Data;
 using HomeManagement.API.Data.Entities;
-using HomeManagement.API.Data.Repositories;
 using HomeManagement.Contracts;
 using HomeManagement.Data;
 using HomeManagement.Domain;
@@ -86,6 +85,8 @@ namespace HomeManagement.API.Business
 
                 using (var userRepository = repositoryFactory.CreateUserRepository())
                 using (var accountRepository = repositoryFactory.CreateAccountRepository())
+                using (var preferencesRepository = repositoryFactory.CreatePreferencesRepository())
+                using (var categoryRepository = repositoryFactory.CreateCategoryRepository())
                 {
                     userRepository.Add(userEntity);
 
@@ -96,16 +97,36 @@ namespace HomeManagement.API.Business
                         AccountType = Domain.AccountType.Cash,
                         CurrencyId = 1
                     });
+
                     accountRepository.Commit();
+
+                    var categories = CategoryInitializer.GetDefaultCategories().Select(x => new Category
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        Icon = x.Icon,
+                        IsActive = true,
+                        Measurable = true,
+                        UserId = userEntity.Id
+                    }).ToList();
+
+                    categoryRepository.Add(categories);
+                    categoryRepository.Commit();
+
+                    preferencesRepository.Add(new Preferences
+                    {
+                        UserId = userEntity.Id,
+                        Key = "PreferredCurrency",
+                        Value = "USD",
+                    });
+                    preferencesRepository.Add(new Preferences
+                    {
+                        UserId = userEntity.Id,
+                        Key = "Language",
+                        Value = language,
+                    });
+                    preferencesRepository.Commit();
                 }
-
-                userSessionService.RegisterScopedUser(applicationUser.Email);
-
-                var currencies = preferenceService.GetCurrencies();
-                preferenceService.ChangeCurrency(currencies.First(x => x.Name.Equals("USD")));
-
-                preferenceService.ChangeLanguage(language);
-
                 return OperationResult.Succeed();
             }
             else
@@ -142,7 +163,9 @@ namespace HomeManagement.API.Business
                     LoginProvider = nameof(JwtSecurityToken),
                     Name = nameof(JwtSecurityToken),
                     Value = tokenValue
-                });
+                });                
+
+                tokenRepository.Commit();
 
                 return tokenValue;
             }
@@ -231,8 +254,6 @@ namespace HomeManagement.API.Business
 
                 var token = RenewToken(appUser.Id, userEntity.Id);
 
-                //userRepository.Commit();
-
                 return new UserModel
                 {
                     Id = userEntity.Id,
@@ -261,7 +282,6 @@ namespace HomeManagement.API.Business
             using (var accountRepository = repositoryFactory.CreateAccountRepository())
             using (var preferencesRepository = repositoryFactory.CreatePreferencesRepository())
             using (var transactionRepository = repositoryFactory.CreateTransactionRepository())
-            using (var userCategoryRepository = repositoryFactory.CreateUserCategoryRepository())
             using (var categoryRepository = repositoryFactory.CreateCategoryRepository())
             using (var reminderRepository = repositoryFactory.CreateReminderRepository())
             using (var notificationRepository = repositoryFactory.CreateNotificationRepository())
@@ -283,13 +303,6 @@ namespace HomeManagement.API.Business
 
                     accountRepository.Remove(account);
                     accountRepository.Commit();
-                }
-
-                var userCategories = userCategoryRepository.Where(x => x.UserId.Equals(user.Id));
-
-                foreach (var userCategory in userCategories)
-                {
-                    categoryRepository.Remove(userCategory.CategoryId, user);
                 }
 
                 accountRepository.Commit();

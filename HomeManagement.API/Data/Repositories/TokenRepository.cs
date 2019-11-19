@@ -92,7 +92,7 @@ namespace HomeManagement.API.Data.Repositories
 
         public void Commit()
         {
-            
+            context.SaveChanges();
         }
         public void Dispose()
         {

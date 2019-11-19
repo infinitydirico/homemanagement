@@ -37,8 +37,6 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<ICategoryRepository, API.Data.Repositories.CategoryRepository>();
 
-            services.AddScoped<IUserCategoryRepository, UserCategoryRepository>();
-
             services.AddScoped<IReminderRepository, ReminderRepository>();
 
             services.AddScoped<INotificationRepository, NotificationRepository>();

@@ -1,7 +1,5 @@
 ﻿using HomeManagement.Domain;
 using System.Collections.Generic;
-using System.Globalization;
-using HomeManagement.API.Extensions;
 using System.Linq;
 
 namespace HomeManagement.API.Data
@@ -17,128 +15,111 @@ namespace HomeManagement.API.Data
             context.SaveChanges();
         }
 
-        public static IEnumerable<Category> GetDefaultCategories(CultureInfo culture = null) => new List<Category>
+        public static IEnumerable<Category> GetDefaultCategories() => new List<Category>
         {
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Various" : "Varios") : "Various",
+                Name = "Various",
                 Icon = "layers",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Rent" : "Alquiler") : "Rent",
+                Name = "Rent",
                 Icon = "home",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Transportation" : "Transporte") : "Transportation",
+                Name = "Transportation",
                 Icon = "directions_bus",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Supplies" : "Insumos") : "Supplies",
+                Name = "Supplies",
                 Icon = "shopping_basket",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Entertainment" : "Entretenimiento") : "Entertainment",
+                Name = "Entertainment",
                 Icon = "theaters",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Gift" : "Regalo") : "Gift",
+                Name = "Gift",
                 Icon = "card_giftcard",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Clothes" : "Vestimenta") : "Clothes",
+                Name = "Clothes",
                 Icon = "wc",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
 
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Education" : "Educacion") : "Education",
+                Name = "Education",
                 Icon = "book",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Health" : "Salud") : "Health",
+                Name = "Health",
                 Icon = "healing",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Salary" : "Salario") : "Salary",
+                Name = "Salary",
                 Icon = "attach_money",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Bond" : "Bono") : "Bond",
+                Name = "Bond",
                 Icon = "local_atm",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Services" : "Servicios") : "Services",
+                Name = "Services",
                 Icon = "credit_card",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Savings" : "Ahorros") : "Savings",
+                Name = "Savings",
                 Icon = "account_balance_wallet",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Transfers" : "Transferencia") : "Transfers",
+                Name = "Transfers",
                 Icon = "compare_arrows",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
 
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Donations" : "Donaciones") : "Donations",
+                Name = "Donations",
                 Icon = "child_care",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
             new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Extraction" : "Extraccion") : "Extraction",
+                Name = "Extraction",
                 Icon = "autorenew",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
              new Category
             {
-                Name = culture != null ? (culture.IsEnglish() ? "Deposit" : "Deposito") : "Deposit",
+                Name = "Deposit",
                 Icon = "input",
-                IsActive = true,
-                IsDefault = true
+                IsActive = true
             },
         };
     }

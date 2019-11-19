@@ -53,9 +53,7 @@ namespace HomeManagement.API.Data.Repositories
         public IEnumerable<Category> GetUserCategories(int userId)
         {
             var query = (from c in context.Set<Category>()
-                         join uc in context.Set<UserCategory>()
-                         on c.Id equals uc.CategoryId
-                         where uc.UserId.Equals(userId)
+                         where c.UserId.Equals(userId)
                          select c);
 
             return query.ToList();
@@ -65,9 +63,7 @@ namespace HomeManagement.API.Data.Repositories
         public IEnumerable<Category> GetUserActiveCategories(int userId)
         {
             var query = (from c in context.Set<Category>()
-                         join uc in context.Set<UserCategory>()
-                         on c.Id equals uc.CategoryId
-                         where uc.UserId.Equals(userId) && c.IsActive
+                         where c.UserId.Equals(userId) && c.IsActive
                          select c);
 
             return query.ToList();

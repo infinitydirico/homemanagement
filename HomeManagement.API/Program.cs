@@ -10,7 +10,6 @@ namespace HomeManagement.API
         public static void Main(string[] args)
         {
             BuildWebHost(args)
-                .SeedData()
                 .Run();
         }
 

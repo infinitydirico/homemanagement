@@ -75,8 +75,8 @@ namespace HomeManagement.API.Business
                 var current = transactionRepository.GetById(entity.Id);
 
                 var account = accountRepository.FirstOrDefault(x => x.Id.Equals(entity.AccountId));
-                var price = -entity.Price;
-                account.Balance = entity.TransactionType.Equals(TransactionType.Income) ?
+                var price = -current.Price;
+                account.Balance = current.TransactionType.Equals(TransactionType.Income) ?
                     account.Balance + price :
                     account.Balance - price;
 

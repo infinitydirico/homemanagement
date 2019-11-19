@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
@@ -77,14 +76,15 @@ namespace HomeManagement.API
 
             services.AddScoped<IStorageClient, FilesStore.DropboxFileStore.RestClient>();
 
-            services.AddSingleton<IHostedService, NotificationGeneratorHostedService>();
-            services.AddSingleton<IHostedService, CurrencyUpdaterHostedService>();
+            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, NotificationGeneratorHostedService>();
+            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, CurrencyUpdaterHostedService>();
 
             services.AddMvc(options =>
             {
                 options.Filters.Add(typeof(ThrottleFilter));
                 options.Filters.Add(new ExceptionFilter());
-            });
+            })
+            .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1);
 
             services.AddSwaggerGen(c =>
             {
@@ -121,7 +121,7 @@ namespace HomeManagement.API
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,
-            ILoggerFactory loggerFactory, IApplicationLifetime applicationLifetime)
+            ILoggerFactory loggerFactory)
         {
             //loggerFactory.AddProvider(new DatabaseLoggerProvider(app.ApplicationServices));
 
@@ -156,13 +156,6 @@ namespace HomeManagement.API
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            applicationLifetime.ApplicationStopping.Register(OnShutdown);
-        }
-
-        private void OnShutdown()
-        {
-            //this code is called when the application stops
         }
     }
 }
