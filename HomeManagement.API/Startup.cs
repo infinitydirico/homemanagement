@@ -40,13 +40,13 @@ namespace HomeManagement.API
 
             services.AddLocalization(options => options.ResourcesPath = "Resource");
 
+            var postgresConnection = Configuration.GetSection("ConnectionStrings").GetValue<string>("Postgres");
             services.AddDbContextPool<WebAppDbContext>(options =>
-                options.UseSqlite(options.GetDatabaseFilePath()));
+                options.UseNpgsql(postgresConnection));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<WebAppDbContext>()
                 .AddDefaultTokenProviders();
-
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
            .AddJwtBearer(jwtBearerOptions =>
@@ -130,7 +130,6 @@ namespace HomeManagement.API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.CreateDatabaseFilePath();
             app.EnsureDatabaseCreated(true);
 
             app.UseStaticFiles();

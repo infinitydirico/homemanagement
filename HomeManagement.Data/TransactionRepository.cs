@@ -65,7 +65,7 @@ namespace HomeManagement.Data
 
         public void DeleteAllByAccount(int accountId)
         {
-            context.Database.ExecuteSqlCommand($"DELETE FROM Transactions WHERE AccountId = {accountId}");
+            context.Database.ExecuteSqlCommand($"DELETE FROM \"Transactions\" WHERE \"AccountId\" = {accountId}");
         }
     }
 }

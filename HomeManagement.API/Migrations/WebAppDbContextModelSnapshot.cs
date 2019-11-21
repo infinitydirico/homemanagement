@@ -4,6 +4,7 @@ using HomeManagement.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace HomeManagement.API.Migrations
 {
@@ -14,7 +15,9 @@ namespace HomeManagement.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099");
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("HomeManagement.API.Data.Entities.ApplicationUser", b =>
                 {
@@ -265,7 +268,8 @@ namespace HomeManagement.API.Migrations
 
                     b.Property<string>("Path");
 
-                    b.Property<ulong>("Size");
+                    b.Property<decimal>("Size")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
 
                     b.Property<int>("TransactionId");
 

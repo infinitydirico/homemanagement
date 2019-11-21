@@ -1,0 +1,16 @@
+﻿@model bool
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+@if(Model)
+{
+    <label>The connection was succesful.</label>
+}
+else
+{
+    <label>The connection failed.</label>
+}
+

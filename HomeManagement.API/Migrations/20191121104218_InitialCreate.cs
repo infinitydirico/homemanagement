@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace HomeManagement.API.Migrations
 {
@@ -51,7 +52,7 @@ namespace HomeManagement.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(nullable: true),
                     Value = table.Column<string>(nullable: true)
                 },
@@ -65,7 +66,7 @@ namespace HomeManagement.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(nullable: true),
                     Value = table.Column<double>(nullable: false),
                     ChangeStamp = table.Column<DateTime>(nullable: false)
@@ -80,12 +81,12 @@ namespace HomeManagement.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     ExternalId = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     Path = table.Column<string>(nullable: true),
                     IsFolder = table.Column<bool>(nullable: false),
-                    Size = table.Column<ulong>(nullable: false),
+                    Size = table.Column<decimal>(nullable: false),
                     TransactionId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -98,7 +99,7 @@ namespace HomeManagement.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Email = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -111,7 +112,7 @@ namespace HomeManagement.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Ip = table.Column<string>(nullable: true),
                     Browser = table.Column<string>(nullable: true),
                     RequestCount = table.Column<int>(nullable: false),
@@ -132,7 +133,7 @@ namespace HomeManagement.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     RoleId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -153,7 +154,7 @@ namespace HomeManagement.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     UserId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -238,7 +239,7 @@ namespace HomeManagement.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(nullable: true),
                     Balance = table.Column<double>(nullable: false),
                     Measurable = table.Column<bool>(nullable: false),
@@ -268,7 +269,7 @@ namespace HomeManagement.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(nullable: true),
                     Measurable = table.Column<bool>(nullable: false),
                     IsActive = table.Column<bool>(nullable: false),
@@ -291,7 +292,7 @@ namespace HomeManagement.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(nullable: true),
                     Price = table.Column<double>(nullable: false),
                     TransactionType = table.Column<int>(nullable: false),
@@ -314,7 +315,7 @@ namespace HomeManagement.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     UserId = table.Column<int>(nullable: false),
                     Key = table.Column<string>(nullable: true),
                     Value = table.Column<string>(nullable: true)
@@ -335,7 +336,7 @@ namespace HomeManagement.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Title = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     DueDay = table.Column<int>(nullable: false),
@@ -358,7 +359,7 @@ namespace HomeManagement.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(nullable: true),
                     Price = table.Column<double>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
@@ -388,7 +389,7 @@ namespace HomeManagement.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     ReminderId = table.Column<int>(nullable: false),
                     Dismissed = table.Column<bool>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false)

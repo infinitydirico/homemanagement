@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Migrations\20191119113335_InitialCreate.cs" />
-    <Compile Include="Migrations\20191119113335_InitialCreate.Designer.cs" />
+    <Compile Include="Migrations\20191121104218_InitialCreate.cs" />
+    <Compile Include="Migrations\20191121104218_InitialCreate.Designer.cs" />
     <Compile Include="Migrations\WebAppDbContextModelSnapshot.cs" />
   </ItemGroup>
 
@@ -39,6 +39,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.4.10" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="3.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="3.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="3.0.0" />

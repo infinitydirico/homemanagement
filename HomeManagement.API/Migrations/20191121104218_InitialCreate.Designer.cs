@@ -5,18 +5,21 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace HomeManagement.API.Migrations
 {
     [DbContext(typeof(WebAppDbContext))]
-    [Migration("20191119113335_InitialCreate")]
+    [Migration("20191121104218_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099");
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("HomeManagement.API.Data.Entities.ApplicationUser", b =>
                 {
@@ -267,7 +270,8 @@ namespace HomeManagement.API.Migrations
 
                     b.Property<string>("Path");
 
-                    b.Property<ulong>("Size");
+                    b.Property<decimal>("Size")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
 
                     b.Property<int>("TransactionId");
 
