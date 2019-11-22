@@ -13,7 +13,8 @@ namespace HomeManagement.Business.Units
         private readonly ITransactionMapper transactionMapper;
         private readonly ICategoryMapper categoryMapper;
         private readonly IUserSessionService userService;
-        private readonly IExportableCategory exportableCategory; private readonly IRepositoryFactory repositoryFactory;
+        private readonly IExportableCategory exportableCategory;
+        private readonly IRepositoryFactory repositoryFactory;
 
         public CategoryService(ITransactionMapper transactionMapper,
                                     ICategoryMapper categoryMapper,

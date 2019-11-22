@@ -73,7 +73,7 @@ namespace HomeManagement.API.Data
 
             modelBuilder.Entity<Preferences>().HasOne(x => x.User);
 
-            modelBuilder.Entity<ConfigurationSetting>().ToTable(nameof(WebAppDbContext.ConfigurationSettings)).HasKey(x => x.Id);
+            modelBuilder.Entity<ConfigurationSetting>().ToTable(nameof(ConfigurationSettings)).HasKey(x => x.Id);
 
             modelBuilder.Entity<MonthlyExpense>().HasKey(x => x.Id);
 

@@ -1,12 +1,11 @@
 ﻿using HomeManagement.AdminSite.Filters;
-using HomeManagement.AdminSite.Services;
+using HomeManagement.Business.Contracts;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace HomeManagement.AdminSite.Controllers
 {
@@ -23,31 +22,31 @@ namespace HomeManagement.AdminSite.Controllers
             _cache = cache;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var configs = await GetSettings();
+            var configs = GetSettings();
             return View(configs);
         }
         
         [HttpGet]
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if(id == null)
             {
                 return RedirectToAction("Error", "Home");
             }
 
-            var configs = await GetSettings();
+            var configs = GetSettings();
             var config = configs.First(x => x.Id.Equals(id));
             return View(config);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(ConfigurationSettingModel model)
+        public IActionResult Edit(ConfigurationSettingModel model)
         {
             if (ModelState.IsValid)
             {
-                await configurationSettingsService.Update(model);
+                configurationSettingsService.Save(model);
             }
             else
             {
@@ -58,17 +57,17 @@ namespace HomeManagement.AdminSite.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Add()
+        public IActionResult Add()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(ConfigurationSettingModel model)
+        public IActionResult Add(ConfigurationSettingModel model)
         {
             if (ModelState.IsValid)
             {
-                await configurationSettingsService.Update(model);
+                configurationSettingsService.Save(model);
             }
             else
             {
@@ -78,7 +77,7 @@ namespace HomeManagement.AdminSite.Controllers
             return RedirectToAction("Index");
         }
 
-        private async Task<IEnumerable<ConfigurationSettingModel>> GetSettings()
+        private IEnumerable<ConfigurationSettingModel> GetSettings()
         {
             IEnumerable<ConfigurationSettingModel> configs = _cache.Get(nameof(ConfigurationSettingModel)) as IEnumerable<ConfigurationSettingModel>;
             if (configs != null)
@@ -86,7 +85,7 @@ namespace HomeManagement.AdminSite.Controllers
                 return configs;
             }
 
-            configs = await configurationSettingsService.GetSettings();
+            configs = configurationSettingsService.GetConfigs();
 
             _cache.CreateEntry(nameof(ConfigurationSettingModel));
             _cache.Set(nameof(ConfigurationSettingModel), configs, new MemoryCacheEntryOptions
