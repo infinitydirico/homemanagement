@@ -1,20 +1,18 @@
-﻿using HomeManagement.API.Exportation;
+﻿using HomeManagement.Business.Contracts;
 using HomeManagement.Core.Extensions;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace HomeManagement.API.Business
+namespace HomeManagement.Business.Units
 {
     public class TransactionService : ITransactionService
     {
-        private readonly IPreferenceService preferenceService;
         private readonly ITransactionMapper transactionMapper;
         private readonly ICategoryMapper categoryMapper;
         private readonly IExportableTransaction exportableTransaction;
@@ -23,14 +21,12 @@ namespace HomeManagement.API.Business
 
         public TransactionService(ITransactionMapper transactionMapper,
             ICategoryMapper categoryMapper,
-            IPreferenceService preferenceService,
             IExportableTransaction exportableTransaction,
             IUserSessionService userService,
             IRepositoryFactory repositoryFactory)
         {
             this.transactionMapper = transactionMapper;
             this.categoryMapper = categoryMapper;
-            this.preferenceService = preferenceService;
             this.exportableTransaction = exportableTransaction;
             this.userService = userService;
             this.repositoryFactory = repositoryFactory;
@@ -140,14 +136,14 @@ namespace HomeManagement.API.Business
             return transactionMapper.ToModel(result);
         }
 
-        public void Import(int accountId, IFormFile formFile)
+        public void Import(int accountId, byte[] bytes)
         {
             using (var transactionRepository = repositoryFactory.CreateTransactionRepository())
             using (var accountRepository = repositoryFactory.CreateAccountRepository())
             {
                 var account = accountRepository.FirstOrDefault(x => x.Id.Equals(accountId));
 
-                foreach (var entity in exportableTransaction.ToEntities(formFile.OpenReadStream().GetBytes()))
+                foreach (var entity in exportableTransaction.ToEntities(bytes))
                 {
                     if (entity == null) continue;
 
@@ -168,7 +164,7 @@ namespace HomeManagement.API.Business
             }
         }
 
-        public ExportFile Export(int accountId)
+        public FileModel Export(int accountId)
         {
             var transactionRepository = repositoryFactory.CreateTransactionRepository();
             var accountRepository = repositoryFactory.CreateAccountRepository();
@@ -179,10 +175,10 @@ namespace HomeManagement.API.Business
 
             var csv = exportableTransaction.ToCsv(transactions);
 
-            return new ExportFile
+            return new FileModel
             {
-                Filename = $"{account}{DateTime.Now.ToString("yyyyMMddhhmmss")}.csv",
-                Content = csv
+                Name = $"{account}{DateTime.Now.ToString("yyyyMMddhhmmss")}.csv",
+                Contents = csv
             };
         }
 
@@ -317,43 +313,5 @@ namespace HomeManagement.API.Business
                 accountRepository.Commit();
             }
         }
-    }
-
-    public interface ITransactionService
-    {
-        void Add(TransactionModel transaction);
-
-        void Update(TransactionModel transaction);
-
-        void Delete(int id);
-
-        void BatchDelete(int accountId);
-
-        IEnumerable<TransactionModel> GetAll();
-
-        IEnumerable<TransactionModel> GetByAccountId(int accountId);
-
-        TransactionModel Get(int id);
-
-        TransactionPageModel Page(TransactionPageModel page);
-
-        IEnumerable<TransactionModel> FilterByDate(int year, int month);
-
-        IEnumerable<TransactionModel> FilterByDateAndAccount(int year, int month, int accountId);
-
-        IEnumerable<MonthlyCategory> CategoryEvolution(int categoryId);
-
-        IEnumerable<MonthlyCategory> CategoryEvolutionByAccount(int categoryId, int accountId);
-
-        void Import(int accountId, IFormFile formFile);
-
-        ExportFile Export(int accountId);
-    }
-
-    public class ExportFile
-    {
-        public string Filename { get; set; }
-
-        public byte[] Content { get; set; }
     }
 }

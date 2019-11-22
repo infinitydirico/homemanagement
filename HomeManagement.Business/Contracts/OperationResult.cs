@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace HomeManagement.API.Business
+namespace HomeManagement.Business.Contracts
 {
     public class OperationResult
     {
@@ -23,16 +22,5 @@ namespace HomeManagement.API.Business
     {
         Succeed,
         Error
-    }
-
-    public class BusinessException : Exception
-    {
-        public BusinessException(string message) : base(message)
-        {
-        }
-
-        public BusinessException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
     }
 }

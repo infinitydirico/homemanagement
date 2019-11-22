@@ -1,10 +1,11 @@
-﻿using HomeManagement.Data;
+﻿using HomeManagement.Business.Contracts;
+using HomeManagement.Data;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HomeManagement.API.Business
+namespace HomeManagement.Business.Units
 {
     public class MonthlyExpenseService : IMonthlyExpenseService
     {
@@ -81,14 +82,5 @@ namespace HomeManagement.API.Business
                 return OperationResult.Succeed();
             }
         }
-    }
-
-    public interface IMonthlyExpenseService
-    {
-        OperationResult Save(MonthlyExpenseModel model);
-
-        OperationResult Remove(int id);
-
-        IEnumerable<MonthlyExpenseModel> GetMonthlyExpenses();
     }
 }

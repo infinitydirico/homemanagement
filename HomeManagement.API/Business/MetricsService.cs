@@ -1,4 +1,5 @@
-﻿using HomeManagement.Core.Extensions;
+﻿using HomeManagement.Business.Contracts;
+using HomeManagement.Core.Extensions;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;

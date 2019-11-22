@@ -1,4 +1,5 @@
-﻿using HomeManagement.Data;
+﻿using HomeManagement.Business.Contracts;
+using HomeManagement.Data;
 using HomeManagement.Domain;
 
 namespace HomeManagement.API.Business
@@ -20,12 +21,5 @@ namespace HomeManagement.API.Business
             var userRepository = repositoryFactory.CreateUserRepository();
             user = userRepository.GetByEmail(email);
         }
-    }
-
-    public interface IUserSessionService
-    {
-        User GetAuthenticatedUser();
-
-        void RegisterScopedUser(string email);
     }
 }

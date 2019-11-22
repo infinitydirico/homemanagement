@@ -1,10 +1,11 @@
-﻿using HomeManagement.Data;
+﻿using HomeManagement.Business.Contracts;
+using HomeManagement.Data;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HomeManagement.API.Business
+namespace HomeManagement.Business.Units
 {
     public class AccountService : IAccountService
     {
@@ -109,20 +110,5 @@ namespace HomeManagement.API.Business
                 return OperationResult.Succeed();
             }
         }
-    }
-
-    public interface IAccountService
-    {
-        OperationResult Add(AccountModel accountModel);
-
-        OperationResult Update(AccountModel accountModel);
-
-        OperationResult Delete(int id);
-
-        IEnumerable<AccountModel> GetAccounts();
-
-        AccountModel Get(int id);
-
-        AccountPageModel Page(AccountPageModel model);
     }
 }

@@ -1,4 +1,4 @@
-﻿using HomeManagement.API.Exportation;
+﻿using HomeManagement.Business.Contracts;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
@@ -6,15 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HomeManagement.API.Business
+namespace HomeManagement.Business.Units
 {
     public class CategoryService : ICategoryService
     {
         private readonly ITransactionMapper transactionMapper;
         private readonly ICategoryMapper categoryMapper;
         private readonly IUserSessionService userService;
-        private readonly IExportableCategory exportableCategory;
-        private readonly IRepositoryFactory repositoryFactory;
+        private readonly IExportableCategory exportableCategory; private readonly IRepositoryFactory repositoryFactory;
 
         public CategoryService(ITransactionMapper transactionMapper,
                                     ICategoryMapper categoryMapper,
@@ -182,24 +181,5 @@ namespace HomeManagement.API.Business
                 return OperationResult.Succeed();
             }
         }
-    }
-
-    public interface ICategoryService
-    {
-        OperationResult Add(CategoryModel categoryModel);
-
-        OperationResult Update(CategoryModel categoryModel);
-
-        OperationResult Delete(int id);
-
-        IEnumerable<CategoryModel> Get();
-
-        IEnumerable<CategoryModel> GetActive();
-
-        IEnumerable<UserCategoryModel> GetUsersCategories();
-
-        FileModel Export();
-
-        void Import(byte[] contents);
     }
 }

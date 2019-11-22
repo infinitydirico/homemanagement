@@ -55,6 +55,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HomeManagement.AI.Vision\HomeManagement.AI.Vision.csproj" />
+    <ProjectReference Include="..\HomeManagement.Business\HomeManagement.Business.csproj" />
     <ProjectReference Include="..\HomeManagement.Core\HomeManagement.Core.csproj" />
     <ProjectReference Include="..\HomeManagement.Data.Contracts\HomeManagement.Data.Contracts.csproj" />
     <ProjectReference Include="..\HomeManagement.Data\HomeManagement.Data.csproj" />

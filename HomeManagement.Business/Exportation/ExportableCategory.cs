@@ -1,16 +1,11 @@
-﻿using HomeManagement.Contracts;
+﻿using HomeManagement.Business.Contracts;
 using HomeManagement.Core;
 using HomeManagement.Domain;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HomeManagement.API.Exportation
+namespace HomeManagement.Business.Exportation
 {
-    public interface IExportableCategory : IExportable<Category>
-    {
-
-    }
-
     public class ExportableCategory : Exportable<Category>, IExportableCategory
     {
         protected override Category CreateInstanceOf(List<string> exportableEntity)

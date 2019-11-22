@@ -1,5 +1,6 @@
 ﻿using HomeManagement.API.Data;
 using HomeManagement.API.Data.Entities;
+using HomeManagement.Business.Contracts;
 using HomeManagement.Contracts;
 using HomeManagement.Data;
 using HomeManagement.Domain;
@@ -211,7 +212,7 @@ namespace HomeManagement.API.Business
 
                     using (var entryStream = entry.Open())
                     {
-                        var st = new MemoryStream(file.Content);
+                        var st = new MemoryStream(file.Contents);
 
                         st.CopyTo(entryStream);
                     }

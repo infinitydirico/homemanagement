@@ -1,12 +1,11 @@
-﻿using HomeManagement.Data;
-using HomeManagement.Domain;
+﻿using HomeManagement.Business.Contracts;
+using HomeManagement.Data;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HomeManagement.API.Business
+namespace HomeManagement.Business.Units
 {
     public class NotificationService : INotificationService
     {
@@ -74,34 +73,6 @@ namespace HomeManagement.API.Business
                 notification.Dismissed = model.Dismissed;
 
                 notificationRepository.Update(notification);
-                notificationRepository.Commit();
-            }
-        }
-
-        public void GenerateNotifications()
-        {
-            using (var reminderRepository = repositoryFactory.CreateReminderRepository())
-            using (var notificationRepository = repositoryFactory.CreateNotificationRepository())
-            {
-                var reminders = reminderRepository.GetAll();
-
-                var notifications = notificationRepository
-                    .Where(n => n.CreatedOn < DateTime.Now &&
-                                n.CreatedOn.Month.Equals(DateTime.Now.Month));
-
-                if (notifications.Count() > 0 && reminders.Count().Equals(notifications.Count())) return;
-
-                foreach (var reminder in reminders.Where(x => !notifications.Any(y => y.ReminderId.Equals(x.Id))))
-                {
-                    var notification = new Notification
-                    {
-                        ReminderId = reminder.Id,
-                        CreatedOn = DateTime.Now,
-                        Dismissed = false,
-                    };
-
-                    notificationRepository.Add(notification);
-                }
                 notificationRepository.Commit();
             }
         }
@@ -174,24 +145,5 @@ namespace HomeManagement.API.Business
                 return OperationResult.Succeed();
             }
         }
-    }
-
-    public interface INotificationService
-    {
-        IEnumerable<NotificationModel> GetNotifications();
-
-        void Dismiss(NotificationModel model);
-
-        IEnumerable<ReminderModel> GetReminders();
-
-        ReminderModel GetReminder(int id);
-
-        OperationResult AddReminder(ReminderModel reminderModel);
-
-        OperationResult UpdateReminder(ReminderModel reminderModel);
-
-        OperationResult DeleteReminder(int id);
-
-        void GenerateNotifications();
     }
 }

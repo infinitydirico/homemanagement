@@ -1,11 +1,12 @@
-﻿using HomeManagement.Data;
+﻿using HomeManagement.Business.Contracts;
+using HomeManagement.Data;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HomeManagement.API.Business
+namespace HomeManagement.Business.Units
 {
     public class ConfigurationSettingsService : IConfigurationSettingsService
     {
@@ -79,16 +80,5 @@ namespace HomeManagement.API.Business
                 return OperationResult.Succeed();
             }
         }
-    }
-
-    public interface IConfigurationSettingsService
-    {
-        IEnumerable<ConfigurationSettingModel> GetConfigs();
-
-        ConfigurationSettingModel GetConfig(string name);
-
-        OperationResult Save(ConfigurationSettingModel model);
-
-        OperationResult Delete(int id);
     }
 }

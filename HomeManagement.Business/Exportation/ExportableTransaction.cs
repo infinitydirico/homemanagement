@@ -1,46 +1,43 @@
-﻿using HomeManagement.Contracts;
-using HomeManagement.Core.Extensions;
+﻿using HomeManagement.Business.Contracts;
 using HomeManagement.Core;
+using HomeManagement.Core.Extensions;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
-using HomeManagement.API.Business;
-using System.Globalization;
 
-namespace HomeManagement.API.Exportation
+namespace HomeManagement.Business.Exportation
 {
-    public interface IExportableTransaction : IExportable<Transaction>
-    {
-    }
-
     public class ExportableTransaction : Exportable<Transaction>, IExportableTransaction
     {
-        ICategoryRepository categoryRepository;
-        IPreferenceService preferenceService;
-        IUserSessionService userService;
+        private readonly IRepositoryFactory repositoryFactory;
+        private readonly ICategoryRepository categoryRepository;
+        private readonly IPreferencesRepository preferencesRepository;
+        private readonly IUserSessionService userService;
 
-        public ExportableTransaction(ICategoryRepository categoryRepository,
-            IPreferenceService preferenceService,
+        public ExportableTransaction(IRepositoryFactory repositoryFactory,
             IUserSessionService userService)
         {
-            this.categoryRepository = categoryRepository;
-            this.preferenceService = preferenceService;
+            this.repositoryFactory = repositoryFactory;
             this.userService = userService;
+
+            categoryRepository = repositoryFactory.CreateCategoryRepository();
+            preferencesRepository = repositoryFactory.CreatePreferencesRepository();
         }
 
         protected override Transaction CreateInstanceOf(List<string> exportableEntity)
         {
             var transaction = new Transaction();
 
+            var user = userService.GetAuthenticatedUser();
+
             transaction.Name = exportableEntity[0];
             transaction.Price = double.Parse(exportableEntity[1]);
 
-            var user = userService.GetAuthenticatedUser();
-            var language = preferenceService.GetUserLanguage(user.Id);
-            var culture = new CultureInfo(language);
+            var culture = GetUserLanguage();
 
             transaction.Date = DateTime.Parse(exportableEntity[2], culture);
 
@@ -62,7 +59,7 @@ namespace HomeManagement.API.Exportation
             }
 
             //default fallback
-            if(transaction.CategoryId == 0)
+            if (transaction.CategoryId == 0)
             {
                 var category = categoryRepository.FirstOrDefault(x => x.UserId.Equals(user.Id));
 
@@ -78,9 +75,7 @@ namespace HomeManagement.API.Exportation
 
             StringBuilder sb = new StringBuilder();
 
-            var user = userService.GetAuthenticatedUser();
-            var language = preferenceService.GetUserLanguage(user.Id);
-            var culture = new CultureInfo(language);
+            var culture = GetUserLanguage();
 
             foreach (var header in headers)
             {
@@ -108,6 +103,19 @@ namespace HomeManagement.API.Exportation
             }
 
             return sb.ToString();
+        }
+
+        private CultureInfo GetUserLanguage()
+        {
+            var user = userService.GetAuthenticatedUser();
+
+            var preferencesRepository = repositoryFactory.CreatePreferencesRepository();
+
+            var languagePreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals("Language"));
+
+            var lang = languagePreference?.Value ?? "en";
+
+            return new CultureInfo(lang);
         }
     }
 }
