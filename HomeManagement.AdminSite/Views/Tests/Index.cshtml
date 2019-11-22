@@ -1,16 +1,15 @@
-﻿@model bool
+﻿
 @{
     ViewData["Title"] = "Index";
 }
 
 <h2>Index</h2>
+<form action="/Tests/Connection">
+    <input type="text" class="form-control" name="connection" placeholder="Connection String" required autofocus>
+    <button class="btn btn-primary" type="submit">
+        Check
+    </button>
+</form>
 
-@if(Model)
-{
-    <label>The connection was succesful.</label>
-}
-else
-{
-    <label>The connection failed.</label>
-}
+
 

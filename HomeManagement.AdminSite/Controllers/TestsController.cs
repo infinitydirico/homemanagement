@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 
 namespace HomeManagement.AdminSite.Controllers
 {
@@ -18,14 +19,19 @@ namespace HomeManagement.AdminSite.Controllers
 
         public IActionResult Index()
         {
-            return View(TestsConnection());
+            return View();
         }
 
-        public bool TestsConnection()
+        public IActionResult Connection(string connection)
+        {
+            return View(TestsConnection(connection));
+        }
+
+        public bool TestsConnection(string connectionString)
         {
             try
             {
-                var connectionString = configuration.GetSection("ConnectionStrings").GetValue<string>("Postgres");
+                //var connectionString = configuration.GetSection("ConnectionStrings").GetValue<string>("Postgres");
                 using (var connection = new Npgsql.NpgsqlConnection(connectionString))
                 {
                     connection.Open();
