@@ -37,6 +37,12 @@ namespace HomeManagement.API.Controllers.Users
             return Ok(userService.GetUsers());
         }
 
+        [HttpPost]
+        public IActionResult CreateDefaultData()
+        {
+            return Ok();
+        }
+
         [AdminAuthorization]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

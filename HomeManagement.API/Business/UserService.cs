@@ -360,6 +360,62 @@ namespace HomeManagement.API.Business
                 Errors = result.Errors.Select(x => x.Description).ToList()
             };
         }
+
+        public OperationResult CreateDefaultData(UserModel userModel)
+        {
+            using (var userRepository = repositoryFactory.CreateUserRepository())
+            using (var accountRepository = repositoryFactory.CreateAccountRepository())
+            using (var preferencesRepository = repositoryFactory.CreatePreferencesRepository())
+            using (var categoryRepository = repositoryFactory.CreateCategoryRepository())
+            {
+                var language = userModel.Language ?? "en";
+
+                var user = new User
+                {
+                    Email = userModel.Email
+                };
+
+                userRepository.Add(user);
+
+                accountRepository.Add(new Account
+                {
+                    UserId = user.Id,
+                    Name = language.Contains("en") ? "Cash" : "Efectivo",
+                    AccountType = Domain.AccountType.Cash,
+                    CurrencyId = 1
+                });
+
+                accountRepository.Commit();
+
+                var categories = CategoryInitializer.GetDefaultCategories().Select(x => new Category
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Icon = x.Icon,
+                    IsActive = true,
+                    Measurable = true,
+                    UserId = user.Id
+                }).ToList();
+
+                categoryRepository.Add(categories);
+                categoryRepository.Commit();
+
+                preferencesRepository.Add(new Preferences
+                {
+                    UserId = user.Id,
+                    Key = "PreferredCurrency",
+                    Value = "USD",
+                });
+                preferencesRepository.Add(new Preferences
+                {
+                    UserId = user.Id,
+                    Key = "Language",
+                    Value = language,
+                });
+                preferencesRepository.Commit();
+            }
+            return OperationResult.Succeed();
+        }
     }
 
     public interface IUserService
@@ -379,5 +435,7 @@ namespace HomeManagement.API.Business
         IEnumerable<UserModel> GetUsers();
 
         Task<OperationResult> ChangePassword(string currentPassword, string newPassword);
+
+        OperationResult CreateDefaultData(UserModel userModel);
     }
 }
