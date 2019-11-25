@@ -81,16 +81,18 @@ namespace HomeManagement.Business.Units
         {
             using (var accountRepository = repositoryFactory.CreateAccountRepository())
             {
+                var user = userService.GetAuthenticatedUser();
+
                 if (model.TotalPages.Equals(default(int)))
                 {
-                    var total = (double)accountRepository.Count(c => c.UserId.Equals(model.UserId));
+                    var total = (double)accountRepository.Count(c => c.UserId.Equals(user.Id));
                     var totalPages = System.Math.Ceiling(total / (double)model.PageCount);
                     model.TotalPages = int.Parse(totalPages.ToString());
                 }
 
                 var currentPage = model.CurrentPage - 1;
 
-                var results = accountRepository.Paginate(x => x.UserId.Equals(model.UserId), x => x.Id, model.PageCount * currentPage, model.PageCount);
+                var results = accountRepository.Paginate(x => x.UserId.Equals(user.Id), x => x.Id, model.PageCount * currentPage, model.PageCount);
 
                 model.Accounts = accountMapper.ToModels(results).ToList();
 

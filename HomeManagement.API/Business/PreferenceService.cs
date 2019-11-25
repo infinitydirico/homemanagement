@@ -56,6 +56,17 @@ namespace HomeManagement.API.Business
             }
         }
 
+        public string GetUserLanguage()
+        {
+            var user = userService.GetAuthenticatedUser();
+
+            var preferencesRepository = repositoryFactory.CreatePreferencesRepository();
+
+            var languagePreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(LanguageKey));
+
+            return languagePreference?.Value ?? "en";
+        }
+
         public string GetUserLanguage(int userId)
         {
             var preferencesRepository = repositoryFactory.CreatePreferencesRepository();
@@ -161,6 +172,8 @@ namespace HomeManagement.API.Business
     public interface IPreferenceService
     {
         void ChangeLanguage(string language);
+
+        string GetUserLanguage();
 
         string GetUserLanguage(int userId);
 

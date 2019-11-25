@@ -49,7 +49,11 @@ namespace HomeManagement.Api.Identity.Controllers
 
             var tokenResult = await userManager.SetAuthenticationTokenAsync(user, nameof(JwtSecurityToken), nameof(JwtSecurityToken), token);
 
-            return Ok();
+            return Ok(new UserModel
+            {
+                Email = userModel.Email,
+                Token = token
+            });
         }
 
         [HttpPost("SignOut")]
