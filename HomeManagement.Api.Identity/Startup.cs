@@ -4,7 +4,6 @@ using HomeManagement.Contracts;
 using HomeManagement.Core.Cryptography;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using System.Text;
 
@@ -57,51 +56,56 @@ namespace HomeManagement.Api.Identity
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "Idnetity API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Idnetity API", Version = "v1" });
 
                 var security = new Dictionary<string, IEnumerable<string>>
                 {
                     {"Bearer", new string[] { }},
                 };
 
-                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                var securityScheme = new OpenApiSecurityScheme
                 {
                     Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: {token}\"",
                     Name = "Authorization",
-                    In = "header",
-                    Type = "apiKey"
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                };
+
+                c.AddSecurityDefinition("Bearer", securityScheme);
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        securityScheme,
+                        new List<string>()
+                    }
                 });
-                c.AddSecurityRequirement(security);
             });
 
             services.AddCors(options =>
             {
-                var corsBuilder = new CorsPolicyBuilder();
-                corsBuilder.AllowAnyHeader();
-                corsBuilder.AllowAnyMethod();
-                corsBuilder.AllowAnyOrigin();
-                corsBuilder.AllowCredentials();
-                options.AddPolicy("IdentityApiCorsPolicy", corsBuilder.Build());
+                options.AddPolicy("IdentityApiCorsPolicy", corsBuilder =>
+                    corsBuilder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyHeader());
             });
 
             services.AddMvc(options =>
             {
                 options.Filters.Add(new ExceptionFilter());
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            }).SetCompatibilityVersion(CompatibilityVersion.Latest);
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddScoped<ICryptography, AesCryptographyService>();
+
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
             app.UseAuthentication();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
@@ -115,7 +119,12 @@ namespace HomeManagement.Api.Identity
 
             app.UseCors("IdentityApiCorsPolicy");
 
-            app.UseMvc();
+            app.UseRouting();
+
+            app.UseEndpoints(x =>
+            {
+                x.MapDefaultControllerRoute();
+            });
 
             CreateDatabseIfNotExits(app);
         }
