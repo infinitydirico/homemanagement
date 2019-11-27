@@ -1,9 +1,8 @@
 ﻿using HomeManagement.API.Business;
-using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
+using HomeManagement.Core.Extensions;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace HomeManagement.API.Controllers.Users
 {
@@ -45,9 +44,9 @@ namespace HomeManagement.API.Controllers.Users
 
         [AdminAuthorization]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
-            await userService.DeleteUser(id);
+            userService.DeleteUser(id);
             return Ok();
         }
     }

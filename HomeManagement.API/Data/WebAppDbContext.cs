@@ -1,14 +1,12 @@
 ﻿using HomeManagement.API.Data.Entities;
 using HomeManagement.Domain;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeManagement.API.Data
 {
-    public class WebAppDbContext : IdentityDbContext<ApplicationUser>
+    public class WebAppDbContext : DbContext
     {
-        //Since an User set already exists in IdentityDbContext
-        public DbSet<User> UsersSet { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public DbSet<Account> Accounts { get; set; }
 

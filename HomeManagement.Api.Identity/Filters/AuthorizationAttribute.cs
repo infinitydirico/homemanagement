@@ -1,7 +1,5 @@
 ﻿using HomeManagement.Api.Core;
-using HomeManagement.API.Extensions;
-using HomeManagement.Business.Contracts;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -12,19 +10,13 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 
-namespace HomeManagement.API.Filters
+namespace HomeManagement.Api.Identity.Filters
 {
     public class AuthorizationAttribute : Attribute, IAsyncActionFilter
     {
         public virtual async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (IsDropboxRequest(context.HttpContext.Request.QueryString))
-            {
-                await next();
-                return;
-            }
-
-            var header = context.HttpContext.GetAuthorizationHeader();
+            var header = context.HttpContext?.Request?.Headers?["Authorization"].FirstOrDefault();
 
             if (string.IsNullOrEmpty(header))
             {
@@ -42,20 +34,13 @@ namespace HomeManagement.API.Filters
                 return;
             }
 
+            var userManager = context.HttpContext.RequestServices.GetService(typeof(UserManager<IdentityUser>)) as UserManager<IdentityUser>;
+
             var email = token.Claims.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
-
-            var userService = context.HttpContext.RequestServices.GetService(typeof(IUserSessionService)) as IUserSessionService;
-
-            userService.RegisterScopedUser(email.Value);
 
             context.HttpContext.User = new GenericPrincipal(new ClaimsIdentity(token.Claims), Array.Empty<string>());
 
             await next();
         }
-
-        private bool IsDropboxRequest(QueryString queryString)
-            => queryString.HasValue &&
-            queryString.Value.Contains("code") &&
-            queryString.Value.Contains("state");
     }
 }

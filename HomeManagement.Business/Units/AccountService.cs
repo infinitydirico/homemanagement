@@ -26,8 +26,10 @@ namespace HomeManagement.Business.Units
         {
             using (var accountRepository = repositoryFactory.CreateAccountRepository())
             {
-                var entity = accountMapper.ToEntity(accountModel);
+                var user = userService.GetAuthenticatedUser();
 
+                var entity = accountMapper.ToEntity(accountModel);
+                entity.UserId = user.Id;
                 accountRepository.Add(entity);
                 accountRepository.Commit();
             }

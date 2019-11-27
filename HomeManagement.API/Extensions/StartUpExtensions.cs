@@ -9,7 +9,6 @@ using HomeManagement.Contracts;
 using HomeManagement.Core.Cryptography;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HomeManagement.API.Extensions
@@ -29,8 +28,6 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<IRepositoryFactory, RepositoryFactory>();
 
-            services.AddScoped<IApiRepositoryFactory, ApiRepositoryFactory>();
-
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<IAccountRepository, AccountRepository>();
@@ -45,8 +42,6 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<IPreferencesRepository, PreferencesRepository>();
             
-            services.AddScoped<ITokenRepository, TokenRepository>();
-
             services.AddScoped<IDataLogRepository, DataLogRepository>();
 
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
@@ -54,8 +49,6 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IStorageItemRepository, StorageItemRepository>();
 
             services.AddScoped<IConfigurationSettingsRepository, ConfigurationSettingsRepository>();
-
-            services.AddScoped<IRolesRepository, RolesRepository>();
 
             services.AddScoped<IMonthlyExpenseRepository, MonthlyExpenseRepository>();
             //with the throttle filter with persisted repo, the requests take around 100ms to respond
@@ -108,17 +101,6 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IConfigurationSettingsService, ConfigurationSettingsService>();
             services.AddScoped<IMonthlyExpenseService, MonthlyExpenseService>();
             services.AddScoped<IImageService, ImageService>();
-        }
-
-        public static CorsPolicy BuildCorsPolicy(this CorsOptions corsOptions)
-        {
-            var corsBuilder = new CorsPolicyBuilder();
-            corsBuilder.AllowAnyHeader();
-            corsBuilder.AllowAnyMethod();
-            corsBuilder.AllowAnyOrigin();
-            corsBuilder.AllowCredentials();
-
-            return corsBuilder.Build();
         }
     }
 }

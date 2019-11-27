@@ -1,5 +1,6 @@
 ﻿using HomeManagement.Contracts.Repositories;
 using HomeManagement.Domain;
+using System;
 using System.Collections.Generic;
 
 namespace HomeManagement.Data
@@ -11,6 +12,8 @@ namespace HomeManagement.Data
         IEnumerable<Transaction> GetByMeasurableAccount(int accountId);
 
         IEnumerable<Transaction> GetByUser(string email);
+
+        decimal SumBy(int userId, TransactionType transactionType, DateTime date);
 
         void DeleteAllByAccount(int accountId);
     }

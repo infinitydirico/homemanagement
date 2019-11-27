@@ -1,5 +1,4 @@
 ﻿using HomeManagement.API.Data;
-using HomeManagement.API.Data.Entities;
 using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
 using HomeManagement.API.Schedule;
@@ -10,13 +9,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using System.Text;
 
@@ -43,10 +41,6 @@ namespace HomeManagement.API
             var postgresConnection = Configuration.GetSection("ConnectionStrings").GetValue<string>("Postgres");
             services.AddDbContextPool<WebAppDbContext>(options =>
                 options.UseNpgsql(postgresConnection));
-
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<WebAppDbContext>()
-                .AddDefaultTokenProviders();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
            .AddJwtBearer(jwtBearerOptions =>
@@ -84,30 +78,43 @@ namespace HomeManagement.API
                 options.Filters.Add(typeof(ThrottleFilter));
                 options.Filters.Add(new ExceptionFilter());
             })
-            .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1);
+            .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Latest);
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "Idnetity API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Idnetity API", Version = "v1" });
 
                 var security = new Dictionary<string, IEnumerable<string>>
                 {
                     {"Bearer", new string[] { }},
                 };
 
-                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                var securityScheme = new OpenApiSecurityScheme
                 {
                     Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: {token}\"",
                     Name = "Authorization",
-                    In = "header",
-                    Type = "apiKey"
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                };
+
+                c.AddSecurityDefinition("Bearer", securityScheme);
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        securityScheme,
+                        new List<string>()
+                    }
                 });
-                c.AddSecurityRequirement(security);
             });
 
             services.AddCors(options =>
             {
-                options.AddPolicy("SiteCorsPolicy", options.BuildCorsPolicy());
+                options.AddPolicy("SiteCorsPolicy", corsBuilder =>
+                    corsBuilder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
             });
 
             services.Configure<FormOptions>(x =>
@@ -120,15 +127,10 @@ namespace HomeManagement.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
             ILoggerFactory loggerFactory)
         {
             //loggerFactory.AddProvider(new DatabaseLoggerProvider(app.ApplicationServices));
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
 
             app.EnsureDatabaseCreated(true);
 
@@ -149,11 +151,11 @@ namespace HomeManagement.API
 
             app.UseCors("SiteCorsPolicy");
 
-            app.UseMvc(routes =>
+            app.UseRouting();
+
+            app.UseEndpoints(x =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                x.MapDefaultControllerRoute();
             });
         }
     }

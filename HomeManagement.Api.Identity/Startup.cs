@@ -88,7 +88,7 @@ namespace HomeManagement.Api.Identity
                     corsBuilder
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
-                    .AllowAnyHeader());
+                    .AllowAnyMethod());
             });
 
             services.AddMvc(options =>
