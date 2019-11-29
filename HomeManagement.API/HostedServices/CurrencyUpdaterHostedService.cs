@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace HomeManagement.API.Schedule
+namespace HomeManagement.API.HostedServices
 {
     public class CurrencyUpdaterHostedService : HostedService
     {

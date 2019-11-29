@@ -1,12 +1,12 @@
 ﻿using HomeManagement.API.Business;
 using HomeManagement.API.Filters;
 using HomeManagement.Core.Extensions;
+using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeManagement.API.Controllers.Users
 {
-    [Authorization]
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/User")]
@@ -19,6 +19,7 @@ namespace HomeManagement.API.Controllers.Users
             this.userService = userService;
         }
 
+        [Authorization]
         [HttpGet("downloaduserdata")]
         public IActionResult DownloadUserData()
         {
@@ -29,6 +30,7 @@ namespace HomeManagement.API.Controllers.Users
             return File(file.GetBytes(), contentType, "userdata.zip");
         }
 
+        [Authorization]
         [AdminAuthorization]
         [HttpGet("getusers")]
         public IActionResult GetUsers()
@@ -36,12 +38,14 @@ namespace HomeManagement.API.Controllers.Users
             return Ok(userService.GetUsers());
         }
 
-        [HttpPost]
-        public IActionResult CreateDefaultData()
+        [HttpPost("CreateDefaultData")]
+        public IActionResult CreateDefaultData([FromBody] UserModel userModel)
         {
+            userService.CreateDefaultData(userModel);
             return Ok();
         }
 
+        [Authorization]
         [AdminAuthorization]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)

@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace HomeManagement.API.Schedule
+namespace HomeManagement.API.HostedServices
 {
     public abstract class HostedService : IHostedService, IDisposable
     {

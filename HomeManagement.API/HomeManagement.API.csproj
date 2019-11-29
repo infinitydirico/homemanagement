@@ -11,6 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Protobuf Include="**/*.proto" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="Protos\listener.proto" />
     <None Remove="sqlite3.exe" />
   </ItemGroup>
 
@@ -44,7 +49,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.4.10" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.5" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc2" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.0.0-rc2" />
@@ -53,6 +58,8 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="2.8.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.6.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.23.1" />
+
   </ItemGroup>
 
   <ItemGroup>
@@ -63,6 +70,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HomeManagement.AI.Vision\HomeManagement.AI.Vision.csproj" />
+    <ProjectReference Include="..\HomeManagement.Api.Bus\HomeManagement.Api.Bus.csproj" />
     <ProjectReference Include="..\HomeManagement.Business\HomeManagement.Business.csproj" />
     <ProjectReference Include="..\HomeManagement.Core\HomeManagement.Core.csproj" />
     <ProjectReference Include="..\HomeManagement.Data.Contracts\HomeManagement.Data.Contracts.csproj" />

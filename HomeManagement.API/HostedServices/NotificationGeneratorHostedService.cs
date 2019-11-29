@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 
-namespace HomeManagement.API.Schedule
+namespace HomeManagement.API.HostedServices
 {
     public class NotificationGeneratorHostedService : HostedService
     {

@@ -1,10 +1,9 @@
-﻿using HomeManagement.Contracts;
+﻿using HomeManagement.Api.Identity.Services;
+using HomeManagement.Contracts;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,15 +15,13 @@ namespace HomeManagement.Api.Identity.Controllers
     public class RegistrationController : ControllerBase
     {
         private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
         private readonly ICryptography cryptography;
+        private readonly Broadcaster broadcaster = new Broadcaster();
 
         public RegistrationController(UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
             ICryptography cryptography)
         {
             this.userManager = userManager;
-            this.signInManager = signInManager;
             this.cryptography = cryptography;
         }
 
@@ -42,7 +39,11 @@ namespace HomeManagement.Api.Identity.Controllers
 
             var result = await userManager.CreateAsync(user, password);
 
-            if (result.Succeeded) return Ok();
+            if (result.Succeeded)
+            {
+                broadcaster.BroadcastRegistration(userModel.Email);
+                return Ok();
+            }
             else return BadRequest(result.Errors);
         }
     }

@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Protobuf Include="**/*.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Protos\listener.proto" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.2.0" />
@@ -21,6 +29,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.0.0-rc2" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="5.0.0-rc2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.3.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.23.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +39,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\HomeManagement.Api.Bus\HomeManagement.Api.Bus.csproj" />
     <ProjectReference Include="..\HomeManagement.Core\HomeManagement.Core.csproj" />
     <ProjectReference Include="..\HomeManagement.Data\HomeManagement.Data.csproj" />
     <ProjectReference Include="..\HomeManagement.Models\HomeManagement.Models.csproj" />

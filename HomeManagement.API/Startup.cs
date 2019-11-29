@@ -1,7 +1,7 @@
 ﻿using HomeManagement.API.Data;
 using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
-using HomeManagement.API.Schedule;
+using HomeManagement.API.HostedServices;
 using HomeManagement.API.Services;
 using HomeManagement.FilesStore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -72,7 +72,8 @@ namespace HomeManagement.API
 
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, NotificationGeneratorHostedService>();
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, CurrencyUpdaterHostedService>();
-
+            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, ListenerHostedService>();
+            
             services.AddMvc(options =>
             {
                 options.Filters.Add(typeof(ThrottleFilter));

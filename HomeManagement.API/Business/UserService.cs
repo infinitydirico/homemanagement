@@ -213,6 +213,8 @@ namespace HomeManagement.API.Business
 
                 userRepository.Add(user);
 
+                userRepository.Commit();
+
                 accountRepository.Add(new Account
                 {
                     UserId = user.Id,
