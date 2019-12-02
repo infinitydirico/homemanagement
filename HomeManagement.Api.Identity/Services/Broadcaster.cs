@@ -6,20 +6,20 @@ namespace HomeManagement.Api.Identity.Services
 {
     public class Broadcaster
     {
-        public bool BroadcastRegistration(string email)
+        public bool BroadcastRegistration(string email, string language)
         {
             var client = GetServiceClient();
 
-            client.PushNewRegistration(new Protos.RegistrationSender
+            client.NewRegistration(new Protos.User
             {
-                MessageType = Protos.EventType.Registration,
-                Email = email
+                Email = email,
+                Language = language
             });
 
             return true;
         }
 
-        private Protos.ListenerService.ListenerServiceClient GetServiceClient()
+        private Protos.RegistrationRPC.RegistrationRPCClient GetServiceClient()
         {
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
@@ -28,8 +28,7 @@ namespace HomeManagement.Api.Identity.Services
                 Credentials = ChannelCredentials.Insecure
             });
 
-            var client = new Protos.ListenerService.ListenerServiceClient(channel);
-            return client;
+            return new Protos.RegistrationRPC.RegistrationRPCClient(channel);
         }
     }
 }

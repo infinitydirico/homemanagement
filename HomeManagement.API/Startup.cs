@@ -72,7 +72,6 @@ namespace HomeManagement.API
 
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, NotificationGeneratorHostedService>();
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, CurrencyUpdaterHostedService>();
-            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, ListenerHostedService>();
             
             services.AddMvc(options =>
             {
@@ -123,8 +122,9 @@ namespace HomeManagement.API
                 x.ValueLengthLimit = int.MaxValue;
                 x.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
                 x.MemoryBufferThreshold = int.MaxValue;
-
             });
+
+            services.AddGrpc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -157,6 +157,7 @@ namespace HomeManagement.API
             app.UseEndpoints(x =>
             {
                 x.MapDefaultControllerRoute();
+                x.MapGrpcService<RegistrationService>();
             });
         }
     }

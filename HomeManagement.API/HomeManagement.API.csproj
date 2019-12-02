@@ -15,7 +15,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Remove="Protos\listener.proto" />
+    <None Remove="Protos\registration.proto" />
     <None Remove="sqlite3.exe" />
   </ItemGroup>
 
@@ -70,7 +70,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HomeManagement.AI.Vision\HomeManagement.AI.Vision.csproj" />
-    <ProjectReference Include="..\HomeManagement.Api.Bus\HomeManagement.Api.Bus.csproj" />
     <ProjectReference Include="..\HomeManagement.Business\HomeManagement.Business.csproj" />
     <ProjectReference Include="..\HomeManagement.Core\HomeManagement.Core.csproj" />
     <ProjectReference Include="..\HomeManagement.Data.Contracts\HomeManagement.Data.Contracts.csproj" />

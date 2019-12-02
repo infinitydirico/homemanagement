@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option csharp_namespace = "HomeManagement.Api.Identity.Protos";
+
+service RegistrationRPC{
+	rpc NewRegistration (User) returns (Response);
+}
+
+message User{
+	string Email = 1;
+	string Language = 2;
+}
+
+message Response{
+
+}

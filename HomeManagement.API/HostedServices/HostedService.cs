@@ -11,7 +11,7 @@ namespace HomeManagement.API.HostedServices
     {
         protected readonly IServiceScopeFactory factory;
         protected readonly ILogger<HostedService> logger;
-        private Timer timer;
+        protected Timer timer;
 
         public HostedService(ILogger<HostedService> logger, IServiceScopeFactory factory)
         {
@@ -23,7 +23,7 @@ namespace HomeManagement.API.HostedServices
 
         public abstract int GetPeriodToRun();
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public virtual Task StartAsync(CancellationToken cancellationToken)
         {
             logger.LogInformation($"Starting hosted service {GetType().Name}");
 
@@ -51,7 +51,7 @@ namespace HomeManagement.API.HostedServices
             return factory.CreateScope().ServiceProvider.GetRequiredService<TService>();
         }
 
-        private void DoWork(object state)
+        protected virtual void DoWork(object state)
         {
             logger.LogInformation($"{GetType().Name} Processing at: {DateTime.Now.ToString()}");
             Process();

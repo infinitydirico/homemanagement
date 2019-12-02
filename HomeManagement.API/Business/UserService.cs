@@ -4,6 +4,7 @@ using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -254,9 +255,14 @@ namespace HomeManagement.API.Business
             }
             return OperationResult.Succeed();
         }
+
+        public void Dispose()
+        {
+            
+        }
     }
 
-    public interface IUserService
+    public interface IUserService : IDisposable
     {
         OperationResult CreateUser(UserModel user);
 

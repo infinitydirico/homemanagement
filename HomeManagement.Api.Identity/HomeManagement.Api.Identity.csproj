@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Protos\listener.proto" />
+    <None Remove="Protos\registration.proto" />
   </ItemGroup>
   
   <ItemGroup>
@@ -39,7 +39,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\HomeManagement.Api.Bus\HomeManagement.Api.Bus.csproj" />
     <ProjectReference Include="..\HomeManagement.Core\HomeManagement.Core.csproj" />
     <ProjectReference Include="..\HomeManagement.Data\HomeManagement.Data.csproj" />
     <ProjectReference Include="..\HomeManagement.Models\HomeManagement.Models.csproj" />

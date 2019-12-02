@@ -41,7 +41,7 @@ namespace HomeManagement.Api.Identity.Controllers
 
             if (result.Succeeded)
             {
-                broadcaster.BroadcastRegistration(userModel.Email);
+                broadcaster.BroadcastRegistration(userModel.Email, userModel.Language);
                 return Ok();
             }
             else return BadRequest(result.Errors);
