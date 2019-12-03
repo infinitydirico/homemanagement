@@ -5,7 +5,7 @@ namespace HomeManagement.AdminSite.Data
 {
     public class AdminDbContext : DbContext
     {
-        public DbSet<User> UsersSet { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public DbSet<Category> Categories { get; set; }
 
