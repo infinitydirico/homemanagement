@@ -1,5 +1,6 @@
 ﻿using HomeManagement.Api.Identity.Data;
 using HomeManagement.Api.Identity.Filters;
+using HomeManagement.Api.Identity.Services;
 using HomeManagement.Contracts;
 using HomeManagement.Core.Cryptography;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -99,6 +100,8 @@ namespace HomeManagement.Api.Identity
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddScoped<ICryptography, AesCryptographyService>();
+
+            services.AddScoped<IBroadcaster, Broadcaster>();
 
             services.AddControllers();
         }

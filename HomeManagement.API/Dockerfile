@@ -5,8 +5,6 @@ EXPOSE 80
 FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
 
-#COPY *.csproj ./
-#COPY ./HomeManagement.*.csproj ./
 COPY ["HomeManagement.API/HomeManagement.API.csproj", "HomeManagement.API/"]
 COPY ["HomeManagement.Data/HomeManagement.Data.csproj", "HomeManagement.Data/"]
 COPY ["HomeManagement.Data.Contracts/HomeManagement.Data.Contracts.csproj", "HomeManagement.Data.Contracts/"]
@@ -17,6 +15,7 @@ COPY ["HomeManagement.FilesStore/HomeManagement.FilesStore.csproj", "HomeManagem
 COPY ["HomeManagement.Core/HomeManagement.Core.csproj", "HomeManagement.Core/"]
 COPY ["HomeManagement.Mapper/HomeManagement.Mapper.csproj", "HomeManagement.Mapper/"]
 COPY ["HomeManagement.Models/HomeManagement.Models.csproj", "HomeManagement.Models/"]
+COPY ["HomeManagement.Tokens/HomeManagement.Api.Core.csproj", "HomeManagement.Tokens/"]
 RUN dotnet restore "HomeManagement.API/HomeManagement.API.csproj"
 COPY . .
 #WORKDIR "/src/HomeManagement.API"

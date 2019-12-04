@@ -16,13 +16,15 @@ namespace HomeManagement.Api.Identity.Controllers
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly ICryptography cryptography;
-        private readonly Broadcaster broadcaster = new Broadcaster();
+        private readonly IBroadcaster broadcaster;
 
         public RegistrationController(UserManager<IdentityUser> userManager,
-            ICryptography cryptography)
+            ICryptography cryptography,
+            IBroadcaster broadcaster)
         {
             this.userManager = userManager;
             this.cryptography = cryptography;
+            this.broadcaster = broadcaster;
         }
 
         [HttpPost]
