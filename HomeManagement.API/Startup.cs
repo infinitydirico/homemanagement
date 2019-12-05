@@ -2,6 +2,7 @@
 using HomeManagement.API.Data.Entities;
 using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
+using HomeManagement.API.Infraestructure;
 using HomeManagement.API.Schedule;
 using HomeManagement.API.Services;
 using HomeManagement.FilesStore;
@@ -103,6 +104,8 @@ namespace HomeManagement.API
                     Type = "apiKey"
                 });
                 c.AddSecurityRequirement(security);
+
+                c.OperationFilter<SwaggerFileOperationFilter>();
             });
 
             services.AddCors(options =>
