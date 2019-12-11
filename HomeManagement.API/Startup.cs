@@ -58,6 +58,8 @@ namespace HomeManagement.API
                };
            });
 
+            services.AddLogging();
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddRepositories();
@@ -123,8 +125,6 @@ namespace HomeManagement.API
                 x.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
                 x.MemoryBufferThreshold = int.MaxValue;
             });
-
-            services.AddGrpc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -132,6 +132,8 @@ namespace HomeManagement.API
             ILoggerFactory loggerFactory)
         {
             //loggerFactory.AddProvider(new DatabaseLoggerProvider(app.ApplicationServices));
+
+            loggerFactory.AddFile("logs/logfile-{Date}.txt");
 
             app.EnsureDatabaseCreated(true);
 
@@ -157,7 +159,6 @@ namespace HomeManagement.API
             app.UseEndpoints(x =>
             {
                 x.MapDefaultControllerRoute();
-                x.MapGrpcService<RegistrationService>();
             });
         }
     }

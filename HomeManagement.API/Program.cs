@@ -15,14 +15,6 @@ namespace HomeManagement.API
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .ConfigureKestrel(options =>
-                {
-                    int grpcPort = 5001;
-                    var apiPort = 60424;
-
-                    options.ListenLocalhost(grpcPort, o => o.Protocols = HttpProtocols.Http2);
-                    options.ListenLocalhost(apiPort, o => o.Protocols = HttpProtocols.Http1);
-                })
                 .UseStartup<Startup>()
                 .ConfigureLogging((context, logging) => 
                 {

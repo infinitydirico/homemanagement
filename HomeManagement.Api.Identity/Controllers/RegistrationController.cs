@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace HomeManagement.Api.Identity.Controllers
 {
@@ -32,21 +33,38 @@ namespace HomeManagement.Api.Identity.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.Select(x => x.Value));
 
-            var password = cryptography.Decrypt(userModel.Password);
-            var user = new IdentityUser
+            using(var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                Email = userModel.Email,
-                UserName = userModel.Email
-            };
+                try
+                {
+                    var password = cryptography.Decrypt(userModel.Password);
+                    var user = new IdentityUser
+                    {
+                        Email = userModel.Email,
+                        UserName = userModel.Email
+                    };
 
-            var result = await userManager.CreateAsync(user, password);
+                    var result = await userManager.CreateAsync(user, password);
 
-            if (result.Succeeded)
-            {
-                broadcaster.BroadcastRegistration(userModel.Email, userModel.Language);
-                return Ok();
+                    if (result.Succeeded)
+                    {
+                        broadcaster.BroadcastRegistration(userModel.Email, userModel.Language);
+                        scope.Complete();
+                        return Ok();
+                    }
+                    else
+                    {
+                        scope.Dispose();
+                        return BadRequest(result.Errors);
+                    }
+
+                }
+                catch (System.Exception ex)
+                {
+                    scope.Dispose();
+                    throw ex;
+                }
             }
-            else return BadRequest(result.Errors);
         }
     }
 }

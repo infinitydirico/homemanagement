@@ -1,7 +1,6 @@
-﻿using HomeManagement.API.Business;
-using HomeManagement.API.Filters;
+﻿using HomeManagement.API.Filters;
+using HomeManagement.Business.Contracts;
 using HomeManagement.Core.Extensions;
-using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,17 +12,22 @@ namespace HomeManagement.API.Controllers.Users
     public class UserController : Controller
     {
         private readonly IUserService userService;
+        private readonly IUserSessionService userSessionService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService,
+            IUserSessionService userSessionService)
         {
             this.userService = userService;
+            this.userSessionService = userSessionService;
         }
 
         [Authorization]
         [HttpGet("downloaduserdata")]
         public IActionResult DownloadUserData()
         {
-            var file = userService.DownloadUserData();
+            var user = userSessionService.GetAuthenticatedUser();
+
+            var file = userService.DownloadUserData(user.Id);
 
             var contentType = "application/octet-stream";
 
@@ -36,13 +40,6 @@ namespace HomeManagement.API.Controllers.Users
         public IActionResult GetUsers()
         {
             return Ok(userService.GetUsers());
-        }
-
-        [HttpPost("CreateDefaultData")]
-        public IActionResult CreateDefaultData([FromBody] UserModel userModel)
-        {
-            userService.CreateDefaultData(userModel);
-            return Ok();
         }
 
         [Authorization]

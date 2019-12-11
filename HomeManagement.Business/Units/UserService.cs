@@ -1,47 +1,40 @@
-﻿using HomeManagement.API.Data;
-using HomeManagement.Business.Contracts;
+﻿using HomeManagement.Business.Contracts;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 
-namespace HomeManagement.API.Business
+namespace HomeManagement.Business.Units
 {
     public class UserService : IUserService
     {
-        private readonly IUserSessionService userSessionService;
         private readonly ITransactionService transactionService;
         private readonly ICategoryService categoryService;
         private readonly IRepositoryFactory repositoryFactory;
         private readonly IUserMapper userMapper;
 
         public UserService(
-            IUserSessionService userSessionService,
             ITransactionService transactionService,
             ICategoryService categoryService,
             IRepositoryFactory repositoryFactory,
             IUserMapper userMapper)
         {
-            this.userSessionService = userSessionService;
             this.transactionService = transactionService;
             this.categoryService = categoryService;
             this.repositoryFactory = repositoryFactory;
             this.userMapper = userMapper;
         }
 
-        public OperationResult CreateUser(UserModel user)
+        public OperationResult CreateUser(string email, string language)
         {
             var userEntity = new User
             {
-                Email = user.Email,
+                Email = email,
             };
-
-            var language = user.Language ?? "en";
 
             using (var userRepository = repositoryFactory.CreateUserRepository())
             using (var accountRepository = repositoryFactory.CreateAccountRepository())
@@ -60,7 +53,7 @@ namespace HomeManagement.API.Business
 
                 accountRepository.Commit();
 
-                var categories = CategoryInitializer.GetDefaultCategories().Select(x => new Category
+                var categories = CategoryRepository.GetDefaultCategories().Select(x => new Category
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -90,13 +83,11 @@ namespace HomeManagement.API.Business
             return OperationResult.Succeed();
         }
 
-        public MemoryStream DownloadUserData()
+        public MemoryStream DownloadUserData(int userId)
         {
             var accountRepository = repositoryFactory.CreateAccountRepository();
 
-            var user = userSessionService.GetAuthenticatedUser();
-
-            var accounts = accountRepository.Where(x => x.UserId.Equals(user.Id));
+            var accounts = accountRepository.Where(x => x.UserId.Equals(userId));
 
             var stream = new MemoryStream();
             using (var zip = new ZipArchive(stream, ZipArchiveMode.Update, true))
@@ -197,81 +188,5 @@ namespace HomeManagement.API.Business
                 .ToList();
             }
         }
-
-        public OperationResult CreateDefaultData(UserModel userModel)
-        {
-            using (var userRepository = repositoryFactory.CreateUserRepository())
-            using (var accountRepository = repositoryFactory.CreateAccountRepository())
-            using (var preferencesRepository = repositoryFactory.CreatePreferencesRepository())
-            using (var categoryRepository = repositoryFactory.CreateCategoryRepository())
-            {
-                var language = userModel.Language ?? "en";
-
-                var user = new User
-                {
-                    Email = userModel.Email
-                };
-
-                userRepository.Add(user);
-
-                userRepository.Commit();
-
-                accountRepository.Add(new Account
-                {
-                    UserId = user.Id,
-                    Name = language.Contains("en") ? "Cash" : "Efectivo",
-                    AccountType = Domain.AccountType.Cash,
-                    CurrencyId = 1
-                });
-
-                accountRepository.Commit();
-
-                var categories = CategoryInitializer.GetDefaultCategories().Select(x => new Category
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Icon = x.Icon,
-                    IsActive = true,
-                    Measurable = true,
-                    UserId = user.Id
-                }).ToList();
-
-                categoryRepository.Add(categories);
-                categoryRepository.Commit();
-
-                preferencesRepository.Add(new Preferences
-                {
-                    UserId = user.Id,
-                    Key = "PreferredCurrency",
-                    Value = "USD",
-                });
-                preferencesRepository.Add(new Preferences
-                {
-                    UserId = user.Id,
-                    Key = "Language",
-                    Value = language,
-                });
-                preferencesRepository.Commit();
-            }
-            return OperationResult.Succeed();
-        }
-
-        public void Dispose()
-        {
-            
-        }
-    }
-
-    public interface IUserService : IDisposable
-    {
-        OperationResult CreateUser(UserModel user);
-
-        MemoryStream DownloadUserData();
-
-        OperationResult DeleteUser(int userId);
-
-        IEnumerable<UserModel> GetUsers();
-
-        OperationResult CreateDefaultData(UserModel userModel);
     }
 }
