@@ -13,10 +13,6 @@ namespace HomeManagement.API.GrpcService.Data
             this.configuration = configuration;
         }
 
-        public void Commit()
-        {
-        }
-
         private ServiceDbContext CreateContext()
         {
             var postgresConnection = configuration.GetSection("ConnectionStrings").GetValue<string>("Postgres");

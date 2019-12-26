@@ -13,11 +13,6 @@ namespace HomeManagement.Api.Identity.Data
             this.configuration = configuration;
         }
 
-        public void Commit()
-        {
-            
-        }
-
         public WebIdentityDbContext CreateContext()
         {
             var postgresConnection = configuration.GetSection("ConnectionStrings").GetValue<string>("Postgres");

@@ -1,25 +1,30 @@
 ﻿using HomeManagement.Business.Contracts;
 using HomeManagement.Data;
 using HomeManagement.Domain;
+using Microsoft.AspNetCore.Http;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace HomeManagement.API.Business
 {
     public class UserSessionService : IUserSessionService
     {
         private readonly IRepositoryFactory repositoryFactory;
-        User user;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public UserSessionService(IRepositoryFactory repositoryFactory)
+        public UserSessionService(IRepositoryFactory repositoryFactory,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.repositoryFactory = repositoryFactory;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
-        public User GetAuthenticatedUser() => user;
-
-        public void RegisterScopedUser(string email)
+        public User GetAuthenticatedUser()
         {
             var userRepository = repositoryFactory.CreateUserRepository();
-            user = userRepository.GetByEmail(email);
+            var email = httpContextAccessor.HttpContext.User.Claims.First(x => x.Type.Equals(JwtRegisteredClaimNames.Sub)).Value;
+            var user = userRepository.GetByEmail(email);
+            return user;
         }
     }
 }

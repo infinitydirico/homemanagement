@@ -13,7 +13,6 @@ namespace HomeManagement.Business.Exportation
 {
     public class ExportableTransaction : Exportable<Transaction>, IExportableTransaction
     {
-        private readonly IRepositoryFactory repositoryFactory;
         private readonly ICategoryRepository categoryRepository;
         private readonly IPreferencesRepository preferencesRepository;
         private readonly IUserSessionService userService;
@@ -21,7 +20,6 @@ namespace HomeManagement.Business.Exportation
         public ExportableTransaction(IRepositoryFactory repositoryFactory,
             IUserSessionService userService)
         {
-            this.repositoryFactory = repositoryFactory;
             this.userService = userService;
 
             categoryRepository = repositoryFactory.CreateCategoryRepository();
@@ -108,8 +106,6 @@ namespace HomeManagement.Business.Exportation
         private CultureInfo GetUserLanguage()
         {
             var user = userService.GetAuthenticatedUser();
-
-            var preferencesRepository = repositoryFactory.CreatePreferencesRepository();
 
             var languagePreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals("Language"));
 

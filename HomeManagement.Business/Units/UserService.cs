@@ -12,18 +12,18 @@ namespace HomeManagement.Business.Units
 {
     public class UserService : IUserService
     {
-        private readonly ITransactionService transactionService;
+        private readonly IExportableTransaction exportableTransaction;
         private readonly ICategoryService categoryService;
         private readonly IRepositoryFactory repositoryFactory;
         private readonly IUserMapper userMapper;
 
         public UserService(
-            ITransactionService transactionService,
+            IExportableTransaction exportableTransaction,
             ICategoryService categoryService,
             IRepositoryFactory repositoryFactory,
             IUserMapper userMapper)
         {
-            this.transactionService = transactionService;
+            this.exportableTransaction = exportableTransaction;
             this.categoryService = categoryService;
             this.repositoryFactory = repositoryFactory;
             this.userMapper = userMapper;
@@ -86,6 +86,7 @@ namespace HomeManagement.Business.Units
         public MemoryStream DownloadUserData(int userId)
         {
             var accountRepository = repositoryFactory.CreateAccountRepository();
+            var transactionRepository = repositoryFactory.CreateTransactionRepository();
 
             var accounts = accountRepository.Where(x => x.UserId.Equals(userId));
 
@@ -95,11 +96,13 @@ namespace HomeManagement.Business.Units
                 foreach (var account in accounts)
                 {
                     var entry = zip.CreateEntry($"{account.Name}.csv");
-                    var file = transactionService.Export(account.Id);
+
+                    var transactions = transactionRepository.GetByAccount(account.Id).ToList();
+                    var contents = exportableTransaction.ToCsv(transactions);
 
                     using (var entryStream = entry.Open())
                     {
-                        var st = new MemoryStream(file.Contents);
+                        var st = new MemoryStream(contents);
 
                         st.CopyTo(entryStream);
                     }

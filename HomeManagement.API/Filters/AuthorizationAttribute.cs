@@ -44,10 +44,6 @@ namespace HomeManagement.API.Filters
 
             var email = token.Claims.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
 
-            var userService = context.HttpContext.RequestServices.GetService(typeof(IUserSessionService)) as IUserSessionService;
-
-            userService.RegisterScopedUser(email.Value);
-
             context.HttpContext.User = new GenericPrincipal(new ClaimsIdentity(token.Claims), Array.Empty<string>());
 
             await next();
