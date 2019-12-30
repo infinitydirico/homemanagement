@@ -16,6 +16,9 @@ namespace HomeManagement.Business.Exportation
         private readonly ICategoryRepository categoryRepository;
         private readonly IPreferencesRepository preferencesRepository;
         private readonly IUserSessionService userService;
+        private User user;
+        private CultureInfo culture;
+        private List<Category> categories;
 
         public ExportableTransaction(IRepositoryFactory repositoryFactory,
             IUserSessionService userService)
@@ -30,12 +33,12 @@ namespace HomeManagement.Business.Exportation
         {
             var transaction = new Transaction();
 
-            var user = userService.GetAuthenticatedUser();
+            user = user ?? userService.GetAuthenticatedUser();
 
             transaction.Name = exportableEntity[0];
             transaction.Price = double.Parse(exportableEntity[1]);
 
-            var culture = GetUserLanguage();
+            culture = culture ?? GetUserLanguage();
 
             transaction.Date = DateTime.Parse(exportableEntity[2], culture);
 
@@ -46,12 +49,12 @@ namespace HomeManagement.Business.Exportation
                 var categoryName = exportableEntity[4];
 
                 categoryName = categoryName.ToLower();
-
-                var categories = categoryRepository.Where(c => c.Name.ToLower().Equals(categoryName));
+                
+                categories = categories ?? categoryRepository.GetUserCategories(user.Email).ToList();
 
                 if (categories.Count() > default(int))
                 {
-                    var category = categories.FirstOrDefault();
+                    var category = categories.FirstOrDefault(x => x.Name.ToLower().Equals(categoryName));
                     transaction.CategoryId = category.Id;
                 }
             }

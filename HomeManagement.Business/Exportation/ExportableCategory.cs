@@ -15,7 +15,7 @@ namespace HomeManagement.Business.Exportation
             category.Name = exportableEntity[0];
             category.IsActive = bool.Parse(exportableEntity[1]);
             category.Icon = exportableEntity[2];
-            category.Measurable = bool.Parse(exportableEntity[4]);
+            category.Measurable = bool.Parse(exportableEntity[3]);
 
             return category;
         }

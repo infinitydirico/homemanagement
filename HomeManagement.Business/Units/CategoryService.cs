@@ -10,19 +10,16 @@ namespace HomeManagement.Business.Units
 {
     public class CategoryService : ICategoryService
     {
-        private readonly ITransactionMapper transactionMapper;
         private readonly ICategoryMapper categoryMapper;
         private readonly IUserSessionService userService;
         private readonly IExportableCategory exportableCategory;
         private readonly IRepositoryFactory repositoryFactory;
 
-        public CategoryService(ITransactionMapper transactionMapper,
-                                    ICategoryMapper categoryMapper,
+        public CategoryService(ICategoryMapper categoryMapper,
                                     IUserSessionService userService,
                                     IExportableCategory exportableCategory,
                                     IRepositoryFactory repositoryFactory)
         {
-            this.transactionMapper = transactionMapper;
             this.categoryMapper = categoryMapper;
             this.userService = userService;
             this.exportableCategory = exportableCategory;

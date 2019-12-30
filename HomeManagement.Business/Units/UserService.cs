@@ -3,6 +3,7 @@ using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
 using HomeManagement.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -13,18 +14,18 @@ namespace HomeManagement.Business.Units
     public class UserService : IUserService
     {
         private readonly IExportableTransaction exportableTransaction;
-        private readonly ICategoryService categoryService;
+        private readonly IExportableCategory exportableCategory;
         private readonly IRepositoryFactory repositoryFactory;
         private readonly IUserMapper userMapper;
 
         public UserService(
             IExportableTransaction exportableTransaction,
-            ICategoryService categoryService,
+            IExportableCategory exportableCategory,
             IRepositoryFactory repositoryFactory,
             IUserMapper userMapper)
         {
             this.exportableTransaction = exportableTransaction;
-            this.categoryService = categoryService;
+            this.exportableCategory = exportableCategory;
             this.repositoryFactory = repositoryFactory;
             this.userMapper = userMapper;
         }
@@ -87,8 +88,10 @@ namespace HomeManagement.Business.Units
         {
             var accountRepository = repositoryFactory.CreateAccountRepository();
             var transactionRepository = repositoryFactory.CreateTransactionRepository();
+            var categoryRepository = repositoryFactory.CreateCategoryRepository();
+            var userRepository = repositoryFactory.CreateUserRepository();
 
-            var accounts = accountRepository.Where(x => x.UserId.Equals(userId));
+            var accounts = accountRepository.Where(x => x.UserId.Equals(userId));            
 
             var stream = new MemoryStream();
             using (var zip = new ZipArchive(stream, ZipArchiveMode.Update, true))
@@ -109,7 +112,18 @@ namespace HomeManagement.Business.Units
                 }
 
                 var categoryEntry = zip.CreateEntry("categories.csv");
-                var categoryFile = categoryService.Export();
+
+                var user = userRepository.GetById(userId);
+
+                var categories = categoryRepository.GetUserCategories(user.Email);
+
+                var csv = exportableCategory.ToCsv(categories.ToList());
+
+                var categoryFile = new FileModel
+                {
+                    Name = "categories_" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".csv",
+                    Contents = csv
+                };
 
                 using (var entryStream = categoryEntry.Open())
                 {

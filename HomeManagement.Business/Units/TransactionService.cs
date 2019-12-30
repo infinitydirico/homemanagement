@@ -142,23 +142,19 @@ namespace HomeManagement.Business.Units
             using (var accountRepository = repositoryFactory.CreateAccountRepository())
             {
                 var account = accountRepository.FirstOrDefault(x => x.Id.Equals(accountId));
-
-                foreach (var entity in exportableTransaction.ToEntities(bytes))
+                var transactions = exportableTransaction.ToEntities(bytes).Select(x =>
                 {
-                    if (entity == null) continue;
+                    x.Id = 0;
+                    x.AccountId = account.Id;
+                    return x;
+                }).ToList();
 
-                    if (transactionRepository.Exists(entity)) continue;
+                var transactionsBalance = transactions.Sum(x => x.TransactionType.Equals(TransactionType.Income) ? x.Price : -x.Price);
 
-                    entity.Id = 0;
-                    entity.AccountId = accountId;
-                    transactionRepository.Add(entity);
+                account.Balance += transactionsBalance;
 
-                    account.Balance = entity.TransactionType.Equals(TransactionType.Income) ?
-                        account.Balance + entity.Price :
-                        account.Balance - entity.Price;
-
-                    accountRepository.Update(account);
-                }
+                transactionRepository.Add(transactions);
+                accountRepository.Update(account);
 
                 transactionRepository.Commit();
             }
