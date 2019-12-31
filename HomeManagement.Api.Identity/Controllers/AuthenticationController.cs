@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HomeManagement.Api.Identity.Controllers
 {
-    [EnableCors("IdentityApiCorsPolicy")]
+    //[EnableCors("IdentityApiCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
@@ -19,29 +21,40 @@ namespace HomeManagement.Api.Identity.Controllers
         private readonly SignInManager<IdentityUser> signInManager;
         private readonly ICryptography cryptography;
         private readonly IConfiguration configuration;
+        private readonly ILogger<AuthenticationController> logger;
 
         public AuthenticationController(UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ICryptography cryptography,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ILogger<AuthenticationController> logger)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.cryptography = cryptography;
             this.configuration = configuration;
+            this.logger = logger;
         }
 
 
-        [HttpPost]
+        [HttpPost("SignIn")]
         public async Task<IActionResult> Post([FromBody] UserModel userModel)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+            {
+                logger.LogInformation($"Invalid model state: {string.Concat(ModelState.Values.Select(x => x.Errors.Select(r => r.ErrorMessage)))}");
+                return BadRequest(ModelState);
+            }
 
             var password = cryptography.Decrypt(userModel.Password);
 
             var result = await signInManager.PasswordSignInAsync(userModel.Email, password, true, false);
 
-            if (!result.Succeeded) return BadRequest();
+            if (!result.Succeeded)
+            {
+                logger.LogInformation("Invalid email or password.");
+                return BadRequest();
+            }
 
             var user = await userManager.FindByEmailAsync(userModel.Email);
 

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace HomeManagement.API.GrpcService
 {
@@ -31,12 +32,17 @@ namespace HomeManagement.API.GrpcService
             services.AddScoped<IPlatformContext, ServiceLayerContext>();
             services.AddScoped<IRepositoryFactory, RepositoryFactory>();
 
-            services.AddGrpc();
+            services.AddGrpc(x =>
+            {
+                x.EnableDetailedErrors = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddFile("logs/logfile-{Date}.txt");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

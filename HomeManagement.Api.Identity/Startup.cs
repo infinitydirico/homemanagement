@@ -12,9 +12,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace HomeManagement.Api.Identity
@@ -38,6 +40,8 @@ namespace HomeManagement.Api.Identity
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<WebIdentityDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddLogging();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
            .AddJwtBearer(jwtBearerOptions =>
@@ -107,9 +111,9 @@ namespace HomeManagement.Api.Identity
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
-            app.UseAuthentication();
+            loggerFactory.AddFile("logs/logfile-{Date}.txt");
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
@@ -118,15 +122,17 @@ namespace HomeManagement.Api.Identity
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Idnetity API V1");
-            });
-
-            app.UseCors("IdentityApiCorsPolicy");
+            });            
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
+            app.UseCors("IdentityApiCorsPolicy");            
+
             app.UseEndpoints(x =>
             {
-                x.MapDefaultControllerRoute();
+                x.MapDefaultControllerRoute().RequireCors("IdentityApiCorsPolicy");
             });
 
             CreateDatabseIfNotExits(app);
@@ -140,7 +146,10 @@ namespace HomeManagement.Api.Identity
                 var context = serviceScope.ServiceProvider.GetService<WebIdentityDbContext>();
 
                 var pendingMigrations = context.Database.GetPendingMigrations();
-                context.Database.Migrate();
+                if (pendingMigrations.Any())
+                {
+                    context.Database.Migrate();
+                }
 
                 context.SeedRoles();
             }

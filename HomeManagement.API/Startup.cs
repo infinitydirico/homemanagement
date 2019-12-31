@@ -139,8 +139,6 @@ namespace HomeManagement.API
 
             app.UseStaticFiles();
 
-            app.UseAuthentication();
-
             app.UseRequestLocalization();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
@@ -152,9 +150,11 @@ namespace HomeManagement.API
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Idnetity API V1");
             });
 
+            app.UseRouting();
+
             app.UseCors("SiteCorsPolicy");
 
-            app.UseRouting();
+            app.UseAuthentication();
 
             app.UseEndpoints(x =>
             {
