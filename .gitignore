@@ -262,3 +262,6 @@ __pycache__/
 *.db
 *.exe
 *.exe
+/HomeManagement.API/logs
+/HomeManagement.API.GrpcService/logs
+/HomeManagement.Api.Identity/logs

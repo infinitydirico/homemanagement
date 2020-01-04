@@ -1,35 +1,40 @@
-﻿using HomeManagement.API.Business;
-using HomeManagement.API.Extensions;
-using HomeManagement.API.Filters;
+﻿using HomeManagement.API.Filters;
+using HomeManagement.Business.Contracts;
+using HomeManagement.Core.Extensions;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace HomeManagement.API.Controllers.Users
 {
-    [Authorization]
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/User")]
     public class UserController : Controller
     {
         private readonly IUserService userService;
+        private readonly IUserSessionService userSessionService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService,
+            IUserSessionService userSessionService)
         {
             this.userService = userService;
+            this.userSessionService = userSessionService;
         }
 
+        [Authorization]
         [HttpGet("downloaduserdata")]
         public IActionResult DownloadUserData()
         {
-            var file = userService.DownloadUserData();
+            var user = userSessionService.GetAuthenticatedUser();
+
+            var file = userService.DownloadUserData(user.Id);
 
             var contentType = "application/octet-stream";
 
             return File(file.GetBytes(), contentType, "userdata.zip");
         }
 
+        [Authorization]
         [AdminAuthorization]
         [HttpGet("getusers")]
         public IActionResult GetUsers()
@@ -37,11 +42,12 @@ namespace HomeManagement.API.Controllers.Users
             return Ok(userService.GetUsers());
         }
 
+        [Authorization]
         [AdminAuthorization]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
-            await userService.DeleteUser(id);
+            userService.DeleteUser(id);
             return Ok();
         }
     }

@@ -20,6 +20,8 @@ namespace HomeManagement.Models
             }
         }
 
+        public string Filename => Name;
+
         public string Extension { get; private set; }
 
         public string ContentType { get; private set; }

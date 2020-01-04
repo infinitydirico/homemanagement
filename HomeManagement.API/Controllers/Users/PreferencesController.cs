@@ -21,6 +21,19 @@ namespace HomeManagement.API.Controllers.Users
             this.preferenceService = preferenceService;
         }
 
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var preferredCurrency = preferenceService.GetPreferredCurrency();
+            var language = preferenceService.GetUserLanguage();
+
+            return Ok(new
+            {
+                Currency = preferredCurrency.Name,
+                Language = language
+            });
+        }
+
         [HttpPost("changelanguage/{language}")]
         public IActionResult ChangeLanguage(string language)
         {

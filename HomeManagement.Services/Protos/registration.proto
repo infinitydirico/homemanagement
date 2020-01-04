@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option csharp_namespace = "HomeManagement.Services";
+
+package Registration;
+
+service Register {
+  rpc Echo (EchoRequest) returns (EchoReply);
+
+  rpc NewRegistration (RegistrationRequest) returns (RegistrationResponse);
+}
+
+message EchoRequest {
+
+}
+
+message EchoReply {
+
+}
+
+message RegistrationRequest{
+	string email = 1;
+	string language = 2;
+}
+
+message RegistrationResponse{
+	bool succeed = 1;
+}

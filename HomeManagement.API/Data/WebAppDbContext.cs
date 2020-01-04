@@ -1,14 +1,12 @@
 ﻿using HomeManagement.API.Data.Entities;
 using HomeManagement.Domain;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeManagement.API.Data
 {
-    public class WebAppDbContext : IdentityDbContext<ApplicationUser>
+    public class WebAppDbContext : DbContext
     {
-        //Since an User set already exists in IdentityDbContext
-        public DbSet<User> UsersSet { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public DbSet<Account> Accounts { get; set; }
 
@@ -73,7 +71,7 @@ namespace HomeManagement.API.Data
 
             modelBuilder.Entity<Preferences>().HasOne(x => x.User);
 
-            modelBuilder.Entity<ConfigurationSetting>().ToTable(nameof(WebAppDbContext.ConfigurationSettings)).HasKey(x => x.Id);
+            modelBuilder.Entity<ConfigurationSetting>().ToTable(nameof(ConfigurationSettings)).HasKey(x => x.Id);
 
             modelBuilder.Entity<MonthlyExpense>().HasKey(x => x.Id);
 

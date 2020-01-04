@@ -20,9 +20,22 @@ namespace HomeManagement.AdminSite.Services
             return client;
         }
 
+        public static HttpClient CreateIdentityClient(this IApiService apiService)
+        {
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(apiService.GetIdentityEndpoint());
+            return client;
+        }
+
         public static string GetEndpoint(this IApiService apiService)
         {
             var endpoint = apiService.Configuration.GetValue<string>("ApiService");
+            return endpoint;
+        }
+
+        public static string GetIdentityEndpoint(this IApiService apiService)
+        {
+            var endpoint = apiService.Configuration.GetValue<string>("IdentityService");
             return endpoint;
         }
     }

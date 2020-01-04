@@ -1,6 +1,7 @@
-﻿using HomeManagement.API.Business;
-using HomeManagement.API.Extensions;
+﻿using HomeManagement.API.Extensions;
+using HomeManagement.Core.Extensions;
 using HomeManagement.API.Filters;
+using HomeManagement.Business.Contracts;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

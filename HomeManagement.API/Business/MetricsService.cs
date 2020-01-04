@@ -1,4 +1,5 @@
-﻿using HomeManagement.Core.Extensions;
+﻿using HomeManagement.Business.Contracts;
+using HomeManagement.Core.Extensions;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
@@ -12,17 +13,14 @@ namespace HomeManagement.API.Business
     public class MetricsService : IMetricsService
     {
         private readonly IRepositoryFactory repositoryFactory;
-        private readonly IAccountMapper accountMapper;
         private readonly ICategoryMapper categoryMapper;
         private readonly IUserSessionService userSessionService;
 
         public MetricsService(IRepositoryFactory repositoryFactory,
-            IAccountMapper accountMapper,
             ICategoryMapper categoryMapper,
             IUserSessionService userSessionService)
         {
             this.repositoryFactory = repositoryFactory;
-            this.accountMapper = accountMapper;
             this.categoryMapper = categoryMapper;
             this.userSessionService = userSessionService;
         }
@@ -60,7 +58,7 @@ namespace HomeManagement.API.Business
                 var outcomeMax = model.OutgoingSeries.Max();
 
                 model.HighestValue = incomeMax > outcomeMax ? incomeMax : outcomeMax;
-                model.HighestValue = model.HighestValue + int.Parse((model.HighestValue * 0.25).ToString("F0"));
+                model.HighestValue += int.Parse((model.HighestValue * 0.25).ToString("F0"));
 
                 var incomeMin = model.IncomingSeries.Min();
                 var outcomeMin = model.OutgoingSeries.Min();
@@ -157,19 +155,10 @@ namespace HomeManagement.API.Business
             {
                 var user = userSessionService.GetAuthenticatedUser();
 
-                var total = transactionRepository
-                    .Sum(x => decimal.Parse(x.Price.ToString()),
-                         c => c.Account.UserId.Equals(user.Id) &&
-                              c.TransactionType.Equals(TransactionType.Income) &&
-                              c.Date.Month.Equals(DateTime.Now.Month) &&
-                              c.Date.Year.Equals(DateTime.Now.Year));
+                var previousMonth = DateTime.Now.GetPreviousMonth();
 
-                var previous = transactionRepository
-                    .Sum(x => decimal.Parse(x.Price.ToString()),
-                         c => c.Account.UserId.Equals(user.Id) &&
-                              c.TransactionType.Equals(TransactionType.Income) &&
-                              c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) &&
-                              c.Date.Year.Equals(DateTime.Now.Year));
+                var total = transactionRepository.SumBy(user.Id, TransactionType.Income, DateTime.Now);
+                var previous = transactionRepository.SumBy(user.Id, TransactionType.Income, previousMonth);
 
                 var percentage = total.CalculatePercentage(previous);
 
@@ -186,20 +175,10 @@ namespace HomeManagement.API.Business
             using (var transactionRepository = repositoryFactory.CreateTransactionRepository())
             {
                 var user = userSessionService.GetAuthenticatedUser();
+                var previousMonth = DateTime.Now.GetPreviousMonth();
 
-                var total = transactionRepository
-                    .Sum(x => decimal.Parse(x.Price.ToString()),
-                         c => c.Account.UserId.Equals(user.Id) &&
-                              c.TransactionType.Equals(TransactionType.Expense) &&
-                              c.Date.Month.Equals(DateTime.Now.Month) &&
-                              c.Date.Year.Equals(DateTime.Now.Year));
-
-                var previous = transactionRepository
-                    .Sum(x => decimal.Parse(x.Price.ToString()),
-                         c => c.Account.UserId.Equals(user.Id) &&
-                              c.TransactionType.Equals(TransactionType.Expense) &&
-                              c.Date.Month.Equals(c.Date.GetPreviousMonth().Month) &&
-                              c.Date.Year.Equals(DateTime.Now.Year));
+                var total = transactionRepository.SumBy(user.Id, TransactionType.Income, DateTime.Now);
+                var previous = transactionRepository.SumBy(user.Id, TransactionType.Income, previousMonth);
 
                 var percentage = total.CalculatePercentage(previous);
 
@@ -262,7 +241,7 @@ namespace HomeManagement.API.Business
             {
                 var auhtenticatedUser = userSessionService.GetAuthenticatedUser();
 
-                if (month.Equals(default(int)))
+                if (month.Equals(default))
                 {
                     month = DateTime.Now.Month;
                 }

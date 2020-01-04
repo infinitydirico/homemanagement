@@ -1,4 +1,5 @@
 ﻿using HomeManagement.API.Services;
+using HomeManagement.Business.Contracts;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
@@ -53,6 +54,17 @@ namespace HomeManagement.API.Business
 
                 preferencesRepository.Commit();
             }
+        }
+
+        public string GetUserLanguage()
+        {
+            var user = userService.GetAuthenticatedUser();
+
+            var preferencesRepository = repositoryFactory.CreatePreferencesRepository();
+
+            var languagePreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(LanguageKey));
+
+            return languagePreference?.Value ?? "en";
         }
 
         public string GetUserLanguage(int userId)
@@ -160,6 +172,8 @@ namespace HomeManagement.API.Business
     public interface IPreferenceService
     {
         void ChangeLanguage(string language);
+
+        string GetUserLanguage();
 
         string GetUserLanguage(int userId);
 

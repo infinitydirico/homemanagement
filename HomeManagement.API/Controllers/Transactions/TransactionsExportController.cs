@@ -1,6 +1,7 @@
-﻿using HomeManagement.API.Business;
-using HomeManagement.API.Extensions;
+﻿using HomeManagement.API.Extensions;
+using HomeManagement.Core.Extensions;
 using HomeManagement.API.Filters;
+using HomeManagement.Business.Contracts;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,7 @@ namespace HomeManagement.API.Controllers.Transactions
         {
             var fileResult = transactionService.Export(accountId);
 
-            var result = this.CreateCsvFile(fileResult.Content, fileResult.Filename);
+            var result = this.CreateCsvFile(fileResult.Contents, fileResult.Filename);
 
             return result;
         }
@@ -39,7 +40,7 @@ namespace HomeManagement.API.Controllers.Transactions
 
             foreach (IFormFile formFile in Request.Form.Files)
             {
-                transactionService.Import(accountId, formFile);
+                transactionService.Import(accountId, formFile.OpenReadStream().GetBytes());
             }
 
             return Ok();

@@ -1,10 +1,9 @@
-﻿using HomeManagement.AdminSite.Services;
+﻿using HomeManagement.Business.Contracts;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace HomeManagement.AdminSite.Controllers
 {
@@ -19,20 +18,20 @@ namespace HomeManagement.AdminSite.Controllers
             this.cache = cache;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var userCategories = await GetUserCategories();
+            var userCategories = GetUserCategories();
 
             return View(userCategories);
         }
 
-        private async Task<IEnumerable<UserCategoryModel>> GetUserCategories()
+        private IEnumerable<UserCategoryModel> GetUserCategories()
         {
             var userCategories = cache.Get<IEnumerable<UserCategoryModel>>(nameof(GetUserCategories));
 
             if (userCategories != null) return userCategories;
 
-            userCategories = await categoryService.GetUserCategories();
+            userCategories = categoryService.GetUsersCategories();
 
             cache.CreateEntry(nameof(GetUserCategories));
             cache.Set(nameof(GetUserCategories), userCategories, new MemoryCacheEntryOptions
