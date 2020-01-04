@@ -6,6 +6,8 @@ package RegistrationPackage;
 
 service Registration{
 	rpc CreateDataForNewUser (RegistrationRequest) returns (RegistrationResponse);
+
+	rpc Echo (EchoRequest) returns (EchoResponse);
 }
 
 message RegistrationRequest{
@@ -15,4 +17,12 @@ message RegistrationRequest{
 
 message RegistrationResponse{
 	bool succeed = 1;
+}
+
+message EchoRequest{
+
+}
+
+message EchoResponse{
+
 }

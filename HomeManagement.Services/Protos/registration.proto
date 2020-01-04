@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-option csharp_namespace = "HomeManagement.Api.Identity.Protos";
+option csharp_namespace = "HomeManagement.Services";
 
 package Registration;
 
 service Register {
-	rpc Echo (EchoRequest) returns (EchoReply);
+  rpc Echo (EchoRequest) returns (EchoReply);
 
-	rpc NewRegistration (RegistrationRequest) returns (RegistrationResponse);
+  rpc NewRegistration (RegistrationRequest) returns (RegistrationResponse);
 }
 
 message EchoRequest {

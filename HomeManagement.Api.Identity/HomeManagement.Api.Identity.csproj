@@ -42,7 +42,9 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Protobuf Include="**/*.proto" GrpcServices="Client" />
+    <!--<Protobuf Include="**/*.proto" GrpcServices="Client" />-->
+    <Protobuf Include="Protos\greet.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\registration.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>

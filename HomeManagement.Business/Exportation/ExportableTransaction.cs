@@ -18,6 +18,7 @@ namespace HomeManagement.Business.Exportation
         private readonly IUserSessionService userService;
         private User user;
         private CultureInfo culture;
+        private Category defaultCategory;
         private List<Category> categories;
 
         public ExportableTransaction(IRepositoryFactory repositoryFactory,
@@ -55,14 +56,14 @@ namespace HomeManagement.Business.Exportation
                 if (categories.Count() > default(int))
                 {
                     var category = categories.FirstOrDefault(x => x.Name.ToLower().Equals(categoryName));
-                    transaction.CategoryId = category.Id;
+                    transaction.CategoryId = category == null ? 0 : category.Id;
                 }
             }
 
             //default fallback
             if (transaction.CategoryId == 0)
             {
-                var category = categoryRepository.FirstOrDefault(x => x.UserId.Equals(user.Id));
+                var category = defaultCategory ?? categoryRepository.FirstOrDefault(x => x.UserId.Equals(user.Id));
 
                 transaction.CategoryId = category.Id;
             }

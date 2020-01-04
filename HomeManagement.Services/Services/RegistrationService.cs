@@ -7,9 +7,9 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace HomeManagement.API.GrpcService.Services
+namespace HomeManagement.Services
 {
-    public class RegistrationService : Registration.RegistrationBase
+    public class RegistrationService : Register.RegisterBase
     {
         private readonly ILogger<RegistrationService> logger;
         private readonly IRepositoryFactory repositoryFactory;
@@ -20,12 +20,12 @@ namespace HomeManagement.API.GrpcService.Services
             this.repositoryFactory = repositoryFactory;
         }
 
-        public override async Task<EchoResponse> Echo(EchoRequest request, ServerCallContext context)
+        public override Task<EchoReply> Echo(EchoRequest request, ServerCallContext context)
         {
-            return await Task.FromResult(new EchoResponse());
+            return Task.FromResult(new EchoReply());
         }
 
-        public override Task<RegistrationResponse> CreateDataForNewUser(RegistrationRequest request, ServerCallContext context)
+        public override Task<RegistrationResponse> NewRegistration(RegistrationRequest request, ServerCallContext context)
         {
             try
             {
