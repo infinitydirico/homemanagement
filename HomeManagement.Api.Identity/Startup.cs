@@ -18,6 +18,7 @@ using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HomeManagement.Api.Core.HealthChecks;
 
 namespace HomeManagement.Api.Identity
 {
@@ -106,6 +107,10 @@ namespace HomeManagement.Api.Identity
             services.AddScoped<ICryptography, AesCryptographyService>();
 
             services.AddScoped<IBroadcaster, Broadcaster>();
+
+            services.AddHealthChecks()
+                .AddCheck<MemoryHealthCheck>("memory")
+                .AddCheck("ping", new PingHealthCheck("www.google.com", 100));
 
             services.AddControllers();
         }

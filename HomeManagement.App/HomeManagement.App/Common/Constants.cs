@@ -7,11 +7,12 @@
             //public const string BASEURL = "http://localhost:60424/";
             //public const string BASEURL = "http://homemanagement-api.azurewebsites.net/";
             public const string BASEURL = "http://206.189.239.38:5100/";
+            public const string IDENTITY_API = "http://206.189.239.38:5300/";
             public const string API = "api/";
 
             public class Auth
             {
-                private const string AUTH = API + "authentication/";
+                private const string AUTH = IDENTITY_API + API + "authentication/";
                 public const string LOGIN = AUTH + "signin";
                 public const string LOGOUT = AUTH + "signout";
 

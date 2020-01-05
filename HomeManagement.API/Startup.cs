@@ -109,8 +109,6 @@ namespace HomeManagement.API
                         new List<string>()
                     }
                 });
-
-                c.OperationFilter<SwaggerFileOperationFilter>();
             });
 
             services.AddCors(options =>
