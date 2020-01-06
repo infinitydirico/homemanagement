@@ -1,4 +1,4 @@
-﻿namespace HomeManagement.API.Throttle
+﻿namespace HomeManagement.Api.Core.Throttle
 {
     public class ThrottlingOptions
     {

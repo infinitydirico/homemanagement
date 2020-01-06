@@ -1,28 +1,24 @@
-﻿using HomeManagement.API.Data.Entities;
-using HomeManagement.API.Data.Repositories;
-
-namespace HomeManagement.API.Throttle
+﻿namespace HomeManagement.Api.Core.Throttle
 {
     public class ThrottleCore : IThrottleCore
     {
-        private readonly IWebClientRepository webClientRepository;
+        private readonly ClientRepository clientRepository = new ClientRepository();
 
         private ThrottlingOptions options;
 
-        public ThrottleCore(IWebClientRepository webClientRepository) 
-            : this(webClientRepository, ThrottlingOptions.GetDefaultOptions())
+        public ThrottleCore() 
+            : this(ThrottlingOptions.GetDefaultOptions())
         {
-            this.webClientRepository = webClientRepository;
         }
 
-        public ThrottleCore(IWebClientRepository webClientRepository, ThrottlingOptions options)
+        public ThrottleCore(ThrottlingOptions options)
         {
             this.options = options;
         }
 
         public bool CanRequest(string ip)
         {
-            var client = webClientRepository.GetByIp(ip);
+            var client = clientRepository.GetByIp(ip);
 
             if (client != null && client.IsBanned) return false;
 
@@ -41,8 +37,6 @@ namespace HomeManagement.API.Throttle
             {
                 client.Ban();
 
-                webClientRepository.Update(client);
-
                 return false;
             }
 
@@ -55,14 +49,12 @@ namespace HomeManagement.API.Throttle
 
             client.IncrementCounter();
 
-            webClientRepository.Add(client);
+            clientRepository.Add(client);
         }
 
         private void Update(WebClient client)
         {
             client.IncrementCounter();
-
-            webClientRepository.Update(client);
         }        
     }
 }

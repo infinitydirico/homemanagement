@@ -1,7 +1,6 @@
 ﻿using HomeManagement.API.Business;
 using HomeManagement.API.Data;
 using HomeManagement.API.Data.Repositories;
-using HomeManagement.API.Throttle;
 using HomeManagement.Business.Contracts;
 using HomeManagement.Business.Exportation;
 using HomeManagement.Business.Units;
@@ -17,7 +16,7 @@ namespace HomeManagement.API.Extensions
     {
         public static void AddMiddleware(this IServiceCollection services)
         {
-            services.AddScoped<IThrottleCore, ThrottleCore>();
+            //services.AddScoped<IThrottleCore, ThrottleCore>();
 
             services.AddScoped<ICryptography, AesCryptographyService>();
         }
@@ -53,7 +52,7 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IMonthlyExpenseRepository, MonthlyExpenseRepository>();
             //with the throttle filter with persisted repo, the requests take around 100ms to respond
             //with memory values, it takes 30ms
-            services.AddScoped<IWebClientRepository, MemoryWebClientRepository>();   
+            //services.AddScoped<IWebClientRepository, MemoryWebClientRepository>();   
             //services.AddScoped<IWebClientRepository, WebClientRepository>();
         }
 

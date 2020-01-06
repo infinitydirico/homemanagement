@@ -18,6 +18,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using System.Text;
+using HomeManagement.Api.Core.Throttle;
+using HomeManagement.Api.Core.HealthChecks;
 
 namespace HomeManagement.API
 {
@@ -68,6 +70,7 @@ namespace HomeManagement.API
             services.AddMappers();
             services.AddExportableComponents();
             services.AddCustomServices();
+            services.AddThrottlingService();
 
             services.AddScoped<ICurrencyService, CurrencyService>();
 
@@ -126,6 +129,10 @@ namespace HomeManagement.API
                 x.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
                 x.MemoryBufferThreshold = int.MaxValue;
             });
+
+            services.AddHealthChecks()
+                .AddCheck<MemoryHealthCheck>("memory")
+                .AddCheck("ping", new PingHealthCheck("www.google.com", 100));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

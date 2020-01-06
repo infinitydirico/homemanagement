@@ -1,4 +1,4 @@
-﻿using HomeManagement.API.Throttle;
+﻿using HomeManagement.Api.Core.Throttle;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;

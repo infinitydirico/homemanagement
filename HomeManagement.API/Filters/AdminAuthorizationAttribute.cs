@@ -1,4 +1,5 @@
-﻿using HomeManagement.Api.Core;
+﻿using HomeManagement.Core.Extensions;
+using HomeManagement.Api.Core;
 using HomeManagement.API.Data.Entities;
 using HomeManagement.API.Extensions;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +17,13 @@ namespace HomeManagement.API.Filters
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var header = context.HttpContext.GetAuthorizationHeader();
+
+            if (header.IsEmpty())
+            {
+                context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Forbidden, Content = "Header not present" };
+
+                return;
+            }
 
             var token = TokenFactory.Reader(header);
 
