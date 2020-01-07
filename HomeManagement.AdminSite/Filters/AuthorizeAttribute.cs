@@ -1,5 +1,4 @@
-﻿using HomeManagement.AdminSite.Data;
-using HomeManagement.Api.Core;
+﻿using HomeManagement.Api.Core;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,15 +31,11 @@ namespace HomeManagement.AdminSite.Filters
                 });
                 return;
             }
-            var userRolesRepository = context.HttpContext.RequestServices.GetService(typeof(IUserRolesRepository)) as IUserRolesRepository;
-            var isAdmin = userRolesRepository.IsAdmin(userModel.Email);
+            var token = TokenFactory.Reader(userModel.Token);
 
-            if (!isAdmin)
+            if (!TokenFactory.IsAdmin(token))
             {
-                context.Result = new ContentResult
-                {
-                    StatusCode = (int)HttpStatusCode.Unauthorized
-                };
+                context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Unauthorized };
 
                 return;
             }

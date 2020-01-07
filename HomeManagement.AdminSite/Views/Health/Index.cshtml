@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Microsoft.Extensions.Diagnostics.HealthChecks.HealthReport>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<partial name="/Views/Shared/_Header.cshtml" />
+<div class="container">
+    <partial name="_CookieConsentPartial" />
+    <main role="main" class="pb-3">
+        <h2>Health Report</h2>
+        <table class="table">
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var entries = item.Entries;
+                    <tr>
+                        <td>
+                            Status : @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                        <td>
+                            Duration : @Html.DisplayFor(model => item.TotalDuration)
+                        </td>
+                    </tr>
+                    @foreach (var entry in entries)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => entry.Key)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => entry.Value)
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </main>
+</div>
+<partial name="/Views/Shared/_Footer.cshtml" />

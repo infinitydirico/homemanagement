@@ -1,8 +1,6 @@
-﻿using HomeManagement.Core.Extensions;
-using HomeManagement.Api.Core;
-using HomeManagement.API.Data.Entities;
+﻿using HomeManagement.Api.Core;
 using HomeManagement.API.Extensions;
-using Microsoft.AspNetCore.Identity;
+using HomeManagement.Core.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.IdentityModel.Tokens.Jwt;
@@ -29,15 +27,10 @@ namespace HomeManagement.API.Filters
 
             var email = token.Claims.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
 
-            var userManager = context.HttpContext.RequestServices.GetService(typeof(UserManager<ApplicationUser>)) as UserManager<ApplicationUser>;
-
-            var user = await userManager.FindByEmailAsync(email.Value);
-
-            var userRoles = await userManager.GetRolesAsync(user);
-
-            if (!userRoles.Contains("Administrator"))
+            if (!TokenFactory.IsAdmin(token))
             {
                 context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Unauthorized };
+
                 return;
             }
 

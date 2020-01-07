@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
@@ -70,8 +71,11 @@ namespace HomeManagement.Api.Identity.Controllers
             }
 
             var user = await userManager.FindByEmailAsync(userModel.Email);
-
-            var token = TokenFactory.CreateToken(user.Email, configuration["Issuer"], configuration["Audience"], configuration["SigningKey"]);
+            var roles = await userManager.GetRolesAsync(user);
+            
+            var token = roles.Any() ?
+                TokenFactory.CreateToken(user.Email, roles, configuration["Issuer"], configuration["Audience"], configuration["SigningKey"], DateTime.UtcNow.AddDays(1)) :
+                TokenFactory.CreateToken(user.Email, configuration["Issuer"], configuration["Audience"], configuration["SigningKey"]);
 
             var tokenResult = await userManager.SetAuthenticationTokenAsync(user, nameof(JwtSecurityToken), nameof(JwtSecurityToken), token);
 

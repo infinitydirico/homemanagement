@@ -18,6 +18,13 @@ namespace HomeManagement.Api.Core
 
         public static string GetEmail(string header) => GetEmail(Reader(header));
 
+        public static bool IsAdmin(JwtSecurityToken token)
+        {
+            var roles = token.Claims.Where(x => x.Type.Equals(ClaimTypes.Role));
+
+            return roles.Any(role => role.Value.Equals("Administrator"));
+        }
+
         public static Claim[] CreateClaims(string email) => new[]
         {
                 new Claim(JwtRegisteredClaimNames.Sub, email),
@@ -34,6 +41,27 @@ namespace HomeManagement.Api.Core
             var jwtSecurityToken = new JwtSecurityTokenHandler();
 
             var claims = CreateClaims(email);
+
+            var token = new JwtSecurityToken
+            (
+                   issuer: issuer,
+                   audience: audience,
+                   claims: claims,
+                   expires: expires,
+                   notBefore: DateTime.UtcNow,
+                   signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signInKey)),
+                        SecurityAlgorithms.HmacSha256)
+            );
+
+            return jwtSecurityToken.WriteToken(token);
+        }
+
+        public static string CreateToken(string email, IEnumerable<string> roles, string issuer, string audience, string signInKey, DateTime expires)
+        {
+            var jwtSecurityToken = new JwtSecurityTokenHandler();
+
+            var claims = roles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
+            claims.AddRange(CreateClaims(email));
 
             var token = new JwtSecurityToken
             (

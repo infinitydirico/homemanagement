@@ -55,7 +55,7 @@ namespace HomeManagement.AdminSite
             services.AddScoped<Business.Contracts.IUserSessionService, UserSessionService>();
             services.AddScoped<Business.Contracts.ICategoryService, Business.Units.CategoryService>();
             services.AddScoped<Business.Contracts.IConfigurationSettingsService, Business.Units.ConfigurationSettingsService>();
-            services.AddScoped<IUserRolesRepository, UserRolesRepository>();
+            services.AddScoped<IEndpointsHealthService, EndpointsHealthService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
