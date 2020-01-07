@@ -35,22 +35,6 @@ namespace HomeManagement.Api.Identity.Controllers
             this.logger = logger;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Test()
-        {
-            System.AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-
-            var grpcAddress = configuration.GetValue<string>("GprcEndpoint");
-
-            var channel = Grpc.Net.Client.GrpcChannel.ForAddress(grpcAddress);
-
-            var client = new Protos.Register.RegisterClient(channel);
-            var result = await client.EchoAsync(new Protos.EchoRequest());
-
-            return Ok();
-        }
-
-
         [HttpPost("SignIn")]
         public async Task<IActionResult> Post([FromBody] UserModel userModel)
         {

@@ -1,18 +1,19 @@
-﻿using HomeManagement.Models;
+﻿using HomeManagement.Api.Core.HealthChecks;
+using HomeManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace HomeManagement.AdminSite.Services
 {
     public interface IEndpointsHealthService
     {
-        Task<HealthReport> GetApiHealthReport();
+        Task<IEnumerable<HealthReportModel>> GetApiHealthReport();
 
-        Task<HealthReport> GetIdentityHealthReport();
+        Task<IEnumerable<HealthReportModel>> GetIdentityHealthReport();
     }
 
     public class EndpointsHealthService : IEndpointsHealthService, IApiService
@@ -33,7 +34,7 @@ namespace HomeManagement.AdminSite.Services
 
         public string GetApiEndpoint() => this.GetEndpoint();
 
-        public async Task<HealthReport> GetApiHealthReport()
+        public async Task<IEnumerable<HealthReportModel>> GetApiHealthReport()
         {
             using (var client = this.CreateClient())
             {
@@ -45,13 +46,13 @@ namespace HomeManagement.AdminSite.Services
 
                 var result = await response.Content.ReadAsStringAsync();
 
-                var data = JsonConvert.DeserializeObject<HealthReport>(result);
+                var data = JsonConvert.DeserializeObject<IEnumerable<HealthReportModel>>(result);
 
                 return data;
             }
         }
 
-        public async Task<HealthReport> GetIdentityHealthReport()
+        public async Task<IEnumerable<HealthReportModel>> GetIdentityHealthReport()
         {
             using (var client = this.CreateIdentityClient())
             {
@@ -63,7 +64,7 @@ namespace HomeManagement.AdminSite.Services
 
                 var result = await response.Content.ReadAsStringAsync();
 
-                var data = JsonConvert.DeserializeObject<HealthReport>(result);
+                var data = JsonConvert.DeserializeObject<IEnumerable<HealthReportModel>>(result);
 
                 return data;
             }

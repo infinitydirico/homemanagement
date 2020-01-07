@@ -1,4 +1,5 @@
 ﻿using HomeManagement.AdminSite.Services;
+using HomeManagement.Api.Core.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Collections.Generic;
@@ -19,16 +20,12 @@ namespace HomeManagement.AdminSite.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var identityReport = await endpointsHealthService.GetIdentityHealthReport();
-            var apiReport = await endpointsHealthService.GetApiHealthReport();
-            var report = await healthCheckService.CheckHealthAsync();
+            var models = new List<HealthReportModel>();
+            models.AddRange(await endpointsHealthService.GetIdentityHealthReport());
+            models.AddRange(await endpointsHealthService.GetApiHealthReport());
+            models.AddRange(HealthReportModel.CreateFromReport(await healthCheckService.CheckHealthAsync(), "Admin"));
 
-            return View(new List<HealthReport>
-            {
-                identityReport,
-                apiReport,
-                report
-            });
+            return View(models);
         }
     }
 }

@@ -1,3 +1,5 @@
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
@@ -13,6 +15,7 @@ COPY ["HomeManagement.Contracts/HomeManagement.Contracts.csproj", "HomeManagemen
 COPY ["HomeManagement.Mapper/HomeManagement.Mapper.csproj", "HomeManagement.Mapper/"]
 COPY ["HomeManagement.Core/HomeManagement.Core.csproj", "HomeManagement.Core/"]
 COPY ["HomeManagement.Models/HomeManagement.Models.csproj", "HomeManagement.Models/"]
+COPY ["HomeManagement.Tokens/HomeManagement.Api.Core.csproj", "HomeManagement.Tokens/"]
 RUN dotnet restore "HomeManagement.AdminSite/HomeManagement.AdminSite.csproj"
 COPY . .
 WORKDIR "/src/HomeManagement.AdminSite"

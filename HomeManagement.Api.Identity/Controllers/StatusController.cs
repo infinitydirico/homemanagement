@@ -1,4 +1,5 @@
-﻿using HomeManagement.Api.Identity.Filters;
+﻿using HomeManagement.Api.Core.HealthChecks;
+using HomeManagement.Api.Identity.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Threading.Tasks;
@@ -18,6 +19,11 @@ namespace HomeManagement.Api.Identity.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get() => Ok(await healthCheckService.CheckHealthAsync());
+        public async Task<IActionResult> Get()
+        {
+            var reports = await healthCheckService.CheckHealthAsync();
+            var models = HealthReportModel.CreateFromReport(reports, "Identity");
+            return Ok(models);
+        }
     }
 }
