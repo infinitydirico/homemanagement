@@ -29,13 +29,13 @@ namespace HomeManagement.AdminSite.Services
 
         public static string GetEndpoint(this IApiService apiService)
         {
-            var endpoint = apiService.Configuration.GetValue<string>("ApiService");
+            var endpoint = apiService.Configuration.GetSection("Endpoints").GetValue<string>("HomeManagement");
             return endpoint;
         }
 
         public static string GetIdentityEndpoint(this IApiService apiService)
         {
-            var endpoint = apiService.Configuration.GetValue<string>("IdentityService");
+            var endpoint = apiService.Configuration.GetSection("Endpoints").GetValue<string>("Identity");
             return endpoint;
         }
     }

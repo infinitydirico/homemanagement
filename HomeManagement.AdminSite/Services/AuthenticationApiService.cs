@@ -26,7 +26,7 @@ namespace HomeManagement.AdminSite.Services
             {
                 model.Password = cryptography.Encrypt(model.Password);
 
-                var response = await client.PostAsync("authentication", model, new System.Net.Http.Formatting.JsonMediaTypeFormatter());
+                var response = await client.PostAsync("api/Authentication/SignIn", model, new System.Net.Http.Formatting.JsonMediaTypeFormatter());
 
                 response.EnsureSuccessStatusCode();
 

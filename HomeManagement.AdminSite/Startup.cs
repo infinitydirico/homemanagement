@@ -1,5 +1,6 @@
 ﻿using HomeManagement.AdminSite.Data;
 using HomeManagement.AdminSite.Services;
+using HomeManagement.Api.Core.HealthChecks;
 using HomeManagement.Contracts;
 using HomeManagement.Core.Cryptography;
 using HomeManagement.Data;
@@ -54,8 +55,13 @@ namespace HomeManagement.AdminSite
             services.AddScoped<Business.Contracts.IUserSessionService, UserSessionService>();
             services.AddScoped<Business.Contracts.ICategoryService, Business.Units.CategoryService>();
             services.AddScoped<Business.Contracts.IConfigurationSettingsService, Business.Units.ConfigurationSettingsService>();
+            services.AddScoped<IUserRolesRepository, UserRolesRepository>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddHealthChecks()
+                .AddCheck<MemoryHealthCheck>("memory");
+                //.AddCheck("ping", new PingHealthCheck(Configuration.GetSection("Endpoints").GetValue<string>("Identity"), 100));
 
             services.AddControllersWithViews();
             services.AddRazorPages();
