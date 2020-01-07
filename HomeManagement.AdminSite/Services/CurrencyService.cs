@@ -35,7 +35,7 @@ namespace HomeManagement.AdminSite.Services
 
                 client.DefaultRequestHeaders.Add("Authorization", userModel.Token);
 
-                var response = await client.GetAsync("currency");
+                var response = await client.GetAsync("api/currency");
                 response.EnsureSuccessStatusCode();
 
                 var result = await response.Content.ReadAsStringAsync();

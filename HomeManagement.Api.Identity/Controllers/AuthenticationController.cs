@@ -1,7 +1,6 @@
 ﻿using HomeManagement.Api.Core;
 using HomeManagement.Contracts;
 using HomeManagement.Models;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace HomeManagement.Api.Identity.Controllers
 {
-    //[EnableCors("IdentityApiCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase

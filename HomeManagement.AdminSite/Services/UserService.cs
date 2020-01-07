@@ -35,7 +35,7 @@ namespace HomeManagement.AdminSite.Services
 
                 client.DefaultRequestHeaders.Add("Authorization", userModel.Token);
 
-                var response = await client.GetAsync("user/getusers");
+                var response = await client.GetAsync("api/user/getusers");
                 response.EnsureSuccessStatusCode();
 
                 var result = await response.Content.ReadAsStringAsync();
