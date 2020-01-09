@@ -309,5 +309,24 @@ namespace HomeManagement.Business.Units
                 accountRepository.Commit();
             }
         }
+
+        public IEnumerable<TransactionModel> GetTransactionsForAutoComplete()
+        {
+            var user = userService.GetAuthenticatedUser();
+
+            var transactionRepository = repositoryFactory.CreateTransactionRepository();
+
+            var transactions = transactionRepository.GetByUser(user.Email);
+
+            var groupedTransactions = transactions
+                .GroupBy(x => x.Name.ToLower())
+                .OrderBy(x => x.Count())
+                .Where(x => x.Count() > 5)
+                .ToList();
+
+            var trs = (from t in groupedTransactions.Select(x => x) select t.First()).Select(x => transactionMapper.ToModel(x)).ToList();
+
+            return trs;
+        }
     }
 }

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
+using System.Linq;
 
 namespace HomeManagement.Api.Core.Throttle
 {
@@ -14,7 +14,7 @@ namespace HomeManagement.Api.Core.Throttle
 
         public WebClient GetByIp(string ip)
         {
-            throw new NotImplementedException();
+            return clients.FirstOrDefault(x => x.Ip.Equals(ip));
         }
     }
 }

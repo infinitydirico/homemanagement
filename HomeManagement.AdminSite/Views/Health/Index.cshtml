@@ -45,6 +45,16 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Data)
                         </td>
+                        <td>
+                            @if (item.ServiceName.Equals("Identity"))
+                            {
+                                <a asp-action="DownloadIdentityLogs">Download Logs for @item.ServiceName</a>
+                            }
+                            else
+                            {
+                                <a asp-action="DownloadLogs">Download Logs for @item.ServiceName</a>
+                            }
+                        </td>
                     </tr>
                 }
             </tbody>

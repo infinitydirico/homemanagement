@@ -67,6 +67,9 @@ namespace HomeManagement.API.Controllers.Transactions
             return Ok(transactionService.CategoryEvolutionByAccount(category, accountId));
         }
 
+        [HttpGet("GetAutoComplete")]
+        public IActionResult GetAutoComplete() => Ok(transactionService.GetTransactionsForAutoComplete());
+
         [HttpPost("updateAll")]
         public IActionResult UpdateAll([FromBody] IEnumerable<TransactionModel> models)
         {

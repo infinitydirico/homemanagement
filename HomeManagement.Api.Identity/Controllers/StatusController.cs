@@ -2,7 +2,10 @@
 using HomeManagement.Api.Identity.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System;
+using System.IO;
 using System.Threading.Tasks;
+using static System.IO.File;
 
 namespace HomeManagement.Api.Identity.Controllers
 {
@@ -24,6 +27,14 @@ namespace HomeManagement.Api.Identity.Controllers
             var reports = await healthCheckService.CheckHealthAsync();
             var models = HealthReportModel.CreateFromReport(reports, "Identity");
             return Ok(models);
+        }
+
+        [HttpGet("GetLogs")]
+        public IActionResult GetLogs()
+        {
+            var bytes = ReadAllBytes($@"{Directory.GetCurrentDirectory()}\logs\logfile-{DateTime.Now.ToString("yyyyMMdd")}.txt");
+
+            return File(bytes, "application/text");
         }
     }
 }

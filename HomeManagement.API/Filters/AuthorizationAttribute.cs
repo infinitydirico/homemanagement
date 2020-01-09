@@ -1,6 +1,5 @@
 ﻿using HomeManagement.Api.Core;
 using HomeManagement.API.Extensions;
-using HomeManagement.Business.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

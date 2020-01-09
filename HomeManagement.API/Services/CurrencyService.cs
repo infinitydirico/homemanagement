@@ -82,8 +82,9 @@ namespace HomeManagement.API.Services
         {
             if (!IsConfigued()) return CreateDefault().ToList();
 
+            var configurationSettingsRepository = repositoryFactory.CreateConfigurationSettingsRepository();
+
             using (var httpClient = new HttpClient())
-            using (var configurationSettingsRepository = repositoryFactory.CreateConfigurationSettingsRepository())
             {
                 var baseUrl = configurationSettingsRepository.GetValue(ApiUrlKey);
                 var apiKey = configurationSettingsRepository.GetValue(AppIdKey);

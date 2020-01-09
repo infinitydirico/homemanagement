@@ -1,8 +1,8 @@
 ﻿using HomeManagement.Api.Core;
 using HomeManagement.API.Extensions;
-using HomeManagement.Core.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
@@ -10,18 +10,11 @@ using System.Threading.Tasks;
 
 namespace HomeManagement.API.Filters
 {
-    public class AdminAuthorizationAttribute : AuthorizationAttribute
+    public class AdminAuthorizationAttribute : Attribute, IAsyncActionFilter
     {
-        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var header = context.HttpContext.GetAuthorizationHeader();
-
-            if (header.IsEmpty())
-            {
-                context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Forbidden, Content = "Header not present" };
-
-                return;
-            }
 
             var token = TokenFactory.Reader(header);
 
@@ -34,7 +27,7 @@ namespace HomeManagement.API.Filters
                 return;
             }
 
-            await base.OnActionExecutionAsync(context, next);
+            await next();
         }
     }
 }

@@ -14,6 +14,8 @@ namespace HomeManagement.AdminSite.Services
         Task<IEnumerable<HealthReportModel>> GetApiHealthReport();
 
         Task<IEnumerable<HealthReportModel>> GetIdentityHealthReport();
+
+        Task<string> GetLogs(string serviceName);
     }
 
     public class EndpointsHealthService : IEndpointsHealthService, IApiService
@@ -76,6 +78,20 @@ namespace HomeManagement.AdminSite.Services
             var userModel = memoryCache.Get<UserModel>(ip);
 
             return userModel.Token;
+        }
+
+        public async Task<string> GetLogs(string serviceName)
+        {
+            using (var client = serviceName.Equals("Identity") ? this.CreateIdentityClient() : this.CreateClient())
+            {
+                client.DefaultRequestHeaders.Add("Authorization", GetAuthorizationHeader());
+
+                var response = await client.GetAsync("api/status/getlogs");
+
+                response.EnsureSuccessStatusCode();
+
+                return await response.Content.ReadAsStringAsync();
+            }
         }
     }
 }

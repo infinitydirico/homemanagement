@@ -29,6 +29,8 @@ namespace HomeManagement.Business.Contracts
 
         IEnumerable<MonthlyCategory> CategoryEvolutionByAccount(int categoryId, int accountId);
 
+        IEnumerable<TransactionModel> GetTransactionsForAutoComplete();
+
         void Import(int accountId, byte[] bytes);
 
         FileModel Export(int accountId);
