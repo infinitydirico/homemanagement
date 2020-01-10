@@ -33,8 +33,8 @@ namespace HomeManagement.App.Services.Rest
         public static async Task<TValue> ReadContent<TValue>(this Task<HttpResponseMessage> responseMessage)
         {
             var response = (await responseMessage);
-            response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
+            response.EnsureSuccessStatusCode();            
             var objectResult = JsonConvert.DeserializeObject<TValue>(content);
             return objectResult;
         }

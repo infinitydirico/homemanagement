@@ -35,6 +35,8 @@ namespace HomeManagement.App.Managers
         Task UpdateAsync(Transaction transaction);
 
         Task<Transaction> CreateFromImage(Stream stream);
+
+        Task<IEnumerable<Transaction>> GetAutoComplete();
     }
 
     public class TransactionManager : BaseManager<Transaction, TransactionPageModel>, ITransactionManager
@@ -171,21 +173,7 @@ namespace HomeManagement.App.Managers
             .Take(page.PageCount)
             .ToList();
 
-        private IEnumerable<Transaction> MapPageToEntity(TransactionPageModel page) 
-            => from transaction in page.Transactions
-               select new Transaction
-               {
-                   Id = transaction.Id,
-                   AccountId = transaction.AccountId,
-                   CategoryId = transaction.CategoryId,
-                   TransactionType = (TransactionType)Enum.Parse(typeof(TransactionType), transaction.TransactionType.ToString()),
-                   Date = transaction.Date,
-                   Name = transaction.Name,
-                   Price = transaction.Price,
-                   ChangeStamp = DateTime.Now,
-                   LastApiCall = DateTime.Now,
-                   NeedsUpdate = false
-               };
+        private IEnumerable<Transaction> MapPageToEntity(TransactionPageModel page) => MapToEntities(page.Transactions);
 
         public async Task UpdateAsync(Transaction transaction)
         {
@@ -205,6 +193,22 @@ namespace HomeManagement.App.Managers
             Price = transaction.Price
         };
 
+        private IEnumerable<Transaction> MapToEntities(IEnumerable<TransactionModel> transactionModels)
+            => from transaction in transactionModels
+               select new Transaction
+               {
+                   Id = transaction.Id,
+                   AccountId = transaction.AccountId,
+                   CategoryId = transaction.CategoryId,
+                   TransactionType = (TransactionType)Enum.Parse(typeof(TransactionType), transaction.TransactionType.ToString()),
+                   Date = transaction.Date,
+                   Name = transaction.Name,
+                   Price = transaction.Price,
+                   ChangeStamp = DateTime.Now,
+                   LastApiCall = DateTime.Now,
+                   NeedsUpdate = false
+               };
+
         public async Task<Transaction> CreateFromImage(Stream stream)
         {
             var result = await transactionServiceClient.PostPicture(stream);
@@ -216,6 +220,19 @@ namespace HomeManagement.App.Managers
                 Price = result.Price,
                 TransactionType = TransactionType.Expense
             };
+        }
+
+        public async Task<IEnumerable<Transaction>> GetAutoComplete()
+        {
+            if (cachingService.Exists(nameof(GetAutoComplete))) return cachingService.Get<IEnumerable<Transaction>>(nameof(GetAutoComplete));
+
+            var results = await transactionServiceClient.GetAutoComplete();
+
+            var transactions = MapToEntities(results);
+
+            cachingService.Store(nameof(GetAutoComplete), transactions);
+
+            return transactions;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using HomeManagement.App.Common;
-using HomeManagement.App.Data.Entities;
 using HomeManagement.Models;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -18,6 +18,8 @@ namespace HomeManagement.App.Services.Rest
         Task Put(TransactionModel transaction);
 
         Task<TransactionModel> PostPicture(Stream stream);
+
+        Task<IEnumerable<TransactionModel>> GetAutoComplete();
     }
 
     public class TransactionServiceClient : ITransactionServiceClient
@@ -29,6 +31,14 @@ namespace HomeManagement.App.Services.Rest
                 .DeleteAsync($"{Constants.Endpoints.Transaction.TRANSACTION}/?id={id.ToString()}");
 
             response.EnsureSuccessStatusCode();
+        }
+
+        public async Task<IEnumerable<TransactionModel>> GetAutoComplete()
+        {
+            return await RestClientFactory
+                .CreateAuthenticatedClient()
+                .GetAsync($"{Constants.Endpoints.Transaction.TRANSACTION}GetAutoComplete")
+                .ReadContent< IEnumerable<TransactionModel>>();
         }
 
         public async Task<TransactionPageModel> Page(TransactionPageModel dto)

@@ -21,7 +21,7 @@
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
 
-            <StackLayout Orientation="Vertical" Padding="20,20,20,20">
+            <StackLayout Orientation="Vertical" Padding="20, 0, 20, 20">
                 <Label>
                     <Label.Behaviors>
                         <Beh:TranslationBehavior LanguageKey="TransactionNameText" />
@@ -31,6 +31,7 @@
                 <Entry x:Name="TransactionNameEntry" Text="{Binding Transaction.Name}">
                     <Entry.Behaviors>
                         <Beh:EmptyValidationEntryBehavior />
+                        <Beh:AutoCompleteBehavior Suggestions="{Binding TransactionsNamesSuggestions, Mode=OneWayToSource}" />
                     </Entry.Behaviors>
                 </Entry>
             </StackLayout>

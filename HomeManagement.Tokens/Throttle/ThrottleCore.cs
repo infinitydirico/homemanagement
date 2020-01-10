@@ -1,4 +1,6 @@
-﻿namespace HomeManagement.Api.Core.Throttle
+﻿using System;
+
+namespace HomeManagement.Api.Core.Throttle
 {
     public class ThrottleCore : IThrottleCore
     {
@@ -20,18 +22,21 @@
         {
             var client = clientRepository.GetByIp(ip);
 
-            if (client != null && client.IsBanned) return false;
-
             if (client == null)
             {
                 CreateNewWebClient(ip);
 
                 return true;
             }
-            else
+
+            if ((client.BanEnding - DateTime.Now).TotalSeconds < 0)
             {
-                Update(client);
+                client.RemoveBan();
             }
+
+            if (client.IsBanned) return false;
+
+            Update(client);
 
             if (client.RequestCount > options.MaxRequestsAllowed)
             {
@@ -54,7 +59,14 @@
 
         private void Update(WebClient client)
         {
-            client.IncrementCounter();
+            if((client.RequestCountExpires - client.LastRequest).TotalMinutes < 0)
+            {
+                client.Reset();
+            }
+            else
+            {
+                client.IncrementCounter();
+            }            
         }        
     }
 }

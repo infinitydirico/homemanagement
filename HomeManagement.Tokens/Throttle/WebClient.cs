@@ -34,28 +34,30 @@ namespace HomeManagement.Api.Core.Throttle
         public void Reset()
         {
             RequestCount = 0;
-            RequestCountExpires = RequestCountExpires.AddMinutes(1);
+            RequestCountExpires = DateTime.Now.AddMinutes(1);            
         }
 
         public void Ban()
         {
             BanCount++;
             var factor = BanCount.Fibonacci();
-            BanEnding = BanEnding.AddMinutes(factor);
+            BanEnding = DateTime.Now.AddMinutes(factor);
             IsBanned = true;
         }
 
         public void RemoveBan()
         {
             IsBanned = false;
+            BanEnding = DateTime.MaxValue;
+            Reset();
         }
 
         public static WebClient Create(string ip) => new WebClient
         {
             Ip = ip,
             RequestCount = 0,
-            BanEnding = DateTime.Now,
-            RequestCountExpires = DateTime.Now,
+            BanEnding = DateTime.MaxValue,
+            RequestCountExpires = DateTime.Now.AddMinutes(1),
             Issued = DateTime.Now,
         };
     }

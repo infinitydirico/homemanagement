@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using HomeManagement.App.Behaviours;
 using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
 using HomeManagement.App.ViewModels;
@@ -45,6 +46,15 @@ namespace HomeManagement.App.Views.Transactions
             viewModel.OnCancel += OnCancel;
 
             viewModel.OnError += ViewModel_OnError;
+
+            viewModel.OnInitializationFinished += ViewModel_OnInitializationFinished;
+        }
+
+        private void ViewModel_OnInitializationFinished(object sender, System.EventArgs e)
+        {
+            var autoCompleteBehavior = TransactionNameEntry.Behaviors.Last() as AutoCompleteBehavior;
+            autoCompleteBehavior.Suggestions = viewModel.TransactionsNamesSuggestions.ToList();
+            TransactionNameEntry.Focus();
         }
 
         private void ViewModel_OnError(object sender, System.EventArgs e)
@@ -60,12 +70,6 @@ namespace HomeManagement.App.Views.Transactions
         private void OnTransactionAdded(object sender, System.EventArgs e)
         {
             Navigation.PopAsync();
-        }
-
-        protected override void OnAppearing()
-        {
-            TransactionNameEntry.Focus();
-            base.OnAppearing();
         }
     }
 }
