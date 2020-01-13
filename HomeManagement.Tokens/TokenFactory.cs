@@ -28,7 +28,8 @@ namespace HomeManagement.Api.Core
         public static Claim[] CreateClaims(string email) => new[]
         {
                 new Claim(JwtRegisteredClaimNames.Sub, email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Name, email.Substring(0, email.IndexOf("@")))
         };
 
         public static string CreateToken(string email, string issuer, string audience, string signInKey)
@@ -76,5 +77,8 @@ namespace HomeManagement.Api.Core
 
             return jwtSecurityToken.WriteToken(token);
         }
+
+        public static string GetAppName(IEnumerable<Claim> claims) 
+            => claims.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Iss)).Value;
     }
 }

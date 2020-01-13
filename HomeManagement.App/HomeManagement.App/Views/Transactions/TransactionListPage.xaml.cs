@@ -34,7 +34,7 @@ namespace HomeManagement.App.Views.Transactions
             Title = account.Name;
             InitializeComponent();
 
-            AddFilterItem();
+            //AddFilterItem();
         }
 
         private void ViewModel_OnInitializationError(object sender, EventArgs e)
