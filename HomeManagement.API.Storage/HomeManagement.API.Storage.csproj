@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HomeManagement.Models\HomeManagement.Models.csproj" />
     <ProjectReference Include="..\HomeManagement.Tokens\HomeManagement.Api.Core.csproj" />
   </ItemGroup>
 

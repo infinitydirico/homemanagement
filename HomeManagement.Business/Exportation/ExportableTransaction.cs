@@ -30,6 +30,8 @@ namespace HomeManagement.Business.Exportation
             preferencesRepository = repositoryFactory.CreatePreferencesRepository();
         }
 
+        public User User { get => user; set => user = value; }
+
         protected override Transaction CreateInstanceOf(List<string> exportableEntity)
         {
             var transaction = new Transaction();
@@ -109,7 +111,7 @@ namespace HomeManagement.Business.Exportation
 
         private CultureInfo GetUserLanguage()
         {
-            var user = userService.GetAuthenticatedUser();
+            user = user ?? userService.GetAuthenticatedUser();
 
             var languagePreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals("Language"));
 

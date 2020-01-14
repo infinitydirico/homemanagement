@@ -78,7 +78,8 @@ namespace HomeManagement.API
 
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, NotificationGeneratorHostedService>();
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, CurrencyUpdaterHostedService>();
-            
+            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackupHostedService>();
+
             services.AddMvc(options =>
             {
                 options.Filters.Add(typeof(ThrottleFilter));

@@ -79,6 +79,12 @@ namespace HomeManagement.Services
                         Key = "Language",
                         Value = request.Language,
                     });
+                    preferencesRepository.Add(new Preferences
+                    {
+                        UserId = userEntity.Id,
+                        Key = "EnableDailyBackups",
+                        Value = true.ToString(),
+                    });
                     preferencesRepository.Commit();
                 }
 

@@ -96,6 +96,9 @@ namespace HomeManagement.Business.Units
             var stream = new MemoryStream();
             using (var zip = new ZipArchive(stream, ZipArchiveMode.Update, true))
             {
+                var user = userRepository.GetById(userId);
+                exportableTransaction.User = user;
+
                 foreach (var account in accounts)
                 {
                     var entry = zip.CreateEntry($"{account.Name}.csv");
@@ -112,8 +115,6 @@ namespace HomeManagement.Business.Units
                 }
 
                 var categoryEntry = zip.CreateEntry("categories.csv");
-
-                var user = userRepository.GetById(userId);
 
                 var categories = categoryRepository.GetUserCategories(user.Email);
 
@@ -197,13 +198,12 @@ namespace HomeManagement.Business.Units
 
         public IEnumerable<UserModel> GetUsers()
         {
-            using (var userRepository = repositoryFactory.CreateUserRepository())
-            {
-                return userRepository
+            var userRepository = repositoryFactory.CreateUserRepository();
+
+            return userRepository
                 .GetAll()
                 .Select(x => userMapper.ToModel(x))
                 .ToList();
-            }
         }
     }
 }

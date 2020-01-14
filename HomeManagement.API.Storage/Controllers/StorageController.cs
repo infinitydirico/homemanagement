@@ -1,20 +1,22 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
+using HomeManagement.Core.Extensions;
 using HomeManagement.Api.Core;
-using HomeManagement.Api.Identity.Filters;
 using HomeManagement.Api.Core.Extensions;
+using HomeManagement.Api.Identity.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
+using HomeManagement.Models;
 
 namespace HomeManagement.API.Storage.Controllers
 {
-    [Authorization]
     [Route("api/[controller]")]
     [ApiController]
     public class StorageController : ControllerBase
@@ -37,13 +39,21 @@ namespace HomeManagement.API.Storage.Controllers
             url = spacesConfig.GetValue<string>("url");
         }
 
+        [Authorization]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             var objs = await GetObjects();
-            return Ok(objs);
+            return Ok(objs.Select(x => new StorageFileModel
+            {
+                Key = x.Key,
+                Tag = x.ETag,
+                LastModified = x.LastModified,
+                Size = x.Size
+            }));
         }
 
+        [Authorization]
         [HttpGet("{tag}")]
         public async Task<IActionResult> Get(string tag)
         {
@@ -59,7 +69,7 @@ namespace HomeManagement.API.Storage.Controllers
 
             var transferUtility = new TransferUtility(client);
 
-            var fileName = spaceObject.Key.Split("/", System.StringSplitOptions.RemoveEmptyEntries).Last();
+            var fileName = spaceObject.Key.Split("/", StringSplitOptions.RemoveEmptyEntries).Last();
             var directory = Directory.GetCurrentDirectory();
             var filePath = $@"{directory}\temporary\{fileName}";
 
@@ -76,33 +86,36 @@ namespace HomeManagement.API.Storage.Controllers
             return PhysicalFile(filePath, filePath.GetMimeType(), fileName);
         }
 
+        [Authorization]
         [HttpPut]
         public async Task<IActionResult> Put()
         {
-            if (!ModelState.IsValid) return BadRequest("Invalid body.");
-
-            var client = new AmazonS3Client(key, secret, new AmazonS3Config
-            {
-                ServiceURL = url
-            });
-
-            var file = Request.Form.Files.FirstOrDefault();
-
-            var app = TokenFactory.GetAppName(HttpContext.User.Claims);
-
-            await client.PutObjectAsync(new PutObjectRequest
-            {
-                BucketName = bucket,
-                Key = $"{HttpContext.User.Identity.Name}/{app}/{file.FileName}",
-                InputStream = file.OpenReadStream(),
-                ContentType = file.ContentType
-            });
-
-            ClearCachedItems();
+            await SendFile(HttpContext.User.Identity.Name,
+                TokenFactory.GetAppName(HttpContext.User.Claims),
+                HttpContext.Request.Headers["Path"].FirstOrDefault());
 
             return Ok();
         }
 
+        [HttpPut]
+        [Route("[action]")]
+        public async Task<IActionResult> Send()
+        {
+            if (!HttpContext.Request.Headers.ContainsKey("Username") &&
+                !HttpContext.Request.Headers.ContainsKey("AppName")) return BadRequest("Missing headers.");
+
+            var username = HttpContext.Request.Headers["Username"].First();
+
+            var appName = HttpContext.Request.Headers["AppName"].First();
+
+            var path = HttpContext.Request.Headers["Path"].FirstOrDefault();
+
+            await SendFile(username, appName, path);
+
+            return Ok();
+        }
+
+        [Authorization]
         [HttpDelete("{tag}")]
         public async Task<IActionResult> Delete(string tag)
         {
@@ -123,6 +136,31 @@ namespace HomeManagement.API.Storage.Controllers
             return Ok();
         }
 
+        private async Task SendFile(string username, string app, string path = "")
+        {
+            foreach (var file in Request.Form.Files)
+            {
+                var client = new AmazonS3Client(key, secret, new AmazonS3Config
+                {
+                    ServiceURL = url
+                });
+
+                var fileKey = path.IsEmpty() ?
+                    $"{username}/{app}/{file.FileName}" :
+                    $"{username}/{app}/{path}/{file.FileName}";
+                
+                await client.PutObjectAsync(new PutObjectRequest
+                {
+                    BucketName = bucket,
+                    Key = fileKey,
+                    InputStream = file.OpenReadStream(),
+                    ContentType = file.ContentType
+                });
+            }
+
+            ClearCachedItems();
+        }
+
         private async Task<IEnumerable<S3Object>> GetObjects()
         {
             var items = memoryCache.Get<ListObjectsResponse>(bucket);
@@ -140,7 +178,10 @@ namespace HomeManagement.API.Storage.Controllers
                 });
 
                 memoryCache.CreateEntry(bucket);
-                memoryCache.Set(bucket, items);
+                memoryCache.Set(bucket, items, new MemoryCacheEntryOptions
+                {
+                    SlidingExpiration = TimeSpan.FromMinutes(30)
+                });
             }            
 
             return items.S3Objects.Where(x => x.Key.Contains(HttpContext.User.Identity.Name)).ToList();
