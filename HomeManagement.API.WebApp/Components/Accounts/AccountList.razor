@@ -1,0 +1,66 @@
+﻿@page "/Accounts"
+
+@using HomeManagement.Models;
+@using HomeManagement.API.WebApp.Services;
+@using Microsoft.AspNetCore.ProtectedBrowserStorage
+
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+<h3>AccountList</h3>
+
+@if (Accounts == null)
+{
+    <MatProgressBar Indeterminate="true" Closed="Accounts == null"></MatProgressBar>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Account Type</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in Accounts)
+            {
+                <tr>
+                    <td>@account.Name</td>
+                    <td>@account.AccountType.ToString()</td>
+                    <td>@account.Balance</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private List<AccountModel> Accounts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Accounts = await GetAccountsAsync();
+    }
+
+    private async Task<List<AccountModel>> GetAccountsAsync()
+    {
+        using (var httpClient = new HttpClient())
+        {
+            var token = await ProtectedSessionStore.GetAsync<string>("user");
+
+            httpClient.BaseAddress = new System.Uri("http://localhost:60424/api/");
+            httpClient.DefaultRequestHeaders.Add("Authorization", token);
+
+            var response = await httpClient.GetAsync("account");
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            var result = Json.Deserialize<List<AccountModel>>(content);
+
+            return result;
+        }
+    }
+
+}

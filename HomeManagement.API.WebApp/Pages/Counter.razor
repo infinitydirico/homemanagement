@@ -1,0 +1,69 @@
+﻿@page "/counter"
+@using Microsoft.AspNetCore.ProtectedBrowserStorage
+@using Microsoft.Extensions.Configuration
+@using HomeManagement.Core.Cryptography
+@using HomeManagement.Models
+@using HomeManagement.API.WebApp.Services
+
+@inject ProtectedSessionStorage ProtectedSessionStore
+@inject IConfiguration Configuration
+
+<h1>Counter</h1>
+
+<p>Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+<button class="btn btn-primary" @onclick="Login">Login</button>
+
+@if (isAuthenticated)
+{
+    <p>The user is authenticated</p>
+}
+else
+{
+    <p>The user is not authenticated</p>
+}
+
+@code {
+    private int currentCount = 0;
+
+    private bool isAuthenticated = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await ProtectedSessionStore.GetAsync<string>("user");
+        isAuthenticated = !string.IsNullOrEmpty(token);
+    }
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+    private async Task Login()
+    {
+        if (isAuthenticated) return;
+        
+        var endpoint = Configuration.GetSection("Endpoints").GetSection("Identity").Value;
+        var encrypter = new AesCryptographyService();
+        using (var httpClient = new HttpClient())
+        {
+            httpClient.BaseAddress = new Uri(endpoint);
+            var content = Json.CreateJsonContent(new UserModel
+            {
+                Email = "ramiro.di.rico@gmail.com",
+                Password = encrypter.Encrypt("4430598Q#$q")
+            });
+
+            var response = await httpClient.PostAsync("/api/authentication/signin", content);
+            var result = await response.Content.ReadAsStringAsync();
+
+            response.EnsureSuccessStatusCode();
+
+            var model = Json.Deserialize<UserModel>(result);
+            await ProtectedSessionStore.SetAsync("user", model.Token);
+            isAuthenticated = true;
+        }
+    }
+}

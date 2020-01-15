@@ -1,0 +1,29 @@
+﻿@inherits LayoutComponentBase
+
+<AuthorizeView>
+    <Authorized>
+        <div class="sidebar">
+            <NavMenu />
+        </div>
+        <div class="main">
+            <div class="top-row px-4">
+                Hello, @context.User.Identity.Name!
+                <a href="LogOut">Log out</a>
+                <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            </div>
+            <div class="content px-4">
+                @Body
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="main">
+            <div class="top-row px-4">
+
+            </div>
+            <div class="content px-4">
+                @Body
+            </div>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>

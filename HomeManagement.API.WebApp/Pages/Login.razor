@@ -1,0 +1,64 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.ProtectedBrowserStorage
+@using Microsoft.Extensions.Configuration
+@using HomeManagement.Core.Cryptography
+@using HomeManagement.Models
+@using HomeManagement.API.WebApp.Services
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject ProtectedSessionStorage ProtectedSessionStore
+@inject IConfiguration Configuration
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="mat-layout-grid">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell">
+            <MatH6>Username</MatH6>
+            <MatTextField @bind-Value="@username" Label="Username" Icon="account_circle"></MatTextField>
+
+            <MatH6>Password</MatH6>
+            <MatTextField @bind-Value="@password" Label="Password" Icon="lock_outline" Type="Password"></MatTextField>
+            <MatButton Raised="true" @onclick="LoginAsync">Raised</MatButton>
+
+            <MatProgressBar Indeterminate="true" Closed="!loading"></MatProgressBar>
+        </div>
+    </div>
+</div>
+
+@code {
+    string username = string.Empty;
+    string password = string.Empty;
+    bool loading = false;
+
+    private async Task LoginAsync()
+    {
+        loading = true;
+        var endpoint = Configuration.GetSection("Endpoints").GetSection("Identity").Value;
+        var encrypter = new AesCryptographyService();
+        using (var httpClient = new HttpClient())
+        {
+            httpClient.BaseAddress = new Uri(endpoint);
+            var content = Json.CreateJsonContent(new UserModel
+            {
+                Email = "ramiro.di.rico@gmail.com",
+                Password = encrypter.Encrypt("4430598Q#$q")
+            });
+
+            var response = await httpClient.PostAsync("/api/authentication/signin", content);
+            var result = await response.Content.ReadAsStringAsync();
+
+            response.EnsureSuccessStatusCode();
+
+            var model = Json.Deserialize<UserModel>(result);
+            await ProtectedSessionStore.SetAsync("user", model.Token);
+
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+            var user = authState.User;
+
+            loading = false;
+            NavigationManager.NavigateTo("/", true);
+        }
+    }
+}
