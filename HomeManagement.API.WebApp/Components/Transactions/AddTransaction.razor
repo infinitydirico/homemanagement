@@ -1,0 +1,102 @@
+﻿@using HomeManagement.Models;
+@using HomeManagement.API.WebApp.Services
+
+@inject RestClient RestClient
+
+<style>
+    label {
+        color: white;
+    }
+</style>
+
+<HomeManagement.API.WebApp.Components.Custom.SimpleCard Title="New Transaction">
+    <div class="mat-layout-grid">
+        <div class="mat-layout-grid-inner">
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                <MatStringField @bind-Value="@Transaction.Name" Label="Transaction Name"></MatStringField>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5">
+                <MatNumericUpDownField Label="Transaction Price"
+                                       @bind-Value="@Transaction.Price"
+                                       Icon="attach_money">
+                </MatNumericUpDownField>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-1"></div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6" style="color:black;">
+                <MatDatePicker @bind-Value="@Transaction.Date" Format="dd MMMM yyyy"></MatDatePicker>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                <HomeManagement.API.WebApp.Components.Categories.CategoryPicker OnCategoryChanged="OnCategorySelected">
+
+                </HomeManagement.API.WebApp.Components.Categories.CategoryPicker>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                <MatRadioGroup @bind-Value="@Transaction.TransactionType" Items="@TransactionTypes">
+                    <ItemTemplate>
+                        <div>
+                            <MatRadioButton Value="@context">@context</MatRadioButton>
+                        </div>
+                    </ItemTemplate>
+                </MatRadioGroup>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                <MatButton Raised="true" @onclick="PostNewTransaction" Disabled="loading">Add</MatButton>
+
+                <br />
+                <br />
+
+                <MatProgressBar Indeterminate="true" Closed="!loading"></MatProgressBar>
+
+                @if (error)
+                {
+                    <p>An error has happened.</p>
+                }
+            </div>
+        </div>
+    </div>
+</HomeManagement.API.WebApp.Components.Custom.SimpleCard>
+
+@code {
+    bool loading = false;
+    bool error = false;
+
+    [Parameter]
+    public int AccountId { get; set; }
+
+    public TransactionModel Transaction;
+
+    TransactionTypeModel[] TransactionTypes = new TransactionTypeModel[]
+    {
+        TransactionTypeModel.Expense,
+        TransactionTypeModel.Income
+    };
+
+    protected void OnCategorySelected(int categoryId)
+    {
+        Transaction.CategoryId = categoryId;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Transaction = new TransactionModel
+        {
+            TransactionType = TransactionTypeModel.Expense,
+            AccountId = AccountId
+        };
+    }
+
+    private async Task PostNewTransaction()
+    {
+        loading = true;
+        try
+        {
+            await RestClient.PostAsync("transactions", Transaction);
+            await OnInitializedAsync(); 
+        }
+        catch
+        {
+            error = true;
+        }
+        loading = false;
+    }
+}

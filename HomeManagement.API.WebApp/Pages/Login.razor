@@ -13,52 +13,86 @@
 
 <div class="mat-layout-grid">
     <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+
+        </div>
         <div class="mat-layout-grid-cell">
-            <MatH6>Username</MatH6>
-            <MatTextField @bind-Value="@username" Label="Username" Icon="account_circle"></MatTextField>
+            <div class="card mat-elevation-z24" style="width: 20rem; background-color:#323232;">
+                <div class="card-body">
+                    <h5 class="card-title">Login</h5>
+                    <MatH6>Username</MatH6>
+                    <MatTextField @bind-Value="@username" Label="Username" Icon="account_circle"></MatTextField>
 
-            <MatH6>Password</MatH6>
-            <MatTextField @bind-Value="@password" Label="Password" Icon="lock_outline" Type="Password"></MatTextField>
-            <MatButton Raised="true" @onclick="LoginAsync">Raised</MatButton>
+                    <MatH6>Password</MatH6>
+                    <MatTextField @bind-Value="@password" Label="Password" Icon="lock_outline" Type="Password"></MatTextField>
 
-            <MatProgressBar Indeterminate="true" Closed="!loading"></MatProgressBar>
+                    <br />
+                    <br />
+
+                    <MatButton Raised="true" @onclick="LoginAsync" Disabled="loading || isUsernameEmpty || isPasswordEmpty">Login</MatButton>
+
+                    <br />
+                    <br />
+
+                    <MatProgressBar Indeterminate="true" Closed="!loading"></MatProgressBar>
+
+                    @if (error)
+                    {
+                        <p class="bg-danger">An error ocurred while attempting to login.</p>
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 @code {
     string username = string.Empty;
+    bool isUsernameEmpty => string.IsNullOrEmpty(username);
     string password = string.Empty;
+    bool isPasswordEmpty => string.IsNullOrEmpty(username);
     bool loading = false;
+    bool error = false;
 
     private async Task LoginAsync()
     {
         loading = true;
+        error = false;
         var endpoint = Configuration.GetSection("Endpoints").GetSection("Identity").Value;
         var encrypter = new AesCryptographyService();
-        using (var httpClient = new HttpClient())
+        try
         {
-            httpClient.BaseAddress = new Uri(endpoint);
-            var content = Json.CreateJsonContent(new UserModel
+            using (var httpClient = new HttpClient())
             {
-                Email = "ramiro.di.rico@gmail.com",
-                Password = encrypter.Encrypt("4430598Q#$q")
-            });
+                httpClient.BaseAddress = new Uri(endpoint);
+                var content = Json.CreateJsonContent(new UserModel
+                {
+                    Email = username,
+                    Password = encrypter.Encrypt(password)
+                });
 
-            var response = await httpClient.PostAsync("/api/authentication/signin", content);
-            var result = await response.Content.ReadAsStringAsync();
+                var response = await httpClient.PostAsync("/api/authentication/signin", content);
+                var result = await response.Content.ReadAsStringAsync();
 
-            response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();
 
-            var model = Json.Deserialize<UserModel>(result);
-            await ProtectedSessionStore.SetAsync("user", model.Token);
+                var model = Json.Deserialize<UserModel>(result);
+                await ProtectedSessionStore.SetAsync("user", model.Token);
 
-            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
-            var user = authState.User;
-
+                var user = authState.User;
+                
+                NavigationManager.NavigateTo("/", true);
+            }
+        }
+        catch
+        {
+            error = true;
+        }
+        finally
+        {
             loading = false;
-            NavigationManager.NavigateTo("/", true);
         }
     }
 }

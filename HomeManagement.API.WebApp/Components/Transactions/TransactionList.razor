@@ -1,0 +1,58 @@
+﻿@using HomeManagement.Models;
+@using HomeManagement.API.WebApp.Services;
+@using Microsoft.AspNetCore.ProtectedBrowserStorage
+
+@inject ProtectedSessionStorage ProtectedSessionStore
+@inject RestClient  RestClient
+@inject NavigationManager NavigationManager
+
+<HomeManagement.API.WebApp.Components.Custom.SimpleCard Title="Transactions">
+    @if (!Page.Transactions.Any())
+    {
+        <MatProgressBar Indeterminate="true" Closed="!Page.Transactions.Any()"></MatProgressBar>
+    }
+    else
+    {
+        <table class="table table-borderless">
+            <tbody>
+                @foreach (var transaction in Page.Transactions)
+                {
+                <tr>
+                    <td>@transaction.Name</td>
+                    <td>
+                        <HomeManagement.API.WebApp.Components.Custom.SimpleIcon IconName="@Categories.First(x => x.Id.Equals(transaction.CategoryId)).Icon">
+
+                        </HomeManagement.API.WebApp.Components.Custom.SimpleIcon>
+                    </td>
+                    <td>@transaction.Date.ToShortDateString()</td>
+                    <td class="@(transaction.Price > 0 ? "positive-value" : "negative-value")">@transaction.Price</td>
+                    <td>
+                        <HomeManagement.API.WebApp.Components.Custom.SimpleIcon IconName="delete" Color="#ef5350">
+                        </HomeManagement.API.WebApp.Components.Custom.SimpleIcon>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    }
+</HomeManagement.API.WebApp.Components.Custom.SimpleCard>
+
+@code {
+    [Parameter]
+    public int AccountId { get; set; }
+
+    private List<CategoryModel> Categories { get; set; }
+
+    private TransactionPageModel Page { get; set; } = new TransactionPageModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Page.PageCount = 10;
+        Page.CurrentPage = 1;
+        Page.AccountId = AccountId;
+
+        Page = await RestClient.PostAsync<TransactionPageModel, TransactionPageModel>("transactions/paging", Page, false);
+
+        Categories = await RestClient.GetAsync<List<CategoryModel>>("category/active");
+    }
+}

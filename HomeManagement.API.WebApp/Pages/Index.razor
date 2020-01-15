@@ -2,18 +2,15 @@
 
 <AuthorizeView>
     <Authorized>
-        <h1>Hello, world!</h1>
-
-        Welcome to your new app.
-
         <div class="mat-layout-grid">
             <div class="mat-layout-grid-inner">
                 <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-                    <HomeManagement.API.WebApp.Components.Accounts.AccountList />
+                    <div class="mat-elevation-z24">
+                        <HomeManagement.API.WebApp.Components.Accounts.AccountList />
+                    </div>                    
                 </div>
             </div>
         </div>
-
     </Authorized>
     <NotAuthorized>
         <Login />

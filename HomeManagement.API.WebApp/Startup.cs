@@ -24,9 +24,11 @@ namespace HomeManagement.API.WebApp
             services.AddLogging();
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddProtectedBrowserStorage();
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<AuthenticationService>();
-            services.AddProtectedBrowserStorage();
+            services.AddScoped<RestClient>();
+            
             services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
         }
 

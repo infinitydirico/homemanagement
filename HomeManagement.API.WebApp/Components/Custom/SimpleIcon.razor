@@ -1,0 +1,11 @@
+﻿<i class="material-icons" style="color: @Color">
+    @IconName
+</i>
+
+@code {
+    [Parameter]
+    public string IconName { get; set; }
+
+    [Parameter]
+    public string Color { get; set; } = "#ffffff";
+}

@@ -1,0 +1,44 @@
+﻿@page "/accounts/{Id:int}"
+
+@using HomeManagement.Models;
+@using HomeManagement.API.WebApp.Services;
+
+@inject RestClient  RestClient
+
+@if (Account != null)
+{
+    <h3>Account @Account.Name</h3>
+
+    <div class="mat-layout-grid">
+        <div class="mat-layout-grid-inner">
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                <div class="mat-elevation-z24">
+                    <HomeManagement.API.WebApp.Components.Transactions.TransactionList AccountId="Account.Id">
+
+                    </HomeManagement.API.WebApp.Components.Transactions.TransactionList>
+                </div>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                <div class="mat-elevation-z24">
+                    <HomeManagement.API.WebApp.Components.Transactions.AddTransaction AccountId="Account.Id">
+
+                    </HomeManagement.API.WebApp.Components.Transactions.AddTransaction>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    public AccountModel Account { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var accounts = await RestClient.GetAsync<List<AccountModel>>("account");
+        Account = accounts.First(x => x.Id.Equals(Id));
+    }
+}

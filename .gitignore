@@ -265,3 +265,4 @@ __pycache__/
 /HomeManagement.API/logs
 /HomeManagement.API.GrpcService/logs
 /HomeManagement.Api.Identity/logs
+/HomeManagement.API.WebApp/Properties/PublishProfiles

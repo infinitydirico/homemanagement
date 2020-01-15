@@ -5,62 +5,47 @@
 @using Microsoft.AspNetCore.ProtectedBrowserStorage
 
 @inject ProtectedSessionStorage ProtectedSessionStore
+@inject RestClient  RestClient
+@inject NavigationManager NavigationManager
 
-<h3>AccountList</h3>
-
-@if (Accounts == null)
-{
-    <MatProgressBar Indeterminate="true" Closed="Accounts == null"></MatProgressBar>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Account Type</th>
-                <th>Balance</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var account in Accounts)
-            {
-                <tr>
-                    <td>@account.Name</td>
-                    <td>@account.AccountType.ToString()</td>
-                    <td>@account.Balance</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+<HomeManagement.API.WebApp.Components.Custom.SimpleCard Title="Accounts">
+    @if (Accounts == null)
+    {
+        <MatProgressBar Indeterminate="true" Closed="Accounts == null"></MatProgressBar>
+    }
+    else
+    {
+        <table class="table table-borderless">
+            <tbody>
+                @foreach (var account in Accounts)
+                {
+                    <tr @onclick="(() => NagiateToDetails(account))">
+                        <td>@account.Name</td>
+                        <td class="@(account.Balance > 0 ? "positive-value" : "negative-value")">@account.Balance</td>
+                        <td>@Currencies.First(x => x.Id.Equals(account.CurrencyId)).Name</td>
+                        <td>@account.AccountType.ToString()</td>
+                        <td><HomeManagement.API.WebApp.Components.Custom.SimpleIcon IconName="delete" Color="#ef5350">
+                            </HomeManagement.API.WebApp.Components.Custom.SimpleIcon></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</HomeManagement.API.WebApp.Components.Custom.SimpleCard>
 
 
 @code {
     private List<AccountModel> Accounts;
+    private List<CurrencyModel> Currencies;
 
     protected override async Task OnInitializedAsync()
     {
-        Accounts = await GetAccountsAsync();
+        Accounts = await RestClient.GetAsync<List<AccountModel>>("account");
+        Currencies = await RestClient.GetAsync<List<CurrencyModel>>("currency");
     }
 
-    private async Task<List<AccountModel>> GetAccountsAsync()
+    private void NagiateToDetails(AccountModel model)
     {
-        using (var httpClient = new HttpClient())
-        {
-            var token = await ProtectedSessionStore.GetAsync<string>("user");
-
-            httpClient.BaseAddress = new System.Uri("http://localhost:60424/api/");
-            httpClient.DefaultRequestHeaders.Add("Authorization", token);
-
-            var response = await httpClient.GetAsync("account");
-
-            var content = await response.Content.ReadAsStringAsync();
-
-            var result = Json.Deserialize<List<AccountModel>>(content);
-
-            return result;
-        }
+        NavigationManager.NavigateTo($"accounts/{model.Id}");
     }
-
 }

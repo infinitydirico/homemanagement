@@ -6,11 +6,7 @@
             <NavMenu />
         </div>
         <div class="main">
-            <div class="top-row px-4">
-                Hello, @context.User.Identity.Name!
-                <a href="LogOut">Log out</a>
-                <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-            </div>
+            <TopBar></TopBar>
             <div class="content px-4">
                 @Body
             </div>
@@ -18,7 +14,7 @@
     </Authorized>
     <NotAuthorized>
         <div class="main">
-            <div class="top-row px-4">
+            <div class="top-row px-4" style="background-color: #202020;">
 
             </div>
             <div class="content px-4">
