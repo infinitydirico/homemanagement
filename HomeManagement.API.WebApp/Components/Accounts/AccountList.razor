@@ -24,8 +24,10 @@
                         <td class="@(account.Balance > 0 ? "positive-value" : "negative-value")">@account.Balance</td>
                         <td>@Currencies.First(x => x.Id.Equals(account.CurrencyId)).Name</td>
                         <td>@account.AccountType.ToString()</td>
-                        <td><HomeManagement.API.WebApp.Components.Custom.SimpleIcon IconName="delete" Color="#ef5350">
-                            </HomeManagement.API.WebApp.Components.Custom.SimpleIcon></td>
+                        <td>
+                            <HomeManagement.API.WebApp.Components.Custom.SimpleIcon IconName="delete" Color="#ef5350">
+                            </HomeManagement.API.WebApp.Components.Custom.SimpleIcon>
+                        </td>
                     </tr>
                 }
             </tbody>

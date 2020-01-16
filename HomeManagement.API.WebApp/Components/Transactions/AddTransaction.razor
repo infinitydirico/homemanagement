@@ -1,7 +1,11 @@
 ﻿@using HomeManagement.Models;
 @using HomeManagement.API.WebApp.Services
+@using HomeManagement.API.WebApp.Services.Notification
 
 @inject RestClient RestClient
+@inject NotifierService NotifierService
+@inject NewTransactionAddedNotification NewTransactionAddedNotification
+@inject NavigationManager NavigationManager
 
 <style>
     label {
@@ -16,7 +20,7 @@
                 <MatStringField @bind-Value="@Transaction.Name" Label="Transaction Name"></MatStringField>
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5">
-                <MatNumericUpDownField Label="Transaction Price"
+                <MatNumericUpDownField Label="Transaction Price" Type="int" Required="true" DecimalPlaces="2"
                                        @bind-Value="@Transaction.Price"
                                        Icon="attach_money">
                 </MatNumericUpDownField>
@@ -26,7 +30,7 @@
                 <MatDatePicker @bind-Value="@Transaction.Date" Format="dd MMMM yyyy"></MatDatePicker>
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-                <HomeManagement.API.WebApp.Components.Categories.CategoryPicker OnCategoryChanged="OnCategorySelected">
+                <HomeManagement.API.WebApp.Components.Categories.CategoryPicker OnCategoryChanged="OnCategorySelected" Category="Category">
 
                 </HomeManagement.API.WebApp.Components.Categories.CategoryPicker>
             </div>
@@ -39,18 +43,20 @@
                     </ItemTemplate>
                 </MatRadioGroup>
             </div>
-            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-                <MatButton Raised="true" @onclick="PostNewTransaction" Disabled="loading">Add</MatButton>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
 
-                <br />
-                <br />
-
-                <MatProgressBar Indeterminate="true" Closed="!loading"></MatProgressBar>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-2">
+                <MatIconButton Icon="check" OnClick="@PostNewTransaction" Disabled="loading"
+                               Style="color:#66bb6a"></MatIconButton>
 
                 @if (error)
                 {
                     <p>An error has happened.</p>
                 }
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                <MatProgressBar Indeterminate="true" Closed="!loading"></MatProgressBar>
             </div>
         </div>
     </div>
@@ -59,17 +65,21 @@
 @code {
     bool loading = false;
     bool error = false;
+    bool editMode = false;
 
     [Parameter]
     public int AccountId { get; set; }
 
-    public TransactionModel Transaction;
+    [Parameter]
+    public TransactionModel Transaction { get; set; }
+
+    CategoryModel Category;
 
     TransactionTypeModel[] TransactionTypes = new TransactionTypeModel[]
     {
         TransactionTypeModel.Expense,
         TransactionTypeModel.Income
-    };
+        };
 
     protected void OnCategorySelected(int categoryId)
     {
@@ -78,11 +88,20 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Transaction = new TransactionModel
+        if (Transaction == null)
         {
-            TransactionType = TransactionTypeModel.Expense,
-            AccountId = AccountId
-        };
+            Transaction = new TransactionModel
+            {
+                TransactionType = TransactionTypeModel.Expense,
+                AccountId = AccountId
+            };
+        }
+        else
+        {
+            editMode = true;
+            var categories = await RestClient.GetAsync<List<CategoryModel>>("category/active");
+            Category = categories.First(x => x.Id.Equals(Transaction.CategoryId));
+        }
     }
 
     private async Task PostNewTransaction()
@@ -90,8 +109,13 @@
         loading = true;
         try
         {
-            await RestClient.PostAsync("transactions", Transaction);
-            await OnInitializedAsync(); 
+            if (!editMode) await RestClient.PostAsync("transactions", Transaction);
+            else await RestClient.PutAsync("transactions", Transaction);
+
+            await NotifierService.Update(NewTransactionAddedNotification);
+            await OnInitializedAsync();
+            
+            if(editMode) NavigationManager.NavigateTo($"/accounts/{AccountId}");
         }
         catch
         {

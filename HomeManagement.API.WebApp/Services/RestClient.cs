@@ -119,5 +119,46 @@ namespace HomeManagement.API.WebApp.Services
         }
 
         #endregion
+
+        #region Put
+
+        public async Task PutAsync<TModel>(string api, TModel model)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var token = await protectedSessionStorage.GetAsync<string>("user");
+
+                var endpoint = configuration.GetSection("Endpoints").GetValue<string>("HomeManagement");
+                httpClient.BaseAddress = new Uri($"{endpoint}/api/");
+                httpClient.DefaultRequestHeaders.Add("Authorization", token);
+
+                var contentModel = Json.CreateJsonContent(model);
+
+                var response = await httpClient.PutAsync(api, contentModel);
+                response.EnsureSuccessStatusCode();
+            }
+        }
+
+        #endregion
+
+        #region Delete
+
+        public async Task DeleteAsync(string api, int id)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var token = await protectedSessionStorage.GetAsync<string>("user");
+
+                var endpoint = configuration.GetSection("Endpoints").GetValue<string>("HomeManagement");
+                httpClient.BaseAddress = new Uri($"{endpoint}/api/");
+                httpClient.DefaultRequestHeaders.Add("Authorization", token);
+
+                var response = await httpClient.DeleteAsync($"{api}/{id}");
+
+                response.EnsureSuccessStatusCode();
+            }
+        }
+
+        #endregion
     }
 }

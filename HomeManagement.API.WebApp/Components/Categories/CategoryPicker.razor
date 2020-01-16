@@ -24,7 +24,6 @@ else
 
     public List<CategoryModel> Categories;
 
-    [Parameter]
     public int SelectedCategoryId
     {
         get => selectedCategoryId;
@@ -36,10 +35,18 @@ else
     }
 
     [Parameter]
+    public CategoryModel Category { get; set; }
+
+    [Parameter]
     public EventCallback<int> OnCategoryChanged { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         Categories = await RestClient.GetAsync<List<CategoryModel>>("category/active");
+
+        if(Category != null)
+        {
+            selectedCategoryId = Category.Id;
+        }
     }
 }

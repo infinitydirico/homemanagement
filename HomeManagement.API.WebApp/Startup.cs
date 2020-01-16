@@ -1,5 +1,7 @@
 using HomeManagement.API.WebApp.Data;
 using HomeManagement.API.WebApp.Services;
+using HomeManagement.API.WebApp.Services.Notification;
+using HomeManagement.API.WebApp.Services.Rest;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -27,7 +29,10 @@ namespace HomeManagement.API.WebApp
             services.AddProtectedBrowserStorage();
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<AuthenticationService>();
+            services.AddSingleton<NotifierService>();
+            services.AddSingleton<NewTransactionAddedNotification>();
             services.AddScoped<RestClient>();
+            services.AddScoped<StorageRestClient>();
             
             services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
         }
