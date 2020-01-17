@@ -22,7 +22,11 @@ namespace HomeManagement.API.Storage.Services
         {
             logger.LogInformation($"{nameof(TemporaryFilesCleanerService)} Processing at: {DateTime.Now.ToString()}");
 
-            var files = Directory.EnumerateFiles($@"{Directory.GetCurrentDirectory()}\temporary");
+            var directory = $@"{Directory.GetCurrentDirectory()}{Core.Extensions.String.GetOsSlash()}temporary";
+
+            if (!Directory.Exists(directory)) return;
+
+            var files = Directory.EnumerateFiles(directory);
 
             var filesToDelete = files.Where(x => (DateTime.Now - File.GetLastAccessTime(x)).TotalMinutes > 30).ToList();
 

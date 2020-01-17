@@ -1,5 +1,6 @@
 using HomeManagement.Api.Identity.Filters;
 using HomeManagement.API.Storage.Services;
+using HomeManagement.Core.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -54,7 +55,7 @@ namespace HomeManagement.API.Storage
 
         private void CreateTemporaryFolder()
         {
-            var directory = $@"{Directory.GetCurrentDirectory()}\temporary";
+            var directory = $@"{Directory.GetCurrentDirectory()}{String.GetOsSlash()}temporary";
 
             if (Directory.Exists(directory)) return;
 
