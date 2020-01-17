@@ -5,6 +5,7 @@
 
 @inject StorageRestClient StorageRestClient
 @inject IJSRuntime js
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @if (StorageFiles == null)
 {
@@ -12,6 +13,7 @@
 }
 else
 {
+    <MatFileUpload OnChange="UploadFile"></MatFileUpload>
     <table class="table table-borderless">
         <tbody>
             @foreach (var file in StorageFiles)
@@ -37,7 +39,14 @@ else
 
     public async Task DownloadFile(StorageFileModel storageFileModel)
     {
-        var contents = await StorageRestClient.DownloadFile(storageFileModel.Tag.Replace("\"", string.Empty));
+        var contents = await StorageRestClient.DownloadFile(storageFileModel.Tag);
         await FileUtil.SaveAs(js, storageFileModel.GetFilename(), contents);
+    }
+
+    public async Task UploadFile(IMatFileEntry[] entries)
+    {
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = state.User;
+        await StorageRestClient.UploadFiles(entries, user.Identity.Name);
     }
 }

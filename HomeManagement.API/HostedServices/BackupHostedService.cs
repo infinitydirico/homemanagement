@@ -18,7 +18,7 @@ namespace HomeManagement.API.HostedServices
 
         //public override int GetPeriodToRun() => 60;
 
-        public override int GetPeriodToRun() => 60 * 60 * 24;
+        public override int GetPeriodToRun() => 60 * 30;
 
         public override async void Process()
         {

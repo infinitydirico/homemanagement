@@ -63,7 +63,7 @@ namespace HomeManagement.API.Storage.Controllers
             });
 
             var objs = await GetObjects();
-            var spaceObject = objs.FirstOrDefault(x => x.ETag.Equals($"\"{tag}\""));
+            var spaceObject = objs.FirstOrDefault(x => x.ETag.Equals($"{tag}"));
 
             if (spaceObject == null) return BadRequest();
 
@@ -125,7 +125,7 @@ namespace HomeManagement.API.Storage.Controllers
                 ServiceURL = url
             });
 
-            var spaceObject = objs.FirstOrDefault(x => x.ETag.Equals($"\"{tag}\""));
+            var spaceObject = objs.FirstOrDefault(x => x.ETag.Equals($"{tag}"));
 
             if (spaceObject == null) return BadRequest();
 
@@ -184,7 +184,19 @@ namespace HomeManagement.API.Storage.Controllers
                 });
             }            
 
-            return items.S3Objects.Where(x => x.Key.Contains(HttpContext.User.Identity.Name)).ToList();
+            return items
+                .S3Objects
+                .Where(x => x.Key.Contains(HttpContext.User.Identity.Name))
+                .Select(x => new S3Object
+                {
+                    BucketName = x.BucketName,
+                    ETag = x.ETag.Replace("\"", string.Empty),
+                    Key = x.Key,
+                    LastModified = x.LastModified,
+                    Owner = x.Owner,
+                    Size = x.Size
+                })
+                .ToList();
         }
 
         private void ClearCachedItems()
