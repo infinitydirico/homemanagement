@@ -1,0 +1,100 @@
+﻿@using HomeManagement.Models;
+@using HomeManagement.API.WebApp.Services;
+@using HomeManagement.API.WebApp.Services.Notification;
+@using Microsoft.AspNetCore.ProtectedBrowserStorage;
+
+@inject ProtectedSessionStorage ProtectedSessionStore
+@inject RestClient  RestClient
+@inject NavigationManager NavigationManager
+@inject NewTransactionAddedNotification NewTransactionAddedNotification
+
+@implements IDisposable
+
+<HomeManagement.API.WebApp.Components.Custom.SimpleCard Title="Transactions">
+    @if (loading)
+    {
+        <MatProgressBar Indeterminate="true" Closed="!loading"></MatProgressBar>
+    }
+    else
+    {
+        <table class="table table-borderless">
+            <tbody>
+                @foreach (var transaction in Page.Transactions)
+                {
+                <tr>
+                    <td @onclick="() => NavigateToTransaction(transaction)">@transaction.Name</td>
+                    <td @onclick="() => NavigateToTransaction(transaction)">
+                        <HomeManagement.API.WebApp.Components.Custom.SimpleIcon IconName="@Categories.First(x => x.Id.Equals(transaction.CategoryId)).Icon">
+
+                        </HomeManagement.API.WebApp.Components.Custom.SimpleIcon>
+                    </td>
+                    <td @onclick="() => NavigateToTransaction(transaction)">@transaction.Date.ToShortDateString()</td>
+                    <td @onclick="() => NavigateToTransaction(transaction)"
+                        class="@(transaction.Price > 0 ? "positive-value" : "negative-value")">@transaction.Price</td>
+                    <td @onclick="() => DeleteTransaction(transaction)">
+                        <HomeManagement.API.WebApp.Components.Custom.SimpleIcon IconName="delete" Color="#ef5350">
+                        </HomeManagement.API.WebApp.Components.Custom.SimpleIcon>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    }
+</HomeManagement.API.WebApp.Components.Custom.SimpleCard>
+
+@code {
+    [Parameter]
+    public int AccountId { get; set; }
+
+    bool loading = false;
+
+    private List<CategoryModel> Categories { get; set; }
+
+    private TransactionPageModel Page { get; set; } = new TransactionPageModel();
+
+    private async Task DeleteTransaction(TransactionModel transaction)
+    {
+        loading = true;
+        await RestClient.DeleteAsync("transactions", transaction.Id);
+        await Load();
+        loading = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+        NewTransactionAddedNotification.Notify += OnNewTransactionAdded;
+        await Load();
+        loading = false;
+    }
+
+    private async Task OnNewTransactionAdded()
+    {
+        loading = true;
+        StateHasChanged();
+        await Load();
+        loading = false;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NewTransactionAddedNotification.Notify -= OnNewTransactionAdded;
+    }
+
+    private async Task Load()
+    {
+        Page.PageCount = 10;
+        Page.CurrentPage = 1;
+        Page.AccountId = AccountId;
+
+        Page = await RestClient.PostAsync<TransactionPageModel, TransactionPageModel>("transactions/paging", Page, false);
+
+        Categories = await RestClient.GetAsync<List<CategoryModel>>("category/active");
+    }
+
+    private void NavigateToTransaction(TransactionModel transactionModel)
+    {
+        NavigationManager.NavigateTo($"/accounts/{AccountId}/transaction/{transactionModel.Id}");
+    }
+}

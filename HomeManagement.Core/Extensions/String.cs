@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -25,5 +26,7 @@ namespace HomeManagement.Core.Extensions
         public static bool IsEmpty(this string value) => string.IsNullOrEmpty(value);
 
         public static bool IsNotEmpty(this string value) => !value.IsEmpty();
+
+        public static string GetOsSlash() => RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "/" : @"\";
     }
 }
