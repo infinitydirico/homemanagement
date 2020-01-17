@@ -24,8 +24,8 @@ namespace HomeManagement.API.HostedServices
         {
             try
             {
-                var preferenceRepository = GetService<IPreferencesRepository>();
                 var configuration = GetService<IConfiguration>();
+                var preferenceRepository = GetService<IPreferencesRepository>();
                 var storageEndpoint = configuration.GetSection("Endpoints").GetValue<string>("Storage");
                 var appName = configuration.GetValue<string>("Issuer");
 
