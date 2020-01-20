@@ -5,6 +5,8 @@ namespace HomeManagement.Models
 {
     public class StorageFileModel
     {
+        public string Name { get; set; }
+
         public string Key { get; set; }
 
         public string Tag { get; set; }

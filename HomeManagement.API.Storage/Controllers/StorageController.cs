@@ -14,9 +14,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using HomeManagement.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace HomeManagement.API.Storage.Controllers
 {
+    [EnableCors("StorageApiCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class StorageController : ControllerBase
@@ -46,6 +48,7 @@ namespace HomeManagement.API.Storage.Controllers
             var objs = await GetObjects();
             return Ok(objs.Select(x => new StorageFileModel
             {
+                Name = x.Key.Split('/').Last(),
                 Key = x.Key,
                 Tag = x.ETag,
                 LastModified = x.LastModified,

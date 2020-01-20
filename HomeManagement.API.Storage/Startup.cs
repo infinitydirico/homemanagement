@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.IO;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace HomeManagement.API.Storage
 {
@@ -29,6 +30,14 @@ namespace HomeManagement.API.Storage
                 options.Filters.Add(new ExceptionFilter());
             }).SetCompatibilityVersion(CompatibilityVersion.Latest);
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("StorageApiCorsPolicy", corsBuilder =>
+                    corsBuilder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+            });
             services.AddControllers();
             
             services.AddSingleton<IHostedService, TemporaryFilesCleanerService>();
@@ -45,9 +54,13 @@ namespace HomeManagement.API.Storage
 
             app.UseAuthorization();
 
+            app.UseCors("IdentityApiCorsPolicy");
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints
+                .MapControllers()
+                .RequireCors("StorageApiCorsPolicy");
             });
 
             CreateTemporaryFolder();

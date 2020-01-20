@@ -24,13 +24,14 @@ namespace HomeManagement.API.HostedServices
         {
             try
             {
+                var context = GetService<IPlatformContext>();
                 var configuration = GetService<IConfiguration>();
-                var preferenceRepository = GetService<IPreferencesRepository>();
+                var preferenceRepository = new PreferencesRepository(context.CreateDbContext());
                 var storageEndpoint = configuration.GetSection("Endpoints").GetValue<string>("Storage");
                 var appName = configuration.GetValue<string>("Issuer");
 
                 var userService = GetService<IUserService>();
-                var users = userService.GetUsers();                
+                var users = userService.GetUsers(); 
 
                 foreach (var user in users)
                 {
