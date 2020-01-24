@@ -39,6 +39,12 @@
     <EmbeddedResource Update="Views\Accounts\AccountsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Views\Cards\LanguageCard.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Cards\OfflineModeCard.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Views\Main\NotificationsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -117,9 +123,5 @@
     <Compile Update="Views\Statistics\AccountEvolutionFrame.xaml.cs">
       <DependentUpon>AccountEvolutionFrame.xaml</DependentUpon>
     </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Cards\" />
   </ItemGroup>
 </Project>

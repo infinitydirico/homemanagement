@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Frame xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
+             mc:Ignorable="d"
+             BackgroundColor="#303030"
+             Margin="5, 5, 5, 5"
+             x:Class="HomeManagement.App.Views.Cards.OfflineModeCard">
+    <StackLayout Orientation="Vertical">
+        <StackLayout Orientation="Horizontal">
+            <CheckBox IsChecked="{Binding OfflineModeEnabled}" VerticalOptions="Center" />
+            <Label>
+                <Label.Behaviors>
+                    <Beh:TranslationBehavior LanguageKey="SyncOptions" />
+                </Label.Behaviors>
+            </Label>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <Label FontSize="Micro"   HorizontalOptions="Start">
+                <Label.Behaviors>
+                    <Beh:TranslationBehavior LanguageKey="OfflineModeDescription" />
+                </Label.Behaviors>
+            </Label>
+            <Button Image="red_trash_18dp.png" WidthRequest="30" HeightRequest="30"
+                                HorizontalOptions="EndAndExpand" Command="{Binding ClearCacheCommand}" />
+        </StackLayout>
+    </StackLayout>
+</Frame>
