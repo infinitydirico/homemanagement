@@ -2,11 +2,11 @@
 using HomeManagement.App.Common;
 using HomeManagement.App.Managers;
 using Newtonsoft.Json;
-using Plugin.Connectivity;
 using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 
 namespace HomeManagement.App.Services.Rest
 {
@@ -46,7 +46,7 @@ namespace HomeManagement.App.Services.Rest
 
         private static void CheckForInternetConnection()
         {
-            if (!CrossConnectivity.Current.IsConnected) throw new AppException($"No internet connection detected.");
+            if (Connectivity.NetworkAccess.Equals(NetworkAccess.None)) throw new AppException($"No internet connection detected.");
         }
     }
 }

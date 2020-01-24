@@ -28,7 +28,7 @@
                     </Label.Behaviors>
                 </Label>
 
-                <Entry x:Name="TransactionNameEntry" Text="{Binding Transaction.Name}">
+                <Entry x:Name="TransactionNameEntry" Text="{Binding Transaction.Name}" Completed="TransactionNameEntry_Completed">
                     <Entry.Behaviors>
                         <Beh:EmptyValidationEntryBehavior />
                         <Beh:AutoCompleteBehavior Suggestions="{Binding TransactionsNamesSuggestions, Mode=OneWayToSource}" />
@@ -39,7 +39,7 @@
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
                 <Image Source="money_36dp.png" HorizontalOptions="Start" HeightRequest="50" />
 
-                <Entry WidthRequest="100" Keyboard="Numeric"
+                <Entry WidthRequest="100" Keyboard="Numeric" x:Name="PriceEntry"
                        Text="{Binding Transaction.Price}" />
 
             </StackLayout>

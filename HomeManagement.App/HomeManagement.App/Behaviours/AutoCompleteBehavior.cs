@@ -87,6 +87,7 @@ namespace HomeManagement.App.Behaviours
         {
             var label = sender as Label;
             entry.Text = label.Text;
+            ((IEntryController)entry).SendCompleted();
         }
 
         private IEnumerable<Label> InitializeLabels(IEnumerable<string> values)

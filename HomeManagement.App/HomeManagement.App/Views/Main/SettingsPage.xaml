@@ -49,7 +49,7 @@
             <Frame Margin="5, 5, 5, 5">
                 <StackLayout Orientation="Vertical">
                     <StackLayout Orientation="Horizontal">
-                        <Controls:Checkbox Checked="{Binding OfflineModeEnabled}" VerticalOptions="Center"/>
+                        <CheckBox IsChecked="{Binding OfflineModeEnabled}" VerticalOptions="Center" />
                         <Label>
                             <Label.Behaviors>
                                 <Beh:TranslationBehavior LanguageKey="SyncOptions" />

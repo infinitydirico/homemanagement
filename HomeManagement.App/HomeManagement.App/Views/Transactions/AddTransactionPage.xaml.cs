@@ -71,5 +71,10 @@ namespace HomeManagement.App.Views.Transactions
         {
             Navigation.PopAsync();
         }
+
+        private void TransactionNameEntry_Completed(object sender, System.EventArgs e)
+        {
+            PriceEntry.Focus();
+        }
     }
 }

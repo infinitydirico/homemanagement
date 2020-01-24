@@ -10,8 +10,8 @@ using HomeManagement.Contracts;
 using HomeManagement.Core.Caching;
 using HomeManagement.Core.Cryptography;
 using HomeManagement.Localization;
-using Plugin.Connectivity;
 using System;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -49,9 +49,9 @@ namespace HomeManagement.App
 
             MainPage = new NavigationPage(page);
 
-            CrossConnectivity.Current.ConnectivityTypeChanged += (sender, args) =>
+            Connectivity.ConnectivityChanged += (s, e) =>
             {
-                if (!args.IsConnected)
+                if (e.NetworkAccess.Equals(NetworkAccess.None))
                 {
                     var p = new OfflinePage();
                     NavigationPage.SetHasBackButton(p, false);
