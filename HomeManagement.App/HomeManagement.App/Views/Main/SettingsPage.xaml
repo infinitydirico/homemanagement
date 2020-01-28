@@ -23,6 +23,7 @@
         <StackLayout Orientation="Vertical">
             <cards:LanguageCard />
             <cards:OfflineModeCard />
+            <cards:DailyBackupCard />
 
             <Frame x:Name="logFileFrame" IsVisible="False" Margin="5, 5, 5, 5">
                 <StackLayout>

@@ -20,43 +20,63 @@
         <ToolbarItem Icon="add_green_48dp.png" Clicked="NavigateToAddAccount" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <Frame Margin="5, 5, 5, 5">
-            <ListView x:Name="accountsList" ItemsSource="{Binding Accounts}" 
+        <StackLayout>
+            <Frame Margin="5, 5, 5, 5">
+                <ListView x:Name="accountsList" ItemsSource="{Binding Accounts}" 
                         Margin="10,10,10,10" SeparatorVisibility="None"
                         IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}"
                         IsRefreshing="{Binding IsBusy}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                                <StackLayout.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
-                                </StackLayout.GestureRecognizers>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
                                 <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                                    <Label VerticalOptions="Center" Text = "{Binding Name}" />
-                                    <Label VerticalOptions="Center" Text = "{Binding Balance}" 
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                                    </StackLayout.GestureRecognizers>
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                        <Label VerticalOptions="Center" Text = "{Binding Name}" />
+                                        <Label VerticalOptions="Center" Text = "{Binding Balance}" 
                                         TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" 
                                         HorizontalOptions="EndAndExpand"/>
-                                </StackLayout>
-                                <StackLayout IsVisible="False" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                                    <Label VerticalOptions="Center" Text = "{Binding Name}" />
-                                    <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
-                                        <Button Image="red_trash_18dp.png" VerticalOptions="Center"
+                                    </StackLayout>
+                                    <StackLayout IsVisible="False" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                        <Label VerticalOptions="Center" Text = "{Binding Name}" />
+                                        <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
+                                            <Button Image="red_trash_18dp.png" VerticalOptions="Center"
                                             WidthRequest="30" HeightRequest="30"
                                             Clicked="Delete" />
-                                        <Button Image="edit_18dp.png" VerticalOptions="Center"
+                                            <Button Image="edit_18dp.png" VerticalOptions="Center"
                                             WidthRequest="30" HeightRequest="30"
                                             Clicked="Edit" />
-                                        <Button Image="eye_18dp.png" VerticalOptions="Center"
+                                            <Button Image="eye_18dp.png" VerticalOptions="Center"
                                             WidthRequest="30" HeightRequest="30"
                                             Clicked="ViewTransactionsList" />
+                                        </StackLayout>
                                     </StackLayout>
                                 </StackLayout>
-                            </StackLayout>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Frame>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Frame>
+            <!--<Frame Margin="5, 5, 5, 5">
+                <CollectionView ItemsSource="{Binding Accounts}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                        <Label VerticalOptions="Center" Text = "{Binding Name}" />
+                                        <Label VerticalOptions="Center" Text = "{Binding Balance}" 
+                                        TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" 
+                                        HorizontalOptions="EndAndExpand"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Frame>-->
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>

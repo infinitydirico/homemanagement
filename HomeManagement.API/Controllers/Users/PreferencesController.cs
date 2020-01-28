@@ -26,11 +26,13 @@ namespace HomeManagement.API.Controllers.Users
         {
             var preferredCurrency = preferenceService.GetPreferredCurrency();
             var language = preferenceService.GetUserLanguage();
+            var enableDailyBackups = preferenceService.GetEnableDailyBackups();
 
             return Ok(new
             {
                 Currency = preferredCurrency.Name,
-                Language = language
+                Language = language,
+                EnableDailyBackups = enableDailyBackups
             });
         }
 

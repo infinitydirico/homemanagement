@@ -8,6 +8,7 @@
             //public const string BASEURL = "http://homemanagement-api.azurewebsites.net/";
             public const string BASEURL = "http://206.189.239.38:5100/";
             public const string IDENTITY_API = "http://206.189.239.38:5300/";
+            public const string STORAGE_API = "http://206.189.239.38:5500/api/";
             public const string API = "api/";
 
             public class Auth
@@ -65,6 +66,11 @@
             public class Images
             {
                 public const string Image = API + "Images";
+            }
+
+            public class Preference
+            {
+                public const string URL = API + "Preferences";
             }
         }
 

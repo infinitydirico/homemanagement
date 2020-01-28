@@ -102,6 +102,7 @@ namespace HomeManagement.App
             builder.RegisterType<CategoryManager>().As<ICategoryManager>();
             builder.RegisterType<LocalizationManager>().As<ILocalizationManager>();
             builder.RegisterType<NotificationManager>().As<INotificationManager>();
+            builder.RegisterType<StorageManager>().As<IStorageManager>();            
         }
 
         private void RegisterServiceClients(ContainerBuilder builder)

@@ -279,4 +279,7 @@
   <data name="SignUp" xml:space="preserve">
     <value>Sign Up</value>
   </data>
+  <data name="DailyBackups" xml:space="preserve">
+    <value>Enable daily backups</value>
+  </data>
 </root>

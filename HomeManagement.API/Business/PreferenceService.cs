@@ -19,6 +19,7 @@ namespace HomeManagement.API.Business
         private const string LanguageKey = "Language";
         private const string PreferredCurrency = "PreferredCurrency";
         private const string UserCountry = "UserCountry";
+        private const string EnableDailyBackups = "EnableDailyBackups";
 
         public PreferenceService(IRepositoryFactory repositoryFactory,
             ICurrencyMapper currencyMapper,
@@ -167,6 +168,17 @@ namespace HomeManagement.API.Business
                 return country.ToUpper().Substring(0, 2);
             }
         }
+
+        public bool GetEnableDailyBackups()
+        {
+            var user = userService.GetAuthenticatedUser();
+
+            var preferencesRepository = repositoryFactory.CreatePreferencesRepository();
+
+            var preference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(EnableDailyBackups));
+
+            return preference != null ? bool.Parse(preference.Value): false;
+        }
     }
 
     public interface IPreferenceService
@@ -174,6 +186,8 @@ namespace HomeManagement.API.Business
         void ChangeLanguage(string language);
 
         string GetUserLanguage();
+
+        bool GetEnableDailyBackups();
 
         string GetUserLanguage(int userId);
 
