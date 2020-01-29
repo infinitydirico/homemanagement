@@ -43,7 +43,7 @@ namespace HomeManagement.App.Managers
 
             user = userRepository.FirstOrDefault(x => x.Email.Equals(username));
 
-            if (user != null && user.Password.Equals(encryptedPassword) && (DateTime.Now - user.LastApiCall).Hours < 1)
+            if (user != null && user.Password.Equals(encryptedPassword) && (DateTime.Now - user.LastApiCall).TotalHours < 1)
             {
                 CacheUser(user);
                 return user;
@@ -161,7 +161,7 @@ namespace HomeManagement.App.Managers
         {
             user = userRepository.FirstOrDefault();
 
-            return user != null && (DateTime.Now - user.LastApiCall).Hours < 1;
+            return user != null && (DateTime.Now - user.LastApiCall).TotalHours < 1;
         }
     }
 }

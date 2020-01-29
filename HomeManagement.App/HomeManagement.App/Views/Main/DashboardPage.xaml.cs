@@ -12,7 +12,6 @@ namespace HomeManagement.App.Views.Main
     public partial class DashboardPage : ContentPage
     {
         DashboardViewModel dashboardViewModel = new DashboardViewModel();
-        ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
 
         public DashboardPage()
         {
@@ -73,7 +72,7 @@ namespace HomeManagement.App.Views.Main
                     ToolbarItems.Clear();
                     var item = new ToolbarItem
                     {
-                        Icon = "notifications_24dp.png"
+                        IconImageSource = ImageSource.FromFile("notifications_24dp.png")
                     };
 
                     item.Clicked += (s, ev) =>

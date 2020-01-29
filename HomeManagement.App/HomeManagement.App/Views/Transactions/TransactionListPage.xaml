@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HomeManagement.App.Views.Transactions.TransactionListPage"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
-             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
-             xmlns:Controls="clr-namespace:HomeManagement.App.Views.Controls"
              BackgroundColor="{StaticResource TabBarColor}">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -52,6 +50,9 @@
                                                     <Button Image="edit_18dp.png" VerticalOptions="Start" 
                                                             WidthRequest="30" HeightRequest="30"
                                                             BackgroundColor="{StaticResource ControlLight}" Clicked="Edit"/>
+                                                    <Button Image="file_purple_light_24dp.png" VerticalOptions="Start" 
+                                                            WidthRequest="30" HeightRequest="30"
+                                                            BackgroundColor="{StaticResource ControlLight}" Clicked="ViewFiles"/>
                                                 </StackLayout>
                                             </StackLayout>
                                         </StackLayout>

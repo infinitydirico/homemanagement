@@ -17,12 +17,6 @@ namespace HomeManagement.App.ViewModels
 
         public event EventHandler OnBalancesChanged;
 
-        public int IncomePercentage { get; private set; }
-        public int TotalIncome { get; private set; }
-
-        public int OutcomePercentage { get; private set; }
-        public int TotalOutcome { get; private set; }
-
         public IEnumerable<NotificationModel> Notifications { get; private set; }
 
         public bool NoAvaibleStatistics => AccountsEvolutions.Count.Equals(0);
@@ -31,24 +25,10 @@ namespace HomeManagement.App.ViewModels
 
         protected override async Task InitializeAsync()
         {
-            var income = await metricClient.GetTotalIncome();
-
-            var outcome = await metricClient.GetTotalOutcome();
-
             Notifications = await notificationManager.GetNotifications();
 
             await RetrieveAccountBalances();
 
-            IncomePercentage = income.Percentage;
-            TotalIncome = income.Total;
-
-            OutcomePercentage = outcome.Percentage;
-            TotalOutcome = outcome.Total;
-
-            OnPropertyChanged(nameof(IncomePercentage));
-            OnPropertyChanged(nameof(OutcomePercentage));
-            OnPropertyChanged(nameof(TotalIncome));
-            OnPropertyChanged(nameof(TotalOutcome));
             OnPropertyChanged(nameof(Notifications));
         }
 

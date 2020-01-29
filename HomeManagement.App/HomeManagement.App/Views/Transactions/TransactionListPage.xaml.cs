@@ -33,8 +33,6 @@ namespace HomeManagement.App.Views.Transactions
 
             Title = account.Name;
             InitializeComponent();
-
-            //AddFilterItem();
         }
 
         private void ViewModel_OnInitializationError(object sender, EventArgs e)
@@ -95,6 +93,15 @@ namespace HomeManagement.App.Views.Transactions
             }
         }
 
+        private void ViewFiles(object sender, EventArgs e)
+        {
+            var viewFilesButton = sender as Button;
+            var Transaction = GetCurrentTransaction(viewFilesButton);
+            var filesPage = new Files(Transaction);
+            NavigationPage.SetHasBackButton(filesPage, true);
+            Navigation.PushAsync(filesPage);
+        }
+
         private Transaction GetCurrentTransaction(View view)
         {
             var cell = GetViewCell(view);
@@ -137,20 +144,6 @@ namespace HomeManagement.App.Views.Transactions
             }
         }
 
-        private async void DisplayFilters(object sender, EventArgs e)
-        {
-            await ChangeVisibility(pageButtons, filters);
-            RemoveToolbarItem("filter_list_24dp.png");
-            AddClearFilterItem();
-        }
-
-        private async void ClearFilters(object sender, EventArgs e)
-        {
-            await ChangeVisibility(filters, pageButtons);
-            RemoveToolbarItem("clear_all_24dp.png");
-            AddFilterItem();
-        }
-
         private async Task ChangeVisibility(View source, View target)
         {
             uint length = 250;
@@ -161,34 +154,6 @@ namespace HomeManagement.App.Views.Transactions
 
             target.RotationX = -90;
             await target.RotateXTo(0, length, Easing.SpringOut);
-        }
-
-        private void AddClearFilterItem()
-        {
-            var clearFilterItem = new ToolbarItem
-            {
-                Icon = "clear_all_24dp.png"
-            };
-
-            clearFilterItem.Clicked += ClearFilters;
-            ToolbarItems.Add(clearFilterItem);
-        }
-
-        private void AddFilterItem()
-        {
-            var filterItem = new ToolbarItem
-            {
-                Icon = "filter_list_24dp.png"
-            };
-
-            filterItem.Clicked += DisplayFilters;
-            ToolbarItems.Add(filterItem);
-        }
-
-        private void RemoveToolbarItem(string icon)
-        {
-            var item = ToolbarItems.First(x => x.Icon.File.Equals(icon));
-            ToolbarItems.Remove(item);
         }
 
         private void OnFilterFocusChanged(object sender, FocusEventArgs e)

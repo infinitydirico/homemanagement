@@ -177,8 +177,8 @@ namespace HomeManagement.API.Business
                 var user = userSessionService.GetAuthenticatedUser();
                 var previousMonth = DateTime.Now.GetPreviousMonth();
 
-                var total = transactionRepository.SumBy(user.Id, TransactionType.Income, DateTime.Now);
-                var previous = transactionRepository.SumBy(user.Id, TransactionType.Income, previousMonth);
+                var total = transactionRepository.SumBy(user.Id, TransactionType.Expense, DateTime.Now);
+                var previous = transactionRepository.SumBy(user.Id, TransactionType.Expense, previousMonth);
 
                 var percentage = total.CalculatePercentage(previous);
 
