@@ -4,17 +4,28 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             xmlns:viewModels="clr-namespace:HomeManagement.App.ViewModels"
+             xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              x:Class="HomeManagement.App.Views.Transactions.Files"
              BackgroundColor="{StaticResource TabBarColor}">
-    <ContentPage.BindingContext>
-        <viewModels:TransactionFilesViewModel />
-    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Conv:SizeConverter x:Key="SizeConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Files"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <Frame Margin="5, 5, 5, 5">
+            <CollectionView ItemsSource="{Binding Files}" SelectionMode="Single" SelectionChanged="OnFileSelected">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Orientation="Horizontal" Margin="0, 15, 0, 15">
+                            <Label x:Name="fileName" Text="{Binding Name}" 
+                                   HorizontalOptions="Start" VerticalOptions="Center"/>
+                            <Label Text="{Binding Size, Converter={StaticResource SizeConverter}}" 
+                                   HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Frame>
     </ContentPage.Content>
 </ContentPage>
