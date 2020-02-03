@@ -5241,28 +5241,31 @@ namespace HomeManagement.App.Droid
 			public const int red_trash_18dp = 2131165538;
 			
 			// aapt resource value: 0x7F070163
-			public const int settings_48dp = 2131165539;
+			public const int settings_24dp = 2131165539;
 			
 			// aapt resource value: 0x7F070164
-			public const int splash_screen = 2131165540;
+			public const int settings_48dp = 2131165540;
 			
 			// aapt resource value: 0x7F070165
-			public const int tooltip_frame_dark = 2131165541;
+			public const int splash_screen = 2131165541;
 			
 			// aapt resource value: 0x7F070166
-			public const int tooltip_frame_light = 2131165542;
+			public const int tooltip_frame_dark = 2131165542;
 			
 			// aapt resource value: 0x7F070167
-			public const int trash_18dp = 2131165543;
+			public const int tooltip_frame_light = 2131165543;
 			
 			// aapt resource value: 0x7F070168
-			public const int trending_down_18dp = 2131165544;
+			public const int trash_18dp = 2131165544;
 			
 			// aapt resource value: 0x7F070169
-			public const int trending_up_18dp = 2131165545;
+			public const int trending_down_18dp = 2131165545;
 			
 			// aapt resource value: 0x7F07016A
-			public const int xamarin_logo = 2131165546;
+			public const int trending_up_18dp = 2131165546;
+			
+			// aapt resource value: 0x7F07016B
+			public const int xamarin_logo = 2131165547;
 			
 			static Drawable()
 			{

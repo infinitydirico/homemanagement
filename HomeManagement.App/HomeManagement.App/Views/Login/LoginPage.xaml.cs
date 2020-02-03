@@ -25,7 +25,7 @@ namespace HomeManagement.App.Views.Login
 
         private void ViewModel_OnLoginSuccess(object sender, EventArgs e)
         {
-            var page = new MainPage();
+            var page = new DashboardPage();
 
             NavigationPage.SetHasBackButton(page, false);
 

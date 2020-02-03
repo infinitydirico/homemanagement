@@ -68,7 +68,7 @@ namespace HomeManagement.App.Managers
 
         protected override async Task<IEnumerable<Account>> Paginate()
         {
-            if(cachingService.Get<bool>("ForceApiCall") || coudSyncSetting.Enabled)
+            if(cachingService.Get<bool>("ForceApiCall") || (coudSyncSetting != null && coudSyncSetting.Enabled))
             {
                 var skip = (page.CurrentPage - 1) * page.PageCount;
 

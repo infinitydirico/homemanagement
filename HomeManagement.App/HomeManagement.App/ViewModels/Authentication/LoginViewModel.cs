@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
 using HomeManagement.Core.Caching;
 using System;
@@ -53,14 +52,6 @@ namespace HomeManagement.App.ViewModels
 
         protected override async Task InitializeAsync()
         {
-            if (cachingService.Exists("singupuser"))
-            {
-                var user = cachingService.Get<User>("singupuser");
-                Username = user.Email;
-                Password = user.Password;
-                return;
-            }
-
             if (authenticationManager.AreCredentialsAvaible())
             {
                 var user = authenticationManager.GetStoredUser();

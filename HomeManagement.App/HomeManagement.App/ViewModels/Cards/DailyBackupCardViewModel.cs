@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Autofac;
+using HomeManagement.App.Services.Rest;
+using System.Threading.Tasks;
 
 namespace HomeManagement.App.ViewModels.Cards
 {
     public class DailyBackupCardViewModel : BaseViewModel
     {
+        private readonly IPreferenceServiceClient preferenceServiceClient = App._container.Resolve<IPreferenceServiceClient>();
         private bool dailyBackupEnabled;
-
-        public DailyBackupCardViewModel()
-        {
-
-        }
 
         public bool DailyBackupEnabled
         {
@@ -21,6 +17,12 @@ namespace HomeManagement.App.ViewModels.Cards
                 dailyBackupEnabled = value;
                 OnPropertyChanged();
             }
+        }
+
+        protected override async Task InitializeAsync()
+        {
+            var result = await preferenceServiceClient.GetEnableBackups();
+            DailyBackupEnabled = result;
         }
     }
 }

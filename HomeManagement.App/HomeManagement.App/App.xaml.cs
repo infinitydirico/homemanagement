@@ -1,6 +1,4 @@
 using Autofac;
-using HomeManagement.App.Data;
-using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
 using HomeManagement.App.Services;
 using HomeManagement.App.Services.Rest;
@@ -29,25 +27,27 @@ namespace HomeManagement.App
             InitializeDependencies();
 
             InitializeDefaultValues();
-
-            var userRepository = new GenericRepository<User>();
-
-            Page page = new LoginPage();
-
+            
             var authManager = _container.Resolve<IAuthenticationManager>();
             if (authManager.HasValidCredentialsAvaible())
             {
                 var user = authManager.GetStoredUser();
                 authManager.AuthenticateAsync(user.Email, user.Password);
 
-                page = new MainPage();
+                var page = new DashboardPage();
 
                 NavigationPage.SetHasBackButton(page, false);
 
                 NavigationPage.SetHasNavigationBar(page, true);
-            }
 
-            MainPage = new NavigationPage(page);
+                MainPage = new NavigationPage(page);
+            }
+            else
+            {
+                Page page = new LoginPage();
+
+                MainPage = new NavigationPage(page);
+            }
 
             Connectivity.ConnectivityChanged += (s, e) =>
             {
@@ -114,6 +114,7 @@ namespace HomeManagement.App
             builder.RegisterType<CategoryServiceClient>().As<ICategoryServiceClient>();
             builder.RegisterType<CurrencyServiceClient>().As<ICurrencyServiceClient>();
             builder.RegisterType<NotificationServiceClient>().As<INotificationServiceClient>();
+            builder.RegisterType<PreferenceServiceClient>().As<IPreferenceServiceClient>();
         }
 
         private void InitializeDefaultValues()

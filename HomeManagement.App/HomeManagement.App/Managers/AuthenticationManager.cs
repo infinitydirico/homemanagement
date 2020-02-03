@@ -4,9 +4,11 @@ using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Services.Rest;
 using HomeManagement.Contracts;
 using HomeManagement.Core.Caching;
+using HomeManagement.Core.Extensions;
 using HomeManagement.Models;
 using System;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 
 namespace HomeManagement.App.Managers
 {
@@ -32,54 +34,41 @@ namespace HomeManagement.App.Managers
         private readonly ICryptography crypto = App._container.Resolve<ICryptography>();
         private readonly IAuthServiceClient authServiceClient = App._container.Resolve<IAuthServiceClient>();
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
-        private readonly GenericRepository<User> userRepository = new GenericRepository<User>();
         private readonly GenericRepository<AppSettings> appSettingsRepository = new GenericRepository<AppSettings>();
+        string username;
+        string password;
+        string token;
+        DateTime lastApiCall;
 
-        private User user;
+        public AuthenticationManager()
+        {
+            Load().ConfigureAwait(false).GetAwaiter().GetResult();
+        }
 
         public async Task<User> AuthenticateAsync(string username, string password)
         {
+            if (AreCredentialsAvaible()) return GetStoredUser();
+
             var encryptedPassword = crypto.Encrypt(password);
-
-            user = userRepository.FirstOrDefault(x => x.Email.Equals(username));
-
-            if (user != null && user.Password.Equals(encryptedPassword) && (DateTime.Now - user.LastApiCall).TotalHours < 1)
-            {
-                CacheUser(user);
-                return user;
-            }
 
             var userModel = await authServiceClient.Login(new UserModel { Email = username, Password = encryptedPassword });
 
-            if (user == null)
+            var user = new User
             {
-                user = new User
-                {
-                    Id = userModel.Id,
-                    Email = userModel.Email,
-                    Password = encryptedPassword,
-                    ChangeStamp = DateTime.Now,
-                    LastApiCall = DateTime.Now,
-                    Token = userModel.Token
-                };
-            }
-            else
-            {
-                user.Token = userModel.Token;
-                user.LastApiCall = DateTime.Now;
-            }
+                Id = userModel.Id,
+                Email = userModel.Email,
+                Password = password,
+                ChangeStamp = DateTime.Now,
+                LastApiCall = DateTime.Now,
+                Token = userModel.Token
+            };
 
-
-            SaveOrUpdateUser(user);
-
-            CreateSettingsIfNotExits();
-
-            CacheUser(user);
+            await SaveOrUpdateUser(user);
 
             return user;
         }
 
-        public User GetAuthenticatedUser() => cachingService.Get<User>("user");
+        public User GetAuthenticatedUser() => GetStoredUser();
 
         public async Task Logout()
         {
@@ -101,67 +90,33 @@ namespace HomeManagement.App.Managers
             return true;
         }
 
-        private void CacheUser(User user)
+        private async Task SaveOrUpdateUser(User user)
         {
-            if (!cachingService.Exists("user"))
-            {
-                cachingService.Store("user", user);
-            }
-            else
-            {
-                cachingService.Remove("user");
-                cachingService.Store("user", user);
-            }
+            await SecureStorage.SetAsync("Username", user.Email);
+            await SecureStorage.SetAsync("Password", user.Password);
+            Preferences.Set("LastApiCall", user.LastApiCall);
+            await SecureStorage.SetAsync("Token", user.Token);
         }
 
-        private void SaveOrUpdateUser(User user)
+        public bool AreCredentialsAvaible() => username.IsNotEmpty() && password.IsNotEmpty();
+
+        public bool HasValidCredentialsAvaible() => (DateTime.Now - lastApiCall).TotalHours < 1;
+
+        public User GetStoredUser() => new User
         {
-            if(userRepository.Any(x => x.Email.Equals(user.Email)))
-            {
-                userRepository.Update(user);
-            }
-            else
-            {
-                userRepository.Add(user);
-            }            
+            Email = username,
+            Password = password,
+            LastApiCall = lastApiCall,
+            NeedsUpdate = false,
+            Token = token
+        };
 
-            userRepository.Commit();
-        }
-
-        private void CreateSettingsIfNotExits()
+        private async Task Load()
         {
-            var cloudSyncName = AppSettings.GetOfflineModeSetting();
-            var settings = appSettingsRepository.FirstOrDefault(x => x.Name.Equals(cloudSyncName.Name));
-
-            if (settings == null)
-            {
-                appSettingsRepository.Add(cloudSyncName);
-                appSettingsRepository.Commit();
-            }
-        }
-
-        public bool AreCredentialsAvaible() => userRepository.Any();
-
-        public User GetStoredUser()
-        {
-            var user = userRepository.FirstOrDefault();
-            return new User
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Password = crypto.Decrypt(user.Password),
-                ChangeStamp = user.ChangeStamp,
-                LastApiCall = user.LastApiCall,
-                NeedsUpdate = user.NeedsUpdate,
-                Token = user.Token
-            };
-        }
-
-        public bool HasValidCredentialsAvaible()
-        {
-            user = userRepository.FirstOrDefault();
-
-            return user != null && (DateTime.Now - user.LastApiCall).TotalHours < 1;
+            username = await SecureStorage.GetAsync("Username");
+            password = await SecureStorage.GetAsync("Password");
+            lastApiCall = Preferences.Get("LastApiCall", DateTime.MinValue);
+            token = await SecureStorage.GetAsync("Token");
         }
     }
 }

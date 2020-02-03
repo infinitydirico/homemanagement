@@ -1,7 +1,4 @@
-﻿using Autofac;
-using HomeManagement.App.Managers;
-using HomeManagement.App.ViewModels;
-using HomeManagement.App.Views.Statistics;
+﻿using HomeManagement.App.ViewModels;
 using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -22,35 +19,6 @@ namespace HomeManagement.App.Views.Main
             dashboardViewModel.OnInitializationError += DashboardViewModel_OnError;
 
             dashboardViewModel.OnInitializationFinished += OnInitialized;
-
-            dashboardViewModel.OnBalancesChanged += (s, e) =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    var index = 2;
-                    var categoriesChart = grid.Children.Last();
-                    if (!categoriesChart.IsVisible)
-                    {
-                        grid.Children.Remove(categoriesChart);
-                        index--;
-                    }
-                    foreach (var evolution in dashboardViewModel.AccountsEvolutions)
-                    {
-                        var accountEvolution = new AccountEvolutionFrame
-                        {
-                            AccountName = evolution.AccountName,
-                            Series = evolution.Series,
-                            Opacity = 0
-                        };
-
-                        grid.Children.Add(accountEvolution, 0, 2, index, index + 1);
-
-                        accountEvolution.FadeTo(0.5, 500, Easing.SpringIn);
-                        accountEvolution.FadeTo(1, 500, easing: Easing.SpringOut);
-                        index++;
-                    }
-                });
-            };
         }
 
         private void DashboardViewModel_OnError(object sender, System.EventArgs e)
@@ -83,6 +51,11 @@ namespace HomeManagement.App.Views.Main
                     ToolbarItems.Add(item);
                 });                
             }
+        }
+
+        private void GoToSettings(object sender, System.EventArgs e)
+        {
+            Navigation.PushAsync(new Settings());
         }
     }
 }

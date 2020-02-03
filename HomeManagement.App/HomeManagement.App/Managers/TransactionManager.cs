@@ -148,7 +148,7 @@ namespace HomeManagement.App.Managers
 
         private void UpdateCachedTransactions(IEnumerable<Transaction> transactions)
         {
-            if (!coudSyncSetting.Enabled) return;
+            if (coudSyncSetting == null || !coudSyncSetting.Enabled) return;
 
             Task.Run(() =>
             {
