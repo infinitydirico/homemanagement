@@ -26,11 +26,6 @@ namespace HomeManagement.App.Views.Main
             DisplayAlert("Error", "Something went worng....", string.Empty);
         }
 
-        private void Button_Clicked(object sender, System.EventArgs e)
-        {
-            Navigation.PushAsync(new AccountPages.AccountPage());
-        }
-
         private void OnInitialized(object sender, System.EventArgs e)
         {
             if (dashboardViewModel.Notifications.Any())
@@ -45,17 +40,12 @@ namespace HomeManagement.App.Views.Main
 
                     item.Clicked += (s, ev) =>
                     {
-                        Navigation.PushAsync(new NotificationsPage());
+                        Navigation.PushModalAsync(new NavigationPage(new NotificationsPage()));
                     };
 
                     ToolbarItems.Add(item);
                 });                
             }
-        }
-
-        private void GoToSettings(object sender, System.EventArgs e)
-        {
-            Navigation.PushAsync(new Settings());
         }
     }
 }

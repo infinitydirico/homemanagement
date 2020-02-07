@@ -1,5 +1,4 @@
 ﻿using HomeManagement.App.ViewModels;
-using HomeManagement.App.Views.Main;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -23,16 +22,9 @@ namespace HomeManagement.App.Views.Login
             Appearing += OnAppearing;
         }
 
-        private void ViewModel_OnLoginSuccess(object sender, EventArgs e)
+        private async void ViewModel_OnLoginSuccess(object sender, EventArgs e)
         {
-            var page = new DashboardPage();
-
-            NavigationPage.SetHasBackButton(page, false);
-
-            NavigationPage.SetHasNavigationBar(page, true);
-
-            Navigation.PushAsync(page);
-            Navigation.RemovePage(this);
+            await Shell.Current.GoToAsync("//main");
         }
 
         private void ViewModel_OnLoginError(object sender, EventArgs e)

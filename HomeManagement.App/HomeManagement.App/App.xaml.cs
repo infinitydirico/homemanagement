@@ -27,27 +27,8 @@ namespace HomeManagement.App
             InitializeDependencies();
 
             InitializeDefaultValues();
-            
-            var authManager = _container.Resolve<IAuthenticationManager>();
-            if (authManager.HasValidCredentialsAvaible())
-            {
-                var user = authManager.GetStoredUser();
-                authManager.AuthenticateAsync(user.Email, user.Password);
 
-                var page = new DashboardPage();
-
-                NavigationPage.SetHasBackButton(page, false);
-
-                NavigationPage.SetHasNavigationBar(page, true);
-
-                MainPage = new NavigationPage(page);
-            }
-            else
-            {
-                Page page = new LoginPage();
-
-                MainPage = new NavigationPage(page);
-            }
+            MainPage = new MainPage();
 
             Connectivity.ConnectivityChanged += (s, e) =>
             {

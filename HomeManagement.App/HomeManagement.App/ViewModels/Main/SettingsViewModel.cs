@@ -24,6 +24,7 @@ namespace HomeManagement.App.ViewModels
         public async void Logout()
         {
             await authenticationManager.Logout();
+            await Shell.Current.GoToAsync("//login");
 
             OnLogout?.Invoke(this, EventArgs.Empty);
         }

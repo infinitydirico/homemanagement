@@ -27,6 +27,10 @@ namespace HomeManagement.App.Managers
         User GetStoredUser();
 
         Task Logout();
+
+        bool IsAuthenticated();
+
+        event EventHandler OnAuthenticationChanged;
     }
 
     public class AuthenticationManager : IAuthenticationManager
@@ -39,39 +43,57 @@ namespace HomeManagement.App.Managers
         string password;
         string token;
         DateTime lastApiCall;
+        bool isAuthenticated;
 
         public AuthenticationManager()
         {
             Load().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
+        public event EventHandler OnAuthenticationChanged;
+
         public async Task<User> AuthenticateAsync(string username, string password)
         {
-            if (AreCredentialsAvaible()) return GetStoredUser();
-
-            var encryptedPassword = crypto.Encrypt(password);
-
-            var userModel = await authServiceClient.Login(new UserModel { Email = username, Password = encryptedPassword });
-
-            var user = new User
+            try
             {
-                Id = userModel.Id,
-                Email = userModel.Email,
-                Password = password,
-                ChangeStamp = DateTime.Now,
-                LastApiCall = DateTime.Now,
-                Token = userModel.Token
-            };
+                if (AreCredentialsAvaible() && HasValidCredentialsAvaible()) return GetStoredUser();
 
-            await SaveOrUpdateUser(user);
+                var encryptedPassword = crypto.Encrypt(password);
 
-            return user;
+                var userModel = await authServiceClient.Login(new UserModel { Email = username, Password = encryptedPassword });
+
+                var user = new User
+                {
+                    Id = userModel.Id,
+                    Email = userModel.Email,
+                    Password = password,
+                    ChangeStamp = DateTime.Now,
+                    LastApiCall = DateTime.Now,
+                    Token = userModel.Token
+                };
+
+                await SaveOrUpdateUser(user);
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                isAuthenticated = true;
+
+                OnAuthenticationChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public User GetAuthenticatedUser() => GetStoredUser();
 
         public async Task Logout()
         {
+            isAuthenticated = false;
+            OnAuthenticationChanged?.Invoke(this, EventArgs.Empty);
             //await authServiceClient.Logout();
             if (cachingService.Exists("user"))
             {
@@ -118,5 +140,7 @@ namespace HomeManagement.App.Managers
             lastApiCall = Preferences.Get("LastApiCall", DateTime.MinValue);
             token = await SecureStorage.GetAsync("Token");
         }
+
+        public bool IsAuthenticated() => isAuthenticated;
     }
 }

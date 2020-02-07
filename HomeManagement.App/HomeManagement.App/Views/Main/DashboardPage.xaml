@@ -4,15 +4,12 @@
              x:Class="HomeManagement.App.Views.Main.DashboardPage"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              xmlns:statistics="clr-namespace:HomeManagement.App.Views.Statistics"
-             xmlns:controls="clr-namespace:HomeManagement.App.Views.Controls"
              xmlns:cards="clr-namespace:HomeManagement.App.Views.Cards"
-             BackgroundColor="{StaticResource TabBarColor}"
-             Icon="dashboard_48dp.png">
+             BackgroundColor="{StaticResource TabBarColor}">
     <ContentPage.Behaviors>
         <Beh:TranslationBehavior LanguageKey="DashboardTitle" />
     </ContentPage.Behaviors>
     <ContentPage.ToolbarItems>
-        <ToolbarItem IconImageSource="settings_24dp.png" Clicked="GoToSettings" />
         <ToolbarItem Icon="notifications_none_24dp.png" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
@@ -30,7 +27,6 @@
                     <cards:TotalIncomeCard Grid.Column="0" Grid.Row="0" />
                     <cards:TotalOutcomeCard Grid.Column="1" Grid.Row="0" />
                     <statistics:ExpensiveCategoriesChart Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" />
-                    <controls:AccountListControl Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" />
                 </Grid>
             </StackLayout>
         </ScrollView>

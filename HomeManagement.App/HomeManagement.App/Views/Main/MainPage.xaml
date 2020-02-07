@@ -1,28 +1,63 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+<Shell xmlns="http://xamarin.com/schemas/2014/forms"
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
             x:Class="HomeManagement.App.Views.Main.MainPage"
             xmlns:viewModels="clr-namespace:HomeManagement.App.ViewModels"
             xmlns:mainPages="clr-namespace:HomeManagement.App.Views.Main"
+            xmlns:login="clr-namespace:HomeManagement.App.Views.Login"
             xmlns:accountsPages="clr-namespace:HomeManagement.App.Views.AccountPages"
             xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
-            BarBackgroundColor="{StaticResource TabBarColor}"
             BackgroundColor="{StaticResource TabBarColor}"
-            Title="{Binding TitleText, Converter={StaticResource Translation}}">
-  <!--Pages can be added as references or inline-->
-    <TabbedPage.Resources>
+            FlyoutIsPresented="False"
+            FlyoutBehavior="Disabled">
+    <Shell.Resources>
         <ResourceDictionary>
             <Conv:TranslationConverter x:Key="Translation" />
         </ResourceDictionary>
-    </TabbedPage.Resources>
+        <Style x:Key="BaseStyle"
+               TargetType="Element">
+            <Setter Property="Shell.BackgroundColor"
+                    Value="#455A64" />
+            <Setter Property="Shell.ForegroundColor"
+                    Value="White" />
+            <Setter Property="Shell.TitleColor"
+                    Value="White" />
+            <Setter Property="Shell.DisabledColor"
+                    Value="#B4FFFFFF" />
+            <Setter Property="Shell.UnselectedColor"
+                    Value="#95FFFFFF" />
+        </Style>
+        <Style TargetType="ShellItem"
+               BasedOn="{StaticResource BaseStyle}" />
+        <Style x:Key="AccountsStyle"
+               TargetType="Element"
+               BasedOn="{StaticResource BaseStyle}">
+            <Setter Property="Shell.BackgroundColor"
+                    Value="{StaticResource LayoutDark}" />
+        </Style>
+    </Shell.Resources>
     <BindableObject.BindingContext>
         <viewModels:MainViewModel />
     </BindableObject.BindingContext>
-    <!--<TabbedPage.ToolbarItems>
-        <ToolbarItem Icon="exit.png" Command="{Binding LogoutCommand}" />
-    </TabbedPage.ToolbarItems>-->
 
-    <mainPages:DashboardPage  />
-    <accountsPages:AccountPage />
-    <mainPages:Settings x:Name="settingsPage" />
-</TabbedPage>
+    <ShellItem Route="login" IsEnabled="{Binding NeedsAuthentication}">
+        <ShellContent ContentTemplate="{DataTemplate login:LoginPage}"/>
+    </ShellItem>
+
+    <TabBar Route="main" IsEnabled="{Binding IsAuthenticated}">
+        <Tab Title="Dashboard" Icon="dashboard_48dp.png" Route="dashboard">
+            <ShellContent Style="{StaticResource AccountsStyle}"
+                          ContentTemplate="{DataTemplate mainPages:DashboardPage}" />
+        </Tab>
+        <Tab Title="Accounts" Icon="bank_48dp.png" Route="accounts" >
+            <ShellContent Title="Accounts"
+                          Style="{StaticResource AccountsStyle}"
+                          ContentTemplate="{DataTemplate accountsPages:AccountPage}" />
+        </Tab>
+        <Tab Title="Settings" Icon="settings_48dp.png" Route="settings" >
+            <ShellContent Title="Settings"
+                          Style="{StaticResource AccountsStyle}"
+                          ContentTemplate="{DataTemplate mainPages:Settings}" />
+        </Tab>
+    </TabBar>
+</Shell>

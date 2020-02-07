@@ -6,8 +6,7 @@
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              xmlns:cards="clr-namespace:HomeManagement.App.Views.Cards"
-             BackgroundColor="{StaticResource TabBarColor}"
-             Icon="settings_48dp.png">
+             BackgroundColor="{StaticResource TabBarColor}">
     <ContentPage.Behaviors>
         <Beh:TranslationBehavior LanguageKey="Settings" />
     </ContentPage.Behaviors>
@@ -32,7 +31,7 @@
             </Frame>
             <Frame Margin="5, 5, 5, 5" VerticalOptions="EndAndExpand">
                 <StackLayout>
-                    <Button Clicked="OnLogoutClicked">
+                    <Button Command="{Binding LogoutCommand}">
                         <Button.Behaviors>
                             <Beh:TranslationBehavior LanguageKey="Logout" />
                         </Button.Behaviors>
