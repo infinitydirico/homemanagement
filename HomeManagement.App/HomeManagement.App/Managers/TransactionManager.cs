@@ -41,7 +41,7 @@ namespace HomeManagement.App.Managers
 
     public class TransactionManager : BaseManager<Transaction, TransactionPageModel>, ITransactionManager
     {
-        protected readonly ITransactionServiceClient transactionServiceClient = App._container.Resolve<ITransactionServiceClient>();
+        protected readonly TransactionServiceClient transactionServiceClient = new TransactionServiceClient();
         private readonly GenericRepository<Transaction> transactionRepository = new GenericRepository<Transaction>();
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
 

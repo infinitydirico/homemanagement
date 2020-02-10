@@ -36,7 +36,7 @@ namespace HomeManagement.App.Managers
     public class AuthenticationManager : IAuthenticationManager
     {
         private readonly ICryptography crypto = App._container.Resolve<ICryptography>();
-        private readonly IAuthServiceClient authServiceClient = App._container.Resolve<IAuthServiceClient>();
+        private readonly AuthServiceClient authServiceClient = new AuthServiceClient();
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
         private readonly GenericRepository<AppSettings> appSettingsRepository = new GenericRepository<AppSettings>();
         string username;

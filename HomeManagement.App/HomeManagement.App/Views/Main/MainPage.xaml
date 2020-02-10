@@ -29,10 +29,34 @@
         </Style>
         <Style TargetType="ShellItem"
                BasedOn="{StaticResource BaseStyle}" />
+        <Style x:Key="DashboardStyle"
+               TargetType="Element"
+               BasedOn="{StaticResource BaseStyle}">
+            <Setter Property="Shell.BackgroundColor"
+                    Value="{StaticResource RedColor}" />
+            <Setter Property="Shell.TitleColor"
+                    Value="{StaticResource LayoutDark}" />
+            <Setter Property="Shell.ForegroundColor"
+                    Value="{StaticResource LayoutDark}" />
+        </Style>
         <Style x:Key="AccountsStyle"
                TargetType="Element"
                BasedOn="{StaticResource BaseStyle}">
             <Setter Property="Shell.BackgroundColor"
+                    Value="{StaticResource GreenButton}" />
+            <Setter Property="Shell.ForegroundColor"
+                    Value="{StaticResource LayoutDark}" />
+            <Setter Property="Shell.TitleColor"
+                    Value="{StaticResource LayoutDark}" />
+        </Style>
+        <Style x:Key="SettingsStyle"
+               TargetType="Element"
+               BasedOn="{StaticResource BaseStyle}">
+            <Setter Property="Shell.BackgroundColor"
+                    Value="{StaticResource Purple}" />
+            <Setter Property="Shell.ForegroundColor"
+                    Value="{StaticResource LayoutDark}" />
+            <Setter Property="Shell.TitleColor"
                     Value="{StaticResource LayoutDark}" />
         </Style>
     </Shell.Resources>
@@ -46,7 +70,7 @@
 
     <TabBar Route="main" IsEnabled="{Binding IsAuthenticated}">
         <Tab Title="Dashboard" Icon="dashboard_48dp.png" Route="dashboard">
-            <ShellContent Style="{StaticResource AccountsStyle}"
+            <ShellContent Style="{StaticResource DashboardStyle}"
                           ContentTemplate="{DataTemplate mainPages:DashboardPage}" />
         </Tab>
         <Tab Title="Accounts" Icon="bank_48dp.png" Route="accounts" >
@@ -56,7 +80,7 @@
         </Tab>
         <Tab Title="Settings" Icon="settings_48dp.png" Route="settings" >
             <ShellContent Title="Settings"
-                          Style="{StaticResource AccountsStyle}"
+                          Style="{StaticResource SettingsStyle}"
                           ContentTemplate="{DataTemplate mainPages:Settings}" />
         </Tab>
     </TabBar>

@@ -1,5 +1,4 @@
-﻿using Autofac;
-using HomeManagement.App.Data.Entities;
+﻿using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Services.Rest;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ namespace HomeManagement.App.Managers
 
     public class CategoryManager : ICategoryManager
     {
-        protected ICategoryServiceClient categoryServiceClient = App._container.Resolve<ICategoryServiceClient>();
+        protected CategoryServiceClient categoryServiceClient = new CategoryServiceClient();
         private List<Category> categories = new List<Category>();
 
         public async Task<IEnumerable<Category>> GetCategories()

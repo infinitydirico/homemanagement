@@ -1,84 +1,60 @@
-﻿using HomeManagement.App.Common;
-using HomeManagement.Models;
+﻿using HomeManagement.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using static HomeManagement.App.Common.Constants;
 
 namespace HomeManagement.App.Services.Rest
 {
-    public interface ITransactionServiceClient
+    public class TransactionServiceClient
     {
-        Task<TransactionPageModel> Page(TransactionPageModel dto);
+        BaseRestClient restClient;
 
-        Task Delete(int id);
+        public TransactionServiceClient()
+        {
+            restClient = new BaseRestClient(Endpoints.BASEURL);
+        }
 
-        Task Post(TransactionModel transaction);
-
-        Task Put(TransactionModel transaction);
-
-        Task<TransactionModel> PostPicture(Stream stream);
-
-        Task<IEnumerable<TransactionModel>> GetAutoComplete();
-    }
-
-    public class TransactionServiceClient : ITransactionServiceClient
-    {
         public async Task Delete(int id)
         {
-            var response = await RestClientFactory
-                .CreateAuthenticatedClient()
-                .DeleteAsync($"{Constants.Endpoints.Transaction.TRANSACTION}/?id={id.ToString()}");
-
-            response.EnsureSuccessStatusCode();
+            await restClient.Delete($"{Endpoints.Transaction.TRANSACTION}/?id={id.ToString()}");
         }
 
         public async Task<IEnumerable<TransactionModel>> GetAutoComplete()
         {
-            return await RestClientFactory
-                .CreateAuthenticatedClient()
-                .GetAsync($"{Constants.Endpoints.Transaction.TRANSACTION}GetAutoComplete")
-                .ReadContent< IEnumerable<TransactionModel>>();
+            var result = await restClient.Get<IEnumerable<TransactionModel>>($"{Endpoints.Transaction.TRANSACTION}GetAutoComplete");
+            return result;
         }
 
         public async Task<TransactionPageModel> Page(TransactionPageModel dto)
         {
-            return await RestClientFactory
-                .CreateAuthenticatedClient()
-                .PostAsync(Constants.Endpoints.Transaction.PAGE, dto.SerializeToJson())
-                .ReadContent<TransactionPageModel>();
+            var result = await restClient.Post<TransactionPageModel>(Endpoints.Transaction.PAGE, dto);
+            return result;
         }
 
         public async Task Post(TransactionModel transaction)
         {
-            var response = await RestClientFactory
-                .CreateAuthenticatedClient()
-                .PostAsync(Constants.Endpoints.Transaction.TRANSACTION, transaction.SerializeToJson());
-
-            response.EnsureSuccessStatusCode();
+            await restClient.Post(Endpoints.Transaction.TRANSACTION, transaction);
         }
 
         public async Task<TransactionModel> PostPicture(Stream stream)
         {
-            var streamContent = new System.Net.Http.StreamContent(stream);
-            var response = await RestClientFactory
-                .CreateAuthenticatedClient()
-                .PostAsync(Constants.Endpoints.Images.Image, streamContent);
+            using (var client = await restClient.CreateAuthenticatedClient())
+            {
+                var streamContent = new System.Net.Http.StreamContent(stream);
+                var result = await client.PostAsync(Endpoints.Images.Image, streamContent);
+                result.EnsureSuccessStatusCode();
 
-            response.EnsureSuccessStatusCode();
-
-            var content = await response.Content.ReadAsStringAsync();
-            var objectResult = JsonConvert.DeserializeObject<TransactionModel>(content);
-            return objectResult;
+                var content = await result.Content.ReadAsStringAsync();
+                var objectResult = JsonConvert.DeserializeObject<TransactionModel>(content);
+                return objectResult;
+            }
         }
 
         public async Task Put(TransactionModel transaction)
         {
-            var response = await RestClientFactory
-                .CreateAuthenticatedClient()
-                .PutAsync(Constants.Endpoints.Transaction.TRANSACTION, transaction.SerializeToJson());
-
-            response.EnsureSuccessStatusCode();
+            await restClient.Put(Endpoints.Transaction.TRANSACTION, transaction);
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using Autofac;
-using HomeManagement.App.Common;
-using HomeManagement.App.Managers;
+﻿using HomeManagement.App.Common;
 using HomeManagement.Models;
 using Newtonsoft.Json;
 using System;
@@ -23,7 +21,7 @@ namespace HomeManagement.App.Services.Rest
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Constants.Endpoints.STORAGE_API);
-                client.DefaultRequestHeaders.Add(AuthorizationHeader, GetToken());
+                client.DefaultRequestHeaders.Add(AuthorizationHeader, await GetToken());
 
                 var result = await client.GetAsync("storage");
 
@@ -44,7 +42,7 @@ namespace HomeManagement.App.Services.Rest
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Constants.Endpoints.STORAGE_API);
-                client.DefaultRequestHeaders.Add(AuthorizationHeader, GetToken());
+                client.DefaultRequestHeaders.Add(AuthorizationHeader, await GetToken());
 
                 var result = await client.GetAsync($"storage/{tag}");
 
@@ -56,6 +54,9 @@ namespace HomeManagement.App.Services.Rest
             }
         }
 
-        private static string GetToken() => App._container.Resolve<IAuthenticationManager>().GetAuthenticatedUser().Token;
+        private async Task<string> GetToken()
+        {
+            return await SecureStorage.GetAsync("Token");
+        }
     }
 }

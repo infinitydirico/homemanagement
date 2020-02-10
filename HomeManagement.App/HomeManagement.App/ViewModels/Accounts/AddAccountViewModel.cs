@@ -14,8 +14,8 @@ namespace HomeManagement.App.ViewModels
 {
     public class AddAccountViewModel : LocalizationBaseViewModel
     {
-        private readonly ICurrencyServiceClient currencyService = App._container.Resolve<ICurrencyServiceClient>();
-        private readonly IAccountServiceClient accountServiceClient = App._container.Resolve<IAccountServiceClient>();
+        private readonly CurrencyServiceClient currencyService = new CurrencyServiceClient();
+        private readonly AccountServiceClient accountServiceClient = new AccountServiceClient();
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
 
         Currency selectedCurrency;

@@ -1,5 +1,4 @@
-﻿using Autofac;
-using HomeManagement.App.Services.Rest;
+﻿using HomeManagement.App.Services.Rest;
 using HomeManagement.Models;
 using Nightingale;
 using System;
@@ -11,12 +10,10 @@ namespace HomeManagement.App.ViewModels
 {
     public class StatisticsViewModel : BaseViewModel
     {
-        IAccountMetricsServiceClient accountMetricsServiceClient;
+        private readonly AccountMetricsServiceClient accountMetricsServiceClient = new AccountMetricsServiceClient();
 
         public StatisticsViewModel()
         {
-            accountMetricsServiceClient = App._container.Resolve<IAccountMetricsServiceClient>();
-
             Task.Run(async () =>
             {
                 await RetrieveAccountBalances();

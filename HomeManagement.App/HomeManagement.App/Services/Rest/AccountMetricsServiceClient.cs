@@ -3,88 +3,61 @@ using HomeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static HomeManagement.App.Common.Constants;
 
 namespace HomeManagement.App.Services.Rest
 {
-    public class AccountMetricsServiceClient : IAccountMetricsServiceClient
+    public class AccountMetricsServiceClient
     {
+        BaseRestClient restClient;
+
+        public AccountMetricsServiceClient()
+        {
+            restClient = new BaseRestClient(Endpoints.BASEURL);
+        }
+
         public async Task<AccountEvolutionModel> GetAccountEvolution(int accountId)
         {
-            return await RestClientFactory
-                .CreateAuthenticatedClient()
-                .GetAsync($"{Constants.Endpoints.Accounts.ACCOUNT}{accountId}/{Constants.Endpoints.Accounts.AccountEvolution}")
-                .ReadContent<AccountEvolutionModel>();
+            var result = await restClient.Get<AccountEvolutionModel>($"{Endpoints.Accounts.ACCOUNT}{accountId}/{Endpoints.Accounts.AccountEvolution}");
+            return result;
         }
 
         public async Task<AccountsEvolutionModel> GetAccountsBalances()
         {
-            return await RestClientFactory
-                .CreateAuthenticatedClient()
-                .GetAsync($"{Constants.Endpoints.Accounts.AccountsEvolution}")
-                .ReadContent<AccountsEvolutionModel>();
+            var result = await restClient.Get<AccountsEvolutionModel>($"{Constants.Endpoints.Accounts.AccountsEvolution}");
+            return result;
         }
 
         public async Task<IEnumerable<TransactionModel>> GetTransactionsByDate(int accountId, int year, int month)
         {
-            return await RestClientFactory
-                .CreateAuthenticatedClient()
-                .GetAsync(string.Format(Constants.Endpoints.Transaction.BY_ACCOUNT_AND_DATE, year, month, accountId))
-                .ReadContent<IEnumerable<TransactionModel>>();
+            var result = await restClient.Get<IEnumerable<TransactionModel>>(string.Format(Endpoints.Transaction.BY_ACCOUNT_AND_DATE, year, month, accountId));
+            return result;
         }
 
         public async Task<OverPricedCategories> GetMostExpensiveCategories()
         {
-            var apiUrl = $"{Constants.Endpoints.Accounts.ACCOUNT}{Constants.Endpoints.Accounts.AccountTopTransactions}/{DateTime.Now.Month}";
-            var response = await RestClientFactory
-                .CreateAuthenticatedClient()
-                .GetAsync(apiUrl);
+            var apiUrl = $"{Endpoints.Accounts.ACCOUNT}{Endpoints.Accounts.AccountTopTransactions}/{DateTime.Now.Month}";
 
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-            var objectResult = Newtonsoft.Json.JsonConvert.DeserializeObject<OverPricedCategories>(content);
-
-            return objectResult;
+            var result = await restClient.Get<OverPricedCategories>(apiUrl);
+            return result;
         }
 
         public async Task<IEnumerable<OverPricedCategory2>> GetMostExpensiveCategories(int accountId)
         {
-            return await RestClientFactory
-                .CreateAuthenticatedClient()
-                .GetAsync($"{Constants.Endpoints.Accounts.ACCOUNT}{accountId}/{Constants.Endpoints.Accounts.AccountTopTransactions}/{DateTime.Now.Month}")
-                .ReadContent<IEnumerable<OverPricedCategory2>>();
+            var result = await restClient.Get<IEnumerable<OverPricedCategory2>>($"{Endpoints.Accounts.ACCOUNT}{accountId}/{Endpoints.Accounts.AccountTopTransactions}/{DateTime.Now.Month}");
+            return result;
         }
 
         public async Task<MetricValueDto> GetTotalIncome()
         {
-            return await RestClientFactory
-                .CreateAuthenticatedClient()
-                .GetAsync($"/{Constants.Endpoints.Accounts.TotalIncome}")
-                .ReadContent<MetricValueDto>();
+            var result = await restClient.Get<MetricValueDto>($"/{Endpoints.Accounts.TotalIncome}");
+            return result;
         }
 
         public async Task<MetricValueDto> GetTotalOutcome()
         {
-            return await RestClientFactory
-                .CreateAuthenticatedClient()
-                .GetAsync($"/{Constants.Endpoints.Accounts.TotalOutcome}")
-                .ReadContent<MetricValueDto>();
+            var result = await restClient.Get<MetricValueDto>($"/{Endpoints.Accounts.TotalOutcome}");
+            return result;
         }
-    }
-
-    public interface IAccountMetricsServiceClient
-    {
-        Task<OverPricedCategories> GetMostExpensiveCategories();
-
-        Task<IEnumerable<OverPricedCategory2>> GetMostExpensiveCategories(int accountId);
-
-        Task<AccountsEvolutionModel> GetAccountsBalances();
-
-        Task<AccountEvolutionModel> GetAccountEvolution(int accountId);
-
-        Task<MetricValueDto> GetTotalIncome();
-
-        Task<MetricValueDto> GetTotalOutcome();
-
-        Task<IEnumerable<TransactionModel>> GetTransactionsByDate(int accountId, int year, int month);
     }
 }

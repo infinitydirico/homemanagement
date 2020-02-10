@@ -39,6 +39,8 @@
             <Color x:Key="LightBlue">#00bcd4</Color>
             <Color x:Key="TabBarColor">#212121</Color>
             <Color x:Key="RedColor">#ef5350</Color>
+            <Color x:Key="Yellow">#f5e642</Color>
+            <Color x:Key="Purple">#aa66cc</Color>
             <Style TargetType="NavigationPage">
                 <Setter Property="BarBackgroundColor" Value="{StaticResource LayoutDark}" />
                 <Setter Property="BarTextColor" Value="White" />

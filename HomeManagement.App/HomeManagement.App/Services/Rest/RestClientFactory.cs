@@ -1,6 +1,4 @@
-﻿using Autofac;
-using HomeManagement.App.Common;
-using HomeManagement.App.Managers;
+﻿using HomeManagement.App.Common;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
@@ -42,7 +40,10 @@ namespace HomeManagement.App.Services.Rest
         public static StringContent SerializeToJson(this object data)
             => new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
 
-        private static string GetToken() => App._container.Resolve<IAuthenticationManager>().GetAuthenticatedUser().Token;
+        private static string GetToken()
+        {
+            return SecureStorage.GetAsync("Token").GetAwaiter().GetResult();
+        }
 
         private static void CheckForInternetConnection()
         {

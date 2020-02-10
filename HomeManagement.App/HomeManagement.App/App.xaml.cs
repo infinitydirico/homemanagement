@@ -1,8 +1,6 @@
 using Autofac;
 using HomeManagement.App.Managers;
 using HomeManagement.App.Services;
-using HomeManagement.App.Services.Rest;
-using HomeManagement.App.Views.Login;
 using HomeManagement.App.Views.Main;
 using HomeManagement.Contracts;
 using HomeManagement.Core.Caching;
@@ -34,9 +32,7 @@ namespace HomeManagement.App
             {
                 if (e.NetworkAccess.Equals(NetworkAccess.None))
                 {
-                    var p = new OfflinePage();
-                    NavigationPage.SetHasBackButton(p, false);
-                    MainPage.Navigation.PushAsync(p);
+                    MainPage.Navigation.PushModalAsync(new OfflinePage());
                 }
             };
 
@@ -67,8 +63,6 @@ namespace HomeManagement.App
 
             builder.RegisterType<LocalizationLanguage>().As<ILocalization>().SingleInstance();
 
-            RegisterServiceClients(builder);
-
             RegisterManagers(builder);
 
             _container = builder.Build();
@@ -84,18 +78,6 @@ namespace HomeManagement.App
             builder.RegisterType<LocalizationManager>().As<ILocalizationManager>();
             builder.RegisterType<NotificationManager>().As<INotificationManager>();
             builder.RegisterType<StorageManager>().As<IStorageManager>();            
-        }
-
-        private void RegisterServiceClients(ContainerBuilder builder)
-        {
-            builder.RegisterType<AccountServiceClient>().As<IAccountServiceClient>();
-            builder.RegisterType<AuthServiceClient>().As<IAuthServiceClient>().SingleInstance();
-            builder.RegisterType<TransactionServiceClient>().As<ITransactionServiceClient>();
-            builder.RegisterType<AccountMetricsServiceClient>().As<IAccountMetricsServiceClient>();
-            builder.RegisterType<CategoryServiceClient>().As<ICategoryServiceClient>();
-            builder.RegisterType<CurrencyServiceClient>().As<ICurrencyServiceClient>();
-            builder.RegisterType<NotificationServiceClient>().As<INotificationServiceClient>();
-            builder.RegisterType<PreferenceServiceClient>().As<IPreferenceServiceClient>();
         }
 
         private void InitializeDefaultValues()

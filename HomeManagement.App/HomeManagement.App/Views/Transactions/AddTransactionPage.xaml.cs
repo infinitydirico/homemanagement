@@ -32,15 +32,6 @@ namespace HomeManagement.App.Views.Transactions
 
             BindingContext = viewModel;
 
-            if (CrossMedia.Current.IsCameraAvailable && CrossMedia.Current.IsTakePhotoSupported)
-            {
-                ToolbarItems.Add(new ToolbarItem
-                {
-                    Icon = "add_photo_24dp.png",
-                    Command = viewModel.TakePictureCommand
-                });
-            }
-
             viewModel.OnAdded += OnTransactionAdded;
 
             viewModel.OnCancel += OnCancel;

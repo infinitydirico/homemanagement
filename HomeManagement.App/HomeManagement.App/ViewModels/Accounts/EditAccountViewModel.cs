@@ -12,7 +12,7 @@ namespace HomeManagement.App.ViewModels
 {
     public class EditAccountViewModel : BaseViewModel
     {
-        private readonly ICurrencyServiceClient currencyService = App._container.Resolve<ICurrencyServiceClient>();
+        private readonly CurrencyServiceClient currencyService = new CurrencyServiceClient();
         private readonly IAccountManager accountManager = App._container.Resolve<IAccountManager>();
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
     

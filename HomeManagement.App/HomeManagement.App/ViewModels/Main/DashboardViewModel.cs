@@ -12,7 +12,7 @@ namespace HomeManagement.App.ViewModels
 {
     public class DashboardViewModel : LocalizationBaseViewModel
     {
-        IAccountMetricsServiceClient metricClient = App._container.Resolve<IAccountMetricsServiceClient>();
+        private readonly AccountMetricsServiceClient accountMetricsServiceClient = new AccountMetricsServiceClient();
         INotificationManager notificationManager = App._container.Resolve<INotificationManager>();
 
         public event EventHandler OnBalancesChanged;
@@ -34,7 +34,7 @@ namespace HomeManagement.App.ViewModels
 
         private async Task RetrieveAccountBalances()
         {
-            var balances = await metricClient.GetAccountsBalances();
+            var balances = await accountMetricsServiceClient.GetAccountsBalances();
 
             AccountsEvolutions.AddRange(
                        from b in balances.Balances

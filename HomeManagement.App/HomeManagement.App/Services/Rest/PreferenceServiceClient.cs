@@ -1,37 +1,40 @@
-﻿using HomeManagement.App.Common;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Threading.Tasks;
+using static HomeManagement.App.Common.Constants;
 
 namespace HomeManagement.App.Services.Rest
 {
-    public class PreferenceServiceClient : IPreferenceServiceClient
+    public class PreferenceServiceClient
     {
+        BaseRestClient restClient;
+
+        public PreferenceServiceClient()
+        {
+            restClient = new BaseRestClient(Endpoints.BASEURL);
+        }
+
         public async Task<bool> GetEnableBackups()
         {
             var definition = new { EnableDailyBackups = false };
 
-            var result = await RestClientFactory
-                .CreateAuthenticatedClient()
-                .GetAsync(Constants.Endpoints.Preference.URL);
+            using(var client = await restClient.CreateAuthenticatedClient())
+            {
+                var result = await client.GetAsync(Endpoints.Preference.URL);
+                var json = await result.Content.ReadAsStringAsync();
 
-            var json = await result.Content.ReadAsStringAsync();
-
-            var content = JsonConvert.DeserializeAnonymousType(json, definition);
-            return content.EnableDailyBackups;
+                var content = JsonConvert.DeserializeAnonymousType(json, definition);
+                return content.EnableDailyBackups;
+            }
         }
 
         public async Task UpdateDailyBackups(bool value)
         {
-            await RestClientFactory
-                .CreateAuthenticatedClient()
-                .PostAsync($"{Constants.Endpoints.Preference.URL}/{value.ToString()}", null);
+            var api = $"{Endpoints.Preference.URL}/{value.ToString()}";
+            using (var client = await restClient.CreateAuthenticatedClient())
+            {
+                var result = await client.PostAsync($"{Endpoints.Preference.URL}/{value.ToString()}", null);
+                result.EnsureSuccessStatusCode();
+            }
         }
-    }
-
-    public interface IPreferenceServiceClient
-    {
-        Task UpdateDailyBackups(bool value);
-
-        Task<bool> GetEnableBackups();
     }
 }

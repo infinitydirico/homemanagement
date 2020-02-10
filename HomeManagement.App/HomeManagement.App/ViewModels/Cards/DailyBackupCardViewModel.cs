@@ -1,12 +1,11 @@
-﻿using Autofac;
-using HomeManagement.App.Services.Rest;
+﻿using HomeManagement.App.Services.Rest;
 using System.Threading.Tasks;
 
 namespace HomeManagement.App.ViewModels.Cards
 {
     public class DailyBackupCardViewModel : BaseViewModel
     {
-        private readonly IPreferenceServiceClient preferenceServiceClient = App._container.Resolve<IPreferenceServiceClient>();
+        private readonly PreferenceServiceClient preferenceServiceClient = new PreferenceServiceClient();
         private bool dailyBackupEnabled;
 
         public bool DailyBackupEnabled

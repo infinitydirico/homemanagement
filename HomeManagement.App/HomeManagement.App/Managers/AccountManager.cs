@@ -25,7 +25,7 @@ namespace HomeManagement.App.Managers
     public class AccountManager : BaseManager<Account, AccountPageModel> , IAccountManager
     {        
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
-        private readonly IAccountServiceClient accountServiceClient = App._container.Resolve<IAccountServiceClient>();
+        private readonly AccountServiceClient accountServiceClient = new AccountServiceClient();
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
 
         public AccountManager()

@@ -15,7 +15,7 @@ namespace HomeManagement.App.Views.Main
             {
                 if (args.NetworkAccess.Equals(NetworkAccess.Internet))
                 {
-                    Navigation.RemovePage(this);
+                    Navigation.PopModalAsync(true);
                 }
             };
         }
