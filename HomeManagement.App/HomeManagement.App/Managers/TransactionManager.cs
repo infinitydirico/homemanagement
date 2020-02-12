@@ -71,7 +71,7 @@ namespace HomeManagement.App.Managers
         {
             await transactionServiceClient.Delete(transaction.Id);
 
-            if (coudSyncSetting.Enabled)
+            if (coudSyncSetting != null && coudSyncSetting.Enabled)
             {
                 cachingService.StoreOrUpdate("ForceApiCall", true);
             }

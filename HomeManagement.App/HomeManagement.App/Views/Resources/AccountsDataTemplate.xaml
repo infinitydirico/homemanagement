@@ -10,7 +10,7 @@
     <DataTemplate x:Key="AccountTemplate">
         <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Margin="0, 10, 0, 10">
             <StackLayout.GestureRecognizers>
-                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                <TapGestureRecognizer Tapped="OnAccountTapped" />
             </StackLayout.GestureRecognizers>
             <StackLayout Orientation="Horizontal" HorizontalOptions="Start">
                 <Label VerticalOptions="Center" Text = "{Binding Name}" />

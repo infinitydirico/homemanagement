@@ -18,7 +18,7 @@ namespace HomeManagement.App.Services.Rest
 
         public async Task Delete(int id)
         {
-            await restClient.Delete($"{Endpoints.Transaction.TRANSACTION}/?id={id.ToString()}");
+            await restClient.Delete($"{Endpoints.Transaction.TRANSACTION}{id.ToString()}");
         }
 
         public async Task<IEnumerable<TransactionModel>> GetAutoComplete()

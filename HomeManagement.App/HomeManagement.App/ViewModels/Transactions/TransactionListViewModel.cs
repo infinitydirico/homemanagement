@@ -34,6 +34,8 @@ namespace HomeManagement.App.ViewModels
             ClearFiltersCommand = new Command(Refresh);
         }
 
+        public Account Account => account;
+
         public ObservableCollection<Transaction> Transactions
         {
             get => transactions;

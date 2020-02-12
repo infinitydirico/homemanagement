@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using HomeManagement.App.Common;
 using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
 using HomeManagement.App.ViewModels;
@@ -12,7 +13,6 @@ namespace HomeManagement.App.Views.Transactions
     [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class EditTransactionPage : ContentPage
 	{
-        private Account account;
         ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
 
         public EditTransactionPage()
@@ -24,7 +24,6 @@ namespace HomeManagement.App.Views.Transactions
 
         public EditTransactionPage(Account account, Transaction Transaction) : this()
         {
-            this.account = account;
             var viewModel = new EditTransactionViewModel(account, Transaction);
             BindingContext = viewModel;
 
@@ -45,7 +44,13 @@ namespace HomeManagement.App.Views.Transactions
 
         private void ViewModel_OnTransactionUpdated(object sender, EventArgs e)
         {
+            MessagingCenter.Send(this, Constants.Messages.UpdateOnAppearing);
             Navigation.PopAsync();
+        }
+
+        private void TransactionNameEntry_Completed(object sender, System.EventArgs e)
+        {
+            PriceEntry.Focus();
         }
     }
 }

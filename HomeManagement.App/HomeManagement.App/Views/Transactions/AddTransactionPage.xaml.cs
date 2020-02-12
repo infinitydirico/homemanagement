@@ -1,9 +1,9 @@
 ﻿using Autofac;
 using HomeManagement.App.Behaviours;
+using HomeManagement.App.Common;
 using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
 using HomeManagement.App.ViewModels;
-using Plugin.Media;
 using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -60,6 +60,7 @@ namespace HomeManagement.App.Views.Transactions
 
         private void OnTransactionAdded(object sender, System.EventArgs e)
         {
+            MessagingCenter.Send(this, Constants.Messages.UpdateOnAppearing);
             Navigation.PopAsync();
         }
 
