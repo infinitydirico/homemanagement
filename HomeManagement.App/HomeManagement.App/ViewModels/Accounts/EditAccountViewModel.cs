@@ -25,6 +25,7 @@ namespace HomeManagement.App.ViewModels
         {
             Account = account;
             SelectedAccountType = account.AccountType;
+            Title = "AccountName";
         }
 
         public ICommand FinishEditAccountCommand => new Command(UpdateAccount);

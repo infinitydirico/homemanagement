@@ -28,6 +28,7 @@ namespace HomeManagement.App.ViewModels
             AddAccountCommand = new Command(async () => await AddAccount());
             SelectedAccountType = AccountType.Cash;
             Account.UserId = authenticationManager.GetAuthenticatedUser().Id;
+            Title = "AccountName";
         }
 
         public event EventHandler OnAccountCreated;

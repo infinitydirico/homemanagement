@@ -24,10 +24,10 @@ namespace HomeManagement.App.Views.AccountPages
             InitializeComponent();
 
             modal = new Modal(this);
-            BindingContext = viewModel;            
+            BindingContext = viewModel;
         }
 
-        private void NavigateToAddAccount(object sender, System.EventArgs e)
+        private void NavigateToAddAccount(object sender, EventArgs e)
         {
             Navigation.PushAsync(new AddAccountPage());
         }

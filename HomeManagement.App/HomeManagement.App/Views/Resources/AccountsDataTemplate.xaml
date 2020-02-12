@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
+             x:Class="HomeManagement.App.Views.Resources.AccountsDataTemplate">
+    <Conv:PositiveNegativeColorConverter x:Key="PositiveNegative" />
+    <DataTemplate x:Key="AccountTemplate">
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Margin="0, 10, 0, 10">
+            <StackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+            </StackLayout.GestureRecognizers>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Start">
+                <Label VerticalOptions="Center" Text = "{Binding Name}" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
+                <Label VerticalOptions="Center" Text = "{Binding Balance}" HorizontalOptions="EndAndExpand"
+                       TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" />
+            </StackLayout>
+            <StackLayout IsVisible="False" Orientation="Horizontal" HorizontalOptions="EndAndExpand">
+                <Button Image="red_trash_18dp.png" VerticalOptions="Center"
+                        WidthRequest="20" HeightRequest="20" />
+                <Button Image="edit_18dp.png" VerticalOptions="Center"
+                        WidthRequest="20" HeightRequest="20"
+                        Clicked="Edit" />
+                <Button Image="eye_18dp.png" VerticalOptions="Center"
+                        WidthRequest="20" HeightRequest="20"
+                        Clicked="ViewTransactionsList" />
+            </StackLayout>
+        </StackLayout>
+    </DataTemplate>
+</ResourceDictionary>

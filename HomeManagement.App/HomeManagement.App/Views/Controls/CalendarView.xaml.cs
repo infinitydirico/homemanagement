@@ -14,6 +14,7 @@ namespace HomeManagement.App.Views.Controls
     {
         private uint animationTimeout = 150;
         private List<Tuple<DateTime, Frame>> gridValues = new List<Tuple<DateTime, Frame>>();
+        private Frame selectedDate;
 
         public CalendarView()
         {
@@ -145,6 +146,14 @@ namespace HomeManagement.App.Views.Controls
                 };
 
                 eventsView.Children.Add(title);
+
+                if(selectedDate != null)
+                {
+                    await selectedDate.BackgroundColorTo(Color.Transparent, 100);
+                }
+
+                selectedDate = sender as Frame;
+                await selectedDate.BackgroundColorTo(Color.Purple, 100);
 
                 foreach (var ev in events)
                 {

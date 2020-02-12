@@ -7,58 +7,22 @@
             xmlns:login="clr-namespace:HomeManagement.App.Views.Login"
             xmlns:accountsPages="clr-namespace:HomeManagement.App.Views.AccountPages"
             xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
+            xmlns:styles="clr-namespace:HomeManagement.App.Views.Styles.Shell"
             BackgroundColor="{StaticResource TabBarColor}"
             FlyoutIsPresented="False"
             FlyoutBehavior="Disabled">
     <Shell.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <styles:BaseStyle />
+                <styles:DashboardStyle />
+                <styles:AccountsStyle />
+                <styles:SettingsStyle />
+            </ResourceDictionary.MergedDictionaries>
             <Conv:TranslationConverter x:Key="Translation" />
         </ResourceDictionary>
-        <Style x:Key="BaseStyle"
-               TargetType="Element">
-            <Setter Property="Shell.BackgroundColor"
-                    Value="#455A64" />
-            <Setter Property="Shell.ForegroundColor"
-                    Value="White" />
-            <Setter Property="Shell.TitleColor"
-                    Value="White" />
-            <Setter Property="Shell.DisabledColor"
-                    Value="#B4FFFFFF" />
-            <Setter Property="Shell.UnselectedColor"
-                    Value="#95FFFFFF" />
-        </Style>
         <Style TargetType="ShellItem"
                BasedOn="{StaticResource BaseStyle}" />
-        <Style x:Key="DashboardStyle"
-               TargetType="Element"
-               BasedOn="{StaticResource BaseStyle}">
-            <Setter Property="Shell.BackgroundColor"
-                    Value="{StaticResource RedColor}" />
-            <Setter Property="Shell.TitleColor"
-                    Value="{StaticResource LayoutDark}" />
-            <Setter Property="Shell.ForegroundColor"
-                    Value="{StaticResource LayoutDark}" />
-        </Style>
-        <Style x:Key="AccountsStyle"
-               TargetType="Element"
-               BasedOn="{StaticResource BaseStyle}">
-            <Setter Property="Shell.BackgroundColor"
-                    Value="{StaticResource GreenButton}" />
-            <Setter Property="Shell.ForegroundColor"
-                    Value="{StaticResource LayoutDark}" />
-            <Setter Property="Shell.TitleColor"
-                    Value="{StaticResource LayoutDark}" />
-        </Style>
-        <Style x:Key="SettingsStyle"
-               TargetType="Element"
-               BasedOn="{StaticResource BaseStyle}">
-            <Setter Property="Shell.BackgroundColor"
-                    Value="{StaticResource Purple}" />
-            <Setter Property="Shell.ForegroundColor"
-                    Value="{StaticResource LayoutDark}" />
-            <Setter Property="Shell.TitleColor"
-                    Value="{StaticResource LayoutDark}" />
-        </Style>
     </Shell.Resources>
     <BindableObject.BindingContext>
         <viewModels:MainViewModel />

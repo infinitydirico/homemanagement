@@ -5,7 +5,8 @@
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              BackgroundColor="{StaticResource LayoutDark}"
-             x:Class="HomeManagement.App.Views.AccountPages.AddAccountPage">
+             x:Class="HomeManagement.App.Views.AccountPages.AddAccountPage"
+             Title="{Binding Title, Converter={StaticResource Translation}}">
     <ContentPage.BindingContext>
         <viewModels:AddAccountViewModel />
     </ContentPage.BindingContext>
@@ -21,12 +22,6 @@
         <StackLayout Orientation="Vertical">
 
             <StackLayout Orientation="Vertical" Padding="20,20,20,20">
-                <Label FontSize="Large">
-                    <Label.Behaviors>
-                        <Beh:TranslationBehavior LanguageKey="AccountName" />
-                    </Label.Behaviors>
-                </Label>
-
                 <Entry x:Name="accountName"  Text="{Binding Account.Name}" FontSize="Large">
                     <Entry.Behaviors>
                         <Beh:EmptyValidationEntryBehavior />
