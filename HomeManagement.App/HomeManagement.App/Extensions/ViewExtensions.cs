@@ -69,5 +69,22 @@ namespace HomeManagement.App.Extensions
             element.Animate<Color>(name, transform, callback, 16, length, easing, (v, c) => taskCompletionSource.SetResult(c));
             return taskCompletionSource.Task;
         }
+
+        public static TViewModel GetViewModel<TViewModel>(this Element element)
+        {
+            TViewModel viewModel;
+            Element searchedView = element;
+
+            while (searchedView.Parent != null)
+            {
+                searchedView = searchedView.Parent;
+                if(searchedView.BindingContext is TViewModel)
+                {
+                    viewModel = (TViewModel)searchedView.BindingContext;
+                    return viewModel;
+                }
+            }
+            throw new Exception($"No viewmodel found for {typeof(TViewModel).Name}");
+        }
     }
 }

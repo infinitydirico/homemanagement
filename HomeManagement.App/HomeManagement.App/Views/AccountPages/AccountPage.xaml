@@ -24,47 +24,11 @@
     <ContentPage.Content>
         <StackLayout>
             <Frame Margin="5, 5, 5, 5">
-                <CollectionView ItemsSource="{Binding Accounts}" 
+                <RefreshView IsRefreshing="{Binding IsBusy}" Command="{Binding RefreshCommand}">
+                    <CollectionView ItemsSource="{Binding Accounts}" 
                                 ItemTemplate="{StaticResource AccountTemplate}" 
                                 Margin="10, 10, 10, 10" />
-            </Frame>
-            <Frame Margin="5, 5, 5, 5">
-                <ListView x:Name="accountsList" ItemsSource="{Binding Accounts}" 
-                        Margin="10,10,10,10" SeparatorVisibility="None"
-                        IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}"
-                        IsRefreshing="{Binding IsBusy}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                                    <StackLayout.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
-                                    </StackLayout.GestureRecognizers>
-                                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                                        <Label VerticalOptions="Center" Text = "{Binding Name}" />
-                                        <Label VerticalOptions="Center" Text = "{Binding Balance}" 
-                                        TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" 
-                                        HorizontalOptions="EndAndExpand"/>
-                                    </StackLayout>
-                                    <StackLayout IsVisible="False" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                                        <Label VerticalOptions="Center" Text = "{Binding Name}" />
-                                        <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
-                                            <Button Image="red_trash_18dp.png" VerticalOptions="Center"
-                                            WidthRequest="30" HeightRequest="30"
-                                            Clicked="Delete" />
-                                            <Button Image="edit_18dp.png" VerticalOptions="Center"
-                                            WidthRequest="30" HeightRequest="30"
-                                            Clicked="Edit" />
-                                            <Button Image="eye_18dp.png" VerticalOptions="Center"
-                                            WidthRequest="30" HeightRequest="30"
-                                            Clicked="ViewTransactionsList" />
-                                        </StackLayout>
-                                    </StackLayout>
-                                </StackLayout>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                </RefreshView>
             </Frame>
         </StackLayout>
     </ContentPage.Content>

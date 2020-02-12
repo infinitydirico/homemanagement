@@ -21,7 +21,7 @@
             </StackLayout>
             <StackLayout IsVisible="False" Orientation="Horizontal" HorizontalOptions="EndAndExpand">
                 <Button Image="red_trash_18dp.png" VerticalOptions="Center"
-                        WidthRequest="20" HeightRequest="20" />
+                        WidthRequest="20" HeightRequest="20" Clicked="Delete" />
                 <Button Image="edit_18dp.png" VerticalOptions="Center"
                         WidthRequest="20" HeightRequest="20"
                         Clicked="Edit" />

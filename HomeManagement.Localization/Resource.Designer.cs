@@ -205,6 +205,15 @@ namespace HomeManagement.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete the account.
+        /// </summary>
+        public static string DeleteAccount {
+            get {
+                return ResourceManager.GetString("DeleteAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete this item?.
         /// </summary>
         public static string DeleteChargeModal {
@@ -543,6 +552,15 @@ namespace HomeManagement.Localization {
         public static string Username {
             get {
                 return ResourceManager.GetString("Username", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string Warning {
+            get {
+                return ResourceManager.GetString("Warning", resourceCulture);
             }
         }
         

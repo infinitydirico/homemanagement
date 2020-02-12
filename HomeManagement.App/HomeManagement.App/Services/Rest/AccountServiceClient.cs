@@ -16,7 +16,7 @@ namespace HomeManagement.App.Services.Rest
 
         public async Task Delete(int id)
         {
-            var api = $"{Endpoints.Accounts.ACCOUNT}?id={id}";
+            var api = $"{Endpoints.Accounts.ACCOUNT}{id}";
             await restClient.Delete(api);
         }
 
@@ -32,6 +32,12 @@ namespace HomeManagement.App.Services.Rest
             var api = Endpoints.Accounts.PAGE;
             var result = await restClient.Post<AccountPageModel>(api, dto);
             return result;
+        }
+
+        public async Task Post(AccountModel account)
+        {
+            var api = Endpoints.Accounts.ACCOUNT;
+            await restClient.Post<AccountPageModel>(api, account);
         }
 
         public async Task Update(AccountModel account)

@@ -125,7 +125,7 @@ namespace HomeManagement.App.ViewModels
                     Measurable = Account.Measurable
                 };
 
-                await accountServiceClient.Update(accountModel);
+                await accountServiceClient.Post(accountModel);
 
                 OnAccountCreated?.Invoke(this, EventArgs.Empty);
             });

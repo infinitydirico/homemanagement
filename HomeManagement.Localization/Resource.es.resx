@@ -282,4 +282,10 @@
   <data name="DailyBackups" xml:space="preserve">
     <value>Habilitar respaldo de datos diario.</value>
   </data>
+  <data name="DeleteAccount" xml:space="preserve">
+    <value>Esta seguro que desea eliminar la cuenta</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Atencion</value>
+  </data>
 </root>
