@@ -40,7 +40,10 @@ namespace HomeManagement.App.ViewModels.Cards
             set
             {
                 offlineModeEnabled = value;
-                offlineModeSetting.Enabled = offlineModeEnabled;
+                if(offlineModeSetting != null)
+                {
+                    offlineModeSetting.Enabled = offlineModeEnabled;
+                }
                 OnPropertyChanged();
 
                 SaveCloudSyncSetting();
@@ -50,7 +53,7 @@ namespace HomeManagement.App.ViewModels.Cards
         protected override async Task InitializeAsync()
         {
             offlineModeSetting = appSettingsRepository.FirstOrDefault(x => x.Name.Equals(AppSettings.GetOfflineModeSetting().Name));
-            offlineModeEnabled = offlineModeSetting.Enabled;
+            offlineModeEnabled = offlineModeSetting?.Enabled ?? false;
             OnPropertyChanged(nameof(OfflineModeEnabled));
             await Task.Yield();
         }
@@ -101,7 +104,17 @@ namespace HomeManagement.App.ViewModels.Cards
                 ClearCache(null);
             }
 
-            appSettingsRepository.Update(offlineModeSetting);
+            if(offlineModeSetting == null)
+            {
+                offlineModeSetting = AppSettings.GetOfflineModeSetting();
+                offlineModeSetting.Enabled = offlineModeEnabled;
+                appSettingsRepository.Add(offlineModeSetting);
+            }
+            else
+            {
+                appSettingsRepository.Update(offlineModeSetting);
+            }
+            
             appSettingsRepository.Commit();
         }
 

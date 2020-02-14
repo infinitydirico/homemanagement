@@ -43,6 +43,7 @@ namespace HomeManagement.App.Managers
     {
         protected readonly TransactionServiceClient transactionServiceClient = new TransactionServiceClient();
         private readonly GenericRepository<Transaction> transactionRepository = new GenericRepository<Transaction>();
+        private readonly GenericRepository<Account> accountsRepository = new GenericRepository<Account>();
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
 
         public TransactionManager()
@@ -59,22 +60,30 @@ namespace HomeManagement.App.Managers
 
         public virtual async Task AddTransactionAsync(Transaction transaction)
         {
-            await transactionServiceClient.Post(MapToModel(transaction));
-
             if (coudSyncSetting.Enabled)
             {
                 cachingService.StoreOrUpdate("ForceApiCall", true);
             }
+
+            await transactionServiceClient.Post(MapToModel(transaction));
         }
 
         public virtual async Task DeleteTransactionAsync(Transaction transaction)
         {
-            await transactionServiceClient.Delete(transaction.Id);
+            if (coudSyncSetting.Enabled) RemoveTransaction(transaction);
 
-            if (coudSyncSetting != null && coudSyncSetting.Enabled)
+            await transactionServiceClient.Delete(transaction.Id);
+        }
+
+        private void RemoveTransaction(Transaction transaction)
+        {
+            Task.Run(() =>
             {
-                cachingService.StoreOrUpdate("ForceApiCall", true);
-            }
+                transactionRepository.Remove(transaction);
+                transactionRepository.Commit();
+                accountsRepository.RemoveAll();
+                accountRepository.Commit();
+            });
         }
 
         public virtual async Task<IEnumerable<Transaction>> Load(int accountId)
@@ -122,7 +131,8 @@ namespace HomeManagement.App.Managers
 
         protected override async Task<IEnumerable<Transaction>> Paginate()
         {
-            if (!cachingService.Get<bool>("ForceApiCall") || coudSyncSetting.Enabled)
+            var shouldUpdate = cachingService.Get<bool>("ForceApiCall");
+            if (!shouldUpdate && coudSyncSetting.Enabled)
             {
                 var skip = (page.CurrentPage - 1) * page.PageCount;
 
@@ -179,7 +189,19 @@ namespace HomeManagement.App.Managers
         {
             var model = MapToModel(transaction);
 
-            await transactionServiceClient.Put(model);
+            if (coudSyncSetting.Enabled) UpdateTransaction(transaction);
+            await transactionServiceClient.Put(model);            
+        }
+
+        private void UpdateTransaction(Transaction transaction)
+        {
+            Task.Run(() =>
+            {
+                transactionRepository.Update(transaction);
+                transactionRepository.Commit();
+                accountsRepository.RemoveAll();
+                accountRepository.Commit();
+            });
         }
 
         private TransactionModel MapToModel(Transaction transaction) => new TransactionModel
