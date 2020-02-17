@@ -22,6 +22,17 @@ namespace HomeManagement.App.Services.Rest
         public async Task<IEnumerable<TransactionModel>> GetDelta(int year, int month)
             => await restClient.Get<IEnumerable<TransactionModel>>($"{Endpoints.Transaction.TRANSACTION}Delta/{year}/{month}");
 
+        public async Task<Stream> DownloadUserData()
+        {
+            using (var client = await restClient.CreateAuthenticatedClient())
+            {
+                var result = await client.GetAsync($"{Endpoints.API}User/downloaduserdata");
+                result.EnsureSuccessStatusCode();
+                var content = await result.Content.ReadAsStreamAsync();
+                return content;
+            }
+        }
+
         public async Task Delete(int id)
         {
             await restClient.Delete($"{Endpoints.Transaction.TRANSACTION}{id.ToString()}");
