@@ -34,6 +34,8 @@ namespace HomeManagement.Business.Contracts
 
         IEnumerable<TransactionModel> Delta(DateTime dateTime);
 
+        IEnumerable<TransactionModel> Delta(DateTime dateTime, int accountId);
+
         void Import(int accountId, byte[] bytes);
 
         FileModel Export(int accountId);

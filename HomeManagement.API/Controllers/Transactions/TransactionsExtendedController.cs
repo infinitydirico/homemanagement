@@ -77,14 +77,24 @@ namespace HomeManagement.API.Controllers.Transactions
             DateTime deltaDate = year.Equals(default) || month.Equals(default) ? DateTime.Now : new DateTime(year, month, 1);
 
             var transactions = transactionService.Delta(deltaDate);
-            
+
+            return Ok(transactions);
+        }
+
+        [HttpGet("Delta/{accountId}/{year}/{month}")]
+        public IActionResult Delta(int accountId, int year, int month)
+        {
+            DateTime deltaDate = year.Equals(default) || month.Equals(default) ? DateTime.Now : new DateTime(year, month, 1);
+
+            var transactions = transactionService.Delta(deltaDate, accountId);
+
             return Ok(transactions);
         }
 
         [HttpPost("updateAll")]
         public IActionResult UpdateAll([FromBody] IEnumerable<TransactionModel> models)
         {
-            if (models == null || models.Count().Equals(default(int))) return BadRequest();
+            if (models == null || models.Count().Equals(default)) return BadRequest();
 
             foreach (var transaction in models)
             {

@@ -40,7 +40,7 @@ namespace HomeManagement.Business.Units
             using (var accountRepository = repositoryFactory.CreateAccountRepository())
             using (var categoryRepository = repositoryFactory.CreateCategoryRepository())
             {
-                if (transaction.CategoryId.Equals(default(int)) || categoryRepository.FirstOrDefault(x => x.Id.Equals(transaction.CategoryId)) == null)
+                if (transaction.CategoryId.Equals(default) || categoryRepository.FirstOrDefault(x => x.Id.Equals(transaction.CategoryId)) == null)
                 {
                     category = categoryRepository.FirstOrDefault();
                     transaction.CategoryId = category.Id;
@@ -339,6 +339,22 @@ namespace HomeManagement.Business.Units
 
             var transactions = transactionRepository
                 .Where(x => x.Account.User.Email.Equals(user.Email) && x.ChangeStamp > dateTime)
+                .Select(x => transactionMapper.ToModel(x))
+                .ToList();
+
+            return transactions;
+        }
+
+        public IEnumerable<TransactionModel> Delta(DateTime dateTime, int accountId)
+        {
+            var user = userService.GetAuthenticatedUser();
+
+            var transactionRepository = repositoryFactory.CreateTransactionRepository();
+
+            var transactions = transactionRepository
+                .Where(x => x.Account.User.Email.Equals(user.Email) &&
+                            x.ChangeStamp > dateTime &&
+                            x.AccountId.Equals(accountId))
                 .Select(x => transactionMapper.ToModel(x))
                 .ToList();
 
