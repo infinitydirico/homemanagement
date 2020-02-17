@@ -47,7 +47,7 @@ namespace HomeManagement.Business.Units
                 }
 
                 var entity = transactionMapper.ToEntity(transaction);
-
+                entity.ChangeStamp = DateTime.Now;
                 transactionRepository.Add(entity);
 
                 var account = accountRepository.FirstOrDefault(x => x.Id.Equals(entity.AccountId));
@@ -81,6 +81,7 @@ namespace HomeManagement.Business.Units
                 current.TransactionType = entity.TransactionType;
                 current.CategoryId = entity.CategoryId;
                 current.Date = entity.Date;
+                current.ChangeStamp = DateTime.Now;
 
                 transactionRepository.Update(current);
 
@@ -146,6 +147,7 @@ namespace HomeManagement.Business.Units
                 {
                     x.Id = 0;
                     x.AccountId = account.Id;
+                    x.ChangeStamp = DateTime.Now;
                     return x;
                 }).ToList();
 
@@ -327,6 +329,20 @@ namespace HomeManagement.Business.Units
             var trs = (from t in groupedTransactions.Select(x => x) select t.First()).Select(x => transactionMapper.ToModel(x)).ToList();
 
             return trs;
+        }
+
+        public IEnumerable<TransactionModel> Delta(DateTime dateTime)
+        {
+            var user = userService.GetAuthenticatedUser();
+
+            var transactionRepository = repositoryFactory.CreateTransactionRepository();
+
+            var transactions = transactionRepository
+                .Where(x => x.Account.User.Email.Equals(user.Email) && x.ChangeStamp > dateTime)
+                .Select(x => transactionMapper.ToModel(x))
+                .ToList();
+
+            return transactions;
         }
     }
 }

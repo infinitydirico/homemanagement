@@ -1,12 +1,15 @@
 using Autofac;
 using HomeManagement.App.Managers;
 using HomeManagement.App.Services;
+using HomeManagement.App.Services.BackgroundWorker;
 using HomeManagement.App.Views.Main;
 using HomeManagement.Contracts;
 using HomeManagement.Core.Caching;
 using HomeManagement.Core.Cryptography;
 using HomeManagement.Localization;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -26,6 +29,8 @@ namespace HomeManagement.App
 
             InitializeDefaultValues();
 
+            InitializeWorkers();
+
             MainPage = new MainPage();
 
             Connectivity.ConnectivityChanged += (s, e) =>
@@ -38,6 +43,8 @@ namespace HomeManagement.App
 
             AppDomain.CurrentDomain.UnhandledException += (s, e) => Logger.LogException(e.ExceptionObject as Exception);
         }
+
+        public static List<BaseWorker> Workers { get; set; }
 
         protected override void OnStart()
         {
@@ -71,7 +78,7 @@ namespace HomeManagement.App
         private void RegisterManagers(ContainerBuilder builder)
         {
             builder.RegisterType<TransactionManager>().As<ITransactionManager>();
-            builder.RegisterType<AuthenticationManager>().As<IAuthenticationManager>();
+            builder.RegisterType<AuthenticationManager>().As<IAuthenticationManager>().SingleInstance();
             builder.RegisterType<AccountManager>().As<IAccountManager>();
             builder.RegisterType<MetricsManager>().As<IMetricsManager>();
             builder.RegisterType<CategoryManager>().As<ICategoryManager>();
@@ -83,6 +90,32 @@ namespace HomeManagement.App
         private void InitializeDefaultValues()
         {
             _container.Resolve<ICachingService>().Store("ForceApiCall", false);
+        }
+
+        private void InitializeWorkers()
+        {
+            Workers = new List<BaseWorker>
+            {
+                new SincronizationWorker()
+            };
+
+            var authenticationManager = _container.Resolve<IAuthenticationManager>();
+            if (authenticationManager.IsAuthenticated())
+            {
+                StartWorkers(null, EventArgs.Empty);
+            }
+            else
+            {
+                authenticationManager.OnAuthenticationChanged += StartWorkers;
+            }            
+        }
+
+        private void StartWorkers(object sender, EventArgs e)
+        {
+            Parallel.ForEach(Workers, w =>
+            {
+                if(!w.Started) w.Start();
+            });
         }
     }
 }

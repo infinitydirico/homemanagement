@@ -17,14 +17,10 @@
                 </Label.Behaviors>
             </Label>
         </StackLayout>
-        <StackLayout Orientation="Horizontal">
-            <Label FontSize="Micro"   HorizontalOptions="Start">
-                <Label.Behaviors>
-                    <Beh:TranslationBehavior LanguageKey="OfflineModeDescription" />
-                </Label.Behaviors>
-            </Label>
-            <Button Image="red_trash_18dp.png" WidthRequest="30" HeightRequest="30"
-                                HorizontalOptions="EndAndExpand" Command="{Binding ClearCacheCommand}" />
-        </StackLayout>
+        <Label FontSize="Micro"   HorizontalOptions="Start">
+            <Label.Behaviors>
+                <Beh:TranslationBehavior LanguageKey="OfflineModeDescription" />
+            </Label.Behaviors>
+        </Label>
     </StackLayout>
 </Frame>

@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using HomeManagement.App.Data;
 using HomeManagement.App.Data.Entities;
+using HomeManagement.App.Services.BackgroundWorker;
 using HomeManagement.App.Services.Rest;
 using HomeManagement.Core.Caching;
 using HomeManagement.Models;
@@ -60,12 +61,14 @@ namespace HomeManagement.App.Managers
 
         public virtual async Task AddTransactionAsync(Transaction transaction)
         {
+            await transactionServiceClient.Post(MapToModel(transaction));
+
             if (coudSyncSetting.Enabled)
             {
-                cachingService.StoreOrUpdate("ForceApiCall", true);
-            }
-
-            await transactionServiceClient.Post(MapToModel(transaction));
+                var syncWorker = App.Workers.First() as SincronizationWorker;
+                await syncWorker.NeedsSincronization();
+                syncWorker.RunWork(null);
+            }            
         }
 
         public virtual async Task DeleteTransactionAsync(Transaction transaction)
@@ -82,7 +85,7 @@ namespace HomeManagement.App.Managers
                 transactionRepository.Remove(transaction);
                 transactionRepository.Commit();
                 accountsRepository.RemoveAll();
-                accountRepository.Commit();
+                repository.Commit();
             });
         }
 
@@ -131,8 +134,7 @@ namespace HomeManagement.App.Managers
 
         protected override async Task<IEnumerable<Transaction>> Paginate()
         {
-            var shouldUpdate = cachingService.Get<bool>("ForceApiCall");
-            if (!shouldUpdate && coudSyncSetting.Enabled)
+            if (coudSyncSetting != null && coudSyncSetting.Enabled)
             {
                 var skip = (page.CurrentPage - 1) * page.PageCount;
 
@@ -151,28 +153,7 @@ namespace HomeManagement.App.Managers
 
             var transasctionsResult = MapPageToEntity(page);
 
-            UpdateCachedTransactions(transasctionsResult);
-
             return transasctionsResult;
-        }
-
-        private void UpdateCachedTransactions(IEnumerable<Transaction> transactions)
-        {
-            if (coudSyncSetting == null || !coudSyncSetting.Enabled) return;
-
-            Task.Run(() =>
-            {
-                foreach (var item in transactions)
-                {
-                    if (!transactionRepository.Any(x => x.Id.Equals(item.Id)))
-                    {
-                        transactionRepository.Add(item);
-                    }
-                }
-                transactionRepository.Commit();
-
-                cachingService.StoreOrUpdate("ForceApiCall", false);
-            });
         }
 
         private IEnumerable<Transaction> GetCachedFilteredTransactions(int skip)
@@ -200,7 +181,7 @@ namespace HomeManagement.App.Managers
                 transactionRepository.Update(transaction);
                 transactionRepository.Commit();
                 accountsRepository.RemoveAll();
-                accountRepository.Commit();
+                accountsRepository.Commit();
             });
         }
 

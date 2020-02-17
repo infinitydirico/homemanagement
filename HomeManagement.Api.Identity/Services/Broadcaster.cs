@@ -24,7 +24,7 @@ namespace HomeManagement.Api.Identity.Services
 
                 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
-                var channel = GrpcChannel.ForAddress("http://localhost:5001");
+                var channel = GrpcChannel.ForAddress(grpcAddress);
 
                 var client = new Protos.Register.RegisterClient(channel);
 

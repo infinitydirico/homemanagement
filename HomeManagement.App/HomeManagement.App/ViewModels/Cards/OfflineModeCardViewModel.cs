@@ -1,33 +1,20 @@
-﻿using Autofac;
-using HomeManagement.App.Data;
+﻿using HomeManagement.App.Data;
 using HomeManagement.App.Data.Entities;
-using HomeManagement.App.Managers;
-using System;
+using HomeManagement.App.Services.BackgroundWorker;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using Xamarin.Forms;
+using Xamarin.Essentials;
 
 namespace HomeManagement.App.ViewModels.Cards
 {
     public class OfflineModeCardViewModel : BaseViewModel
     {
         private readonly GenericRepository<AppSettings> appSettingsRepository = new GenericRepository<AppSettings>();
-        private readonly GenericRepository<User> userRepository = new GenericRepository<User>();
         private readonly GenericRepository<Account> accountRepository = new GenericRepository<Account>();
         private readonly GenericRepository<Transaction> transactionRepository = new GenericRepository<Transaction>();
-        private readonly ILocalizationManager localizationManager = App._container.Resolve<ILocalizationManager>();
 
         AppSettings offlineModeSetting;
         bool offlineModeEnabled;
-
-        public OfflineModeCardViewModel()
-        {
-            ClearCacheCommand = new Command(ClearCache);
-        }
-
-        public event EventHandler OnClearSuccess;
-
-        public ICommand ClearCacheCommand { get; }
 
         public bool HasCachedData { get; private set; }
 
@@ -40,7 +27,7 @@ namespace HomeManagement.App.ViewModels.Cards
             set
             {
                 offlineModeEnabled = value;
-                if(offlineModeSetting != null)
+                if (offlineModeSetting != null)
                 {
                     offlineModeSetting.Enabled = offlineModeEnabled;
                 }
@@ -55,34 +42,12 @@ namespace HomeManagement.App.ViewModels.Cards
             offlineModeSetting = appSettingsRepository.FirstOrDefault(x => x.Name.Equals(AppSettings.GetOfflineModeSetting().Name));
             offlineModeEnabled = offlineModeSetting?.Enabled ?? false;
             OnPropertyChanged(nameof(OfflineModeEnabled));
-            await Task.Yield();
+            await Task.Delay(250);
         }
 
-        private async void ClearCache(object obj)
+        private void ClearLocalCache(object obj = null)
         {
-            var all = localizationManager.Translate("All");
-            var userData = localizationManager.Translate("UserData");
-            var options = new string[] { all, userData };
-            var action = await Application.Current.MainPage.DisplayActionSheet(localizationManager.Translate("WipeDataChoices"), "Cancel", null, options);
-
-            if (action.Equals(all))
-            {
-                HandleSafeExecution(() =>
-                {
-                    userRepository.RemoveAll();
-                    userRepository.Commit();
-
-                    accountRepository.RemoveAll();
-                    accountRepository.Commit();
-
-                    transactionRepository.RemoveAll();
-                    transactionRepository.Commit();
-
-                    OnClearSuccess?.Invoke(this, EventArgs.Empty);
-                });
-            }
-
-            if (action.Equals(userData))
+            Task.Run(() =>
             {
                 HandleSafeExecution(() =>
                 {
@@ -92,19 +57,19 @@ namespace HomeManagement.App.ViewModels.Cards
                     transactionRepository.RemoveAll();
                     transactionRepository.Commit();
 
-                    OnClearSuccess?.Invoke(this, EventArgs.Empty);
+                    Preferences.Set("FullSync", true);
                 });
-            }
+            });
         }
 
         private void SaveCloudSyncSetting()
         {
-            if (!offlineModeEnabled)
-            {
-                ClearCache(null);
-            }
+            if (initializing) return;
 
-            if(offlineModeSetting == null)
+            if (!offlineModeEnabled) ClearLocalCache();
+            else RunSincronization();
+
+            if (offlineModeSetting == null)
             {
                 offlineModeSetting = AppSettings.GetOfflineModeSetting();
                 offlineModeSetting.Enabled = offlineModeEnabled;
@@ -114,9 +79,18 @@ namespace HomeManagement.App.ViewModels.Cards
             {
                 appSettingsRepository.Update(offlineModeSetting);
             }
-            
+
             appSettingsRepository.Commit();
         }
 
+        private void RunSincronization()
+        {
+            Task.Run(async () =>
+            {
+                var syncWorker = App.Workers.First() as SincronizationWorker;
+                await syncWorker.NeedsSincronization();
+                syncWorker.RunWork(null);
+            });
+        }
     }
 }

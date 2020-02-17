@@ -153,7 +153,7 @@ namespace HomeManagement.App.ViewModels
 
         protected override async Task InitializeAsync()
         {
-            Refresh();
+            LoadTransactions();
             SelectedFilter = Filters.First();
             Categories = await categoryManager.GetCategories();
         }
@@ -162,10 +162,16 @@ namespace HomeManagement.App.ViewModels
         {
             HandleSafeExecutionAsync(async () =>
             {
-                IsBusy = true;
-                Transactions = (await transactionManager.Load(account.Id)).ToObservableCollection();
-                IsBusy = false;
+                if (initializing) return;
+                LoadTransactions();
             });            
+        }
+
+        private async Task LoadTransactions()
+        {
+            IsBusy = true;
+            Transactions = (await transactionManager.Load(account.Id)).ToObservableCollection();
+            IsBusy = false;
         }
 
         public async Task DoFilter()

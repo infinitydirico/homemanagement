@@ -3,6 +3,7 @@ using HomeManagement.Business.Contracts;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -69,6 +70,16 @@ namespace HomeManagement.API.Controllers.Transactions
 
         [HttpGet("GetAutoComplete")]
         public IActionResult GetAutoComplete() => Ok(transactionService.GetTransactionsForAutoComplete());
+
+        [HttpGet("Delta/{year}/{month}")]
+        public IActionResult Delta(int year, int month)
+        {
+            DateTime deltaDate = year.Equals(default) || month.Equals(default) ? DateTime.Now : new DateTime(year, month, 1);
+
+            var transactions = transactionService.Delta(deltaDate);
+            
+            return Ok(transactions);
+        }
 
         [HttpPost("updateAll")]
         public IActionResult UpdateAll([FromBody] IEnumerable<TransactionModel> models)

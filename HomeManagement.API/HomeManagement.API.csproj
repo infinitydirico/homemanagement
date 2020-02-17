@@ -29,6 +29,8 @@
     <Compile Include="Migrations\20191121104218_InitialCreate.Designer.cs" />
     <Compile Include="Migrations\20191126125810_Remove-Identity-Tables.cs" />
     <Compile Include="Migrations\20191126125810_Remove-Identity-Tables.Designer.cs" />
+    <Compile Include="Migrations\20200214192249_transactions_changestamp.cs" />
+    <Compile Include="Migrations\20200214192249_transactions_changestamp.Designer.cs" />
     <Compile Include="Migrations\WebAppDbContextModelSnapshot.cs" />
   </ItemGroup>
 
@@ -47,6 +49,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.5" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.0.0" />

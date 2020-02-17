@@ -1,4 +1,5 @@
 ﻿using HomeManagement.Models;
+using System;
 using System.Collections.Generic;
 
 namespace HomeManagement.Business.Contracts
@@ -30,6 +31,8 @@ namespace HomeManagement.Business.Contracts
         IEnumerable<MonthlyCategory> CategoryEvolutionByAccount(int categoryId, int accountId);
 
         IEnumerable<TransactionModel> GetTransactionsForAutoComplete();
+
+        IEnumerable<TransactionModel> Delta(DateTime dateTime);
 
         void Import(int accountId, byte[] bytes);
 

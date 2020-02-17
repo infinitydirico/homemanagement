@@ -16,6 +16,12 @@ namespace HomeManagement.App.Services.Rest
             restClient = new BaseRestClient(Endpoints.BASEURL);
         }
 
+        public async Task<IEnumerable<TransactionModel>> GetAll() 
+            => await restClient.Get<IEnumerable<TransactionModel>>(Endpoints.Transaction.TRANSACTION);
+
+        public async Task<IEnumerable<TransactionModel>> GetDelta(int year, int month)
+            => await restClient.Get<IEnumerable<TransactionModel>>($"{Endpoints.Transaction.TRANSACTION}Delta/{year}/{month}");
+
         public async Task Delete(int id)
         {
             await restClient.Delete($"{Endpoints.Transaction.TRANSACTION}{id.ToString()}");

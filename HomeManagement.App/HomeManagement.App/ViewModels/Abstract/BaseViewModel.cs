@@ -12,6 +12,11 @@ namespace HomeManagement.App.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
+        /// <summary>
+        /// https://github.com/xamarin/Xamarin.Forms/pull/7840
+        /// For the moment, prevent calling a method twice with a flag.
+        /// </summary>
+        protected bool initializing = false;
         public BaseViewModel()
         {
             Initialize();
@@ -50,6 +55,7 @@ namespace HomeManagement.App.ViewModels
         {
             Task.Run(async () =>
             {
+                initializing = true;
                 await Task.Delay(250);
                 try
                 {
@@ -61,6 +67,7 @@ namespace HomeManagement.App.ViewModels
                     Logger.LogException(ex);
                     OnInitializationError?.Invoke(this, EventArgs.Empty);
                 }
+                initializing = false;
             });
         }
 
