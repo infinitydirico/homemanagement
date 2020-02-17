@@ -1,4 +1,6 @@
 using Autofac;
+using HomeManagement.App.Data;
+using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
 using HomeManagement.App.Services;
 using HomeManagement.App.Services.BackgroundWorker;
@@ -35,6 +37,11 @@ namespace HomeManagement.App
 
             Connectivity.ConnectivityChanged += (s, e) =>
             {
+                var appSettingsRepository = new GenericRepository<AppSettings>();
+                var offlineModeSetting = appSettingsRepository.FirstOrDefault(x => x.Name.Equals(AppSettings.GetOfflineModeSetting().Name));
+
+                if (offlineModeSetting != null && offlineModeSetting.Enabled) return;
+
                 if (e.NetworkAccess.Equals(NetworkAccess.None))
                 {
                     MainPage.Navigation.PushModalAsync(new OfflinePage());
