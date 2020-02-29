@@ -18,7 +18,7 @@ namespace HomeManagement.API.HostedServices
 
         //public override int GetPeriodToRun() => 60;
 
-        public override int GetPeriodToRun() => 60 * 30;
+        public override int GetPeriodToRun() => 60 * 10;
 
         public override async void Process()
         {
@@ -53,7 +53,7 @@ namespace HomeManagement.API.HostedServices
                         httpClient.DefaultRequestHeaders.Add("Username", user.Email.Substring(0, user.Email.IndexOf("@")));
                         httpClient.DefaultRequestHeaders.Add("AppName", appName);
 
-                        httpClient.BaseAddress = new Uri($"{storageEndpoint}/api/storage/send");
+                        httpClient.BaseAddress = new Uri($"{storageEndpoint}/api/localstorage/send");
                         var response = await httpClient.PutAsync(string.Empty, content);
                         var result = await response.Content.ReadAsStringAsync();
                         response.EnsureSuccessStatusCode();
