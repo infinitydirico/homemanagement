@@ -64,11 +64,22 @@ namespace HomeManagement.API.Storage
             });
 
             CreateTemporaryFolder();
+
+            CreateLocalStorageFolder();
         }
 
         private void CreateTemporaryFolder()
         {
             var directory = $@"{Directory.GetCurrentDirectory()}{String.GetOsSlash()}temporary";
+
+            if (Directory.Exists(directory)) return;
+
+            Directory.CreateDirectory(directory);
+        }
+
+        private void CreateLocalStorageFolder()
+        {
+            var directory = $@"{Directory.GetCurrentDirectory()}{String.GetOsSlash()}homemanagementdrive";
 
             if (Directory.Exists(directory)) return;
 
