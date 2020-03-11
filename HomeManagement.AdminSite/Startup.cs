@@ -61,7 +61,6 @@ namespace HomeManagement.AdminSite
 
             services.AddHealthChecks()
                 .AddCheck<MemoryHealthCheck>("memory");
-                //.AddCheck("ping", new PingHealthCheck(Configuration.GetSection("Endpoints").GetValue<string>("Identity"), 100));
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -71,9 +70,11 @@ namespace HomeManagement.AdminSite
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, IWebHostEnvironment env)
         {
             app.UseExceptionHandler("/Home/Error");
+            app.UseForwardedHeaders();
 
             loggerFactory.AddFile("logs/logfile-{Date}.txt");
 
+            app.UsePathBase("/admin");
             app.UseStaticFiles();
             app.UseCookiePolicy();
 

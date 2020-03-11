@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<HomeManagement.Models.ConfigurationSettingModel>
+@using static HomeManagement.AdminSite.Views.RazorExtensions
 
 @{
     ViewData["Title"] = "Index";
@@ -9,7 +10,7 @@
     <main role="main" class="pb-3">
         <h2>Configuration Settings</h2>
         <br />
-        <a asp-action="Add">Add</a>
+        <a asp-host="@this.Context.GetHost()" asp-action="Add">Add</a>
         <br />
         <table class="table">
             <thead>
@@ -40,7 +41,7 @@
                             @Html.DisplayFor(modelItem => item.Value)
                         </td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <a asp-host="@this.Context.GetHost()" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                         </td>
                     </tr>
                 }
