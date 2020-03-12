@@ -1,0 +1,6 @@
+@import '../../../styles.css';
+
+.card {
+    background-color: var(--secondary-bg-background-color);
+    color:white;
+}
