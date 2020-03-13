@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Account } from '../../../models/account';
+import { AccountService } from 'src/app/api/account.service';
+import { Currency, AccountType, GetAccountTypes } from 'src/app/models/base-types';
+import { CurrencyService } from 'src/app/api/currency.service';
 
 @Component({
   selector: 'accounts-list',
@@ -8,17 +11,55 @@ import { Account } from '../../../models/account';
 })
 export class AccountListCardComponent implements OnInit {
 
+  displayedColumns: string[] = ['name', 'balance', 'currency', 'accountType'];
+  accounts: Array<Account> = new Array<Account>();
+  currencies: Array<Currency> = new Array<Currency>();
+  accountTypes:Array<AccountType> = GetAccountTypes();
+  
+  constructor(private accountService: AccountService,
+    private currencyService: CurrencyService) {
+    
+  }
   ngOnInit(): void {
     
-    let account = new Account();
-    account.name = "HSBC";
-    this.dataSource.push(account);
+    this.accountService.getAllAccounts().subscribe(result => {
+      
+      result.forEach(a => {
+        this.accounts.push(a);
+      });
+    });
 
-    let a = new Account();
-    a.name = "BBVA";
-    this.dataSource.push(a);
+    this.currencyService.get().subscribe(result => {
+      result.forEach(r => {
+        this.currencies.push(r);
+      });
+    });
   }
 
-  displayedColumns: string[] = ['name'];
-  dataSource: Array<Account> = [];
+  getCurrencyName(account:Account){
+
+    if(!this.currencies)return "";
+
+    for (let index = 0; index < this.currencies.length; index++) {
+      const currency = this.currencies[index];
+
+      if(currency.id === account.currencyId){
+        return currency.name;
+      }
+    }
+
+    return "";
+  }
+
+  getAccountTypeName(account:Account){
+    for (let index = 0; index < this.accountTypes.length; index++) {
+      const accountType = this.accountTypes[index];
+
+      if(accountType.id === account.accountType){
+        return accountType.name;
+      }
+    }
+
+    return "";
+  }
 }

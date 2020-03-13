@@ -4,13 +4,13 @@
     background-color: inherit;
   }
   
-  td{
+  tr, td{
     color:white;
     text-align: left;
     vertical-align: middle;   
   }
   
-  td:hover{
+  tr:hover{
     background-color: var(--third-bg-background-color);
     cursor: pointer;
   }

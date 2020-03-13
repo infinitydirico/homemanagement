@@ -10,11 +10,12 @@
 
     <TypeScriptExperimentalDecorators>true</TypeScriptExperimentalDecorators>
     <!-- Set this to true if you enable server-side prerendering -->
-    <BuildServerSideRenderer>true</BuildServerSideRenderer>
+    <BuildServerSideRenderer>false</BuildServerSideRenderer>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>

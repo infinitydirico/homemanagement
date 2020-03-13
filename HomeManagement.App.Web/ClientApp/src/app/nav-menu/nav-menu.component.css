@@ -30,3 +30,8 @@ header{
 .example-spacer {
   flex: 1 1 auto;
 }
+
+button{
+  padding-right: 2%;
+  padding-left: 2%;
+}

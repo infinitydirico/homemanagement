@@ -13,6 +13,15 @@ import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { MaterialModule } from './materials.module';
+import { LoginComponent } from './login/login.component';
+
+//auth
+import { AuthService } from './auth/authentication.service';
+import { AuthGuard } from "./auth/auth.guard";
+import { EndpointsService } from './endpoints.service';
+import { CryptoService } from './services/crypto.service';
+import { ApiModule } from './api/api.module';
+
 
 @NgModule({
   declarations: [
@@ -20,22 +29,31 @@ import { MaterialModule } from './materials.module';
     NavMenuComponent,
     HomeComponent,
     CounterComponent,
-    FetchDataComponent
+    FetchDataComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
-    RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
+    RouterModule.forRoot([      
+      { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+      { path: 'counter', component: CounterComponent, canActivate: [AuthGuard] },
+      { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuard] },
+      { path: 'login', component: LoginComponent}
     ]),
     BrowserModule,
     MaterialModule,
-    CardsModule
+    CardsModule,
+    ApiModule
   ],
-  providers: [],
+  providers: [
+    AuthGuard,
+    AuthService,
+    EndpointsService,
+    CryptoService,
+    ApiModule
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

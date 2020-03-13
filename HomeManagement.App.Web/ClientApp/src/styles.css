@@ -26,3 +26,7 @@ body
     color: white;
     overflow: hidden;
 }
+
+.container{
+  padding-top: 2%;
+}

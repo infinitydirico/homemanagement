@@ -1,0 +1,28 @@
+<div class="col-lg-4 col-sm-4">
+    <content-card [title]="'Login'">
+        <div class="row col-lg-12 col-sm-12">
+            <mat-icon aria-hidden="false" class="login-icon" 
+                      aria-label="Example home icon">account_circle</mat-icon>
+            <mat-form-field>
+                <mat-label>User</mat-label>
+                <input [(ngModel)]="username" matInput placeholder="Username">
+            </mat-form-field>
+        </div>
+        <div class="row col-lg-12 col-sm-12">
+            <mat-icon aria-hidden="false" class="login-icon" 
+            aria-label="Example home icon">lock</mat-icon>
+            <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input [(ngModel)]="password" type="password" matInput placeholder="Password">
+            </mat-form-field>
+        </div>
+        <div class="row col-sm-12">
+            <button mat-raised-button (click)="login()"
+                    color="primary">Login</button>
+        </div>
+        <br />
+        <div class="row col-sm-12" *ngIf="isLoading">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </div>
+    </content-card>
+</div>
