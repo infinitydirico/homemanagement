@@ -31,7 +31,8 @@ export class EndpointsService {
     }
 
     private load(){
-        return this.http.get<Array<Endpoint>>(location.origin + '/endpoints').subscribe(result => {
+        let url = location.href + 'endpoints';
+        return this.http.get<Array<Endpoint>>(url).subscribe(result => {
             this.endpoints = result;
           }, error => console.error(error));
     }

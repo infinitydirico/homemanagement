@@ -1,15 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ProxyKit;
-using System;
 using System.Collections.Generic;
-using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace HomeManagement.Proxy
 {
@@ -31,7 +29,6 @@ namespace HomeManagement.Proxy
             services.AddProxy();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddFile("logs/logfile-{Date}.txt");
@@ -47,6 +44,9 @@ namespace HomeManagement.Proxy
             {
                 endpoints.MapGet("/", async context =>
                 {
+                    //var url = Configuration.GetSection("DefaultApi");
+                    //context.Response.Redirect(url.Value);
+                    //await Task.Yield();
                     await context.Response.WriteAsync("This is a proxy server.");
                 });
             });
