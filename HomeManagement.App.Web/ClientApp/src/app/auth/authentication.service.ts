@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { EndpointsService } from '../endpoints.service';
 import { HttpClient } from "@angular/common/http";
 import { CryptoService } from '../services/crypto.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +21,7 @@ export class AuthService {
 
     login(username:string, password:string){
 
-        let endpoint = this.endpointsService.getIdentityServiceEndpoint();        
+        let endpoint = environment.identityApi;        
         this.user = new User();
         this.user.email = username;
         this.user.password = this.cryptoService.encrypt(password);

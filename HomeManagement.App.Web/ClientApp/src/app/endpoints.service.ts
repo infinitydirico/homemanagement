@@ -7,7 +7,7 @@ export class EndpointsService {
     endpoints: Array<Endpoint> = new Array<Endpoint>();
 
     constructor(private http: HttpClient){
-        this.load(); 
+        //this.load(); 
     }
 
     getIdentityServiceEndpoint(){

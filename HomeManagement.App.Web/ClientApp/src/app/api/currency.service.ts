@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ServiceConstants } from './service.constants';
 import { map } from 'rxjs/operators';
 import { Currency } from '../models/base-types';
-import { ApiService } from './api.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../auth/authentication.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class CurrencyService {
@@ -15,13 +14,12 @@ export class CurrencyService {
     };
     
     constructor(private http: HttpClient,
-        private apiService: ApiService,
         private authenticationService: AuthService) {
             this.httpOptions.headers = this.httpOptions.headers.append('Authorization', this.authenticationService.getToken());
     }
 
     get(){
-        return this.http.get<Array<Currency>>(ServiceConstants.apiCurrency, this.httpOptions)
+        return this.http.get<Array<Currency>>(environment.api + '/api/currency', this.httpOptions)
         .pipe(map(_ =>{
             var result = _;
 
@@ -35,5 +33,13 @@ export class CurrencyService {
         }, err => {
             
         }));
+    }
+
+    getCurrencyName(id:number){
+        let currency = this.currencies.find(c => {
+            if(c.id === id) return c;
+        });
+
+        return currency.name;
     }
 }

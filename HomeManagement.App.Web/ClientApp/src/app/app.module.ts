@@ -6,31 +6,36 @@ import { RouterModule } from '@angular/router';
 
 //custom modules
 import { CardsModule } from './cards/cards.module';
+import { ApiModule } from './api/api.module';
+import { MaterialModule } from './materials.module';
 
+//components
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { MaterialModule } from './materials.module';
-import { LoginComponent } from './login/login.component';
 
 //auth
 import { AuthService } from './auth/authentication.service';
 import { AuthGuard } from "./auth/auth.guard";
+
+//services
 import { EndpointsService } from './endpoints.service';
 import { CryptoService } from './services/crypto.service';
-import { ApiModule } from './api/api.module';
+import { ColorService } from './services/color.service';
 
+//pages
+import { HomeComponent } from './home/home.component';
+import { AccountComponent } from './pages/accounts/account.component';
+import { AccountDetailComponent } from './pages/accounts/detail/account.detail.page.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    CounterComponent,
-    FetchDataComponent,
-    LoginComponent
+    LoginComponent,
+    AccountComponent,
+    AccountDetailComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -38,9 +43,15 @@ import { ApiModule } from './api/api.module';
     FormsModule,
     RouterModule.forRoot([      
       { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-      { path: 'counter', component: CounterComponent, canActivate: [AuthGuard] },
-      { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuard] },
-      { path: 'login', component: LoginComponent}
+      { path: 'login', component: LoginComponent},
+      { 
+        path: 'account', 
+        component: AccountComponent,
+        children: [
+          { path: ':id', component: AccountDetailComponent}
+        ],
+        canActivate: [AuthGuard]
+      }
     ]),
     BrowserModule,
     MaterialModule,
@@ -52,6 +63,7 @@ import { ApiModule } from './api/api.module';
     AuthService,
     EndpointsService,
     CryptoService,
+    ColorService,
     ApiModule
   ],
   bootstrap: [AppComponent]

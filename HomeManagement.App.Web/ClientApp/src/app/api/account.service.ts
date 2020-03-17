@@ -3,11 +3,11 @@ import { User } from "../models/user";
 import { Account, AccountPageModel, TransferDto } from "../models/account";
 import { ServiceConstants } from './service.constants';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ApiService } from './api.service';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../auth/authentication.service';
 import { AccountEvolutionModel, AccountsEvolutionModel } from '../models/account-chart-data';
-import { EndpointsService } from '../endpoints.service';
+import { pipe, Observable, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class AccountService {
@@ -23,15 +23,23 @@ export class AccountService {
     };
 
     constructor(private http: HttpClient,
-        private apiService: ApiService,
-        private authenticationService: AuthService,
-        private endpointsService: EndpointsService) {
+        private authenticationService: AuthService) {
 
         this.httpOptions.headers = this.httpOptions.headers.append('Authorization', this.authenticationService.getToken());
-        this.endpoint = this.endpointsService.getHomeManagementApiEndpoint() + '/api/account';
+        this.endpoint = environment.api + '/api/account';
     }
 
-    getAccount(id:number){
+    getAccount(id:number) : Observable<Account>{
+
+        if(this.pageModel !== undefined && this.pageModel.accounts.length > 0){
+            return new Observable(observer => {
+                let account = this.pageModel.accounts.find(value => {
+                    if(value.id === id)return value;
+                });
+                observer.next(account);
+            });
+        }
+
         return this.http.get<Account>(this.endpoint + '/' + id.toString())
         .pipe(map(result => {
             return result;
@@ -40,7 +48,13 @@ export class AccountService {
         }));
     }
 
-    getAllAccounts() {
+    getAllAccounts() : Observable<Array<Account>> {
+
+        if(this.pageModel !== undefined && this.pageModel.accounts.length > 0){
+            return new Observable(observer => {
+                observer.next(this.pageModel.accounts);
+            });
+        }
 
         let model = new AccountPageModel();
         model.userId = this.authenticationService.getUser().id;

@@ -3,6 +3,7 @@ import { Account } from '../../../models/account';
 import { AccountService } from 'src/app/api/account.service';
 import { Currency, AccountType, GetAccountTypes } from 'src/app/models/base-types';
 import { CurrencyService } from 'src/app/api/currency.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'accounts-list',
@@ -17,7 +18,8 @@ export class AccountListCardComponent implements OnInit {
   accountTypes:Array<AccountType> = GetAccountTypes();
   
   constructor(private accountService: AccountService,
-    private currencyService: CurrencyService) {
+    private currencyService: CurrencyService,
+    private router: Router) {
     
   }
   ngOnInit(): void {
@@ -38,17 +40,7 @@ export class AccountListCardComponent implements OnInit {
 
   getCurrencyName(account:Account){
 
-    if(!this.currencies)return "";
-
-    for (let index = 0; index < this.currencies.length; index++) {
-      const currency = this.currencies[index];
-
-      if(currency.id === account.currencyId){
-        return currency.name;
-      }
-    }
-
-    return "";
+    return this.currencyService.getCurrencyName(account.currencyId);
   }
 
   getAccountTypeName(account:Account){
@@ -61,5 +53,9 @@ export class AccountListCardComponent implements OnInit {
     }
 
     return "";
+  }
+
+  view(account: Account){
+    this.router.navigate(['/account', account.id]);
   }
 }

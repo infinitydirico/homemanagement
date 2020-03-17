@@ -1,0 +1,10 @@
+<div class="row">
+    <div class="col-lg-6 col-sm-4" *ngIf="account">
+        <content-card [title]="account.name">
+            <account-detail-card [account]="account"></account-detail-card>
+        </content-card>        
+    </div>
+    <div class="col-lg-6 col-sm-4" *ngIf="account">
+        <transaction-list-card [account]="account"></transaction-list-card>
+    </div>
+</div>

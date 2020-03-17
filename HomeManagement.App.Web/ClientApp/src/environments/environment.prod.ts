@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  identityApi: 'http://ramiro-di-rico.info:5300',
+  api: 'http://ramiro-di-rico.info:5100'  
 };
