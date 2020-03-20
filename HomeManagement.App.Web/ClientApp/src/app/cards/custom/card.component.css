@@ -3,4 +3,5 @@
 .card {
     background-color: var(--secondary-bg-background-color);
     color:white;
+    margin-bottom: 1%;
 }

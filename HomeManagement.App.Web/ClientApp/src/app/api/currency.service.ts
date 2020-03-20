@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Currency } from '../models/base-types';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../auth/authentication.service';
 import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
 
 @Injectable()
-export class CurrencyService {
+export class CurrencyService implements OnInit {
 
     private currencies:Array<Currency> = new Array<Currency>();
     httpOptions = {
@@ -18,13 +19,20 @@ export class CurrencyService {
             this.httpOptions.headers = this.httpOptions.headers.append('Authorization', this.authenticationService.getToken());
     }
 
-    get(){
+    ngOnInit(): void {
+        this.get().subscribe(_ => {});
+    }
+
+    get() : Observable<Array<Currency>>{
+        if(this.currencies.length > 0){
+            return new Observable(observer => {
+                observer.next(this.currencies);
+            });
+        }
+
         return this.http.get<Array<Currency>>(environment.api + '/api/currency', this.httpOptions)
         .pipe(map(_ =>{
             var result = _;
-
-            if(this.currencies.length > 0) return this.currencies;
-
             result.forEach(r => {
                 this.currencies.push(r);
             });

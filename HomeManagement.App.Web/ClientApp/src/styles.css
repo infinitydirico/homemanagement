@@ -24,9 +24,21 @@ body
     font-family: Roboto, "Helvetica Neue", sans-serif;
     background-color: var(--main-bg-background-color);
     color: white;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 .container{
   padding-top: 2%;
+}
+
+label {
+  color:white !important;
+}
+
+.pull-right{
+  float: right;
+}
+
+.pull-left{
+  float: left;
 }

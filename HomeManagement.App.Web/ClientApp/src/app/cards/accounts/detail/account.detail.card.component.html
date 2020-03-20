@@ -1,10 +1,24 @@
 <div class="container">
     <div class="row">
-        <h2 [style.color]="getColor()">
-            Balance: {{ account.balance }} {{ getCurrencyName() }}
-        </h2>        
+        <h1>
+            Account {{ account.name }}
+        </h1>
     </div>
     <div class="row">
-        <mat-checkbox>Measurable</mat-checkbox>
+        <h3 [style.color]="getColor()">
+            Balance: {{ account.balance }} {{ getCurrencyName() }}
+        </h3>
+    </div>
+    <div class="row">
+        <h3>
+            <mat-checkbox [(ngModel)]="account.measurable" (change)="onMeasureChanged()">
+                Measurable
+            </mat-checkbox>
+        </h3>
+    </div>
+    <div class="row">
+        <h3>
+            Account Type: {{ getAccountType() }}
+        </h3>
     </div>
 </div>

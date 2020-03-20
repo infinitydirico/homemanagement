@@ -27,6 +27,8 @@ import { HomeComponent } from './home/home.component';
 import { AccountComponent } from './pages/accounts/account.component';
 import { AccountDetailComponent } from './pages/accounts/detail/account.detail.page.component';
 import { LoginComponent } from './login/login.component';
+import { HelperService } from './services/helper.service';
+import { UserComponent } from './pages/user/user.page.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,7 @@ import { LoginComponent } from './login/login.component';
     NavMenuComponent,
     HomeComponent,
     LoginComponent,
+    UserComponent,
     AccountComponent,
     AccountDetailComponent
   ],
@@ -51,7 +54,8 @@ import { LoginComponent } from './login/login.component';
           { path: ':id', component: AccountDetailComponent}
         ],
         canActivate: [AuthGuard]
-      }
+      },
+      { path: 'user', component: UserComponent, canActivate: [AuthGuard]},
     ]),
     BrowserModule,
     MaterialModule,
@@ -64,7 +68,8 @@ import { LoginComponent } from './login/login.component';
     EndpointsService,
     CryptoService,
     ColorService,
-    ApiModule
+    ApiModule,
+    HelperService
   ],
   bootstrap: [AppComponent]
 })

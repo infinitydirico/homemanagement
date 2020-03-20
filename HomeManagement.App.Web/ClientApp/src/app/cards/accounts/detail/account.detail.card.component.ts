@@ -4,6 +4,7 @@ import { AccountType, GetAccountTypes, Currency } from 'src/app/models/base-type
 import { CurrencyService } from 'src/app/api/currency.service';
 import { Account } from '../../../models/account';
 import { ColorService } from 'src/app/services/color.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'account-detail-card',
@@ -17,7 +18,8 @@ export class AccountDetailCardComponent {
 
     constructor(private currencyService: CurrencyService,
         private accountService: AccountService,
-        private colorService: ColorService){
+        private colorService: ColorService,
+        private snackBar: MatSnackBar){
         
     }
 
@@ -27,5 +29,19 @@ export class AccountDetailCardComponent {
 
     getCurrencyName(){
       return this.currencyService.getCurrencyName(this.account.currencyId);
+    }
+
+    onMeasureChanged(){
+      this.accountService.update(this.account).subscribe(result =>{
+        let message = this.account.measurable ? 'The account is being measured' : 'The account is no longer being measured';
+        this.snackBar.open(message,'Dismiss',{
+          duration: 2000
+        });
+      });
+    }
+
+    getAccountType(){
+      let accountType = this.accountTypes.find(at => at.id === this.account.accountType);
+      return accountType;
     }
 }

@@ -7,16 +7,16 @@
         <button *ngIf="isAuthenticated" matTooltip="Back to Home" mat-icon-button color="default" (click)="backToHome()">
           <mat-icon>home</mat-icon>
         </button>
-        <button *ngIf="isAuthenticated" matTooltip="View your Personal Info" mat-icon-button color="default" aria-label="Example icon-button with a delete icon">
+        <button *ngIf="isAuthenticated" matTooltip="View your Personal Info" mat-icon-button color="default" (click)="viewAccount()">
           <mat-icon>account_circle</mat-icon>
         </button>
-        <button *ngIf="isAuthenticated" matTooltip="Download Personal Info" mat-icon-button color="default" aria-label="Example icon-button with a delete icon">
+        <button *ngIf="isAuthenticated" matTooltip="Download Personal Info" mat-icon-button color="default">
           <mat-icon>get_app</mat-icon>
         </button>
-        <button *ngIf="isAuthenticated" mat-icon-button color="default" aria-label="Example icon-button with a heart icon">
+        <button *ngIf="isAuthenticated" mat-icon-button color="default">
           <mat-icon>notifications</mat-icon>
         </button>
-        <button *ngIf="isAuthenticated" (click)="logout()" matTooltip="Log out" mat-icon-button color="default" aria-label="Example icon-button with a delete icon">
+        <button *ngIf="isAuthenticated" (click)="logout()" matTooltip="Log out" mat-icon-button color="default">
           <mat-icon>exit_to_app</mat-icon>
         </button>
       </mat-toolbar-row>

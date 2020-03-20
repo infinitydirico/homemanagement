@@ -39,8 +39,8 @@ export class TransactionService {
         }));
     }
 
-    addCharge(transaction:Transaction){
-        return this.http.post(this.endpoint, transaction)
+    add(transaction:Transaction){
+        return this.http.post(this.endpoint, transaction, this.httpOptions)
         .pipe(map(result => {
             this.serviceUpdate.emit();
             return result;
@@ -55,8 +55,8 @@ export class TransactionService {
         }));
     }
 
-    removeCharge(transaction:Transaction){
-        return this.http.delete(this.endpoint + '/' + transaction.id)
+    removeTransaction(transaction:Transaction){
+        return this.http.delete(this.endpoint + '/' + transaction.id, this.httpOptions)
         .pipe(map(result => {
             return result;
         }));
@@ -89,5 +89,4 @@ export class TransactionService {
             return result;
         }));
     }
-
 }

@@ -38,4 +38,8 @@ export class NavMenuComponent implements OnInit {
   backToHome(){
     this.router.navigate(['/']);
   }
+
+  viewAccount(){
+    this.router.navigate(['/user']);
+  }
 }

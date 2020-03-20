@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  identityApi: 'http://localhost:5000',
-  api: 'http://localhost:60424'  
+  identityApi: 'http://localhost:5750/identity',
+  api: 'http://localhost:5750/homemanagementapi'  
 };
 
 /*

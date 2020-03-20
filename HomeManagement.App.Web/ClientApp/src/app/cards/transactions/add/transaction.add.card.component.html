@@ -1,0 +1,63 @@
+<div class="row padding">
+    <mat-form-field class="col-sm-6">
+        <mat-label>Name</mat-label>
+        <input matInput name="transactionName" placeholder="Supermarket" type="text" [(ngModel)]="transaction.name"
+            [formControl]="nameFormControl">
+        <mat-error *ngIf="nameFormControl.hasError('required')">
+            Name is required
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field class="col-sm-6">
+        <mat-label>Price</mat-label>
+        <input matInput name="transactionPrice" type="number" [(ngModel)]="transaction.price"
+                [formControl]="priceFormControl">
+        <mat-error *ngIf="priceFormControl.hasError('required')">
+            Price is required
+        </mat-error>
+    </mat-form-field>
+</div>
+<div class="row padding">
+    <div class="col-sm-6">
+        <mat-form-field>
+            <mat-label>Choose a date</mat-label>
+            <input matInput [matDatepicker]="picker" [style.color]="'white'"
+                    [formControl]="dateFormControl" disabled>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker disabled="false"></mat-datepicker>
+            <mat-error *ngIf="dateFormControl.hasError('required')">
+                Date is required
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <div class="col-sm-6">
+        <form>
+            <mat-form-field>
+                <input type="text" placeholder="Select a category" matInput [formControl]="categoryControl"
+                    [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let categoryName of filteredCategoryies | async" [value]="categoryName">
+                        {{ categoryName }}
+                    </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="categoryControl.hasError('required')">
+                    Category is required
+                </mat-error>
+            </mat-form-field>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <mat-radio-group [(ngModel)]="transaction.transactionType" class="example-radio-group">
+            <mat-radio-button *ngFor="let transactionType of transactionTypes" [value]="transactionType"
+                class="example-radio-button">
+                {{ getTypeLabel(transactionType) }}
+            </mat-radio-button>
+        </mat-radio-group>
+    </div>
+    <div class="col-sm-6">
+        <button mat-button (click)="submit()" [style.bottom]="'-50%'">
+             <mat-icon aria-hidden="false" aria-label="Example home icon" [style.color]="'green'">check</mat-icon>
+        </button>
+    </div>
+</div>

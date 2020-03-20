@@ -1,10 +1,17 @@
 <div class="row">
-    <div class="col-lg-6 col-sm-4" *ngIf="account">
-        <content-card [title]="account.name">
+    <div class="col-lg-6 col-sm-12" *ngIf="account">
+        <content-card>
             <account-detail-card [account]="account"></account-detail-card>
-        </content-card>        
+        </content-card>
     </div>
-    <div class="col-lg-6 col-sm-4" *ngIf="account">
+    <div class="col-lg-6 col-sm-12" *ngIf="account">
+        <content-card [title]="'Add new transaction'">
+            <transaction-add-card [account]="account"></transaction-add-card>
+        </content-card>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6 col-sm-12" *ngIf="account">
         <transaction-list-card [account]="account"></transaction-list-card>
     </div>
 </div>

@@ -1,27 +1,93 @@
-<content-card [title]="'Transactions'">
-    <mat-progress-bar mode="indeterminate" *ngIf="!transactions.length"></mat-progress-bar>
-  
-    <table mat-table [dataSource]="transactions" class="table" *ngIf="transactions.length">
-      <!-- Name Column -->
-      <ng-container matColumnDef="name">
-        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-      </ng-container>
-  
-      <!-- Price Column -->
-      <ng-container matColumnDef="categoryId">
-        <td mat-cell *matCellDef="let element"> {{element.categoryId}} </td>
-      </ng-container>
-  
-      <!-- Currency Column -->
-      <ng-container matColumnDef="date">
-        <td mat-cell *matCellDef="let element"> {{ element.date }} </td>
-      </ng-container>
-  
-      <!-- Account Type Column -->
-      <ng-container matColumnDef="price">
-        <td mat-cell *matCellDef="let element"> {{ element.price }} </td>
-      </ng-container>
-    
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </content-card>  
+<content-card>
+  <div class="row">
+    <div class="col-sm-10">
+      <h2>
+        Transactions
+      </h2>
+    </div>
+    <div class="col-sm-2">
+      <button mat-button (click)="load()" class="pull-right">
+        <mat-icon aria-hidden="false" aria-label="Example home icon">refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+  <mat-progress-bar mode="indeterminate" *ngIf="!transactions.length"></mat-progress-bar>
+
+  <table mat-table [dataSource]="transactions" class="table" *ngIf="transactions.length">
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+
+    <!-- Category Column -->
+    <ng-container matColumnDef="categoryId">
+      <td mat-cell *matCellDef="let element">
+        <mat-icon> {{ getCategoryIcon(element) }} </mat-icon>
+      </td>
+    </ng-container>
+
+    <!-- Date Column -->
+    <ng-container matColumnDef="date">
+      <td mat-cell *matCellDef="let element"> {{ element.date | date}} </td>
+    </ng-container>
+
+    <!-- Price Column -->
+    <ng-container matColumnDef="price">
+      <td mat-cell *matCellDef="let element" [style.color]="getColor(element)">
+        {{ element.price }}
+      </td>
+    </ng-container>
+
+    <!-- Edit Column -->
+    <!--<ng-container matColumnDef="edit">
+      <td mat-cell *matCellDef="let element">
+        <button mat-button (click)="edit(element)">
+          <mat-icon aria-hidden="false" [style.color]="colorService.getSuccess()">edit</mat-icon>
+        </button>
+      </td>
+    </ng-container>-->
+
+    <!-- Delete Column -->
+    <ng-container matColumnDef="delete">
+      <td mat-cell *matCellDef="let element">
+        <button mat-button (click)="delete(element)" class="pull-right">
+          <mat-icon aria-hidden="false" [style.color]="colorService.getDanger()">delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <div class="row">
+    <div class="col-lg-6 col-sm-12">
+      <ul class="pagination pagination-primary">
+        <li [style.cursor]="'pointer'" (click)="paginate(1)">
+          <a>
+            <i class="material-icons">first_page</i>
+          </a>
+        </li>
+        <li [style.cursor]="'pointer'" (click)="previousPage()">
+          <a>
+            <i class="material-icons">chevron_left</i>
+          </a>
+        </li>
+        <li *ngFor="let p of totalPages" [class]="page.currentPage === p ? 'active' : ''" [style.cursor]="'pointer'"
+          (click)="paginate(p)">
+          <a>
+            {{ p }}
+          </a>
+        </li>
+        <li [style.cursor]="'pointer'" (click)="nextPage()">
+          <a>
+            <i class="material-icons">chevron_right</i>
+          </a>
+        </li>
+        <li [style.cursor]="'pointer'" (click)="paginate(page.totalPages)">
+          <a>
+            <i class="material-icons">last_page</i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</content-card>

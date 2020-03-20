@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Category } from "../models/category";
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/catch';
 import { Subject, Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../auth/authentication.service';
@@ -32,26 +30,26 @@ export class CategoryService {
         this.endpoint = environment.api + '/api/category';
     }
 
-    getCategories() {
+    getCategories() : Observable<Array<Category>> {
 
         if(this.categories.length > 0){
             return new Observable(obs => obs.next(this.categories));
         }
 
-        return this.http.get<Array<Category>>(this.endpoint)
+        return this.http.get<Array<Category>>(this.endpoint, this.httpOptions)
         .pipe(map(result => {
             this.categories = result;
             return this.categories;
         }));
     }
 
-    getActiveCategories() {
+    getActiveCategories() : Observable<Array<Category>> {
 
         if(this.activeCategories.length > 0){
             return new Observable(obs => obs.next(this.activeCategories));
         }
 
-        return this.http.get<Array<Category>>(this.endpoint + '/active')
+        return this.http.get<Array<Category>>(this.endpoint + '/active', this.httpOptions)
         .pipe(map(result => {
             this.activeCategories = result;
             return this.activeCategories;
@@ -59,7 +57,7 @@ export class CategoryService {
     }
 
     update(c: Category) {
-        return this.http.put(this.endpoint, c)
+        return this.http.put(this.endpoint, c, this.httpOptions)
         .pipe(map(_ => {
             this.updateState(c);
             return true;

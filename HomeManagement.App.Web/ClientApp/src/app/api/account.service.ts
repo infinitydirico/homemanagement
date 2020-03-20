@@ -162,7 +162,7 @@ export class AccountService {
     }
 
     update(account:Account){
-        return this.http.put(this.endpoint, account)
+        return this.http.put(this.endpoint, account, this.httpOptions)
         .pipe(map(result => {
             return true;
         }, err => {
