@@ -1,0 +1,1 @@
+dotnet run -p E:\ramiro\Projects\homemanagement\HomeManagement.Api.Identity\HomeManagement.Api.Identity.csproj

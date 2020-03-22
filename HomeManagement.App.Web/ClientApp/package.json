@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port 4200 &REM",
+    "start": "ng serve --port 4300 &REM",
     "build": "ng build",
     "build:ssr": "ng run HomeManagement.App.Web:server:dev",
     "test": "ng test",
@@ -29,6 +29,7 @@
     "bootstrap": "^4.3.1",
     "core-js": "^3.3.3",
     "crypto-js": "^4.0.0",
+    "file-saver": "^2.0.2",
     "hammerjs": "^2.0.8",
     "jquery": "3.4.1",
     "oidc-client": "^1.9.1",
@@ -38,7 +39,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.803.14",
-    "@angular/cli": "8.3.14",
+    "@angular/cli": "^8.3.14",
     "@angular/compiler-cli": "8.2.12",
     "@angular/language-service": "8.2.12",
     "@types/jasmine": "~3.4.4",

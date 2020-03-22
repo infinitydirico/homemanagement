@@ -1,0 +1,1 @@
+dotnet run -p E:\ramiro\Projects\homemanagement\HomeManagement.API\HomeManagement.API.csproj

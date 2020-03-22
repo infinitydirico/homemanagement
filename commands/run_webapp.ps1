@@ -1,0 +1,1 @@
+dotnet run -p E:\ramiro\Projects\homemanagement\HomeManagement.App.Web\HomeManagement.App.Web.csproj

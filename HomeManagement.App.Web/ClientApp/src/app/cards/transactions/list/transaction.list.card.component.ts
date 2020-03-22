@@ -30,7 +30,7 @@ export class TransactionListCardComponent implements OnInit {
     ngOnInit(): void {
 
         this.paginate(1);
-        this.categoryService.getActiveCategories().subscribe(result => {
+        this.categoryService.getCategories().subscribe(result => {
             result.forEach(c => {
                 this.categories.push(c);
             });

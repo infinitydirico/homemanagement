@@ -53,8 +53,15 @@ namespace HomeManagement.API.HostedServices
 
         protected virtual void DoWork(object state)
         {
-            logger.LogInformation($"{GetType().Name} Processing at: {DateTime.Now.ToString()}");
-            Process();
+            try
+            {
+                logger.LogInformation($"{GetType().Name} Processing at: {DateTime.Now.ToString()}");
+                Process();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"{GetType().Name} Failed at: {DateTime.Now.ToString()}");
+            }
         }
     }
 }

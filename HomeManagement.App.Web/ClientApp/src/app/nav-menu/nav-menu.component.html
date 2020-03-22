@@ -10,7 +10,7 @@
         <button *ngIf="isAuthenticated" matTooltip="View your Personal Info" mat-icon-button color="default" (click)="viewAccount()">
           <mat-icon>account_circle</mat-icon>
         </button>
-        <button *ngIf="isAuthenticated" matTooltip="Download Personal Info" mat-icon-button color="default">
+        <button *ngIf="isAuthenticated" matTooltip="Download Personal Info" mat-icon-button color="default" (click)="downloadUserInfo()">
           <mat-icon>get_app</mat-icon>
         </button>
         <button *ngIf="isAuthenticated" mat-icon-button color="default">

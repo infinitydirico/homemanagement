@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/authentication.service';
 import { Router } from '@angular/router';
+import { saveAs } from 'file-saver';
+import { UserService } from '../api/user.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -13,7 +15,8 @@ export class NavMenuComponent implements OnInit {
   isAuthenticated = false;
 
   constructor(private authenticationService: AuthService,
-    private router:Router){    
+    private router:Router,
+    private userService: UserService){    
   }
 
   ngOnInit(): void {
@@ -41,5 +44,11 @@ export class NavMenuComponent implements OnInit {
 
   viewAccount(){
     this.router.navigate(['/user']);
+  }
+
+  downloadUserInfo(){
+    this.userService.downloadUserData().subscribe(result => {
+      saveAs(result, "userdata.zip");
+    });    
   }
 }

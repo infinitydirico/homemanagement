@@ -7,6 +7,7 @@ import { TransactionService } from './transaction.service';
 import { CurrencyService } from './currency.service';
 import { CategoryService } from './category.service';
 import { PreferencesService } from './preferences.service';
+import { UserService } from './user.service';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { PreferencesService } from './preferences.service';
     ApiService,
     CurrencyService,
     CategoryService,
-    PreferencesService],
+    PreferencesService,
+    UserService],
   exports: []
 })
 export class ApiModule { }
