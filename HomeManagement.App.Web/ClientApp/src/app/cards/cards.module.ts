@@ -9,6 +9,9 @@ import { TransactionListCardComponent } from './transactions/list/transaction.li
 import { TransactionAddCardComponent } from './transactions/add/transaction.add.card.component';
 import { PreferredCurrencyComponent } from './user/preferred.currency.component';
 import { CategoryListCardComponent } from './category/list/category.list.component';
+import { ReminderListComponent } from './reminders/list/reminder.list.component';
+import { ReminderAddDialog } from './reminders/add/reminder.add.dialog.compnent';
+import { AccountAddDialog } from './accounts/add/account.add.dialog.component';
 
 @NgModule({
     declarations: [
@@ -18,7 +21,10 @@ import { CategoryListCardComponent } from './category/list/category.list.compone
         TransactionListCardComponent,
         TransactionAddCardComponent,
         PreferredCurrencyComponent,
-        CategoryListCardComponent
+        CategoryListCardComponent,
+        ReminderListComponent,
+        ReminderAddDialog,
+        AccountAddDialog
     ],
     imports: [
         MaterialModule,
@@ -32,7 +38,14 @@ import { CategoryListCardComponent } from './category/list/category.list.compone
         TransactionListCardComponent,
         TransactionAddCardComponent,
         PreferredCurrencyComponent,
-        CategoryListCardComponent
+        CategoryListCardComponent,
+        ReminderListComponent,
+        ReminderAddDialog,
+        AccountAddDialog
+    ],
+    entryComponents: [
+        ReminderAddDialog,
+        AccountAddDialog
     ]
 })
 export class CardsModule { }

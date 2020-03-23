@@ -3,7 +3,7 @@ import { Account } from '../../../models/account';
 import { TransactionService } from 'src/app/api/transaction.service';
 import { Transaction } from 'src/app/models/transaction';
 import { CurrencyService } from 'src/app/api/currency.service';
-import { Currency } from 'src/app/models/base-types';
+import { Currency, FormError } from 'src/app/models/base-types';
 import { CategoryService } from 'src/app/api/category.service';
 import { Category } from 'src/app/models/category';
 import { FormControl, Validators } from '@angular/forms';
@@ -119,15 +119,5 @@ export class TransactionAddCardComponent implements OnInit{
             .map(c => c.name);
 
         return filteredValues;
-    }
-}
-
-class FormError{
-    message:string = "";
-    control: FormControl;
-
-    constructor(m:string, c:FormControl){
-        this.message = m;
-        this.control = c;
     }
 }

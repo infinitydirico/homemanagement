@@ -1,3 +1,5 @@
+import { FormControl } from "@angular/forms";
+
 export class KeyValuePairBaseType{
     id:number;
     name:string;
@@ -46,4 +48,14 @@ export function GetAccountTypes(){
     accountTypes.push(new AccountType(1,"Bank"));
     accountTypes.push(new AccountType(2,"Credit Card"));
     return accountTypes;
+}
+
+export class FormError{
+    message:string = "";
+    control: FormControl;
+
+    constructor(m:string, c:FormControl){
+        this.message = m;
+        this.control = c;
+    }
 }

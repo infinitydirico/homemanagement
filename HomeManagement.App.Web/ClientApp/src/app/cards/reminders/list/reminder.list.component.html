@@ -1,0 +1,39 @@
+<h1>
+  Reminders
+  <button mat-button (click)="add()" class="pull-right">
+    <mat-icon aria-hidden="false">add</mat-icon>
+  </button>
+</h1>
+
+<mat-progress-bar mode="indeterminate" *ngIf="!reminders.length"></mat-progress-bar>
+
+<table mat-table [dataSource]="reminders" class="table" *ngIf="reminders.length">
+
+  <!-- Active Column -->
+  <ng-container matColumnDef="active">
+    <td mat-cell *matCellDef="let element">
+      <mat-checkbox [(ngModel)]="element.active" (change)="activeChanged(element)"></mat-checkbox>
+    </td>
+  </ng-container>
+
+  <!-- Title Column -->
+  <ng-container matColumnDef="title">
+    <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+  </ng-container>
+
+  <!-- Due Day Column -->
+  <ng-container matColumnDef="dueDay">
+    <td mat-cell *matCellDef="let element"> {{element.dueDay}} </td>
+  </ng-container>
+
+  <!-- Delete Column -->
+  <ng-container matColumnDef="delete">
+    <td mat-cell *matCellDef="let element">
+      <button mat-button (click)="delete(element)" class="pull-right">
+        <mat-icon aria-hidden="false" [style.color]="colorService.getDanger()">delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

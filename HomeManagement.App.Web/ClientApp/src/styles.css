@@ -23,7 +23,7 @@ body
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
     background-color: var(--main-bg-background-color);
-    color: white;
+    color: white !important;
     /*overflow: hidden;*/
 }
 
@@ -41,4 +41,9 @@ label {
 
 .pull-left{
   float: left;
+}
+
+.mat-dialog-container {
+  background-color: var(--third-bg-background-color);
+  color:white;
 }

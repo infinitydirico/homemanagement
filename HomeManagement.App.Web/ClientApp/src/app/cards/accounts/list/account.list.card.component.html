@@ -1,29 +1,42 @@
-<content-card [title]="'Accounts'">
+<content-card>
+  <h1>
+    Accounts
+    <button mat-button (click)="add()" class="pull-right">
+      <mat-icon aria-hidden="false">add</mat-icon>
+    </button>
+  </h1>
   <mat-progress-bar mode="indeterminate" *ngIf="!accounts.length"></mat-progress-bar>
 
   <table mat-table [dataSource]="accounts" class="table" *ngIf="accounts.length">
     <!-- Name Column -->
     <ng-container matColumnDef="name">
-      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      <td mat-cell *matCellDef="let element" (click)="view(element)"> {{element.name}} </td>
     </ng-container>
 
     <!-- Price Column -->
     <ng-container matColumnDef="balance">
-      <td mat-cell *matCellDef="let element"> {{element.balance}} </td>
+      <td mat-cell *matCellDef="let element" (click)="view(element)"> {{element.balance}} </td>
     </ng-container>
 
     <!-- Currency Column -->
     <ng-container matColumnDef="currency">
-      <td mat-cell *matCellDef="let element"> {{ getCurrencyName(element) }} </td>
+      <td mat-cell *matCellDef="let element" (click)="view(element)"> {{ getCurrencyName(element) }} </td>
     </ng-container>
 
     <!-- Account Type Column -->
     <ng-container matColumnDef="accountType">
-      <td mat-cell *matCellDef="let element"> {{ getAccountTypeName(element) }} </td>
+      <td mat-cell *matCellDef="let element" (click)="view(element)"> {{ getAccountTypeName(element) }} </td>
     </ng-container>
-  
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="view(row)"></tr>
+
+    <!-- Delete Column -->
+    <ng-container matColumnDef="delete">
+      <td mat-cell *matCellDef="let element">
+        <button mat-button (click)="delete(element)" class="pull-right">
+          <mat-icon aria-hidden="false" [style.color]="colorService.getDanger()">delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </content-card>
-
-

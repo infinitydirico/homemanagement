@@ -48,9 +48,9 @@ export class AccountService {
         }));
     }
 
-    getAllAccounts() : Observable<Array<Account>> {
+    getAllAccounts(reload?:boolean) : Observable<Array<Account>> {
 
-        if(this.pageModel !== undefined && this.pageModel.accounts.length > 0){
+        if(!reload && this.pageModel !== undefined && this.pageModel.accounts.length > 0){
             return new Observable(observer => {
                 observer.next(this.pageModel.accounts);
             });
@@ -128,7 +128,7 @@ export class AccountService {
     }
 
     add(account:Account){
-        return this.http.post(this.endpoint, account)
+        return this.http.post(this.endpoint, account, this.httpOptions)
         .pipe(map(result => {
             this.serviceUpdate.emit();
             return true;
@@ -138,7 +138,7 @@ export class AccountService {
     }
 
     remove(account:Account){
-        return this.http.delete(this.endpoint + '/' + account.id)
+        return this.http.delete(this.endpoint + '/' + account.id, this.httpOptions)
         .pipe(map(result => {
             return true;
         }, err => {
