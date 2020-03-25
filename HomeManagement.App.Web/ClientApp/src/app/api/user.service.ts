@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../auth/authentication.service';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
+import { Http, RequestOptions, Headers, Response, ResponseContentType } from '@angular/http';
 
 @Injectable()
 export class UserService {
@@ -14,7 +15,7 @@ export class UserService {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
     
-    constructor(private http: HttpClient,
+    constructor(private http: Http,
         private authenticationService: AuthService) {
 
         this.httpOptions.headers = this.httpOptions.headers.append('Authorization', this.authenticationService.getToken());
@@ -23,17 +24,17 @@ export class UserService {
 
     downloadUserData()
     {
-        let options = {
-            headers: new HttpHeaders(
-                { 
-                    'Content-Type': 'blob',
-                    'Authorization': this.authenticationService.getToken()
-                })
-        };
+        let headers = new Headers();
+
+        headers.append('Authorization', this.authenticationService.getToken());
         
-        return this.http.get(this.endpoint + '/downloaduserdata', options)
+        return this.http.get(this.endpoint + '/downloaduserdata', 
+        {
+             responseType: ResponseContentType.Blob,
+             headers: headers
+        })
         .pipe(map(result => {
-            return result;
+            return result.blob();
         }, error => {
 
         }));

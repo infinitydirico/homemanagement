@@ -1,0 +1,37 @@
+<content-card>
+    <div *ngIf="outcome">
+        <h4>
+            Total Outcome
+            <small class="pull-right"
+                [style.color]="outcome.total > 0 ? colorService.getSuccess() : colorService.getDanger()"
+                [style.padding-top]="'2%'">
+                {{ outcome.total }}
+            </small>
+        </h4>
+        <hr [style.background-color]="'white'" />
+        <div class="row">
+            <div class="col-sm-8">
+                <h5>
+                    <mat-icon [style.font-size]="'15px'">
+                        calendar_today
+                    </mat-icon>
+                    {{month}}
+                </h5>
+            </div>
+            <div class="col-sm-4">
+                <p>
+                    <mat-icon [style.font-size]="'15px'" *ngIf="outcome.total > 0"
+                        [style.color]="colorService.getSuccess()">
+                        trending_up
+                    </mat-icon>
+                    <mat-icon [style.font-size]="'15px'" *ngIf="outcome.total < 0"
+                        [style.color]="colorService.getDanger()">
+                        trending_down
+                    </mat-icon>
+                    {{outcome.percentage}}
+                </p>
+            </div>
+        </div>
+    </div>
+    <mat-progress-bar mode="indeterminate" *ngIf="!outcome"></mat-progress-bar>
+</content-card>

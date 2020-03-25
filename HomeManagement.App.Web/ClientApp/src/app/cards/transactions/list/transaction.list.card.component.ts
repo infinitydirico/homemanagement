@@ -6,6 +6,7 @@ import { ColorService } from 'src/app/services/color.service';
 import { Category } from 'src/app/models/category';
 import { CategoryService } from 'src/app/api/category.service';
 import { HelperService } from 'src/app/services/helper.service';
+import { CommonService } from 'src/app/common/common.service';
 
 @Component({
     selector: 'transaction-list-card',
@@ -20,28 +21,29 @@ export class TransactionListCardComponent implements OnInit {
     transactions: Array<Transaction> = new Array<Transaction>();
     categories: Array<Category> = new Array<Category>();
     totalPages: Array<number> = [];
+    isMobile = this.commonService.isMobile();
 
     constructor(private transactionService: TransactionService,
         private colorService: ColorService,
         private categoryService: CategoryService,
-        private helperService: HelperService) {
+        private helperService: HelperService,
+        private commonService: CommonService) {
     }
 
     ngOnInit(): void {
 
-        this.paginate(1);
-        this.categoryService.getCategories().subscribe(result => {
-            result.forEach(c => {
-                this.categories.push(c);
-            });
-        });
+        if(this.isMobile){
+            this.displayedColumns = this.displayedColumns.filter(x => !x.includes('date'));
+        }
+
+        this.load();
     }
 
     paginate(p: number) {
         this.transactions.length = 0;
         this.page.accountId = this.account.id;
         this.page.currentPage = p;
-        this.page.pageCount = 5;
+        this.page.pageCount = 10;
         this.page.skip = 0;
 
         this.transactionService.paginate(this.page).subscribe(_ => {
@@ -81,6 +83,15 @@ export class TransactionListCardComponent implements OnInit {
     delete(transaction: Transaction) {
         this.transactionService.removeTransaction(transaction).subscribe(result => {
             this.paginate(this.page.currentPage);
+        });
+    }
+
+    load(){
+        this.paginate(1);
+        this.categoryService.getCategories().subscribe(result => {
+            result.forEach(c => {
+                this.categories.push(c);
+            });
         });
     }
 }

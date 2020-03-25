@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { HttpModule } from "@angular/http";
 
 //custom modules
 import { CardsModule } from './cards/cards.module';
@@ -29,6 +30,9 @@ import { AccountDetailComponent } from './pages/accounts/detail/account.detail.p
 import { LoginComponent } from './login/login.component';
 import { HelperService } from './services/helper.service';
 import { UserComponent } from './pages/user/user.page.component';
+import { CommonService } from './common/common.service';
+import { DateService } from './common/date.service';
+import { PaletteService } from './services/palette.service';
 
 @NgModule({
   declarations: [
@@ -60,7 +64,8 @@ import { UserComponent } from './pages/user/user.page.component';
     BrowserModule,
     MaterialModule,
     CardsModule,
-    ApiModule
+    ApiModule,
+    HttpModule
   ],
   providers: [
     AuthGuard,
@@ -69,7 +74,10 @@ import { UserComponent } from './pages/user/user.page.component';
     CryptoService,
     ColorService,
     ApiModule,
-    HelperService
+    HelperService,
+    CommonService,
+    DateService,
+    PaletteService
   ],
   bootstrap: [AppComponent]
 })

@@ -7,6 +7,9 @@ import { PreferencesService } from '../api/preferences.service';
 })
 export class HomeComponent implements OnInit {
 
+  data: Array<number> = [55,32,78,95,35];
+  labels: Array<string> = ["Marzo", "Abril", "Mayo", "Junio", "Julio"];
+
   constructor(private preferencesService: PreferencesService){
 
   }

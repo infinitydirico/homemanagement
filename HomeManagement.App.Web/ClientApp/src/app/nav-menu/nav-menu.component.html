@@ -1,7 +1,7 @@
 <header>
   <nav>
     <mat-toolbar color="primary">
-      <mat-toolbar-row>
+      <mat-toolbar-row *ngIf="!isMobile">
         <span>Home Management</span>
         <span class="example-spacer"></span>
         <button *ngIf="isAuthenticated" matTooltip="Back to Home" mat-icon-button color="default" (click)="backToHome()">
@@ -19,6 +19,35 @@
         <button *ngIf="isAuthenticated" (click)="logout()" matTooltip="Log out" mat-icon-button color="default">
           <mat-icon>exit_to_app</mat-icon>
         </button>
+      </mat-toolbar-row>
+      <mat-toolbar-row *ngIf="isMobile">
+        <span>Home Management</span>
+        <span class="example-spacer"></span>
+        <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="isAuthenticated">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button *ngIf="isAuthenticated" mat-menu-item (click)="backToHome()">
+            <mat-icon>home</mat-icon>
+            <span>Back to Home</span>
+          </button>
+          <button *ngIf="isAuthenticated" mat-menu-item (click)="viewAccount()">
+            <mat-icon>account_circle</mat-icon>
+            <span>View personal info</span>
+          </button>
+          <button *ngIf="isAuthenticated" mat-menu-item (click)="downloadUserInfo()">
+            <mat-icon>get_app</mat-icon>
+            <span>Download user info</span>
+          </button>
+          <button *ngIf="isAuthenticated" mat-menu-item>
+            <mat-icon>notifications</mat-icon>
+            <span>Notifications</span>
+          </button>
+          <button *ngIf="isAuthenticated" (click)="logout()" mat-menu-item>
+            <mat-icon>exit_to_app</mat-icon>
+            <span>Log out</span>
+          </button>
+        </mat-menu>
       </mat-toolbar-row>
     </mat-toolbar>
   </nav>

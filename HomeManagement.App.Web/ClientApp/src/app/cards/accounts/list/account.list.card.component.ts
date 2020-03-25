@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountAddDialog } from '../add/account.add.dialog.component';
 import { ColorService } from 'src/app/services/color.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'accounts-list',
@@ -28,8 +29,7 @@ export class AccountListCardComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    this.loadAccounts();
-    this.loadCurrencies();
+    this.loadCurrencies().subscribe(re => this.loadAccounts());
   }
 
   getCurrencyName(account: Account) {
@@ -59,8 +59,8 @@ export class AccountListCardComponent implements OnInit {
 
     accountDialog.afterClosed().subscribe(account => {
 
-      if(account === undefined) return;
-      
+      if (account === undefined) return;
+
       this.accounts.splice(0, this.accounts.length);
       this.accountService.add(account).subscribe(result => {
         this.loadAccounts();
@@ -68,14 +68,14 @@ export class AccountListCardComponent implements OnInit {
     });
   }
 
-  delete(element:Account){
+  delete(element: Account) {
     this.accounts.splice(0, this.accounts.length);
     this.accountService.remove(element).subscribe(res => {
       this.loadAccounts();
     });
   }
 
-  loadAccounts(){    
+  loadAccounts() {
     this.accountService.getAllAccounts(true).subscribe(result => {
       result.forEach(a => {
         this.accounts.push(a);
@@ -83,11 +83,11 @@ export class AccountListCardComponent implements OnInit {
     });
   }
 
-  loadCurrencies(){
-    this.currencyService.get().subscribe(result => {
+  loadCurrencies() {
+    return this.currencyService.get().pipe(map(result => {
       result.forEach(r => {
         this.currencies.push(r);
       });
-    });
+    }));
   }
 }

@@ -65,7 +65,7 @@ export class CategoryService {
     }
 
     add(c: Category) {
-        return this.http.post(this.endpoint, c)
+        return this.http.post(this.endpoint, c, this.httpOptions)
         .pipe(map(_ => {
          
             this.reload();
@@ -74,7 +74,7 @@ export class CategoryService {
     }
 
     delete(c: Category) {
-        return this.http.delete(this.endpoint + "/" + c.id)
+        return this.http.delete(this.endpoint + "/" + c.id, this.httpOptions)
         .pipe(map(_ => {
             
             this.reload();

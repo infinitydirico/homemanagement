@@ -47,3 +47,7 @@ label {
   background-color: var(--third-bg-background-color);
   color:white;
 }
+
+.hidden{
+  display: none;
+}

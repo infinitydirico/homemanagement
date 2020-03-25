@@ -8,6 +8,7 @@ import { AuthService } from '../auth/authentication.service';
 import { AccountEvolutionModel, AccountsEvolutionModel } from '../models/account-chart-data';
 import { pipe, Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { Http, RequestOptions, Headers, Response, ResponseContentType } from '@angular/http';
 
 @Injectable()
 export class AccountService {
@@ -22,8 +23,9 @@ export class AccountService {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
 
-    constructor(private http: HttpClient,
-        private authenticationService: AuthService) {
+    constructor(private httpClient: HttpClient,
+        private authenticationService: AuthService,
+        private http: Http) {
 
         this.httpOptions.headers = this.httpOptions.headers.append('Authorization', this.authenticationService.getToken());
         this.endpoint = environment.api + '/api/account';
@@ -40,7 +42,7 @@ export class AccountService {
             });
         }
 
-        return this.http.get<Account>(this.endpoint + '/' + id.toString())
+        return this.httpClient.get<Account>(this.endpoint + '/' + id.toString())
         .pipe(map(result => {
             return result;
         }, err => {
@@ -61,7 +63,7 @@ export class AccountService {
         model.currentPage = 1;
         model.pageCount = 50;
 
-        return this.http.post<AccountPageModel>(this.endpoint + '/paging', model, this.httpOptions)
+        return this.httpClient.post<AccountPageModel>(this.endpoint + '/paging', model, this.httpOptions)
         .pipe(map(result => {
             let pageModel = result;
             this.pageModel = pageModel;
@@ -76,7 +78,7 @@ export class AccountService {
 
     getAccounts(model: AccountPageModel) {
 
-        return this.http.post<AccountPageModel>(this.endpoint + '/paging', model)
+        return this.httpClient.post<AccountPageModel>(this.endpoint + '/paging', model)
         .pipe(map(result => {
             let pageModel = result;
             if(this.accounts.length === 0){
@@ -91,7 +93,7 @@ export class AccountService {
     getAccountsEvolution() {
         var user = this.authenticationService.getUser();
 
-        return this.http.get<AccountsEvolutionModel>(this.endpoint + '/accountsevolution/' + user.id)
+        return this.httpClient.get<AccountsEvolutionModel>(this.endpoint + '/accountsevolution/' + user.id)
         .pipe(map(result => {
             return result;
         }, err => {
@@ -101,7 +103,7 @@ export class AccountService {
 
     getAccountEvolution(accountId: string) {
 
-        return this.http.get<AccountEvolutionModel>(this.endpoint + '/accountevolution/' + accountId)
+        return this.httpClient.get<AccountEvolutionModel>(this.endpoint + '/accountevolution/' + accountId)
         .pipe(map(result => {
             return result;
         }, err => {
@@ -110,7 +112,7 @@ export class AccountService {
     }
 
     import(account: Account, formData: FormData){
-        return this.http.post(ServiceConstants.apiCharge + '/upload/' + account.id, formData)
+        return this.httpClient.post(ServiceConstants.apiCharge + '/upload/' + account.id, formData)
         .pipe(map(result => {
             return true;
         }, err => {
@@ -119,7 +121,7 @@ export class AccountService {
     }
 
     export(account: Account){
-        return this.http.get(ServiceConstants.apiCharge + '/download/' + account.id)
+        return this.httpClient.get(ServiceConstants.apiCharge + '/download/' + account.id)
         .pipe(map(result => {
             return result;
         }, err => {
@@ -128,7 +130,7 @@ export class AccountService {
     }
 
     add(account:Account){
-        return this.http.post(this.endpoint, account, this.httpOptions)
+        return this.httpClient.post(this.endpoint, account, this.httpOptions)
         .pipe(map(result => {
             this.serviceUpdate.emit();
             return true;
@@ -138,7 +140,7 @@ export class AccountService {
     }
 
     remove(account:Account){
-        return this.http.delete(this.endpoint + '/' + account.id, this.httpOptions)
+        return this.httpClient.delete(this.endpoint + '/' + account.id, this.httpOptions)
         .pipe(map(result => {
             return true;
         }, err => {
@@ -147,7 +149,7 @@ export class AccountService {
     }
 
     transfer(t:TransferDto){
-        return this.http.post(this.endpoint + '/transfer', t)
+        return this.httpClient.post(this.endpoint + '/transfer', t)
         .pipe(map(result => {
             return true;
         }));
@@ -155,14 +157,14 @@ export class AccountService {
 
     getAccountTopCharges(account: Account, month: Number){
 
-        return this.http.get(this.endpoint + '/' + account.id + '/toptransactions/' + month)
+        return this.httpClient.get(this.endpoint + '/' + account.id + '/toptransactions/' + month)
         .pipe(map(result => {
             return result;
         }));
     }
 
     update(account:Account){
-        return this.http.put(this.endpoint, account, this.httpOptions)
+        return this.httpClient.put(this.endpoint, account, this.httpOptions)
         .pipe(map(result => {
             return true;
         }, err => {
@@ -170,4 +172,40 @@ export class AccountService {
         }));
     }
 
+    download(accountId:number){
+
+        let headers = new Headers();
+
+        headers.append('Authorization', this.authenticationService.getToken());
+
+        return this.http.get(environment.api + '/api/Transactions/download/' + accountId,
+        {
+            responseType: ResponseContentType.Blob,
+            headers: headers
+        })
+        .pipe(map(result => {
+            return result.blob();
+        }, error => 
+        {
+
+        }));
+    }
+
+    upload(accountId:number, data: FormData){
+
+        let headers = new Headers();
+
+        headers.append('Authorization', this.authenticationService.getToken());
+
+        return this.http.post(environment.api + '/api/Transactions/upload/' + accountId, data,
+        {
+            headers: headers
+        })
+        .pipe(map(result => {
+            return true;
+        }, error => 
+        {
+
+        }));
+    }
 }

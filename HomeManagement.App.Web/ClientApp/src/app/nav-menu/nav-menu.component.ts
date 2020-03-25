@@ -3,6 +3,7 @@ import { AuthService } from '../auth/authentication.service';
 import { Router } from '@angular/router';
 import { saveAs } from 'file-saver';
 import { UserService } from '../api/user.service';
+import { CommonService } from '../common/common.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -13,13 +14,17 @@ export class NavMenuComponent implements OnInit {
 
   isExpanded = false;
   isAuthenticated = false;
+  isMobile = false;
 
   constructor(private authenticationService: AuthService,
     private router:Router,
-    private userService: UserService){    
+    private userService: UserService,
+    private commonService: CommonService){    
   }
 
   ngOnInit(): void {
+    this.isMobile = this.commonService.isMobile();
+
     this.authenticationService.onUserAuthenticated.subscribe(user =>
     {
       this.isAuthenticated = user != null;

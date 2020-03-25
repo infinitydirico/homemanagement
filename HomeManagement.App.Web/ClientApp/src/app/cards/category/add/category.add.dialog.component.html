@@ -1,0 +1,32 @@
+<h1 mat-dialog-title>Add new Category</h1>
+<div mat-dialog-content>
+    <div class="row">
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput [(ngModel)]="category.name" [formControl]="nameFormControl">
+            <mat-error *ngIf="nameFormControl.hasError('required')">
+                Name is required
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <div class="row">
+        <form>
+            <mat-form-field>
+                <input type="text" placeholder="Select an icon" matInput [formControl]="iconFormControl"
+                    [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let iconValue of filteredIcons | async" [value]="iconValue">
+                        <mat-icon>{{iconValue}}</mat-icon>
+                    </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="iconFormControl.hasError('required')">
+                    Icon is required
+                </mat-error>
+            </mat-form-field>
+        </form>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button cdkFocusInitial (click)="ok()">Ok</button>
+</div>

@@ -12,6 +12,12 @@ import { CategoryListCardComponent } from './category/list/category.list.compone
 import { ReminderListComponent } from './reminders/list/reminder.list.component';
 import { ReminderAddDialog } from './reminders/add/reminder.add.dialog.compnent';
 import { AccountAddDialog } from './accounts/add/account.add.dialog.component';
+import { CategoryAddDialog } from './category/add/category.add.dialog.component';
+import { IncomeCardComponent } from './metrics/income/income.card.component';
+import { OutcomeCardComponent } from './metrics/outcome/outcome.card.component';
+import { BarChartComponent } from './custom/charts/bar/bar.chart.component';
+import { LineChartComponent } from './custom/charts/line/line.chart.component';
+import { OutcomeCategoriesChart } from './accounts/outcome-categories/outcome.categories.chart.component';
 
 @NgModule({
     declarations: [
@@ -24,12 +30,18 @@ import { AccountAddDialog } from './accounts/add/account.add.dialog.component';
         CategoryListCardComponent,
         ReminderListComponent,
         ReminderAddDialog,
-        AccountAddDialog
+        AccountAddDialog,
+        CategoryAddDialog,
+        IncomeCardComponent,
+        OutcomeCardComponent,
+        BarChartComponent,
+        LineChartComponent,
+        OutcomeCategoriesChart
     ],
     imports: [
         MaterialModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule        
     ],
     exports: [
         AccountListCardComponent,
@@ -41,11 +53,18 @@ import { AccountAddDialog } from './accounts/add/account.add.dialog.component';
         CategoryListCardComponent,
         ReminderListComponent,
         ReminderAddDialog,
-        AccountAddDialog
+        AccountAddDialog,
+        CategoryAddDialog,
+        IncomeCardComponent,
+        OutcomeCardComponent,
+        BarChartComponent,
+        LineChartComponent,
+        OutcomeCategoriesChart
     ],
     entryComponents: [
         ReminderAddDialog,
-        AccountAddDialog
+        AccountAddDialog,
+        CategoryAddDialog
     ]
 })
 export class CardsModule { }

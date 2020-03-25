@@ -6,6 +6,7 @@ import { EndpointsService } from '../endpoints.service';
 import { HttpClient } from "@angular/common/http";
 import { CryptoService } from '../services/crypto.service';
 import { environment } from 'src/environments/environment';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
@@ -25,12 +26,20 @@ export class AuthService {
         this.user = new User();
         this.user.email = username;
         this.user.password = this.cryptoService.encrypt(password);
+        return this.http.post<User>(endpoint + "/Api/Authentication/SignIn", this.user)
+            .pipe(map(result => {
+                this.user = result;
+                this.onUserAuthenticated.next(this.user);
+                this.router.navigate(['/']);
+            }, err => {
+                return err;
+            }));
 
-        this.http.post<User>(endpoint + "/Api/Authentication/SignIn", this.user).subscribe(result => {
-            this.user = result;
-            this.onUserAuthenticated.next(this.user);
-            this.router.navigate(['/']);
-        });        
+        //this.http.post<User>(endpoint + "/Api/Authentication/SignIn", this.user).subscribe(result => {
+        //    this.user = result;
+        //    this.onUserAuthenticated.next(this.user);
+        //    this.router.navigate(['/']);
+        //});        
     }
 
     logout(){

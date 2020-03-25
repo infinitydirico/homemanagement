@@ -59,3 +59,8 @@ export class FormError{
         this.control = c;
     }
 }
+
+export class Metric{
+    percentage:number;
+    total:number;
+}

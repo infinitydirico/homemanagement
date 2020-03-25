@@ -8,3 +8,14 @@ export class Category {
     selected:boolean = false;
     measurable:boolean;
 }
+
+export class OutcomeCategory{
+    category: Category;
+    price:number;
+}
+
+export class OutcomeCategories{
+    categories:Array<OutcomeCategory>;
+    lowestValue:number;
+    highestValue:number;
+}
