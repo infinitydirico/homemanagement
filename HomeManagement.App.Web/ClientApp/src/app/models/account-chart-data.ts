@@ -7,7 +7,7 @@ export class AccountChartData {
 }
 
 export class AccountsEvolutionModel {
-    public balances: Array<AccountBalanceModel> = new Array<AccountBalanceModel>();
+    public accounts: Array<AccountBalanceModel> = new Array<AccountBalanceModel>();
 
     public lowestValue: number;
     public highestValue: number;
@@ -17,7 +17,12 @@ export class AccountBalanceModel {
     accountId: number;
     accountName: string;
 
-    balanceEvolution: Array<number>;
+    balanceEvolution: Array<MonthBalance>;
+}
+
+export class MonthBalance{
+    balance: number;
+    month: string;
 }
 
 export class AccountEvolutionModel{

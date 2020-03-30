@@ -7,6 +7,9 @@ import { Category } from 'src/app/models/category';
 import { CategoryService } from 'src/app/api/category.service';
 import { HelperService } from 'src/app/services/helper.service';
 import { CommonService } from 'src/app/common/common.service';
+import { MatDialog } from '@angular/material';
+import { TransactionAddDialogComponent } from '../add-dialog/transaction.add.dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'transaction-list-card',
@@ -27,7 +30,8 @@ export class TransactionListCardComponent implements OnInit {
         private colorService: ColorService,
         private categoryService: CategoryService,
         private helperService: HelperService,
-        private commonService: CommonService) {
+        private commonService: CommonService,
+        public dialog: MatDialog) {
     }
 
     ngOnInit(): void {
@@ -76,6 +80,11 @@ export class TransactionListCardComponent implements OnInit {
         return category.icon;
     }
 
+    getCategoryName(transaction: Transaction){
+        let category = this.categories.find(c => transaction.categoryId === c.id);
+        return category.name;
+    }
+
     edit(transaction: Transaction) {
         console.log(transaction);
     }
@@ -93,5 +102,22 @@ export class TransactionListCardComponent implements OnInit {
                 this.categories.push(c);
             });
         });
+    }
+
+    add(){
+        let transactionDialog = this.dialog.open(TransactionAddDialogComponent, {
+            width: '550px',
+            data: this.account
+          })
+      
+          transactionDialog.afterClosed().subscribe(newTransaction => {
+      
+            if (newTransaction === undefined) return;
+      
+            this.transactionService.add(newTransaction).subscribe(result => {
+                this.paginate(1);
+            });
+          });
+        
     }
 }

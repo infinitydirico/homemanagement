@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 import { saveAs } from 'file-saver';
 import { UserService } from '../api/user.service';
 import { CommonService } from '../common/common.service';
+import { NotificationService } from '../api/notification.service';
+import { MatBottomSheet } from '@angular/material';
+import { NotificationsBottomBarComponent } from '../components/notifications-bottom-bar/notifications.bar.component';
 
 @Component({
   selector: 'app-nav-menu',
@@ -15,19 +18,28 @@ export class NavMenuComponent implements OnInit {
   isExpanded = false;
   isAuthenticated = false;
   isMobile = false;
+  hasNotifications = false;
 
   constructor(private authenticationService: AuthService,
     private router:Router,
     private userService: UserService,
-    private commonService: CommonService){    
+    private commonService: CommonService,
+    private notificationService: NotificationService,
+    private bottomSheet: MatBottomSheet){    
   }
 
   ngOnInit(): void {
     this.isMobile = this.commonService.isMobile();
 
+    this.isAuthenticated = this.authenticationService.isAuthenticated();
+
     this.authenticationService.onUserAuthenticated.subscribe(user =>
     {
       this.isAuthenticated = user != null;
+    });
+
+    this.notificationService.get().subscribe(_ => {
+      this.hasNotifications = _.length > 0;
     });
   }
 
@@ -55,5 +67,19 @@ export class NavMenuComponent implements OnInit {
     this.userService.downloadUserData().subscribe(result => {
       saveAs(result, "userdata.zip");
     });    
+  }
+
+  register(){
+
+  }
+
+  login(){
+
+  }
+
+  viewNotifications(){
+    this.bottomSheet.open(NotificationsBottomBarComponent,{
+      panelClass: 'bottom-sheet'
+    });
   }
 }

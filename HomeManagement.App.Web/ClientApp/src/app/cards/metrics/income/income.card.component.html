@@ -1,13 +1,13 @@
 <content-card>
     <div *ngIf="income">
-        <h4>
+        <h5>
             Total Income
             <small class="pull-right"
                 [style.color]="income.total > 0 ? colorService.getSuccess() : colorService.getDanger()"
                 [style.padding-top]="'2%'">
                 {{ income.total }}
             </small>
-        </h4>
+        </h5>
         <hr [style.background-color]="'white'" />
         <div class="row">
             <div class="col-sm-8">

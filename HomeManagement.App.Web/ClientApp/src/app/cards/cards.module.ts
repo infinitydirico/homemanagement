@@ -18,6 +18,8 @@ import { OutcomeCardComponent } from './metrics/outcome/outcome.card.component';
 import { BarChartComponent } from './custom/charts/bar/bar.chart.component';
 import { LineChartComponent } from './custom/charts/line/line.chart.component';
 import { OutcomeCategoriesChart } from './accounts/outcome-categories/outcome.categories.chart.component';
+import { AccountsEvolutionCardComponent } from './metrics/accounts-evolution/accounts.evolution.card.component';
+import { TransactionAddDialogComponent } from './transactions/add-dialog/transaction.add.dialog.component';
 
 @NgModule({
     declarations: [
@@ -36,7 +38,9 @@ import { OutcomeCategoriesChart } from './accounts/outcome-categories/outcome.ca
         OutcomeCardComponent,
         BarChartComponent,
         LineChartComponent,
-        OutcomeCategoriesChart
+        OutcomeCategoriesChart,
+        AccountsEvolutionCardComponent,
+        TransactionAddDialogComponent
     ],
     imports: [
         MaterialModule,
@@ -59,12 +63,15 @@ import { OutcomeCategoriesChart } from './accounts/outcome-categories/outcome.ca
         OutcomeCardComponent,
         BarChartComponent,
         LineChartComponent,
-        OutcomeCategoriesChart
+        OutcomeCategoriesChart,
+        AccountsEvolutionCardComponent,
+        TransactionAddDialogComponent
     ],
     entryComponents: [
         ReminderAddDialog,
         AccountAddDialog,
-        CategoryAddDialog
+        CategoryAddDialog,
+        TransactionAddDialogComponent
     ]
 })
 export class CardsModule { }

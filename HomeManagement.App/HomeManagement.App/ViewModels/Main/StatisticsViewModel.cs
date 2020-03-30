@@ -29,7 +29,7 @@ namespace HomeManagement.App.ViewModels
             var balances = await accountMetricsServiceClient.GetAccountsBalances();
 
             AccountsEvolutions.AddRange(
-                       from b in balances.Balances
+                       from b in balances.Accounts
                        select new AccountEvolution
                        {
                            AccountName = b.AccountName,

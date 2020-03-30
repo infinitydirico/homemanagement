@@ -124,22 +124,27 @@ namespace HomeManagement.API.Business
 
                         accountEvoModel.AccountId = account.Id;
                         accountEvoModel.AccountName = account.Name;
-                        var balance = decimal.ToInt32(incomeTransactions) - decimal.ToInt32(outcomeTransactions);
 
-                        accountEvoModel.BalanceEvolution.Add(balance);
-
-                        if (balance < low)
+                        var monthBalance = new MonthBalance
                         {
-                            low = balance;
+                            Balance = decimal.ToInt32(incomeTransactions) - decimal.ToInt32(outcomeTransactions),
+                            Month = new DateTime(DateTime.Now.Year, i, 1).ToString("MMM")
+                        };
+
+                        accountEvoModel.BalanceEvolution.Add(monthBalance);
+
+                        if (monthBalance.Balance < low)
+                        {
+                            low = monthBalance.Balance;
                         }
 
-                        if (balance > high)
+                        if (monthBalance.Balance > high)
                         {
-                            high = balance;
+                            high = monthBalance.Balance;
                         }
                     }
 
-                    model.Balances.Add(accountEvoModel);
+                    model.Accounts.Add(accountEvoModel);
                 }
 
                 model.HighestValue = high + int.Parse((high * 0.25).ToString("F0"));

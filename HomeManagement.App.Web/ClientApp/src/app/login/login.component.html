@@ -17,8 +17,13 @@
             </mat-form-field>
         </div>
         <div class="row col-sm-12">
+            <mat-checkbox [(ngModel)]="remember">Remeber Me</mat-checkbox>
+        </div>
+        <div class="row col-sm-12">
             <button mat-raised-button (click)="login()"
-                    color="primary">Login</button>
+                    color="primary">
+                    <mat-icon>send</mat-icon>
+            </button>
         </div>
         <br />
         <div class="row col-sm-12" *ngIf="isLoading">

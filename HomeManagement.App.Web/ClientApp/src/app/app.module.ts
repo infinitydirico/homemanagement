@@ -33,6 +33,9 @@ import { UserComponent } from './pages/user/user.page.component';
 import { CommonService } from './common/common.service';
 import { DateService } from './common/date.service';
 import { PaletteService } from './services/palette.service';
+import { CacheService } from './services/cache.service';
+import { NotificationsBottomBarComponent } from './components/notifications-bottom-bar/notifications.bar.component';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -42,7 +45,8 @@ import { PaletteService } from './services/palette.service';
     LoginComponent,
     UserComponent,
     AccountComponent,
-    AccountDetailComponent
+    AccountDetailComponent,
+    NotificationsBottomBarComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -65,7 +69,8 @@ import { PaletteService } from './services/palette.service';
     MaterialModule,
     CardsModule,
     ApiModule,
-    HttpModule
+    HttpModule,
+    MatMenuModule
   ],
   providers: [
     AuthGuard,
@@ -77,8 +82,12 @@ import { PaletteService } from './services/palette.service';
     HelperService,
     CommonService,
     DateService,
-    PaletteService
+    PaletteService,
+    CacheService,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    NotificationsBottomBarComponent
+]
 })
 export class AppModule { }

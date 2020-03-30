@@ -26,20 +26,16 @@ export class PreferredCurrencyComponent implements OnInit {
             result.forEach(element => {
                 this.currencies.push(element);
             });
-        });
 
-        this.preferredCurrency.getCurrencyAndLanguage().subscribe(result => {
-            let currency = this.getCurrency(result.currency);
-            this.selectedCurrency = currency;
+            this.preferredCurrency.getCurrencyAndLanguage().subscribe(result => {
+                let currency = this.currencies.find(r => r.name === result.currency);
+                this.selectedCurrency = currency;
+            });
         });
     }
 
-    getCurrency(name:string){
-        let c = this.currencies.find(r => r.name === name);
-        return c;
-    }
-
-    onCurrencyChanged(){
+    onCurrencyChanged(currency: Currency){
+        this.selectedCurrency = currency;
         this.preferencesService.updatePreferredCurrency(this.selectedCurrency.name).subscribe(_ =>{
             this.snackBar.open('Preferred currency updated !', 'ok', {
                 duration: 1000

@@ -51,3 +51,8 @@ label {
 .hidden{
   display: none;
 }
+
+.bottom-sheet{
+  background-color: var(--secondary-bg-background-color);
+  color:white;
+}

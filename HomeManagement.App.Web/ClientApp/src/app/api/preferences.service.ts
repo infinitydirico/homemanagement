@@ -49,8 +49,9 @@ export class PreferencesService {
     }
 
     updatePreferredCurrency(currency:string){
-        return this.http.post(this.endpoint + '/changepreferredcurrency/' + currency, this.httpOptions, null)
+        return this.http.post(this.endpoint + '/changepreferredcurrency/' + currency, null, this.httpOptions)
         .pipe(map(_ => {
+            this.preferredCurrency.currency = currency;
             return true;
         }, err => {
         }));

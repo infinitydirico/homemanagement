@@ -10,6 +10,7 @@ import { PreferencesService } from './preferences.service';
 import { UserService } from './user.service';
 import { ReminderService } from './reminder.service';
 import { AccountMetricService } from './account.metric.service';
+import { NotificationService } from './notification.service';
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import { AccountMetricService } from './account.metric.service';
     PreferencesService,
     UserService,
     ReminderService,
-    AccountMetricService],
+    AccountMetricService,
+    NotificationService],
   exports: []
 })
 export class ApiModule { }
