@@ -46,7 +46,7 @@ export class TransactionAddDialogComponent implements OnInit{
         private currencyService: CurrencyService,
         private categoryService: CategoryService,
         private snackBar: MatSnackBar,
-        private colorService: ColorService,
+        public colorService: ColorService,
         @Inject(MAT_DIALOG_DATA) public ac: Account){
             
         this.errors.push(new FormError('Name is required', this.nameFormControl));

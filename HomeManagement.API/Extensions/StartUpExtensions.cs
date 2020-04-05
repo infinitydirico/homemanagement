@@ -1,6 +1,7 @@
 ﻿using HomeManagement.API.Business;
 using HomeManagement.API.Data;
 using HomeManagement.API.Data.Repositories;
+using HomeManagement.API.Services;
 using HomeManagement.Business.Contracts;
 using HomeManagement.Business.Exportation;
 using HomeManagement.Business.Units;
@@ -100,6 +101,7 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IConfigurationSettingsService, ConfigurationSettingsService>();
             services.AddScoped<IMonthlyExpenseService, MonthlyExpenseService>();
             services.AddScoped<IImageService, ImageService>();
+            services.AddSingleton<IEmailService, EmailService>();
         }
     }
 }

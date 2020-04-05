@@ -1,19 +1,26 @@
-﻿using HomeManagement.Business.Contracts;
+﻿using HomeManagement.API.Services;
+using HomeManagement.Business.Contracts;
 using HomeManagement.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 
 namespace HomeManagement.API.HostedServices
 {
     public class BackupHostedService : HostedService, IHostedService
     {
-        public BackupHostedService(ILogger<HostedService> logger, IServiceScopeFactory factory) 
+        private readonly IEmailService emailService;
+
+        public BackupHostedService(ILogger<HostedService> logger, 
+            IServiceScopeFactory factory,
+            IEmailService emailService) 
             : base(logger, factory)
         {
+            this.emailService = emailService;
         }
 
         //public override int GetPeriodToRun() => 60;
@@ -45,6 +52,12 @@ namespace HomeManagement.API.HostedServices
 
                     var userdata = userService.DownloadUserData(user.Id);
 
+                    await emailService.Send("no-reply@homemanagement.com",
+                        new List<string> { user.Email },
+                        "Home Management Back up",
+                        "this is a test message",
+                        "<strong>this is a test message</strong>");
+
                     using (var httpClient = new HttpClient())
                     using (var content = new MultipartFormDataContent())
                     {
@@ -57,7 +70,7 @@ namespace HomeManagement.API.HostedServices
                         var response = await httpClient.PutAsync(string.Empty, content);
                         var result = await response.Content.ReadAsStringAsync();
                         response.EnsureSuccessStatusCode();
-                    }
+                    }                    
                 }
             }
             catch (Exception ex)

@@ -35,7 +35,7 @@ namespace HomeManagement.App.ViewModels
                            AccountName = b.AccountName,
                            Series = b.BalanceEvolution.Select(x => new SeriesValue
                            {
-                               Value = x,
+                               Value = x.Balance,
                                Label = new DateTime(DateTime.Now.Year, b.BalanceEvolution.IndexOf(x) + 1, 1).ToString("MMM")
                            }).ToList()
                        });
