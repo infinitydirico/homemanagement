@@ -4,13 +4,14 @@ import { AuthService } from '../auth/authentication.service';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { PreferredPreference } from '../models/preference';
+import { PreferredPreference, Preference } from '../models/preference';
 
 @Injectable()
 export class PreferencesService {
 
     endpoint: string;
     preferredCurrency: PreferredPreference;
+    preferences: Array<Preference> = [];
 
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -32,6 +33,24 @@ export class PreferencesService {
         return this.http.get<PreferredPreference>(this.endpoint, this.httpOptions)
         .pipe(map(_ => {
             this.preferredCurrency = _;
+            return _;
+        }, err => {
+
+        }));
+    }
+
+    get(preferenceKey: string) : Observable<Preference>{
+
+        let p = this.preferences.find((x: Preference) => x.key === preferenceKey);
+        if(p){
+            return new Observable<Preference>(obs => obs.next(p));
+        }
+
+        return this.http.get<Preference>(this.endpoint + '/' + preferenceKey, this.httpOptions)
+        .pipe(map(_ => {
+            if(_){
+                this.preferences.push(_); 
+            }           
             return _;
         }, err => {
 
@@ -71,6 +90,14 @@ export class PreferencesService {
             responseType: 'blob',
             headers: this.httpOptions.headers
         });
+    }
+
+    save(p:Preference){
+        return this.http.post(this.endpoint, p, this.httpOptions)
+        .pipe(map(_ => {
+            return true;
+        }, err => {
+        }));
     }
 
 }

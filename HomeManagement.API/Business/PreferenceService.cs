@@ -179,6 +179,36 @@ namespace HomeManagement.API.Business
 
             return preference != null ? bool.Parse(preference.Value): false;
         }
+
+        public IEnumerable<Preferences> GetAllUserPreferences()
+        {
+            var user = userService.GetAuthenticatedUser();
+
+            var results = repositoryFactory.CreatePreferencesRepository().Where(p => p.UserId.Equals(user.Id));
+
+            return results;
+        }
+
+        public void Save(Preferences preference)
+        {
+            var preferencesRepository = repositoryFactory.CreatePreferencesRepository();
+            var user = userService.GetAuthenticatedUser();
+
+            var preferences = GetAllUserPreferences();
+
+            if(preferences.Any(x => x.Key.Equals(preference.Key)))
+            {
+                var existing = preferences.FirstOrDefault(x => x.Key.Equals(preference.Key));
+                existing.Value = preference.Value;
+                preferencesRepository.Update(existing);
+            }
+            else
+            {
+                preference.UserId = user.Id;
+                preferencesRepository.Add(preference);
+            }
+            preferencesRepository.Commit();
+        }
     }
 
     public interface IPreferenceService
@@ -202,5 +232,8 @@ namespace HomeManagement.API.Business
         string GetUserCountry();
 
         string GetUserCountryCode();
+
+        IEnumerable<Preferences> GetAllUserPreferences();
+        void Save(Preferences preference);
     }
 }

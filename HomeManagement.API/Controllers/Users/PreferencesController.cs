@@ -1,6 +1,7 @@
 ﻿using HomeManagement.API.Business;
 using HomeManagement.API.Extensions;
 using HomeManagement.API.Filters;
+using HomeManagement.Domain;
 using HomeManagement.Localization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +37,18 @@ namespace HomeManagement.API.Controllers.Users
             });
         }
 
+        [HttpGet("{preference}")]
+        public IActionResult Get(string preference)
+        {
+            var preferences = preferenceService.GetAllUserPreferences();
+
+            if (!preferences.Any(p => p.Key.Equals(preference))) return NotFound();
+
+            var value = preferences.FirstOrDefault(x => x.Key.Equals(preference));
+
+            return Ok(value);
+        }
+
         [HttpPost("changelanguage/{language}")]
         public IActionResult ChangeLanguage(string language)
         {
@@ -64,6 +77,14 @@ namespace HomeManagement.API.Controllers.Users
         public IActionResult SaveCountry(string country)
         {
             preferenceService.SaveCountry(country);
+            return Ok();
+        }
+
+        [HttpPost]
+        public IActionResult Post([FromBody] Preferences preference)
+        {
+            preferenceService.Save(preference);
+
             return Ok();
         }
     }

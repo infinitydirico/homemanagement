@@ -3,3 +3,9 @@ export class PreferredPreference{
     language:string;
     enableDailyBackups:boolean;
 }
+
+export class Preference{
+    id:number;
+    key:string;
+    value:string;
+}
