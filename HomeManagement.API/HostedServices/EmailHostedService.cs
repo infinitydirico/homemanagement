@@ -33,9 +33,6 @@ namespace HomeManagement.API.HostedServices
 
             foreach (var user in users)
             {
-                //will have to handle this with a flag
-                if (user.Email.Contains("test")) continue;
-
                 var preference = preferenceRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals("EnableWeeklyEmails"));
                 if (preference == null) continue;
 
