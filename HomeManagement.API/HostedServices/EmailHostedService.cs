@@ -21,8 +21,6 @@ namespace HomeManagement.API.HostedServices
             this.emailService = emailService;
         }
 
-        public override int GetPeriodToRun() => 60 * 60 * 24 * 7;
-
         public async override void Process()
         {
             var userService = GetService<IUserService>();
@@ -47,8 +45,8 @@ namespace HomeManagement.API.HostedServices
                 await emailService.Send("no-reply@homemanagement.com",
                         new List<string> { user.Email },
                         "Home Management Weekly back up",
-                        "Here's your weeklt backup",
-                        "<strong>Here's your weeklt backup</strong>",
+                        "Here's your weekly backup",
+                        "<strong>Here's your weekly backup</strong>",
                         "userdata.zip",
                         Convert.ToBase64String(bytes));
             }

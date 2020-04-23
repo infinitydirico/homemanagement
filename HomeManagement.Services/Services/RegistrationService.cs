@@ -85,6 +85,12 @@ namespace HomeManagement.Services
                         Key = "EnableDailyBackups",
                         Value = true.ToString(),
                     });
+                    preferencesRepository.Add(new Preferences
+                    {
+                        UserId = userEntity.Id,
+                        Key = "EnableWeeklyEmails",
+                        Value = true.ToString(),
+                    });                    
                     preferencesRepository.Commit();
                 }
 

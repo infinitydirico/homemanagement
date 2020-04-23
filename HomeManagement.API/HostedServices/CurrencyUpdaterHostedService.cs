@@ -13,8 +13,6 @@ namespace HomeManagement.API.HostedServices
         {
         }
 
-        public override int GetPeriodToRun() => 60 * 60 * 24;
-
         public override void Process()
         {
             var currencyService = GetService<ICurrencyService>();

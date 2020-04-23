@@ -15,8 +15,6 @@ namespace HomeManagement.API.HostedServices
         {
         }
 
-        public override int GetPeriodToRun() => 30;
-
         public override void Process()
         {
             var repositoryFactory = GetService<IRepositoryFactory>();

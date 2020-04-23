@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -21,7 +22,12 @@ namespace HomeManagement.API.HostedServices
 
         public abstract void Process();
 
-        public abstract int GetPeriodToRun();
+        public int GetPeriodToRun()
+        {
+            var configuration = GetService<IConfiguration>();
+            var value = configuration.GetValue<int>($"HostedServices:{GetType().Name}");
+            return value;
+        }
 
         public virtual Task StartAsync(CancellationToken cancellationToken)
         {

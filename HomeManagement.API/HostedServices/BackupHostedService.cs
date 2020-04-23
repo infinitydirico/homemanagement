@@ -23,10 +23,6 @@ namespace HomeManagement.API.HostedServices
             this.emailService = emailService;
         }
 
-        //public override int GetPeriodToRun() => 60;
-
-        public override int GetPeriodToRun() => 60 * 10;
-
         public override async void Process()
         {
             try
