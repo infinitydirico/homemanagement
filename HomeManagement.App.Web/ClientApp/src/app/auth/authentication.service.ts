@@ -21,7 +21,11 @@ export class AuthService {
         private cacheService: CacheService) {
             
         if(this.cacheService.exists(this.cacheKey)){
-            this.user = this.cacheService.get<User>(this.cacheKey);            
+            this.user = this.cacheService.get<User>(this.cacheKey);
+
+            if(new Date(this.user.expirationDate) < new Date()){
+                this.user = null;
+            }
         }
     }
 
@@ -53,7 +57,7 @@ export class AuthService {
     }
 
     isAuthenticated(){
-        return this.user != null;
+        return this.user != null && new Date(this.user.expirationDate) > new Date();
     }
 
     getToken(){

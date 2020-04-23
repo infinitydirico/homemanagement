@@ -66,7 +66,8 @@ namespace HomeManagement.Api.Identity.Controllers
             return Ok(new UserModel
             {
                 Email = userModel.Email,
-                Token = token
+                Token = token,
+                ExpirationDate = DateTime.UtcNow.AddDays(1)
             });
         }
 

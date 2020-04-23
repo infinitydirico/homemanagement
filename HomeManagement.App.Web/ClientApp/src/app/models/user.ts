@@ -5,6 +5,7 @@ export class User{
     token:string = "";
     language:string;
     currency:string;
+    expirationDate: Date;
 }
 
 export class token{

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace HomeManagement.Models
 {
@@ -17,5 +18,7 @@ namespace HomeManagement.Models
         public string Language { get; set; }
 
         public string Currency { get; set; }
+
+        public DateTime ExpirationDate { get; set; }
     }
 }
