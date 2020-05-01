@@ -1,4 +1,4 @@
-﻿using HomeManagement.API.Services;
+﻿using HomeManagement.Api.Core.Email;
 using HomeManagement.Business.Contracts;
 using HomeManagement.Data;
 using Microsoft.Extensions.Configuration;
@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 
 namespace HomeManagement.API.HostedServices
@@ -14,6 +13,9 @@ namespace HomeManagement.API.HostedServices
     public class BackupHostedService : HostedService, IHostedService
     {
         private readonly IEmailService emailService;
+        private readonly IPlatformContext context;
+        private readonly IConfiguration configuration;
+        private readonly PreferencesRepository preferenceRepository;
 
         public BackupHostedService(ILogger<HostedService> logger, 
             IServiceScopeFactory factory,
@@ -21,15 +23,15 @@ namespace HomeManagement.API.HostedServices
             : base(logger, factory)
         {
             this.emailService = emailService;
+            context = GetService<IPlatformContext>();
+            configuration = GetService<IConfiguration>();
+            preferenceRepository = new PreferencesRepository(context.CreateDbContext());
         }
 
         public override async void Process()
         {
             try
             {
-                var context = GetService<IPlatformContext>();
-                var configuration = GetService<IConfiguration>();
-                var preferenceRepository = new PreferencesRepository(context.CreateDbContext());
                 var storageEndpoint = configuration.GetSection("Endpoints").GetValue<string>("Storage");
                 var appName = configuration.GetValue<string>("Issuer");
 
@@ -46,13 +48,7 @@ namespace HomeManagement.API.HostedServices
 
                     if (!backupsEnabled) continue;
 
-                    var userdata = userService.DownloadUserData(user.Id);
-
-                    await emailService.Send("no-reply@homemanagement.com",
-                        new List<string> { user.Email },
-                        "Home Management Back up",
-                        "this is a test message",
-                        "<strong>this is a test message</strong>");
+                    var userdata = userService.DownloadUserData(user.Id);                    
 
                     using (var httpClient = new HttpClient())
                     using (var content = new MultipartFormDataContent())
@@ -66,7 +62,7 @@ namespace HomeManagement.API.HostedServices
                         var response = await httpClient.PutAsync(string.Empty, content);
                         var result = await response.Content.ReadAsStringAsync();
                         response.EnsureSuccessStatusCode();
-                    }                    
+                    }
                 }
             }
             catch (Exception ex)

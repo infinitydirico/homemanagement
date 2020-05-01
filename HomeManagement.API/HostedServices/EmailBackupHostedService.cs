@@ -1,4 +1,4 @@
-﻿using HomeManagement.API.Services;
+﻿using HomeManagement.Api.Core.Email;
 using HomeManagement.Business.Contracts;
 using HomeManagement.Data;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,11 +9,11 @@ using System.Collections.Generic;
 
 namespace HomeManagement.API.HostedServices
 {
-    public class EmailHostedService : HostedService, IHostedService
+    public class EmailBackupHostedService : HostedService, IHostedService
     {
         private readonly IEmailService emailService;
 
-        public EmailHostedService(ILogger<HostedService> logger,
+        public EmailBackupHostedService(ILogger<HostedService> logger,
             IServiceScopeFactory factory,
             IEmailService emailService) 
             : base(logger, factory)

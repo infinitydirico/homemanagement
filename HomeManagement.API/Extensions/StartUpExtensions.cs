@@ -1,7 +1,7 @@
-﻿using HomeManagement.API.Business;
+﻿using HomeManagement.Api.Core.Email;
+using HomeManagement.API.Business;
 using HomeManagement.API.Data;
 using HomeManagement.API.Data.Repositories;
-using HomeManagement.API.Services;
 using HomeManagement.Business.Contracts;
 using HomeManagement.Business.Exportation;
 using HomeManagement.Business.Units;

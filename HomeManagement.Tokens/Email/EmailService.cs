@@ -7,17 +7,8 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace HomeManagement.API.Services
+namespace HomeManagement.Api.Core.Email
 {
-    public interface IEmailService
-    {
-        Task Send(string from, List<string> to, string subject, string plainContent, string htmlContent);
-
-        Task Send(string from, List<string> to, string subject, string plainContent, string htmlContent, string filename, string content);
-
-        Task Send(string from, List<string> to, string subject, string plainContent, string htmlContent, List<Attachment> attachments);
-    }
-
     public class EmailService : IEmailService
     {
         private readonly string apiKey;
@@ -25,7 +16,7 @@ namespace HomeManagement.API.Services
 
         public EmailService(IConfiguration configuration)
         {
-            apiKey = configuration.GetValue<string>("SendGrid");
+            apiKey = configuration.GetSection("SendGrid").Value;
             sendGridClient = new SendGridClient(apiKey);
         }
 
