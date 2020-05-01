@@ -23,7 +23,7 @@ namespace HomeManagement.App.Managers
     public class MetricsManager : IMetricsManager
     {
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
-        private readonly IAccountMetricsServiceClient accountMetricsServiceClient = App._container.Resolve<IAccountMetricsServiceClient>();
+        private readonly AccountMetricsServiceClient accountMetricsServiceClient = new AccountMetricsServiceClient();
 
         public async Task<AccountEvolutionModel> GetAccountEvolution(int accountId)
         {

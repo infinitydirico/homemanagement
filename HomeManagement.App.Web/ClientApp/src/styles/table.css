@@ -1,0 +1,16 @@
+@import './colors.css';
+
+.table {
+    background-color: inherit;
+  }
+  
+  tr, td{
+    color:white;
+    text-align: left;
+    vertical-align: middle;   
+  }
+  
+  tr:hover{
+    background-color: var(--third-bg-background-color);
+    cursor: pointer;
+  }

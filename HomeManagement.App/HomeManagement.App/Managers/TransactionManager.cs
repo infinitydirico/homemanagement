@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using HomeManagement.App.Data;
 using HomeManagement.App.Data.Entities;
+using HomeManagement.App.Services.BackgroundWorker;
 using HomeManagement.App.Services.Rest;
 using HomeManagement.Core.Caching;
 using HomeManagement.Models;
@@ -35,12 +36,15 @@ namespace HomeManagement.App.Managers
         Task UpdateAsync(Transaction transaction);
 
         Task<Transaction> CreateFromImage(Stream stream);
+
+        Task<IEnumerable<Transaction>> GetAutoComplete();
     }
 
     public class TransactionManager : BaseManager<Transaction, TransactionPageModel>, ITransactionManager
     {
-        protected readonly ITransactionServiceClient transactionServiceClient = App._container.Resolve<ITransactionServiceClient>();
+        protected readonly TransactionServiceClient transactionServiceClient = new TransactionServiceClient();
         private readonly GenericRepository<Transaction> transactionRepository = new GenericRepository<Transaction>();
+        private readonly GenericRepository<Account> accountsRepository = new GenericRepository<Account>();
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
 
         public TransactionManager()
@@ -61,18 +65,28 @@ namespace HomeManagement.App.Managers
 
             if (coudSyncSetting.Enabled)
             {
-                cachingService.StoreOrUpdate("ForceApiCall", true);
-            }
+                var syncWorker = App.Workers.First() as SincronizationWorker;
+                await syncWorker.NeedsSincronization();
+                syncWorker.RunWork(null);
+            }            
         }
 
         public virtual async Task DeleteTransactionAsync(Transaction transaction)
         {
-            await transactionServiceClient.Delete(transaction.Id);
+            if (coudSyncSetting.Enabled) RemoveTransaction(transaction);
 
-            if (coudSyncSetting.Enabled)
+            await transactionServiceClient.Delete(transaction.Id);
+        }
+
+        private void RemoveTransaction(Transaction transaction)
+        {
+            Task.Run(() =>
             {
-                cachingService.StoreOrUpdate("ForceApiCall", true);
-            }
+                transactionRepository.Remove(transaction);
+                transactionRepository.Commit();
+                accountsRepository.RemoveAll();
+                repository.Commit();
+            });
         }
 
         public virtual async Task<IEnumerable<Transaction>> Load(int accountId)
@@ -120,7 +134,7 @@ namespace HomeManagement.App.Managers
 
         protected override async Task<IEnumerable<Transaction>> Paginate()
         {
-            if (!cachingService.Get<bool>("ForceApiCall") || coudSyncSetting.Enabled)
+            if (coudSyncSetting != null && coudSyncSetting.Enabled)
             {
                 var skip = (page.CurrentPage - 1) * page.PageCount;
 
@@ -139,28 +153,7 @@ namespace HomeManagement.App.Managers
 
             var transasctionsResult = MapPageToEntity(page);
 
-            UpdateCachedTransactions(transasctionsResult);
-
             return transasctionsResult;
-        }
-
-        private void UpdateCachedTransactions(IEnumerable<Transaction> transactions)
-        {
-            if (!coudSyncSetting.Enabled) return;
-
-            Task.Run(() =>
-            {
-                foreach (var item in transactions)
-                {
-                    if (!transactionRepository.Any(x => x.Id.Equals(item.Id)))
-                    {
-                        transactionRepository.Add(item);
-                    }
-                }
-                transactionRepository.Commit();
-
-                cachingService.StoreOrUpdate("ForceApiCall", false);
-            });
         }
 
         private IEnumerable<Transaction> GetCachedFilteredTransactions(int skip)
@@ -171,8 +164,40 @@ namespace HomeManagement.App.Managers
             .Take(page.PageCount)
             .ToList();
 
-        private IEnumerable<Transaction> MapPageToEntity(TransactionPageModel page) 
-            => from transaction in page.Transactions
+        private IEnumerable<Transaction> MapPageToEntity(TransactionPageModel page) => MapToEntities(page.Transactions);
+
+        public async Task UpdateAsync(Transaction transaction)
+        {
+            var model = MapToModel(transaction);
+
+            if (coudSyncSetting.Enabled) UpdateTransaction(transaction);
+            await transactionServiceClient.Put(model);            
+        }
+
+        private void UpdateTransaction(Transaction transaction)
+        {
+            Task.Run(() =>
+            {
+                transactionRepository.Update(transaction);
+                transactionRepository.Commit();
+                accountsRepository.RemoveAll();
+                accountsRepository.Commit();
+            });
+        }
+
+        private TransactionModel MapToModel(Transaction transaction) => new TransactionModel
+        {
+            Id = transaction.Id,
+            AccountId = transaction.AccountId,
+            CategoryId = transaction.CategoryId,
+            TransactionType = transaction.TransactionType.Equals(TransactionType.Expense) ? TransactionTypeModel.Expense : TransactionTypeModel.Income,
+            Date = transaction.Date,
+            Name = transaction.Name,
+            Price = transaction.Price
+        };
+
+        private IEnumerable<Transaction> MapToEntities(IEnumerable<TransactionModel> transactionModels)
+            => from transaction in transactionModels
                select new Transaction
                {
                    Id = transaction.Id,
@@ -187,24 +212,6 @@ namespace HomeManagement.App.Managers
                    NeedsUpdate = false
                };
 
-        public async Task UpdateAsync(Transaction transaction)
-        {
-            var model = MapToModel(transaction);
-
-            await transactionServiceClient.Put(model);
-        }
-
-        private TransactionModel MapToModel(Transaction transaction) => new TransactionModel
-        {
-            Id = transaction.Id,
-            AccountId = transaction.AccountId,
-            CategoryId = transaction.CategoryId,
-            TransactionType = transaction.TransactionType.Equals(TransactionType.Expense) ? TransactionTypeModel.Expense : TransactionTypeModel.Income,
-            Date = transaction.Date,
-            Name = transaction.Name,
-            Price = transaction.Price
-        };
-
         public async Task<Transaction> CreateFromImage(Stream stream)
         {
             var result = await transactionServiceClient.PostPicture(stream);
@@ -216,6 +223,19 @@ namespace HomeManagement.App.Managers
                 Price = result.Price,
                 TransactionType = TransactionType.Expense
             };
+        }
+
+        public async Task<IEnumerable<Transaction>> GetAutoComplete()
+        {
+            if (cachingService.Exists(nameof(GetAutoComplete))) return cachingService.Get<IEnumerable<Transaction>>(nameof(GetAutoComplete));
+
+            var results = await transactionServiceClient.GetAutoComplete();
+
+            var transactions = MapToEntities(results);
+
+            cachingService.Store(nameof(GetAutoComplete), transactions);
+
+            return transactions;
         }
     }
 }

@@ -4,9 +4,9 @@
              xmlns:viewModels="clr-namespace:HomeManagement.App.ViewModels"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
-             xmlns:Controls="clr-namespace:HomeManagement.App.Views.Controls"
              BackgroundColor="{StaticResource LayoutDark}"
-             x:Class="HomeManagement.App.Views.AccountPages.AddAccountPage">
+             x:Class="HomeManagement.App.Views.AccountPages.AddAccountPage"
+             Title="{Binding Title, Converter={StaticResource Translation}}">
     <ContentPage.BindingContext>
         <viewModels:AddAccountViewModel />
     </ContentPage.BindingContext>
@@ -22,12 +22,6 @@
         <StackLayout Orientation="Vertical">
 
             <StackLayout Orientation="Vertical" Padding="20,20,20,20">
-                <Label FontSize="Large">
-                    <Label.Behaviors>
-                        <Beh:TranslationBehavior LanguageKey="AccountName" />
-                    </Label.Behaviors>
-                </Label>
-
                 <Entry x:Name="accountName"  Text="{Binding Account.Name}" FontSize="Large">
                     <Entry.Behaviors>
                         <Beh:EmptyValidationEntryBehavior />
@@ -58,7 +52,7 @@
             </StackLayout>
 
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
-                <Controls:Checkbox Checked="{Binding MeasureAccount}" VerticalOptions="Center"  HorizontalOptions="Start"/>
+                <CheckBox IsChecked="{Binding MeasureAccount}" VerticalOptions="Center"  HorizontalOptions="Start" />
                 <Label FontSize="Large" VerticalOptions="Center">
                     <Label.Behaviors>
                         <Beh:TranslationBehavior LanguageKey="Measurable" />

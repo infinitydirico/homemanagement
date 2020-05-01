@@ -1,0 +1,53 @@
+﻿@page "/Accounts"
+
+@using HomeManagement.Models;
+@using HomeManagement.API.WebApp.Services;
+@using Microsoft.AspNetCore.ProtectedBrowserStorage
+
+@inject ProtectedSessionStorage ProtectedSessionStore
+@inject RestClient  RestClient
+@inject NavigationManager NavigationManager
+
+<HomeManagement.API.WebApp.Components.Custom.SimpleCard Title="Accounts">
+    @if (Accounts == null)
+    {
+        <MatProgressBar Indeterminate="true" Closed="Accounts == null"></MatProgressBar>
+    }
+    else
+    {
+        <table class="table table-borderless">
+            <tbody>
+                @foreach (var account in Accounts)
+                {
+                    <tr @onclick="(() => NagiateToDetails(account))">
+                        <td>@account.Name</td>
+                        <td class="@(account.Balance > 0 ? "positive-value" : "negative-value")">@account.Balance</td>
+                        <td>@Currencies.First(x => x.Id.Equals(account.CurrencyId)).Name</td>
+                        <td>@account.AccountType.ToString()</td>
+                        <td>
+                            <HomeManagement.API.WebApp.Components.Custom.SimpleIcon IconName="delete" Color="#ef5350">
+                            </HomeManagement.API.WebApp.Components.Custom.SimpleIcon>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</HomeManagement.API.WebApp.Components.Custom.SimpleCard>
+
+
+@code {
+    private List<AccountModel> Accounts;
+    private List<CurrencyModel> Currencies;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Accounts = await RestClient.GetAsync<List<AccountModel>>("account");
+        Currencies = await RestClient.GetAsync<List<CurrencyModel>>("currency");
+    }
+
+    private void NagiateToDetails(AccountModel model)
+    {
+        NavigationManager.NavigateTo($"accounts/{model.Id}");
+    }
+}

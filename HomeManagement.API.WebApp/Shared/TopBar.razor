@@ -1,0 +1,15 @@
+﻿@using Microsoft.AspNetCore.ProtectedBrowserStorage
+
+@inject NavigationManager NavigationManager
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+<div class="top-row px-4" style="background-color: #202020;">
+    <MatIconButton Icon="exit_to_app" OnClick="@Logout"></MatIconButton>
+</div>
+@code {
+    private async Task Logout()
+    {
+        await ProtectedSessionStore.DeleteAsync("user");
+        NavigationManager.NavigateTo("/", true);
+    }
+}

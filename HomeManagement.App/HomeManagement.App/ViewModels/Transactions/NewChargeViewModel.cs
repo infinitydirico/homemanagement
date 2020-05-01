@@ -11,7 +11,7 @@ namespace HomeManagement.App.ViewModels
 {
     public class NewTransactionViewModel : AddTransactionViewModel
     {
-        private readonly IAccountServiceClient accountServiceClient = App._container.Resolve<IAccountServiceClient>();
+        private readonly AccountServiceClient accountServiceClient = new AccountServiceClient();
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
 
         protected IEnumerable<Account> accounts = Enumerable.Empty<Account>();

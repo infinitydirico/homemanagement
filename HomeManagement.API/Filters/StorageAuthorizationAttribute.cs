@@ -1,4 +1,5 @@
-﻿using HomeManagement.API.Business;
+﻿using HomeManagement.Api.Core;
+using HomeManagement.API.Business;
 using HomeManagement.API.Extensions;
 using HomeManagement.Data;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -14,7 +15,7 @@ namespace HomeManagement.API.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var header = context.HttpContext.GetAuthorizationHeader();
-            var token = header.GetJwtSecurityToken();
+            var token = TokenFactory.Reader(header);
             var email = token.Claims.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
 
             var userRepository = context.HttpContext.RequestServices.GetService(typeof(IUserRepository)) as IUserRepository;

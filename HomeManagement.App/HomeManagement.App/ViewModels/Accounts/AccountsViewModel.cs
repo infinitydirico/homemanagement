@@ -2,6 +2,7 @@
 using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HomeManagement.App.ViewModels
@@ -30,7 +31,7 @@ namespace HomeManagement.App.ViewModels
         {
             HandleSafeExecutionAsync(async () =>
             {
-                Accounts = await accountManager.LoadAsync();
+                Accounts = (await accountManager.LoadAsync()).OrderBy(x => x.Name).ToList();
             });
         }
 

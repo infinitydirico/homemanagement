@@ -7,7 +7,7 @@ namespace HomeManagement.App.Services
     {
         public static string Filename = "log.txt";
 
-        public static string ReadLog() => File.ReadAllText(GetFullPath());
+        public static string ReadLog() => ExistsLogFile() ? File.ReadAllText(GetFullPath()) : string.Empty;
 
         public static void LogMessage(string message) => Log(message);
 
@@ -25,7 +25,7 @@ namespace HomeManagement.App.Services
         private static void Log(string message)
         {
             var file = GetFullPath();
-            if (!File.Exists(file))
+            if (!ExistsLogFile())
             {
                 File.Create(file).Close();
             }
@@ -34,5 +34,7 @@ namespace HomeManagement.App.Services
         }
 
         private static string GetFullPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Filename);
+
+        private static bool ExistsLogFile() => File.Exists(GetFullPath());
     }
 }

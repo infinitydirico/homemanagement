@@ -1,0 +1,6 @@
+<content-card>
+    <h3>Accounts evolution</h3>
+    <mat-progress-bar mode="indeterminate" *ngIf="!evolution"></mat-progress-bar>
+
+    <line-chart *ngIf="evolution" [labels]="labels" [datasets]="datasets"></line-chart>
+</content-card>

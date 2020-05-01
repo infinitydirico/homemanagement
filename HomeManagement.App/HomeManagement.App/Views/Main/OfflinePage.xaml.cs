@@ -1,5 +1,4 @@
-﻿using Plugin.Connectivity;
-
+﻿using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -12,13 +11,18 @@ namespace HomeManagement.App.Views.Main
         {
             InitializeComponent();
 
-            CrossConnectivity.Current.ConnectivityTypeChanged += (sender, args) =>
+            Connectivity.ConnectivityChanged += (sender, args) =>
             {
-                if (args.IsConnected)
+                if (args.NetworkAccess.Equals(NetworkAccess.Internet))
                 {
-                    Navigation.RemovePage(this);
+                    Navigation.PopModalAsync(true);
                 }
             };
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
         }
     }
 }

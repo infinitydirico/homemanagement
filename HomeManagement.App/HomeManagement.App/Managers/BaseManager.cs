@@ -11,7 +11,7 @@ namespace HomeManagement.App.Managers
         where TEntity : class, IOfflineEntity
         where TPage : Page, new()
     {
-        protected readonly GenericRepository<TEntity> accountRepository = new GenericRepository<TEntity>();
+        protected readonly GenericRepository<TEntity> repository = new GenericRepository<TEntity>();
         protected readonly GenericRepository<AppSettings> appSettingsRepository = new GenericRepository<AppSettings>();
 
         protected TPage page = new TPage();

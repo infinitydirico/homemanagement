@@ -1,0 +1,7 @@
+<mat-nav-list>
+    <a mat-list-item (click)="openLink($event)" *ngFor="let notification of notifications">
+        <span mat-line>
+            {{notification.title}} expires the {{getDay(notification.dueDay)}} of every month
+        </span>
+    </a>
+</mat-nav-list>

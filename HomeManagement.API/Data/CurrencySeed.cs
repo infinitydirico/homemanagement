@@ -1,7 +1,4 @@
 ﻿using HomeManagement.Domain;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,16 +36,5 @@ namespace HomeManagement.API.Data
                 dbContext.SaveChanges();
             }
         }
-
-        //public static IWebHost SeedData(this IWebHost host)
-        //{
-        //    using (var scope = host.Services.CreateScope())
-        //    {
-        //        var context = scope.ServiceProvider.GetService<WebAppDbContext>();
-
-        //        SeedCurrencies(context);
-        //    }
-        //    return host;
-        //}
     }
 }

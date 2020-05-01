@@ -14,8 +14,8 @@ namespace HomeManagement.App.ViewModels
 {
     public class AddAccountViewModel : LocalizationBaseViewModel
     {
-        private readonly ICurrencyServiceClient currencyService = App._container.Resolve<ICurrencyServiceClient>();
-        private readonly IAccountServiceClient accountServiceClient = App._container.Resolve<IAccountServiceClient>();
+        private readonly CurrencyServiceClient currencyService = new CurrencyServiceClient();
+        private readonly AccountServiceClient accountServiceClient = new AccountServiceClient();
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
 
         Currency selectedCurrency;
@@ -28,6 +28,7 @@ namespace HomeManagement.App.ViewModels
             AddAccountCommand = new Command(async () => await AddAccount());
             SelectedAccountType = AccountType.Cash;
             Account.UserId = authenticationManager.GetAuthenticatedUser().Id;
+            Title = "AccountName";
         }
 
         public event EventHandler OnAccountCreated;
@@ -124,7 +125,7 @@ namespace HomeManagement.App.ViewModels
                     Measurable = Account.Measurable
                 };
 
-                await accountServiceClient.Update(accountModel);
+                await accountServiceClient.Post(accountModel);
 
                 OnAccountCreated?.Invoke(this, EventArgs.Empty);
             });

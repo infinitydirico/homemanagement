@@ -1,0 +1,42 @@
+<div class="container">
+    <div class="row" [style.align-items]="'center'">
+        <div class="col-sm-8">
+            <h1>
+                Account {{ account.name }}
+            </h1>
+        </div>
+        <div class="col-sm-4">
+            <h5 [style.color]="getColor()">
+                {{ account.balance }} {{ getCurrencyName() }}
+            </h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <h5>
+                Account Type: {{ getAccountType() }}
+            </h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <h5>
+                <mat-checkbox [(ngModel)]="account.measurable" (change)="onMeasureChanged()">
+                    Measurable
+                </mat-checkbox>
+            </h5>
+        </div>
+        <div class="col-sm-2"></div>
+        <div class="col-sm-2">
+            <button mat-button (click)="download()" matTooltip="Download account transactions">
+                <mat-icon>save_alt</mat-icon>
+           </button>
+        </div>
+        <div class="col-sm-2">
+            <input type="file" (change)="upload($event)" class="hidden" id="hiddenInput" />
+            <button mat-button (click)="selectFile()" matTooltip="Upload a csv file with transactions">
+                <mat-icon>attach_file</mat-icon>
+           </button>
+        </div>
+    </div>
+</div>

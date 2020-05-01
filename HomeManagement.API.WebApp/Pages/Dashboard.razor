@@ -1,0 +1,21 @@
+﻿@page "/dashboard"
+
+@using HomeManagement.API.WebApp.Components;
+
+<div class="mat-layout-grid">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+            <div class="mat-elevation-z24">
+                <HomeManagement.API.WebApp.Components.Custom.SimpleCard Title="Files">
+                    <HomeManagement.API.WebApp.Components.Files.FilesList>
+
+                    </HomeManagement.API.WebApp.Components.Files.FilesList>
+                </HomeManagement.API.WebApp.Components.Custom.SimpleCard>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+}

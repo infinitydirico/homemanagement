@@ -2,6 +2,10 @@
 
 @{
     ViewData["Title"] = "Login";
+
+    var path = this.Context.Request.Headers.ContainsKey("X-Forwarded-PathBase") ?
+            this.Context.Request.Headers["X-Forwarded-PathBase"].ToString() :
+            string.Empty;
 }
 <div class="container">
     <partial name="_CookieConsentPartial" />
@@ -21,7 +25,7 @@
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="submit" value="Login" class="btn btn-default" />
+                        <input type="submit" asp-route="/Home/Login" value="Login" class="btn btn-default" />
                     </div>
                 </form>
             </div>

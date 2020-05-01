@@ -1,0 +1,126 @@
+﻿@using HomeManagement.Models;
+@using HomeManagement.API.WebApp.Services
+@using HomeManagement.API.WebApp.Services.Notification
+
+@inject RestClient RestClient
+@inject NotifierService NotifierService
+@inject NewTransactionAddedNotification NewTransactionAddedNotification
+@inject NavigationManager NavigationManager
+
+<style>
+    label {
+        color: white;
+    }
+</style>
+
+<HomeManagement.API.WebApp.Components.Custom.SimpleCard Title="New Transaction">
+    <div class="mat-layout-grid">
+        <div class="mat-layout-grid-inner">
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                <MatStringField @bind-Value="@Transaction.Name" Label="Transaction Name"></MatStringField>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5">
+                <MatNumericUpDownField Label="Transaction Price" Type="int" Required="true" DecimalPlaces="2"
+                                       @bind-Value="@Transaction.Price"
+                                       Icon="attach_money">
+                </MatNumericUpDownField>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-1"></div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6" style="color:black;">
+                <MatDatePicker @bind-Value="@Transaction.Date" Format="dd MMMM yyyy"></MatDatePicker>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                <HomeManagement.API.WebApp.Components.Categories.CategoryPicker OnCategoryChanged="OnCategorySelected" Category="Category">
+
+                </HomeManagement.API.WebApp.Components.Categories.CategoryPicker>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                <MatRadioGroup @bind-Value="@Transaction.TransactionType" Items="@TransactionTypes">
+                    <ItemTemplate>
+                        <div>
+                            <MatRadioButton Value="@context">@context</MatRadioButton>
+                        </div>
+                    </ItemTemplate>
+                </MatRadioGroup>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-2">
+                <MatIconButton Icon="check" OnClick="@PostNewTransaction" Disabled="loading"
+                               Style="color:#66bb6a"></MatIconButton>
+
+                @if (error)
+                {
+                    <p>An error has happened.</p>
+                }
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                <MatProgressBar Indeterminate="true" Closed="!loading"></MatProgressBar>
+            </div>
+        </div>
+    </div>
+</HomeManagement.API.WebApp.Components.Custom.SimpleCard>
+
+@code {
+    bool loading = false;
+    bool error = false;
+    bool editMode = false;
+
+    [Parameter]
+    public int AccountId { get; set; }
+
+    [Parameter]
+    public TransactionModel Transaction { get; set; }
+
+    CategoryModel Category;
+
+    TransactionTypeModel[] TransactionTypes = new TransactionTypeModel[]
+    {
+        TransactionTypeModel.Expense,
+        TransactionTypeModel.Income
+        };
+
+    protected void OnCategorySelected(int categoryId)
+    {
+        Transaction.CategoryId = categoryId;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Transaction == null)
+        {
+            Transaction = new TransactionModel
+            {
+                TransactionType = TransactionTypeModel.Expense,
+                AccountId = AccountId
+            };
+        }
+        else
+        {
+            editMode = true;
+            var categories = await RestClient.GetAsync<List<CategoryModel>>("category/active");
+            Category = categories.First(x => x.Id.Equals(Transaction.CategoryId));
+        }
+    }
+
+    private async Task PostNewTransaction()
+    {
+        loading = true;
+        try
+        {
+            if (!editMode) await RestClient.PostAsync("transactions", Transaction);
+            else await RestClient.PutAsync("transactions", Transaction);
+
+            await NotifierService.Update(NewTransactionAddedNotification);
+            await OnInitializedAsync();
+            
+            if(editMode) NavigationManager.NavigateTo($"/accounts/{AccountId}");
+        }
+        catch
+        {
+            error = true;
+        }
+        loading = false;
+    }
+}

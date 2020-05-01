@@ -1,12 +1,10 @@
-﻿using Autofac;
-using HomeManagement.App.Common;
-using HomeManagement.App.Managers;
+﻿using HomeManagement.App.Common;
 using Newtonsoft.Json;
-using Plugin.Connectivity;
 using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 
 namespace HomeManagement.App.Services.Rest
 {
@@ -33,8 +31,8 @@ namespace HomeManagement.App.Services.Rest
         public static async Task<TValue> ReadContent<TValue>(this Task<HttpResponseMessage> responseMessage)
         {
             var response = (await responseMessage);
-            response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
+            response.EnsureSuccessStatusCode();            
             var objectResult = JsonConvert.DeserializeObject<TValue>(content);
             return objectResult;
         }
@@ -42,11 +40,14 @@ namespace HomeManagement.App.Services.Rest
         public static StringContent SerializeToJson(this object data)
             => new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
 
-        private static string GetToken() => App._container.Resolve<IAuthenticationManager>().GetAuthenticatedUser().Token;
+        private static string GetToken()
+        {
+            return SecureStorage.GetAsync("Token").GetAwaiter().GetResult();
+        }
 
         private static void CheckForInternetConnection()
         {
-            if (!CrossConnectivity.Current.IsConnected) throw new AppException($"No internet connection detected.");
+            if (Connectivity.NetworkAccess.Equals(NetworkAccess.None)) throw new AppException($"No internet connection detected.");
         }
     }
 }

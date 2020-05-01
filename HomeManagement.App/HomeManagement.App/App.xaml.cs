@@ -3,15 +3,16 @@ using HomeManagement.App.Data;
 using HomeManagement.App.Data.Entities;
 using HomeManagement.App.Managers;
 using HomeManagement.App.Services;
-using HomeManagement.App.Services.Rest;
-using HomeManagement.App.Views.Login;
+using HomeManagement.App.Services.BackgroundWorker;
 using HomeManagement.App.Views.Main;
 using HomeManagement.Contracts;
 using HomeManagement.Core.Caching;
 using HomeManagement.Core.Cryptography;
 using HomeManagement.Localization;
-using Plugin.Connectivity;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -30,37 +31,27 @@ namespace HomeManagement.App
 
             InitializeDefaultValues();
 
-            var userRepository = new GenericRepository<User>();
+            InitializeWorkers();
 
-            Page page = new LoginPage();
+            MainPage = new MainPage();
 
-            var authManager = _container.Resolve<IAuthenticationManager>();
-            if (authManager.HasValidCredentialsAvaible())
+            Connectivity.ConnectivityChanged += (s, e) =>
             {
-                var user = authManager.GetStoredUser();
-                authManager.AuthenticateAsync(user.Email, user.Password);
+                var appSettingsRepository = new GenericRepository<AppSettings>();
+                var offlineModeSetting = appSettingsRepository.FirstOrDefault(x => x.Name.Equals(AppSettings.GetOfflineModeSetting().Name));
 
-                page = new MainPage();
+                if (offlineModeSetting != null && offlineModeSetting.Enabled) return;
 
-                NavigationPage.SetHasBackButton(page, false);
-
-                NavigationPage.SetHasNavigationBar(page, true);
-            }
-
-            MainPage = new NavigationPage(page);
-
-            CrossConnectivity.Current.ConnectivityTypeChanged += (sender, args) =>
-            {
-                if (!args.IsConnected)
+                if (e.NetworkAccess.Equals(NetworkAccess.None))
                 {
-                    var p = new OfflinePage();
-                    NavigationPage.SetHasBackButton(p, false);
-                    MainPage.Navigation.PushAsync(p);
+                    MainPage.Navigation.PushModalAsync(new OfflinePage());
                 }
             };
 
             AppDomain.CurrentDomain.UnhandledException += (s, e) => Logger.LogException(e.ExceptionObject as Exception);
         }
+
+        public static List<BaseWorker> Workers { get; set; }
 
         protected override void OnStart()
         {
@@ -86,8 +77,6 @@ namespace HomeManagement.App
 
             builder.RegisterType<LocalizationLanguage>().As<ILocalization>().SingleInstance();
 
-            RegisterServiceClients(builder);
-
             RegisterManagers(builder);
 
             _container = builder.Build();
@@ -96,28 +85,44 @@ namespace HomeManagement.App
         private void RegisterManagers(ContainerBuilder builder)
         {
             builder.RegisterType<TransactionManager>().As<ITransactionManager>();
-            builder.RegisterType<AuthenticationManager>().As<IAuthenticationManager>();
+            builder.RegisterType<AuthenticationManager>().As<IAuthenticationManager>().SingleInstance();
             builder.RegisterType<AccountManager>().As<IAccountManager>();
             builder.RegisterType<MetricsManager>().As<IMetricsManager>();
             builder.RegisterType<CategoryManager>().As<ICategoryManager>();
             builder.RegisterType<LocalizationManager>().As<ILocalizationManager>();
             builder.RegisterType<NotificationManager>().As<INotificationManager>();
-        }
-
-        private void RegisterServiceClients(ContainerBuilder builder)
-        {
-            builder.RegisterType<AccountServiceClient>().As<IAccountServiceClient>();
-            builder.RegisterType<AuthServiceClient>().As<IAuthServiceClient>().SingleInstance();
-            builder.RegisterType<TransactionServiceClient>().As<ITransactionServiceClient>();
-            builder.RegisterType<AccountMetricsServiceClient>().As<IAccountMetricsServiceClient>();
-            builder.RegisterType<CategoryServiceClient>().As<ICategoryServiceClient>();
-            builder.RegisterType<CurrencyServiceClient>().As<ICurrencyServiceClient>();
-            builder.RegisterType<NotificationServiceClient>().As<INotificationServiceClient>();
+            builder.RegisterType<StorageManager>().As<IStorageManager>();            
         }
 
         private void InitializeDefaultValues()
         {
             _container.Resolve<ICachingService>().Store("ForceApiCall", false);
+        }
+
+        private void InitializeWorkers()
+        {
+            Workers = new List<BaseWorker>
+            {
+                new SincronizationWorker()
+            };
+
+            var authenticationManager = _container.Resolve<IAuthenticationManager>();
+            if (authenticationManager.IsAuthenticated())
+            {
+                StartWorkers(null, EventArgs.Empty);
+            }
+            else
+            {
+                authenticationManager.OnAuthenticationChanged += StartWorkers;
+            }            
+        }
+
+        private void StartWorkers(object sender, EventArgs e)
+        {
+            Parallel.ForEach(Workers, w =>
+            {
+                if(!w.Started) w.Start();
+            });
         }
     }
 }

@@ -1,8 +1,9 @@
-﻿using HomeManagement.API.Business;
-using HomeManagement.API.Filters;
+﻿using HomeManagement.API.Filters;
+using HomeManagement.Business.Contracts;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -67,10 +68,33 @@ namespace HomeManagement.API.Controllers.Transactions
             return Ok(transactionService.CategoryEvolutionByAccount(category, accountId));
         }
 
+        [HttpGet("GetAutoComplete")]
+        public IActionResult GetAutoComplete() => Ok(transactionService.GetTransactionsForAutoComplete());
+
+        [HttpGet("Delta/{year}/{month}")]
+        public IActionResult Delta(int year, int month)
+        {
+            DateTime deltaDate = year.Equals(default) || month.Equals(default) ? DateTime.Now : new DateTime(year, month, 1);
+
+            var transactions = transactionService.Delta(deltaDate);
+
+            return Ok(transactions);
+        }
+
+        [HttpGet("Delta/{accountId}/{year}/{month}")]
+        public IActionResult Delta(int accountId, int year, int month)
+        {
+            DateTime deltaDate = year.Equals(default) || month.Equals(default) ? DateTime.Now : new DateTime(year, month, 1);
+
+            var transactions = transactionService.Delta(deltaDate, accountId);
+
+            return Ok(transactions);
+        }
+
         [HttpPost("updateAll")]
         public IActionResult UpdateAll([FromBody] IEnumerable<TransactionModel> models)
         {
-            if (models == null || models.Count().Equals(default(int))) return BadRequest();
+            if (models == null || models.Count().Equals(default)) return BadRequest();
 
             foreach (var transaction in models)
             {

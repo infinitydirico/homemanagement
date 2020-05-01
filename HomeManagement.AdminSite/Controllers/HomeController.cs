@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using HomeManagement.AdminSite.Views;
 
 namespace HomeManagement.AdminSite.Controllers
 {
@@ -50,7 +51,9 @@ namespace HomeManagement.AdminSite.Controllers
                 return RedirectToAction("Error");
             }
 
-            return RedirectToAction("Index");
+            var host = HttpContext.GetHost();
+            var scheme = HttpContext.GetScheme();
+            return Redirect($"{scheme}://{host}/Home/Index");
         }
 
         public IActionResult Privacy()

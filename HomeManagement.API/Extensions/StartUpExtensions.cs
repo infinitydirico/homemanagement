@@ -1,13 +1,14 @@
 ﻿using HomeManagement.API.Business;
 using HomeManagement.API.Data;
 using HomeManagement.API.Data.Repositories;
-using HomeManagement.API.Exportation;
-using HomeManagement.API.Throttle;
+using HomeManagement.API.Services;
+using HomeManagement.Business.Contracts;
+using HomeManagement.Business.Exportation;
+using HomeManagement.Business.Units;
 using HomeManagement.Contracts;
 using HomeManagement.Core.Cryptography;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HomeManagement.API.Extensions
@@ -16,7 +17,7 @@ namespace HomeManagement.API.Extensions
     {
         public static void AddMiddleware(this IServiceCollection services)
         {
-            services.AddScoped<IThrottleCore, ThrottleCore>();
+            //services.AddScoped<IThrottleCore, ThrottleCore>();
 
             services.AddScoped<ICryptography, AesCryptographyService>();
         }
@@ -26,8 +27,6 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IPlatformContext, WebAppLayerContext>();
 
             services.AddScoped<IRepositoryFactory, RepositoryFactory>();
-
-            services.AddScoped<IApiRepositoryFactory, ApiRepositoryFactory>();
 
             services.AddScoped<IUserRepository, UserRepository>();
 
@@ -43,8 +42,6 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<IPreferencesRepository, PreferencesRepository>();
             
-            services.AddScoped<ITokenRepository, TokenRepository>();
-
             services.AddScoped<IDataLogRepository, DataLogRepository>();
 
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
@@ -53,12 +50,10 @@ namespace HomeManagement.API.Extensions
 
             services.AddScoped<IConfigurationSettingsRepository, ConfigurationSettingsRepository>();
 
-            services.AddScoped<IRolesRepository, RolesRepository>();
-
             services.AddScoped<IMonthlyExpenseRepository, MonthlyExpenseRepository>();
             //with the throttle filter with persisted repo, the requests take around 100ms to respond
             //with memory values, it takes 30ms
-            services.AddScoped<IWebClientRepository, MemoryWebClientRepository>();   
+            //services.AddScoped<IWebClientRepository, MemoryWebClientRepository>();   
             //services.AddScoped<IWebClientRepository, WebClientRepository>();
         }
 
@@ -106,17 +101,7 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IConfigurationSettingsService, ConfigurationSettingsService>();
             services.AddScoped<IMonthlyExpenseService, MonthlyExpenseService>();
             services.AddScoped<IImageService, ImageService>();
-        }
-
-        public static CorsPolicy BuildCorsPolicy(this CorsOptions corsOptions)
-        {
-            var corsBuilder = new CorsPolicyBuilder();
-            corsBuilder.AllowAnyHeader();
-            corsBuilder.AllowAnyMethod();
-            corsBuilder.AllowAnyOrigin();
-            corsBuilder.AllowCredentials();
-
-            return corsBuilder.Build();
+            services.AddSingleton<IEmailService, EmailService>();
         }
     }
 }

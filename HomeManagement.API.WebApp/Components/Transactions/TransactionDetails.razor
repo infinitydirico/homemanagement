@@ -1,0 +1,53 @@
+﻿@page "/accounts/{AccountId:int}/transaction/{Id:int}"
+
+@using HomeManagement.Models;
+@using HomeManagement.API.WebApp.Services;
+
+@inject RestClient  RestClient
+
+@if (Account != null)
+{
+    <h3>Account @Account.Name</h3>
+
+    <div class="mat-layout-grid">
+        <div class="mat-layout-grid-inner">
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                <div class="mat-elevation-z24">
+                    <HomeManagement.API.WebApp.Components.Transactions.AddTransaction AccountId="Account.Id" Transaction="TransactionModel">
+
+                    </HomeManagement.API.WebApp.Components.Transactions.AddTransaction>
+                </div>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                <div class="mat-elevation-z24">
+                    <HomeManagement.API.WebApp.Components.Custom.SimpleCard Title="Files">
+                        <HomeManagement.API.WebApp.Components.Files.FilesList>
+
+                        </HomeManagement.API.WebApp.Components.Files.FilesList>
+                    </HomeManagement.API.WebApp.Components.Custom.SimpleCard>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter]
+    public int AccountId { get; set; }
+
+    public AccountModel Account { get; set; }
+
+    public TransactionModel TransactionModel { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var accounts = await RestClient.GetAsync<List<AccountModel>>("account");
+        Account = accounts.First(x => x.Id.Equals(AccountId));
+
+        var transactions = await RestClient.GetAsync<List<TransactionModel>>("transactions");
+        TransactionModel = transactions.First(x => x.Id.Equals(Id));
+    }
+}

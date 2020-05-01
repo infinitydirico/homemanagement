@@ -35,6 +35,8 @@ namespace HomeManagement.Domain
 
         public Account Account { get; set; }
 
+        public DateTime ChangeStamp { get; set; }
+
         public IList<string> GetProperties() => exportableHeaders;
     }
 

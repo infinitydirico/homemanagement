@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Add new Reminder</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Title</mat-label>
+    <input matInput [(ngModel)]="reminder.title">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Due Day</mat-label>
+    <input matInput type="number" [(ngModel)]="reminder.dueDay">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button cdkFocusInitial (click)="ok()">Ok</button>
+</div>

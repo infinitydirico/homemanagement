@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HomeManagement.App.Views.Transactions.AddTransactionPage"
-             BackgroundColor="{StaticResource LayoutDark}"
+             BackgroundColor="{StaticResource TabBarColor}"
              xmlns:Controls="clr-namespace:HomeManagement.App.Views.Controls"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters">
@@ -16,55 +16,65 @@
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
         <ToolbarItem Icon="check_48dp.png" Command="{Binding AddTransactionCommand}" />
-        <!--<ToolbarItem Icon="add_photo_24dp.png" Command="{Binding TakePictureCommand}" />-->
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
 
-            <StackLayout Orientation="Vertical" Padding="20,20,20,20">
-                <Label>
-                    <Label.Behaviors>
-                        <Beh:TranslationBehavior LanguageKey="TransactionNameText" />
-                    </Label.Behaviors>
-                </Label>
+            <Frame Margin="5, 5, 5, 0">
+                <StackLayout Orientation="Vertical">
+                    <Label Text="Transaction Name">
+                        <Label.Behaviors>
+                            <Beh:TranslationBehavior LanguageKey="TransactionNameText" />
+                        </Label.Behaviors>
+                    </Label>
 
-                <Entry x:Name="TransactionNameEntry" Text="{Binding Transaction.Name}">
-                    <Entry.Behaviors>
-                        <Beh:EmptyValidationEntryBehavior />
-                    </Entry.Behaviors>
-                </Entry>
-            </StackLayout>
+                    <Entry x:Name="TransactionNameEntry" Text="{Binding Transaction.Name}" Completed="TransactionNameEntry_Completed">
+                        <Entry.Behaviors>
+                            <Beh:EmptyValidationEntryBehavior />
+                            <Beh:AutoCompleteBehavior Suggestions="{Binding TransactionsNamesSuggestions, Mode=OneWayToSource}" />
+                        </Entry.Behaviors>
+                    </Entry>
+                </StackLayout>
+            </Frame>
 
-            <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
-                <Image Source="money_36dp.png" HorizontalOptions="Start" HeightRequest="50" />
+            <Frame Margin="5, 5, 5, 0">
+                <StackLayout Orientation="Horizontal">
+                    <StackLayout Orientation="Horizontal">
+                        <Image Source="money_36dp.png" HorizontalOptions="Start" HeightRequest="50" />
 
-                <Entry WidthRequest="100" Keyboard="Numeric"
+                        <Entry WidthRequest="100" Keyboard="Numeric" x:Name="PriceEntry"
                        Text="{Binding Transaction.Price}" />
+                    </StackLayout>
 
-            </StackLayout>
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="End">
+                        <Image Source="date_36dp.png" HorizontalOptions="Start" HeightRequest="50" />
 
-            <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
-                <Image Source="date_36dp.png" HorizontalOptions="Start" HeightRequest="50" />
+                        <DatePicker Date="{Binding Transaction.Date}"  />
+                    </StackLayout>
 
-                <DatePicker Date="{Binding Transaction.Date}"  />
-            </StackLayout>
+                </StackLayout>
+            </Frame>
 
-            <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
-                <Image Source="label_36dp.png" HorizontalOptions="Start" HeightRequest="50" />
+            <Frame Margin="5, 5, 5, 0">
+                <StackLayout Orientation="Horizontal">
+                    <Image Source="label_36dp.png" HorizontalOptions="Start" HeightRequest="50" />
 
-                <Picker WidthRequest="150"  ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" />
+                    <Picker WidthRequest="150"  ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" />
 
-            </StackLayout>
+                </StackLayout>
+            </Frame>
 
-            <StackLayout Orientation="Vertical" Padding="20,20,20,20">
-                <Label VerticalOptions="Center">
-                    <Label.Behaviors>
-                        <Beh:TranslationBehavior LanguageKey="TransactionType" />
-                    </Label.Behaviors>
-                </Label>
-                <Controls:RadioGroup Options="{Binding TransactionTypes}" SelectedItem="{Binding SelectedTransactionType}" 
+            <Frame Margin="5, 5, 5, 0">
+                <StackLayout Orientation="Vertical">
+                    <Label VerticalOptions="Center">
+                        <Label.Behaviors>
+                            <Beh:TranslationBehavior LanguageKey="TransactionType" />
+                        </Label.Behaviors>
+                    </Label>
+                    <Controls:RadioGroup Options="{Binding TransactionTypes}" SelectedItem="{Binding SelectedTransactionType}" 
                                      HorizontalOptions="Start"/>
-            </StackLayout>
+                </StackLayout>
+            </Frame>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

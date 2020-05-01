@@ -1,5 +1,6 @@
 ﻿using HomeManagement.Domain;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -66,6 +67,26 @@ namespace HomeManagement.Data
         public void DeleteAllByAccount(int accountId)
         {
             context.Database.ExecuteSqlCommand($"DELETE FROM \"Transactions\" WHERE \"AccountId\" = {accountId}");
+        }
+
+        public decimal SumBy(int userId, TransactionType transactionType, DateTime date)
+        {
+            var transactionSet = context.Set<Transaction>().AsQueryable();
+
+            var accountSet = context.Set<Account>().AsQueryable();
+
+            var transactions = from transaction in transactionSet
+                               join account in accountSet
+                               on transaction.AccountId equals account.Id
+                               where account.UserId.Equals(userId) &&
+                                     transaction.TransactionType.Equals(transactionType) &&
+                                     transaction.Date.Month.Equals(date.Month) &&
+                                     transaction.Date.Year.Equals(date.Year)
+                               select transaction;
+
+            var result = transactions.Sum(x => x.Price);
+
+            return decimal.Parse(result.ToString());
         }
     }
 }

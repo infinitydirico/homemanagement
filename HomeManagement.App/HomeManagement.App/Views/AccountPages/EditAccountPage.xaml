@@ -2,22 +2,22 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
+             xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              BackgroundColor="{StaticResource LayoutDark}"
-             xmlns:Controls="clr-namespace:HomeManagement.App.Views.Controls"
-             x:Class="HomeManagement.App.Views.AccountPages.EditAccountPage">
+             x:Class="HomeManagement.App.Views.AccountPages.EditAccountPage"
+             Title="{Binding Title, Converter={StaticResource Translation}}">
     <ContentPage.ToolbarItems>
         <ToolbarItem Icon="check_48dp.png" Command="{Binding FinishEditAccountCommand}" />
     </ContentPage.ToolbarItems>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Conv:TranslationConverter x:Key="Translation" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
 
             <StackLayout Orientation="Vertical" Padding="20,20,20,20">
-                <Label FontSize="Large">
-                    <Label.Behaviors>
-                        <Beh:TranslationBehavior LanguageKey="AccountName" />
-                    </Label.Behaviors>
-                </Label>
-
                 <Entry x:Name="accountName"  Text="{Binding Account.Name}" FontSize="Large">
                     <Entry.Behaviors>
                         <Beh:EmptyValidationEntryBehavior />
@@ -48,7 +48,7 @@
             </StackLayout>
 
             <StackLayout Orientation="Horizontal" Padding="20,20,20,20">
-                <Controls:Checkbox Checked="{Binding MeasureAccount}" VerticalOptions="Center"  HorizontalOptions="Start"/>
+                <CheckBox IsChecked="{Binding MeasureAccount}" VerticalOptions="Center"  HorizontalOptions="Start" />
                 <Label FontSize="Large" VerticalOptions="Center">
                     <Label.Behaviors>
                         <Beh:TranslationBehavior LanguageKey="Measurable" />

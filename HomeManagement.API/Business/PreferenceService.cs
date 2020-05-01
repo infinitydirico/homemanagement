@@ -1,4 +1,5 @@
 ﻿using HomeManagement.API.Services;
+using HomeManagement.Business.Contracts;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;
@@ -18,6 +19,7 @@ namespace HomeManagement.API.Business
         private const string LanguageKey = "Language";
         private const string PreferredCurrency = "PreferredCurrency";
         private const string UserCountry = "UserCountry";
+        private const string EnableDailyBackups = "EnableDailyBackups";
 
         public PreferenceService(IRepositoryFactory repositoryFactory,
             ICurrencyMapper currencyMapper,
@@ -53,6 +55,17 @@ namespace HomeManagement.API.Business
 
                 preferencesRepository.Commit();
             }
+        }
+
+        public string GetUserLanguage()
+        {
+            var user = userService.GetAuthenticatedUser();
+
+            var preferencesRepository = repositoryFactory.CreatePreferencesRepository();
+
+            var languagePreference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(LanguageKey));
+
+            return languagePreference?.Value ?? "en";
         }
 
         public string GetUserLanguage(int userId)
@@ -155,11 +168,56 @@ namespace HomeManagement.API.Business
                 return country.ToUpper().Substring(0, 2);
             }
         }
+
+        public bool GetEnableDailyBackups()
+        {
+            var user = userService.GetAuthenticatedUser();
+
+            var preferencesRepository = repositoryFactory.CreatePreferencesRepository();
+
+            var preference = preferencesRepository.FirstOrDefault(x => x.UserId.Equals(user.Id) && x.Key.Equals(EnableDailyBackups));
+
+            return preference != null ? bool.Parse(preference.Value): false;
+        }
+
+        public IEnumerable<Preferences> GetAllUserPreferences()
+        {
+            var user = userService.GetAuthenticatedUser();
+
+            var results = repositoryFactory.CreatePreferencesRepository().Where(p => p.UserId.Equals(user.Id));
+
+            return results;
+        }
+
+        public void Save(Preferences preference)
+        {
+            var preferencesRepository = repositoryFactory.CreatePreferencesRepository();
+            var user = userService.GetAuthenticatedUser();
+
+            var preferences = GetAllUserPreferences();
+
+            if(preferences.Any(x => x.Key.Equals(preference.Key)))
+            {
+                var existing = preferences.FirstOrDefault(x => x.Key.Equals(preference.Key));
+                existing.Value = preference.Value;
+                preferencesRepository.Update(existing);
+            }
+            else
+            {
+                preference.UserId = user.Id;
+                preferencesRepository.Add(preference);
+            }
+            preferencesRepository.Commit();
+        }
     }
 
     public interface IPreferenceService
     {
         void ChangeLanguage(string language);
+
+        string GetUserLanguage();
+
+        bool GetEnableDailyBackups();
 
         string GetUserLanguage(int userId);
 
@@ -174,5 +232,8 @@ namespace HomeManagement.API.Business
         string GetUserCountry();
 
         string GetUserCountryCode();
+
+        IEnumerable<Preferences> GetAllUserPreferences();
+        void Save(Preferences preference);
     }
 }

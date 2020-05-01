@@ -166,5 +166,10 @@ namespace HomeManagement.API.Data.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public decimal Sum(Func<DataLog, decimal> selector, Func<DataLog, bool> predicate = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

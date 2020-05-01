@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using HomeManagement.App.Managers;
+using HomeManagement.Core.Extensions;
 using HomeManagement.Localization;
 using System.Linq;
 using Xamarin.Forms;
@@ -49,6 +50,9 @@ namespace HomeManagement.App.Behaviours
             if (property == null) return;
 
             var value = localizationManager.Translate(LanguageKey);
+
+            if (value.IsEmpty()) return;
+
             property.SetValue(element, value);
         }
     }

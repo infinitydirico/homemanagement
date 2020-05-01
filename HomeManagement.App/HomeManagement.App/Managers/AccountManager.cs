@@ -25,7 +25,7 @@ namespace HomeManagement.App.Managers
     public class AccountManager : BaseManager<Account, AccountPageModel> , IAccountManager
     {        
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
-        private readonly IAccountServiceClient accountServiceClient = App._container.Resolve<IAccountServiceClient>();
+        private readonly AccountServiceClient accountServiceClient = new AccountServiceClient();
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
 
         public AccountManager()
@@ -68,19 +68,19 @@ namespace HomeManagement.App.Managers
 
         protected override async Task<IEnumerable<Account>> Paginate()
         {
-            if(cachingService.Get<bool>("ForceApiCall"))
+            if(coudSyncSetting != null && coudSyncSetting.Enabled)
             {
                 var skip = (page.CurrentPage - 1) * page.PageCount;
 
-                if (accountRepository.Count() > skip)
+                if (repository.Count() > skip)
                 {
-                    var records = accountRepository.Skip(skip).Take(page.PageCount).ToList();
+                    var records = repository.Skip(skip).Take(page.PageCount).ToList();
                     return await Task.FromResult(records);
                 }
-            }
 
-            accountRepository.RemoveAll();
-            accountRepository.Commit();
+                repository.RemoveAll();
+                repository.Commit();
+            }
 
             page = await accountServiceClient.Page(page);
 
@@ -103,10 +103,10 @@ namespace HomeManagement.App.Managers
             {
                 foreach (var item in accountsResult)
                 {
-                    accountRepository.Add(item);
+                    repository.Add(item);
                 }
 
-                accountRepository.Commit();
+                repository.Commit();
             });
 
             return accountsResult;

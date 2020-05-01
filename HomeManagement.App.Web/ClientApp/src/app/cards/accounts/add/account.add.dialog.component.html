@@ -1,0 +1,36 @@
+<h1 mat-dialog-title>Add new Account</h1>
+<div mat-dialog-content>
+    <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput [(ngModel)]="account.name" [formControl]="nameFormControl">
+        <mat-error *ngIf="nameFormControl.hasError('required')">
+            Name is required
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Currency</mat-label>
+        <mat-select (selectionChange)="onCurrencyChanged($event.value)" [formControl]="currencyFormControl">
+            <mat-option *ngFor="let currency of currencies" [value]="currency">
+                {{currency.name}}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="currencyFormControl.hasError('required')">
+            Currency is required
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Account Type</mat-label>
+        <mat-select (selectionChange)="onAccountTypeChanged($event.value)" [formControl]="accountTypeFormControl">
+            <mat-option *ngFor="let accountType of accountTypes" [value]="accountType">
+                {{accountType.name}}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="accountTypeFormControl.hasError('required')">
+            Account type is required
+        </mat-error>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button cdkFocusInitial (click)="ok()">Ok</button>
+</div>

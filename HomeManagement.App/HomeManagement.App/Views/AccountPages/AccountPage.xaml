@@ -4,59 +4,32 @@
              x:Class="HomeManagement.App.Views.AccountPages.AccountPage"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
-             BackgroundColor="{StaticResource TabBarColor}"
-             Icon="bank_48dp.png">
+             xmlns:templates="clr-namespace:HomeManagement.App.Views.Resources"
+             BackgroundColor="{StaticResource TabBarColor}">
     <ContentPage.Behaviors>
         <Beh:TranslationBehavior LanguageKey="Accounts" />
     </ContentPage.Behaviors>
     <ContentPage.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <templates:AccountsDataTemplate />
+            </ResourceDictionary.MergedDictionaries>
             <Conv:PositiveNegativeColorConverter x:Key="PositiveNegative" />
             <Conv:TranslationConverter x:Key="Translation" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Icon="help_purple_48dp.png" Clicked="PopupHelpModal" />
-        <ToolbarItem Icon="add_green_48dp.png" Clicked="NavigateToAddAccount" />
+        <ToolbarItem IconImageSource="add_green_48dp.png" Clicked="NavigateToAddAccount" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <Frame Margin="5, 5, 5, 5">
-            <ListView x:Name="accountsList" ItemsSource="{Binding Accounts}" 
-                        Margin="10,10,10,10" SeparatorVisibility="None"
-                        IsPullToRefreshEnabled="True" RefreshCommand="{Binding RefreshCommand}"
-                        IsRefreshing="{Binding IsBusy}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                                <StackLayout.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
-                                </StackLayout.GestureRecognizers>
-                                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                                    <Label VerticalOptions="Center" Text = "{Binding Name}" />
-                                    <Label VerticalOptions="Center" Text = "{Binding Balance}" 
-                                        TextColor="{Binding Balance, Converter={StaticResource PositiveNegative}}" 
-                                        HorizontalOptions="EndAndExpand"/>
-                                </StackLayout>
-                                <StackLayout IsVisible="False" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                                    <Label VerticalOptions="Center" Text = "{Binding Name}" />
-                                    <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
-                                        <Button Image="red_trash_18dp.png" VerticalOptions="Center"
-                                            WidthRequest="30" HeightRequest="30"
-                                            Clicked="Delete" />
-                                        <Button Image="edit_18dp.png" VerticalOptions="Center"
-                                            WidthRequest="30" HeightRequest="30"
-                                            Clicked="Edit" />
-                                        <Button Image="eye_18dp.png" VerticalOptions="Center"
-                                            WidthRequest="30" HeightRequest="30"
-                                            Clicked="ViewTransactionsList" />
-                                    </StackLayout>
-                                </StackLayout>
-                            </StackLayout>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Frame>
+        <StackLayout>
+            <Frame Margin="5, 5, 5, 5">
+                <RefreshView IsRefreshing="{Binding IsBusy}" Command="{Binding RefreshCommand}">
+                    <CollectionView ItemsSource="{Binding Accounts}" 
+                                ItemTemplate="{StaticResource AccountTemplate}" 
+                                Margin="10, 10, 10, 10" />
+                </RefreshView>
+            </Frame>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>

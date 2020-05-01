@@ -1,25 +1,29 @@
-﻿using HomeManagement.App.Common;
-using HomeManagement.Models;
+﻿using HomeManagement.Models;
 using System;
 using System.Threading.Tasks;
+using static HomeManagement.App.Common.Constants;
 
 namespace HomeManagement.App.Services.Rest
 {
-    public class AuthServiceClient : IAuthServiceClient
+    public class AuthServiceClient
     {
-        private UserModel user;
+        BaseRestClient restClient;
+
+        public AuthServiceClient()
+        {
+            restClient = new BaseRestClient(Endpoints.BASEURL);
+        }
 
         public async Task<UserModel> Login(UserModel user)
         {
             try
             {
-                var result = await RestClientFactory
-                    .CreateClient()
-                    .PostAsync(Constants.Endpoints.Auth.LOGIN, user.SerializeToJson())
-                    .ReadContent<UserModel>();
-
-                user = result;
-                return result;
+                using(var client = restClient.CreateClient())
+                {
+                    var result = await client.PostAsync(Endpoints.Auth.LOGIN, restClient.SerializeToJson(user));
+                    var json = await restClient.ReadJsonResponse<UserModel>(result);
+                    return json;
+                }
             }
             catch (Exception ex)
             {
@@ -30,34 +34,20 @@ namespace HomeManagement.App.Services.Rest
 
         public async Task Logout(UserModel user)
         {
-            await RestClientFactory
-                    .CreateAuthenticatedClient()
-                    .PostAsync(Constants.Endpoints.Auth.LOGOUT, user.SerializeToJson())
-                    .ReadContent<UserModel>();
-        }
-
-        public async Task Logout()
-        {
-            await Logout(user);
+            using (var client = await restClient.CreateAuthenticatedClient())
+            {
+                var result = await client.PostAsync(Endpoints.Auth.LOGOUT, restClient.SerializeToJson(user));
+                user = await restClient.ReadJsonResponse<UserModel>(result);
+            }
         }
 
         public async Task RegisterAsync(UserModel user)
         {
-            var result = await RestClientFactory
-                    .CreateClient()
-                    .PostAsync(Constants.Endpoints.Auth.REGISTER, user.SerializeToJson());
-
-            result.EnsureSuccessStatusCode();
+            using (var client = restClient.CreateClient())
+            {
+                var result = await client.PostAsync(Endpoints.Auth.REGISTER, restClient.SerializeToJson(user));
+                result.EnsureSuccessStatusCode();
+            }
         }
-    }
-
-    public interface IAuthServiceClient
-    {
-        Task<UserModel> Login(UserModel user);
-
-        Task RegisterAsync(UserModel user);
-
-        Task Logout(UserModel user);
-        Task Logout();
     }
 }

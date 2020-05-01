@@ -16,7 +16,7 @@ namespace HomeManagement.App.ViewModels
         protected Account account;
         protected Category selectedCategory;
         protected ICategoryManager categoryManager;
-        protected ITransactionServiceClient transactionServiceClient;
+        protected readonly TransactionServiceClient transactionServiceClient = new TransactionServiceClient();
         protected readonly ITransactionManager transactionManager = App._container.Resolve<ITransactionManager>();
         protected IEnumerable<Category> categories;
         protected TransactionType selectedTransactionType;
@@ -24,7 +24,6 @@ namespace HomeManagement.App.ViewModels
         public BaseTransactionEditionViewModel()
         {
             categoryManager = App._container.Resolve<ICategoryManager>();
-            transactionServiceClient = App._container.Resolve<ITransactionServiceClient>();
 
             CancelCommand = new Command(Cancel);
         }

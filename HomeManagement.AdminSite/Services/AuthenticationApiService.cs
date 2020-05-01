@@ -22,11 +22,11 @@ namespace HomeManagement.AdminSite.Services
 
         public async Task<UserModel> Login(UserModel model)
         {
-            using (var client = this.CreateClient())
+            using (var client = this.CreateIdentityClient())
             {
                 model.Password = cryptography.Encrypt(model.Password);
 
-                var response = await client.PostAsync("authentication/signin", model, new System.Net.Http.Formatting.JsonMediaTypeFormatter());
+                var response = await client.PostAsync("api/Authentication/SignIn", model, new System.Net.Http.Formatting.JsonMediaTypeFormatter());
 
                 response.EnsureSuccessStatusCode();
 

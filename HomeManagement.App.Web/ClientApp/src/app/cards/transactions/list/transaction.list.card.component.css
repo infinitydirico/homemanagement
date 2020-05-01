@@ -1,0 +1,20 @@
+@import '../../../../styles/table.css';
+
+.active{
+    background-color: purple;
+    border-radius: 100%;
+}
+
+li{
+    padding-left: 5%;
+    padding-right: 5%;
+    align-content: center;
+}
+
+li > a{
+    vertical-align: middle;
+}
+
+i {
+    vertical-align: middle;
+}

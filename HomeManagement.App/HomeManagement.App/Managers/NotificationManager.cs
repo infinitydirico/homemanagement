@@ -9,7 +9,7 @@ namespace HomeManagement.App.Managers
 {
     public class NotificationManager : INotificationManager
     {
-        private readonly INotificationServiceClient notificationServiceClient = App._container.Resolve<INotificationServiceClient>();
+        private readonly NotificationServiceClient notificationServiceClient = new NotificationServiceClient();
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
 
         public async Task Dismiss(NotificationModel notificationModel)

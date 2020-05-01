@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Frame xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="HomeManagement.App.Views.Cards.LanguageCard"
+             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
+             BackgroundColor="#303030"
+             Margin="5, 5, 5, 5">
+    <StackLayout Orientation="Vertical">
+        <StackLayout Orientation="Horizontal">
+            <Label VerticalOptions="Center" HorizontalOptions="Start">
+                <Label.Behaviors>
+                    <Beh:TranslationBehavior LanguageKey="LanguageOptions" />
+                </Label.Behaviors>
+            </Label>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <Label VerticalOptions="Center" HorizontalOptions="Start">
+                <Label.Behaviors>
+                    <Beh:TranslationBehavior LanguageKey="CurrentLanguage" />
+                </Label.Behaviors>
+            </Label>
+            <Label VerticalOptions="Center" HorizontalOptions="Start">
+                <Label.Behaviors>
+                    <Beh:TranslationBehavior LanguageKey="Language" />
+                </Label.Behaviors>
+            </Label>
+            <Button Command="{Binding ChangeLanguageCommand}" Image="language_18dp.png" 
+                            WidthRequest="30" HeightRequest="30" HorizontalOptions="EndAndExpand" />
+        </StackLayout>
+    </StackLayout>
+</Frame>

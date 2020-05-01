@@ -1,0 +1,93 @@
+<header>
+  <nav>
+    <mat-toolbar color="primary">
+      <mat-toolbar-row *ngIf="!isMobile">
+        <span>Home Management</span>
+        <span class="example-spacer"></span>
+        <button *ngIf="isAuthenticated" matTooltip="Back to Home" mat-icon-button color="default" (click)="backToHome()">
+          <mat-icon>home</mat-icon>
+        </button>
+        <button *ngIf="isAuthenticated" matTooltip="View your Personal Info" mat-icon-button color="default" (click)="viewAccount()">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <button *ngIf="isAuthenticated" matTooltip="Download Personal Info" mat-icon-button color="default" (click)="downloadUserInfo()">
+          <mat-icon>get_app</mat-icon>
+        </button>
+        <button *ngIf="isAuthenticated && hasNotifications" matTooltip="There are new notifications" mat-icon-button color="default"
+                (click)="viewNotifications()">
+          <mat-icon>notifications</mat-icon>
+        </button>
+        <button *ngIf="isAuthenticated && !hasNotifications" matTooltip="No new notifications" mat-icon-button color="default">
+          <mat-icon>notifications_none</mat-icon>
+        </button>
+        <button *ngIf="isAuthenticated" (click)="logout()" matTooltip="Log out" mat-icon-button color="default">
+          <mat-icon>exit_to_app</mat-icon>
+        </button>
+        <button *ngIf="!isAuthenticated" (click)="login()" matTooltip="Log in" mat-icon-button color="default">
+          <mat-icon>person_outline</mat-icon>
+        </button>
+        <button *ngIf="!isAuthenticated" (click)="register()" matTooltip="Register" mat-icon-button color="default">
+          <mat-icon>get_app</mat-icon>
+        </button>
+      </mat-toolbar-row>
+      <mat-toolbar-row *ngIf="isMobile && isAuthenticated">
+        <span>Home Management</span>
+        <span class="example-spacer"></span>
+        <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="isAuthenticated">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button *ngIf="isAuthenticated" mat-menu-item (click)="backToHome()">
+            <mat-icon>home</mat-icon>
+            <span>Back to Home</span>
+          </button>
+          <button *ngIf="isAuthenticated" mat-menu-item (click)="viewAccount()">
+            <mat-icon>account_circle</mat-icon>
+            <span>View personal info</span>
+          </button>
+          <button *ngIf="isAuthenticated" mat-menu-item (click)="downloadUserInfo()">
+            <mat-icon>get_app</mat-icon>
+            <span>Download user info</span>
+          </button>
+          <button *ngIf="isAuthenticated" mat-menu-item>
+            <mat-icon>notifications</mat-icon>
+            <span>Notifications</span>
+          </button>
+          <button *ngIf="isAuthenticated && !hasNotifications" mat-menu-item>
+            <mat-icon>notifications_none</mat-icon>
+            <span>No new notifications</span>
+          </button>
+          <button *ngIf="isAuthenticated" (click)="logout()" mat-menu-item>
+            <mat-icon>exit_to_app</mat-icon>
+            <span>Log out</span>
+          </button>
+          <button *ngIf="!isAuthenticated" (click)="logout()" mat-menu-item>
+            <mat-icon>person_outline</mat-icon>
+            <span>Log in</span>
+          </button>
+          <button *ngIf="!isAuthenticated" (click)="logout()" mat-menu-item>
+            <mat-icon>get_app</mat-icon>
+            <span>Register</span>
+          </button>
+        </mat-menu>
+      </mat-toolbar-row>
+      <mat-toolbar-row *ngIf="isMobile && !isAuthenticated">
+        <span>Home Management</span>
+        <span class="example-spacer"></span>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button (click)="login()" mat-menu-item>
+            <mat-icon>person_outline</mat-icon>
+            <span>Log in</span>
+          </button>
+          <button (click)="register()" mat-menu-item>
+            <mat-icon>get_app</mat-icon>
+            <span>Register</span>
+          </button>
+        </mat-menu>
+      </mat-toolbar-row>
+    </mat-toolbar>
+  </nav>
+</header>

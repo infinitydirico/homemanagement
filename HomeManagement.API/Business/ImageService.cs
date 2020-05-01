@@ -1,6 +1,7 @@
 ﻿using HomeManagement.AI.Vision.Analysis;
 using HomeManagement.AI.Vision.Analysis.Criterias;
 using HomeManagement.AI.Vision.Entities;
+using HomeManagement.Business.Contracts;
 using HomeManagement.Data;
 using HomeManagement.Domain;
 using HomeManagement.Mapper;

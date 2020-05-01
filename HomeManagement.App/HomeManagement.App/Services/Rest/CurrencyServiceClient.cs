@@ -1,23 +1,24 @@
-﻿using HomeManagement.App.Common;
-using HomeManagement.Models;
+﻿using HomeManagement.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static HomeManagement.App.Common.Constants;
 
 namespace HomeManagement.App.Services.Rest
 {
-    public interface ICurrencyServiceClient
+    public class CurrencyServiceClient
     {
-        Task<IEnumerable<CurrencyModel>> GetCurrencies();
-    }
+        BaseRestClient restClient;
 
-    public class CurrencyServiceClient : ICurrencyServiceClient
-    {
+        public CurrencyServiceClient()
+        {
+            restClient = new BaseRestClient(Endpoints.BASEURL);
+        }
+
         public async Task<IEnumerable<CurrencyModel>> GetCurrencies()
         {
-            return await RestClientFactory
-                .CreateAuthenticatedClient()
-                .GetAsync(Constants.Endpoints.Currency.CURRENCY)
-                .ReadContent<IEnumerable<CurrencyModel>>();
+            var api = Endpoints.Currency.CURRENCY;
+            var result = await restClient.Get<IEnumerable<CurrencyModel>>(api);
+            return result;
         }
     }
 }

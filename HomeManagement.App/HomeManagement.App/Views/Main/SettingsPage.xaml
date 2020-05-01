@@ -3,11 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HomeManagement.App.Views.Main.Settings"
              xmlns:viewModels="clr-namespace:HomeManagement.App.ViewModels"
-             xmlns:Controls="clr-namespace:HomeManagement.App.Views.Controls"
              xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
              xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
-             BackgroundColor="{StaticResource TabBarColor}"
-             Icon="settings_48dp.png">
+             xmlns:cards="clr-namespace:HomeManagement.App.Views.Cards"
+             BackgroundColor="{StaticResource TabBarColor}">
     <ContentPage.Behaviors>
         <Beh:TranslationBehavior LanguageKey="Settings" />
     </ContentPage.Behaviors>
@@ -21,52 +20,10 @@
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
-            <Frame Margin="5, 5, 5, 5">
-                <StackLayout Orientation="Vertical">
-                    <StackLayout Orientation="Horizontal">
-                        <Label VerticalOptions="Center" HorizontalOptions="Start">
-                            <Label.Behaviors>
-                                <Beh:TranslationBehavior LanguageKey="LanguageOptions" />
-                            </Label.Behaviors>
-                        </Label>
-                    </StackLayout>
-                    <StackLayout Orientation="Horizontal">
-                        <Label VerticalOptions="Center" HorizontalOptions="Start">
-                            <Label.Behaviors>
-                                <Beh:TranslationBehavior LanguageKey="CurrentLanguage" />
-                            </Label.Behaviors>
-                        </Label>
-                        <Label VerticalOptions="Center" HorizontalOptions="Start">
-                            <Label.Behaviors>
-                                <Beh:TranslationBehavior LanguageKey="Language" />
-                            </Label.Behaviors>
-                        </Label>
-                        <Button Command="{Binding ChangeLanguageCommand}" Image="language_18dp.png" 
-                            WidthRequest="30" HeightRequest="30" HorizontalOptions="EndAndExpand" />
-                    </StackLayout>
-                </StackLayout>
-            </Frame>
-            <Frame Margin="5, 5, 5, 5">
-                <StackLayout Orientation="Vertical">
-                    <StackLayout Orientation="Horizontal">
-                        <Controls:Checkbox Checked="{Binding OfflineModeEnabled}" VerticalOptions="Center"/>
-                        <Label>
-                            <Label.Behaviors>
-                                <Beh:TranslationBehavior LanguageKey="SyncOptions" />
-                            </Label.Behaviors>
-                        </Label>
-                    </StackLayout>
-                    <StackLayout Orientation="Horizontal">
-                        <Label FontSize="Micro"   HorizontalOptions="Start">
-                            <Label.Behaviors>
-                                <Beh:TranslationBehavior LanguageKey="OfflineModeDescription" />
-                            </Label.Behaviors>
-                        </Label>
-                        <Button Image="red_trash_18dp.png" WidthRequest="30" HeightRequest="30"
-                                HorizontalOptions="EndAndExpand" Command="{Binding ClearCacheCommand}" />
-                    </StackLayout>
-                </StackLayout>
-            </Frame>
+            <cards:LanguageCard />
+            <cards:OfflineModeCard />
+            <cards:DailyBackupCard />
+
             <Frame x:Name="logFileFrame" IsVisible="False" Margin="5, 5, 5, 5">
                 <StackLayout>
                     <Button Clicked="ViewLogFile" Text="View Log File" />
@@ -74,7 +31,7 @@
             </Frame>
             <Frame Margin="5, 5, 5, 5" VerticalOptions="EndAndExpand">
                 <StackLayout>
-                    <Button Clicked="OnLogoutClicked">
+                    <Button Command="{Binding LogoutCommand}">
                         <Button.Behaviors>
                             <Beh:TranslationBehavior LanguageKey="Logout" />
                         </Button.Behaviors>

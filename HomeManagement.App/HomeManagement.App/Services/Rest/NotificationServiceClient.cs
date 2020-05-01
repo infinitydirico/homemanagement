@@ -1,35 +1,30 @@
-﻿using HomeManagement.App.Common;
-using HomeManagement.Models;
-using System;
+﻿using HomeManagement.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static HomeManagement.App.Common.Constants;
 
 namespace HomeManagement.App.Services.Rest
 {
-    public class NotificationServiceClient : INotificationServiceClient
+    public class NotificationServiceClient
     {
+        BaseRestClient restClient;
+
+        public NotificationServiceClient()
+        {
+            restClient = new BaseRestClient(Endpoints.BASEURL);
+        }
+
         public async Task<IEnumerable<NotificationModel>> GetNotifications()
         {
-            return await RestClientFactory
-                .CreateAuthenticatedClient()
-                .GetAsync($"{Constants.Endpoints.Notifications.Notification}")
-                .ReadContent<IEnumerable<NotificationModel>>();
+            var api = $"{Endpoints.Notifications.Notification}";
+            var result = await restClient.Get<IEnumerable<NotificationModel>>(api);
+            return result;
         }
 
         public async Task UpdateNotification(NotificationModel notificationModel)
         {
-            var result = await RestClientFactory
-                .CreateAuthenticatedClient()
-                .PutAsync($"{Constants.Endpoints.Notifications.Notification}", notificationModel.SerializeToJson());
-
-            result.EnsureSuccessStatusCode();
+            var api = $"{Endpoints.Notifications.Notification}";
+            await restClient.Put(api, notificationModel);
         }
-    }
-
-    public interface INotificationServiceClient
-    {
-        Task<IEnumerable<NotificationModel>> GetNotifications();
-
-        Task UpdateNotification(NotificationModel notificationModel);
     }
 }

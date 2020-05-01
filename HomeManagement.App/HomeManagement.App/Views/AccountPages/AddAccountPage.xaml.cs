@@ -1,4 +1,5 @@
-﻿using HomeManagement.App.ViewModels;
+﻿using HomeManagement.App.Common;
+using HomeManagement.App.ViewModels;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -14,7 +15,8 @@ namespace HomeManagement.App.Views.AccountPages
 
             ((AddAccountViewModel)BindingContext).OnAccountCreated += (s, e) =>
             {
-                Navigation.RemovePage(this);
+                MessagingCenter.Send(this, Constants.Messages.UpdateOnAppearing);
+                Navigation.PopAsync();
             };
 
             ((AddAccountViewModel)BindingContext).OnError += (s, e) =>

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace HomeManagement.Models
@@ -9,51 +7,22 @@ namespace HomeManagement.Models
     {
         public AccountsEvolutionModel()
         {
-            this.Balances = new List<AccountBalanceModel>();
+            this.Accounts = new List<AccountBalanceModel>();
         }
 
-        [DataMember(Name = "balances")]
-        public List<AccountBalanceModel> Balances { get; set; }
+        [DataMember(Name = "accounts")]
+        public List<AccountBalanceModel> Accounts { get; set; }
 
         public int LowestValue { get; set; }
 
         public int HighestValue { get; set; }
-
-        public List<Dictionary<string, string>> ToDictionary()
-        {
-            var list = new List<Dictionary<string, string>>();
-            Dictionary<string, string> values = new Dictionary<string, string>();
-
-            foreach (var balance in Balances)
-            {
-                for (int i = 0; i < balance.BalanceEvolution.Count; i++)
-                {
-                    var item = balance.BalanceEvolution[i] * 1000;
-                    var monthName = new DateTime(DateTime.Now.Year, i + 1, 1).ToString("MMMM", new CultureInfo("es"));
-                    values.Add(monthName, item.ToString());
-                }
-
-                Dictionary<string, string> ret = new Dictionary<string, string>(values.Count,values.Comparer);
-
-                foreach (KeyValuePair<string, string> entry in values)
-                {
-                    ret.Add(entry.Key, entry.Value);
-                }
-
-                list.Add(ret);
-
-                values.Clear();
-            }
-
-            return list;
-        }
     }
 
     public class AccountBalanceModel
     {
         public AccountBalanceModel()
         {
-            this.BalanceEvolution = new List<int>();
+            this.BalanceEvolution = new List<MonthBalance>();
         }
 
         [DataMember(Name = "accountId")]
@@ -63,6 +32,15 @@ namespace HomeManagement.Models
         public string AccountName { get; set; }
 
         [DataMember(Name = "balanceEvolution")]
-        public List<int> BalanceEvolution { get; set; }
+        public List<MonthBalance> BalanceEvolution { get; set; }
+    }
+
+    public class MonthBalance
+    {
+        [DataMember(Name = "month")]
+        public string Month { get; set; }
+
+        [DataMember(Name = "balance")]
+        public int Balance { get; set; }
     }
 }

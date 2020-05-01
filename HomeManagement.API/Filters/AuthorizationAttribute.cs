@@ -1,8 +1,6 @@
-﻿using HomeManagement.API.Business;
-using HomeManagement.API.Data.Entities;
+﻿using HomeManagement.Api.Core;
 using HomeManagement.API.Extensions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -17,8 +15,6 @@ namespace HomeManagement.API.Filters
 {
     public class AuthorizationAttribute : Attribute, IAsyncActionFilter
     {
-        private JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-
         public virtual async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             if (IsDropboxRequest(context.HttpContext.Request.QueryString))
@@ -36,31 +32,16 @@ namespace HomeManagement.API.Filters
                 return;
             }
 
-            var token = header.GetJwtSecurityToken();
+            var token = TokenFactory.Reader(header);
 
-            if (token.HasExpired())
+            if (TokenFactory.IsExpired(token))
             {
                 context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Forbidden, Content = "Token has expired" };
 
                 return;
             }
 
-            var userManager = context.HttpContext.RequestServices.GetService(typeof(UserManager<ApplicationUser>)) as UserManager<ApplicationUser>;
-
             var email = token.Claims.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
-
-            var user = await userManager.FindByEmailAsync(email.Value);
-
-            if (user == null)
-            {
-                context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.NotFound, Content = "The user does not exists" };
-
-                return;
-            }
-
-            var userService = context.HttpContext.RequestServices.GetService(typeof(IUserSessionService)) as IUserSessionService;
-
-            userService.RegisterScopedUser(email.Value);
 
             context.HttpContext.User = new GenericPrincipal(new ClaimsIdentity(token.Claims), Array.Empty<string>());
 

@@ -12,16 +12,10 @@ namespace HomeManagement.App.ViewModels
 {
     public class DashboardViewModel : LocalizationBaseViewModel
     {
-        IAccountMetricsServiceClient metricClient = App._container.Resolve<IAccountMetricsServiceClient>();
+        private readonly AccountMetricsServiceClient accountMetricsServiceClient = new AccountMetricsServiceClient();
         INotificationManager notificationManager = App._container.Resolve<INotificationManager>();
 
         public event EventHandler OnBalancesChanged;
-
-        public int IncomePercentage { get; private set; }
-        public int TotalIncome { get; private set; }
-
-        public int OutcomePercentage { get; private set; }
-        public int TotalOutcome { get; private set; }
 
         public IEnumerable<NotificationModel> Notifications { get; private set; }
 
@@ -31,39 +25,25 @@ namespace HomeManagement.App.ViewModels
 
         protected override async Task InitializeAsync()
         {
-            var income = await metricClient.GetTotalIncome();
-
-            var outcome = await metricClient.GetTotalOutcome();
-
             Notifications = await notificationManager.GetNotifications();
 
             await RetrieveAccountBalances();
 
-            IncomePercentage = income.Percentage;
-            TotalIncome = income.Total;
-
-            OutcomePercentage = outcome.Percentage;
-            TotalOutcome = outcome.Total;
-
-            OnPropertyChanged(nameof(IncomePercentage));
-            OnPropertyChanged(nameof(OutcomePercentage));
-            OnPropertyChanged(nameof(TotalIncome));
-            OnPropertyChanged(nameof(TotalOutcome));
             OnPropertyChanged(nameof(Notifications));
         }
 
         private async Task RetrieveAccountBalances()
         {
-            var balances = await metricClient.GetAccountsBalances();
+            var balances = await accountMetricsServiceClient.GetAccountsBalances();
 
             AccountsEvolutions.AddRange(
-                       from b in balances.Balances
+                       from b in balances.Accounts
                        select new AccountEvolution
                        {
                            AccountName = b.AccountName,
                            Series = b.BalanceEvolution.Select(x => new SeriesValue
                            {
-                               Value = x,
+                               Value = x.Balance,
                                Label = new DateTime(DateTime.Now.Year, b.BalanceEvolution.IndexOf(x) + 1, 1).ToString("MMM")
                            }).ToList()
                        });

@@ -1,0 +1,54 @@
+﻿@using HomeManagement.Models;
+@using HomeManagement.API.WebApp.Services;
+@using HomeManagement.API.WebApp.Services.Rest;
+@using Microsoft.AspNetCore.Html;
+
+@inject StorageRestClient StorageRestClient
+@inject IJSRuntime js
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@if (StorageFiles == null)
+{
+    <MatProgressBar Indeterminate="true" Closed="StorageFiles == null"></MatProgressBar>
+}
+else
+{
+    <InputFile OnChange="UploadFile" />
+    <table class="table table-borderless">
+        <tbody>
+            @foreach (var file in StorageFiles)
+            {
+                <tr @onclick="() => DownloadFile(file)">
+                    <td>@file.GetFilename()</td>
+                    <td>@file.Size</td>
+                    <td>@file.LastModified</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    List<StorageFileModel> StorageFiles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        StorageFiles = await StorageRestClient.GetStorageFileModels();
+    }
+
+    public async Task DownloadFile(StorageFileModel storageFileModel)
+    {
+        var contents = await StorageRestClient.DownloadFile(storageFileModel.Tag);
+        await FileUtil.SaveAs(js, storageFileModel.GetFilename(), contents);
+    }
+
+    public async Task UploadFile(IFileListEntry[] entries)
+    {
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = state.User;
+        await StorageRestClient.UploadFiles(entries, user.Identity.Name);
+        StorageFiles = null;
+        await OnInitializedAsync();
+    }
+}

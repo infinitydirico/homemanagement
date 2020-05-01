@@ -279,4 +279,13 @@
   <data name="SignUp" xml:space="preserve">
     <value>Sign Up</value>
   </data>
+  <data name="DailyBackups" xml:space="preserve">
+    <value>Enable daily backups</value>
+  </data>
+  <data name="DeleteAccount" xml:space="preserve">
+    <value>Are you sure you want to delete the account</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
 </root>

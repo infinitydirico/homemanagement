@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Frame xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cards="clr-namespace:HomeManagement.App.ViewModels.Cards"
+             mc:Ignorable="d"
+             x:Class="HomeManagement.App.Views.Cards.TotalIncomeCard"
+             xmlns:Conv="clr-namespace:HomeManagement.App.Converters"
+             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
+             BackgroundColor="#303030">
+    <Frame.BindingContext>
+        <cards:TotalIncomeCardViewModel />
+    </Frame.BindingContext>
+    <Frame.Resources>
+        <ResourceDictionary>
+            <Conv:PercentageColorConverter x:Key="PercentageColor" />
+            <Conv:IsGreaterThanToBoolConverter x:Key="GreaterThan" />
+            <Conv:IsLessThanToBoolConverter x:Key="LessThan" />
+            <Conv:TranslationConverter x:Key="Translation" />
+        </ResourceDictionary>
+    </Frame.Resources>
+    <StackLayout Orientation="Vertical">
+        <Label>
+            <Label.Behaviors>
+                <Beh:TranslationBehavior LanguageKey="OverallIncome" />
+            </Label.Behaviors>
+        </Label>
+        <StackLayout Orientation="Horizontal">
+            <StackLayout HorizontalOptions="StartAndExpand">
+                <Label Text="{Binding TotalIncome}"  />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
+                <Label Text="{Binding IncomePercentage}" TextColor="{Binding IncomePercentage, Converter={StaticResource PercentageColor}}" />
+
+                <Image Source="trending_down_18dp.png" IsVisible="{Binding IncomePercentage, Converter={StaticResource LessThan}}" HeightRequest="25" />
+                <Image Source="trending_up_18dp.png" IsVisible="{Binding IncomePercentage, Converter={StaticResource GreaterThan}}" />
+            </StackLayout>
+        </StackLayout>
+    </StackLayout>
+</Frame>

@@ -1,6 +1,7 @@
-﻿using HomeManagement.API.Business;
-using HomeManagement.API.Extensions;
+﻿using HomeManagement.API.Extensions;
+using HomeManagement.Core.Extensions;
 using HomeManagement.API.Filters;
+using HomeManagement.Business.Contracts;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,17 +33,21 @@ namespace HomeManagement.API.Controllers.Categories
         }
 
         [HttpPost("upload")]
-        public IActionResult UploadCategories()
+        public IActionResult UploadCategories([FromForm(Name = "myFile")]IFormFile myFile)
         {
             var basePath = AppContext.BaseDirectory + "\\{0}";
             if (Request.Form == null) return BadRequest();
 
-            foreach (IFormFile formFile in Request.Form.Files)
-            {
-                var bytes = formFile.OpenReadStream().GetBytes();
+            //foreach (IFormFile formFile in Request.Form.Files)
+            //{
+            //    var bytes = formFile.OpenReadStream().GetBytes();
 
-                categoryService.Import(bytes);
-            }
+            //    categoryService.Import(bytes);
+            //}
+
+            var bytes = myFile.OpenReadStream().GetBytes();
+
+            categoryService.Import(bytes);
 
             return Ok();
         }

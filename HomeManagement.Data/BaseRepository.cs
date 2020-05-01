@@ -70,7 +70,7 @@ namespace HomeManagement.Data
         public decimal Sum(Expression<Func<T, int>> selector, Expression<Func<T, bool>> predicate = null) =>
             predicate == null ? context.Set<T>().Sum(selector) : context.Set<T>().Where(predicate).Sum(selector);
 
-        public decimal Sum(Expression<Func<T, decimal>> selector, Expression<Func<T, bool>> predicate = null) =>
+        public decimal Sum(Func<T, decimal> selector, Func<T, bool> predicate = null) =>
             predicate == null ? context.Set<T>().Sum(selector) : context.Set<T>().Where(predicate).Sum(selector);
 
         public virtual void Update(T entity)

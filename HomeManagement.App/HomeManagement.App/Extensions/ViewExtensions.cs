@@ -69,5 +69,44 @@ namespace HomeManagement.App.Extensions
             element.Animate<Color>(name, transform, callback, 16, length, easing, (v, c) => taskCompletionSource.SetResult(c));
             return taskCompletionSource.Task;
         }
+
+        public static TViewModel GetViewModel<TViewModel>(this Element element)
+        {
+            TViewModel viewModel;
+            Element searchedView = element;
+
+            while (searchedView.Parent != null)
+            {
+                searchedView = searchedView.Parent;
+                if(searchedView.BindingContext is TViewModel)
+                {
+                    viewModel = (TViewModel)searchedView.BindingContext;
+                    return viewModel;
+                }
+            }
+            throw new Exception($"No viewmodel found for {typeof(TViewModel).Name}");
+        }
+
+        public static async Task RotateActions(this StackLayout stackLayout)
+        {
+            var layouts = stackLayout.Children.ToList();
+
+            var visibleLayout = layouts.Last(x => x.IsVisible);
+            var hiddenLayout = layouts.Last(x => !x.IsVisible);
+
+            if (hiddenLayout.IsVisible) await RotateViews(hiddenLayout, visibleLayout);
+            else await RotateViews(visibleLayout, hiddenLayout);
+        }
+
+        private static async Task RotateViews(View source, View target)
+        {
+            await source.RotateXTo(-90, 250, Easing.SpringIn);
+
+            source.IsVisible = false;
+            target.IsVisible = true;
+
+            target.RotationX = -90;
+            await target.RotateXTo(0, 250, Easing.SpringOut);
+        }
     }
 }

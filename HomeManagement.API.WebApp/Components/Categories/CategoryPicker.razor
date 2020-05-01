@@ -1,0 +1,52 @@
+﻿@using HomeManagement.Models;
+@using HomeManagement.API.WebApp.Services
+
+@inject RestClient RestClient
+
+@if (Categories == null)
+{
+    <MatProgressBar Indeterminate="true" Closed="Categories == null"></MatProgressBar>
+}
+else
+{
+    <MatSelect Label="Pick a Category" @bind-Value="SelectedCategoryId">
+        @foreach (var category in Categories)
+        {
+            <MatOption TValue="int" Value="@category.Id">
+                @category.Name
+            </MatOption>
+        }
+    </MatSelect>
+}
+
+@code {
+    private int selectedCategoryId;
+
+    public List<CategoryModel> Categories;
+
+    public int SelectedCategoryId
+    {
+        get => selectedCategoryId;
+        set
+        {
+            selectedCategoryId = value;
+            OnCategoryChanged.InvokeAsync(selectedCategoryId);
+        }
+    }
+
+    [Parameter]
+    public CategoryModel Category { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnCategoryChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categories = await RestClient.GetAsync<List<CategoryModel>>("category/active");
+
+        if(Category != null)
+        {
+            selectedCategoryId = Category.Id;
+        }
+    }
+}

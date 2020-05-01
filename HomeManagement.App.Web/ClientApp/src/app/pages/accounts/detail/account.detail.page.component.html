@@ -1,0 +1,21 @@
+<div class="row">
+    <div class="col-lg-6 col-sm-12">
+        <div class="row">
+            <div class="col-lg-12 col-sm-12">
+                <content-card>
+                    <account-detail-card [account]="account"></account-detail-card>
+                </content-card>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-sm-12">
+                <!--<content-card [title]="'Add new transaction'">
+                    <transaction-add-card [account]="account"></transaction-add-card>
+                </content-card>-->
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-sm-12">
+        <transaction-list-card [account]="account"></transaction-list-card>
+    </div>
+</div>

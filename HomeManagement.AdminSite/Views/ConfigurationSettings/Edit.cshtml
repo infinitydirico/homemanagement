@@ -1,4 +1,5 @@
 ﻿@model HomeManagement.Models.ConfigurationSettingModel
+@using static HomeManagement.AdminSite.Views.RazorExtensions
 
 @{
     ViewData["Title"] = "Edit";
@@ -19,7 +20,7 @@
                         <input asp-for="Id" class="form-control" value="@Model.Id" disabled />
                         <span asp-validation-for="Id" class="text-danger"></span>
                     </div>
-                    <div class="form-group">                        
+                    <div class="form-group">
                         <label asp-for="Name" class="control-label"></label>
                         <input asp-for="Name" class="form-control" value="@Model.Name" />
                         <span asp-validation-for="Name" class="text-danger"></span>
@@ -37,7 +38,7 @@
         </div>
 
         <div>
-            <a asp-action="Index">Back to List</a>
+            <a asp-host="@this.Context.GetHost()" asp-action="Index">Back to List</a>
         </div>
     </main>
 </div>

@@ -9,7 +9,7 @@ namespace HomeManagement.App.ViewModels.Statistics
 {
     public class ExpensiveCategoriesViewModel : BaseViewModel
     {
-        IAccountMetricsServiceClient accountMetricsServiceClient = App._container.Resolve<IAccountMetricsServiceClient>();
+        private readonly AccountMetricsServiceClient accountMetricsServiceClient = new AccountMetricsServiceClient();
 
         public bool NoAvaibleStatistics => !DisplayExpensiveCategoriesChart;
 

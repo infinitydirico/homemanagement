@@ -11,30 +11,30 @@ namespace HomeManagement.App.Data
     {
         protected MobileAppDbContext dbContext = new MobileAppDbContext();
 
-        public T FirstOrDefault(Expression<Func<T, bool>> predicate)
-            => dbContext.Set<T>().FirstOrDefault(predicate);
+        public T FirstOrDefault(Expression<Func<T, bool>> predicate) => GetDbSet().FirstOrDefault(predicate);
 
-        public T FirstOrDefault() => dbContext.Set<T>().FirstOrDefault();
+        public T FirstOrDefault() => GetDbSet().FirstOrDefault();
 
-        public bool Any() => dbContext.Set<T>().Any();
+        public bool Any() => GetDbSet().Any();
 
-        public bool Any(Expression<Func<T, bool>> predicate)
-            => dbContext.Set<T>().Any(predicate);
+        public bool Any(Expression<Func<T, bool>> predicate) => GetDbSet().Any(predicate);
 
-        public int Count() => dbContext.Set<T>().Count();
+        public int Count() => GetDbSet().Count();
 
-        public int Count(Expression<Func<T, bool>> predicate) => dbContext.Set<T>().Count(predicate);
+        public int Count(Expression<Func<T, bool>> predicate) => GetDbSet().Count(predicate);
 
         public bool HasRecords() => Count() > 0;
 
-        public IEnumerable<T> Skip(int skip) => dbContext.Set<T>().Skip(skip);
+        public IEnumerable<T> Skip(int skip) => GetDbSet().Skip(skip);
 
-        public IEnumerable<T> Take(int take) => dbContext.Set<T>().Take(take);
+        public IEnumerable<T> Take(int take) => GetDbSet().Take(take);
 
-        public IEnumerable<T> Where(Func<T, bool> predicate) => dbContext.Set<T>().Where(predicate);
+        public IEnumerable<T> Where(Func<T, bool> predicate) => GetDbSet().Where(predicate);
+
+        public IEnumerable<T> GetAll() => GetDbSet().ToList();
 
         public IOrderedEnumerable<T> OrderByDescending<TKey>(Func<T, TKey> keySelector) 
-            => dbContext.Set<T>().OrderByDescending(keySelector);
+            => GetDbSet().OrderByDescending(keySelector);
 
         public virtual void Add(T entity)
         {
@@ -63,5 +63,7 @@ namespace HomeManagement.App.Data
         }
 
         public void Commit() => dbContext.SaveChanges();
+
+        private IQueryable<T> GetDbSet() => dbContext.Set<T>().AsNoTracking();
     }
 }
