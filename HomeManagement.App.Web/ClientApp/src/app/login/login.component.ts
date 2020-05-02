@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../auth/authentication.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatDialog } from '@angular/material';
+import { ForgotPasswordDialogComponent } from '../cards/user/forgot-password/forgot.password.dialog.component';
 
 @Component({
   selector: 'login',
@@ -15,7 +16,8 @@ export class LoginComponent {
   isLoading: boolean = false;
 
   constructor(private authenticationService: AuthService,
-    private snackBar: MatSnackBar) {    
+    private snackBar: MatSnackBar,
+    public dialog: MatDialog) {    
   }
 
   login(){
@@ -27,6 +29,12 @@ export class LoginComponent {
       this.snackBar.open('An error happened while authenticating', 'ok', {
         duration : 2000
       })
+    });
+  }
+
+  forgotPassword(){
+    let ForgotPasswordDialog = this.dialog.open(ForgotPasswordDialogComponent, {
+      width: '250px'
     });
   }
 }

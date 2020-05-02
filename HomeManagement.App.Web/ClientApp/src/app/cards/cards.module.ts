@@ -21,6 +21,7 @@ import { OutcomeCategoriesChart } from './accounts/outcome-categories/outcome.ca
 import { AccountsEvolutionCardComponent } from './metrics/accounts-evolution/accounts.evolution.card.component';
 import { TransactionAddDialogComponent } from './transactions/add-dialog/transaction.add.dialog.component';
 import { PreferencesCardComponent } from './preferences/preferences.card.component';
+import { ForgotPasswordDialogComponent } from "./user/forgot-password/forgot.password.dialog.component";
 
 @NgModule({
     declarations: [
@@ -42,7 +43,8 @@ import { PreferencesCardComponent } from './preferences/preferences.card.compone
         OutcomeCategoriesChart,
         AccountsEvolutionCardComponent,
         TransactionAddDialogComponent,
-        PreferencesCardComponent
+        PreferencesCardComponent,
+        ForgotPasswordDialogComponent
     ],
     imports: [
         MaterialModule,
@@ -68,13 +70,15 @@ import { PreferencesCardComponent } from './preferences/preferences.card.compone
         OutcomeCategoriesChart,
         AccountsEvolutionCardComponent,
         TransactionAddDialogComponent,
-        PreferencesCardComponent
+        PreferencesCardComponent,
+        ForgotPasswordDialogComponent
     ],
     entryComponents: [
         ReminderAddDialog,
         AccountAddDialog,
         CategoryAddDialog,
-        TransactionAddDialogComponent
+        TransactionAddDialogComponent,
+        ForgotPasswordDialogComponent
     ]
 })
 export class CardsModule { }

@@ -10,6 +10,9 @@
         <button *ngIf="isAuthenticated" matTooltip="View your Personal Info" mat-icon-button color="default" (click)="viewAccount()">
           <mat-icon>account_circle</mat-icon>
         </button>
+        <button *ngIf="isAuthenticated" matTooltip="Change Password" mat-icon-button color="default" (click)="changePassword()">
+          <mat-icon>security</mat-icon>
+        </button>
         <button *ngIf="isAuthenticated" matTooltip="Download Personal Info" mat-icon-button color="default" (click)="downloadUserInfo()">
           <mat-icon>get_app</mat-icon>
         </button>
@@ -27,7 +30,7 @@
           <mat-icon>person_outline</mat-icon>
         </button>
         <button *ngIf="!isAuthenticated" (click)="register()" matTooltip="Register" mat-icon-button color="default">
-          <mat-icon>get_app</mat-icon>
+          <mat-icon>person_add</mat-icon>
         </button>
       </mat-toolbar-row>
       <mat-toolbar-row *ngIf="isMobile && isAuthenticated">

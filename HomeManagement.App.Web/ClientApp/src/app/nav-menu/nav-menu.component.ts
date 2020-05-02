@@ -82,4 +82,8 @@ export class NavMenuComponent implements OnInit {
       panelClass: 'bottom-sheet'
     });
   }
+
+  changePassword(){
+    this.router.navigate(['/changepassword']);
+  }
 }

@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { HttpModule } from "@angular/http";
@@ -36,6 +36,7 @@ import { PaletteService } from './services/palette.service';
 import { CacheService } from './services/cache.service';
 import { NotificationsBottomBarComponent } from './components/notifications-bottom-bar/notifications.bar.component';
 import { MatMenuModule } from '@angular/material/menu';
+import { ChangePasswordComponent } from "./pages/user/password/change.password.component";
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { MatMenuModule } from '@angular/material/menu';
     UserComponent,
     AccountComponent,
     AccountDetailComponent,
-    NotificationsBottomBarComponent
+    NotificationsBottomBarComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -64,13 +66,15 @@ import { MatMenuModule } from '@angular/material/menu';
         canActivate: [AuthGuard]
       },
       { path: 'user', component: UserComponent, canActivate: [AuthGuard]},
+      { path: 'changepassword', component: ChangePasswordComponent, canActivate: [AuthGuard]}      
     ]),
     BrowserModule,
     MaterialModule,
     CardsModule,
     ApiModule,
     HttpModule,
-    MatMenuModule
+    MatMenuModule,
+    ReactiveFormsModule
   ],
   providers: [
     AuthGuard,

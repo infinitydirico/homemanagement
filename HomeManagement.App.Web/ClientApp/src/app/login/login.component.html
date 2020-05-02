@@ -19,11 +19,19 @@
         <div class="row col-sm-12">
             <mat-checkbox [(ngModel)]="remember">Remeber Me</mat-checkbox>
         </div>
-        <div class="row col-sm-12">
-            <button mat-raised-button (click)="login()"
-                    color="primary">
-                    <mat-icon>send</mat-icon>
-            </button>
+        <div class="row">
+            <div class="col-sm-6">
+                <button mat-raised-button (click)="login()" matTooltip="Sign In"
+                        color="default">
+                        <mat-icon>send</mat-icon>
+                </button>
+            </div>
+            <div class="col-sm-6">
+                <button mat-raised-button matTooltip="Forgot Password"
+                        color="default" (click)="forgotPassword()">
+                        <mat-icon>lock</mat-icon>
+                </button>
+            </div>
         </div>
         <br />
         <div class="row col-sm-12" *ngIf="isLoading">
