@@ -7,7 +7,7 @@
     </div>
     <div class="col-sm-2"></div>
     <div class="col-sm-2">
-      <button mat-button (click)="add()" class="pull-right">
+      <button mat-button (click)="add()" class="pull-right" matTooltip="Add new transaction">
         <mat-icon aria-hidden="false" aria-label="Example home icon">add</mat-icon>
       </button>
     </div>
@@ -62,12 +62,12 @@
   <div class="row">
     <div class="col-lg-6 col-sm-12">
       <ul class="pagination pagination-primary">
-        <li [style.cursor]="'pointer'" (click)="paginate(1)">
+        <li [style.cursor]="'pointer'" (click)="paginate(1)" matTooltip="First page">
           <a>
             <i class="material-icons">first_page</i>
           </a>
         </li>
-        <li [style.cursor]="'pointer'" (click)="previousPage()">
+        <li [style.cursor]="'pointer'" (click)="previousPage()" matTooltip="Previous page">
           <a>
             <i class="material-icons">chevron_left</i>
           </a>
@@ -78,12 +78,12 @@
             {{ p }}
           </a>
         </li>
-        <li [style.cursor]="'pointer'" (click)="nextPage()">
+        <li [style.cursor]="'pointer'" (click)="nextPage()" matTooltip="Next page">
           <a>
             <i class="material-icons">chevron_right</i>
           </a>
         </li>
-        <li [style.cursor]="'pointer'" (click)="paginate(page.totalPages)">
+        <li [style.cursor]="'pointer'" (click)="paginate(page.totalPages)" matTooltip="Last page">
           <a>
             <i class="material-icons">last_page</i>
           </a>
