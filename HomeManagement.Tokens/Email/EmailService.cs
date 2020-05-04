@@ -24,14 +24,14 @@ namespace HomeManagement.Api.Core.Email
         {
             var msg = CreateMessage(from, to, subject, plainContent, htmlContent);
 
-            if (to.Any()) throw new Exception($"No receiver was provided.");
+            if (!to.Any()) throw new Exception($"No receiver was provided.");
 
             if (to.Count > 1) msg.AddTos(to.Select(t => new EmailAddress(t)).ToList());
             else msg.AddTo(to.First());
 
             var response = await sendGridClient.SendEmailAsync(msg);
 
-            if (response.StatusCode != HttpStatusCode.OK) throw new Exception($"There was an error while trying to send an email");
+            if (response.StatusCode != HttpStatusCode.Accepted) throw new Exception($"There was an error while trying to send an email");
         }
 
         public async Task Send(string from, List<string> to, string subject, string plainContent, string htmlContent, List<Attachment> attachments)
@@ -45,7 +45,7 @@ namespace HomeManagement.Api.Core.Email
 
             var response = await sendGridClient.SendEmailAsync(msg);
 
-            if (response.StatusCode != HttpStatusCode.OK) throw new Exception($"There was an error while trying to send an email");
+            if (response.StatusCode != HttpStatusCode.Accepted) throw new Exception($"There was an error while trying to send an email");
         }
 
         public async Task Send(string from, List<string> to, string subject, string plainContent, string htmlContent, string filename, string content)

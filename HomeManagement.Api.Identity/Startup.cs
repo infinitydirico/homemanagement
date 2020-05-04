@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HomeManagement.Api.Core.HealthChecks;
+using HomeManagement.Api.Core.Email;
 
 namespace HomeManagement.Api.Identity
 {
@@ -107,6 +108,8 @@ namespace HomeManagement.Api.Identity
             services.AddScoped<ICryptography, AesCryptographyService>();
 
             services.AddScoped<IBroadcaster, Broadcaster>();
+
+            services.AddScoped<IEmailService, EmailService>();
 
             services.AddHealthChecks()
                 .AddCheck<MemoryHealthCheck>("memory")
