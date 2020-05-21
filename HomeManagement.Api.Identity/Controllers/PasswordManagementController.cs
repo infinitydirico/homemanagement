@@ -49,28 +49,41 @@ namespace HomeManagement.Api.Identity.Controllers
         }
 
         [HttpPost("forgotpassword")]
-        public async Task<IActionResult> Forgot([FromBody] string email)
+        public async Task<IActionResult> Forgot([FromBody] ForgotPasswordModel model)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState.Select(e => e.Value).ToList());
+
+            var email = model.Email;
+
             if (string.IsNullOrEmpty(email)) return BadRequest("Email is required");
 
             var appUser = await userManager.FindByEmailAsync(email);
 
             var token = await userManager.GeneratePasswordResetTokenAsync(appUser);
 
-            var randomPassword = CreateRandomPassword();
-            var resetResult = await userManager.ResetPasswordAsync(appUser, token, randomPassword);
-
-            if (!resetResult.Succeeded) return BadRequest(resetResult.Errors.ToList());
-
             await emailService.Send(
                 "no-reply@homemanagement.com",
                 new List<string> { email },
                 "Temporary Password",
-                $@"Here yours temporary password {randomPassword}. \r\n Update it as soon as you sign in the web page.",
-                $@"<strong>Here yours temporary password {randomPassword}. \r\n Update it as soon as you sign in the web page.</strong>");
+                $@"Here yours temporary password {GetEnvironmentUrl() + token}. \r\n Update it as soon as you sign in the web page.",
+                $@"<strong>Here yours temporary password {GetEnvironmentUrl() + token}. \r\n Update it as soon as you sign in the web page.</strong>");
+
+            //var randomPassword = CreateRandomPassword();
+            //var resetResult = await userManager.ResetPasswordAsync(appUser, token, randomPassword);
+
+            //if (!resetResult.Succeeded) return BadRequest(resetResult.Errors.ToList());
+
+            //await emailService.Send(
+            //    "no-reply@homemanagement.com",
+            //    new List<string> { email },
+            //    "Temporary Password",
+            //    $@"Here yours temporary password {randomPassword}. \r\n Update it as soon as you sign in the web page.",
+            //    $@"<strong>Here yours temporary password {randomPassword}. \r\n Update it as soon as you sign in the web page.</strong>");
 
             return Ok();
         }
+
+        private string GetEnvironmentUrl() => "http://localhost:5800/token?value=";
 
         private string CreateRandomPassword()
         {

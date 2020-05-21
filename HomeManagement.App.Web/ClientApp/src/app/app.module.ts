@@ -37,6 +37,8 @@ import { CacheService } from './services/cache.service';
 import { NotificationsBottomBarComponent } from './components/notifications-bottom-bar/notifications.bar.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { ChangePasswordComponent } from "./pages/user/password/change.password.component";
+import { TokenGuard } from './auth/token.guard';
+import { TokenPageComponent } from './pages/user/token/token.page.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,8 @@ import { ChangePasswordComponent } from "./pages/user/password/change.password.c
     AccountComponent,
     AccountDetailComponent,
     NotificationsBottomBarComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    TokenPageComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -66,7 +69,8 @@ import { ChangePasswordComponent } from "./pages/user/password/change.password.c
         canActivate: [AuthGuard]
       },
       { path: 'user', component: UserComponent, canActivate: [AuthGuard]},
-      { path: 'changepassword', component: ChangePasswordComponent, canActivate: [AuthGuard]}      
+      { path: 'changepassword', component: ChangePasswordComponent, canActivate: [AuthGuard]},
+      { path: 'token', component: TokenPageComponent, canActivate: [TokenGuard]}
     ]),
     BrowserModule,
     MaterialModule,
@@ -78,6 +82,7 @@ import { ChangePasswordComponent } from "./pages/user/password/change.password.c
   ],
   providers: [
     AuthGuard,
+    TokenGuard,
     AuthService,
     EndpointsService,
     CryptoService,
