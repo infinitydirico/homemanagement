@@ -39,6 +39,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { ChangePasswordComponent } from "./pages/user/password/change.password.component";
 import { TokenGuard } from './auth/token.guard';
 import { TokenPageComponent } from './pages/user/token/token.page.component';
+import { PasswordService } from './common/password.service';
 
 @NgModule({
   declarations: [
@@ -93,6 +94,7 @@ import { TokenPageComponent } from './pages/user/token/token.page.component';
     DateService,
     PaletteService,
     CacheService,
+    PasswordService,
   ],
   bootstrap: [AppComponent],
   entryComponents: [

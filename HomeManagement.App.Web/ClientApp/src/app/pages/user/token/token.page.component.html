@@ -6,19 +6,19 @@
                 <mat-label>New Password</mat-label>
                 <input name="newPasswordInput" type="password" autocomplete="off" 
                         #newPasswordInput matInput [(ngModel)]="newPassword">
-                <mat-icon matSuffix *ngIf="newPasswordInput.value.length > 0 && newPasswordInput.value.length < 6" [style.color]="colorService.getDanger()">
+                <mat-icon matSuffix *ngIf="newPasswordInput.value.length > 0 && newPasswordInput.value.length < 4" [style.color]="colorService.getDanger()">
                     error_outline
                 </mat-icon>
-                <mat-icon matSuffix *ngIf="newPasswordInput.value.length >= 6 && newPasswordInput.value.length < 10" [style.color]="colorService.getWarning()">
+                <mat-icon matSuffix *ngIf="newPasswordInput.value.length >= 4 && !isStrong()" [style.color]="colorService.getWarning()">
                     warning
                 </mat-icon>
-                <mat-icon matSuffix *ngIf="newPasswordInput.value.length >= 10" [style.color]="colorService.getSuccess()">
+                <mat-icon matSuffix *ngIf="newPasswordInput.value.length >= 6 && isStrong()" [style.color]="colorService.getSuccess()">
                     check
                 </mat-icon>
                 <mat-hint align="start">                    
-                    <small *ngIf="newPasswordInput.value.length > 0 && newPasswordInput.value.length < 6" [style.color]="colorService.getDanger()">Weak password</small>
-                    <small *ngIf="newPasswordInput.value.length >= 6 && newPasswordInput.value.length < 10" [style.color]="colorService.getWarning()">Medium password</small>
-                    <small *ngIf="newPasswordInput.value.length >= 10" [style.color]="colorService.getSuccess()">Strong password</small>
+                    <small *ngIf="newPasswordInput.value.length > 0 && newPasswordInput.value.length < 4" [style.color]="colorService.getDanger()">Weak password</small>
+                    <small *ngIf="newPasswordInput.value.length >= 4 && !isStrong()" [style.color]="colorService.getWarning()">Medium password</small>
+                    <small *ngIf="newPasswordInput.value.length >= 6 && isStrong()" [style.color]="colorService.getSuccess()">Strong password</small>
                 </mat-hint>
                 <mat-hint align="end">{{newPasswordInput.value.length}} / 20</mat-hint>
             </mat-form-field>

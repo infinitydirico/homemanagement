@@ -11,9 +11,17 @@ export class TokenGuard implements CanActivate {
 
     canActivate(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
         
-        if(!this.hasValue(childRoute)) return false;
+        if(!this.hasValue(childRoute)){
+            this.router.navigate(['/login']);
 
-        if(!this.isValid()) return false;
+            return false;
+        }
+
+        if(!this.isValid()) {
+            this.router.navigate(['/login']);
+
+            return false;
+        }
         
         return true;
     }
@@ -27,6 +35,6 @@ export class TokenGuard implements CanActivate {
     }
 
     isValid(){
-        return this.value.length > 0;
+        return this.value.length > 100;
     }
 }

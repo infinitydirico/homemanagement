@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ColorService } from 'src/app/services/color.service';
 import { MatSnackBar } from '@angular/material';
+import { PasswordService } from 'src/app/common/password.service';
 
 @Component({
   selector: 'token',
@@ -12,7 +13,9 @@ export class TokenPageComponent {
     newPassword:string;
     repeatNewPassword:string;
 
-    constructor(public colorService: ColorService, private snackBar: MatSnackBar){
+    constructor(public colorService: ColorService, 
+        private snackBar: MatSnackBar,
+        private passwordService: PasswordService){
     }
 
     submit(){
@@ -37,5 +40,9 @@ export class TokenPageComponent {
 
     passwordMatches(){
         return this.newPassword != this.repeatNewPassword;
+    }
+
+    isStrong(){
+        return this.passwordService.isStrong(this.newPassword);
     }
 }
