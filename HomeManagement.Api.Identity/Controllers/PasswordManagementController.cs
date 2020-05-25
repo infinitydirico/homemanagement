@@ -3,16 +3,18 @@ using HomeManagement.Api.Identity.Filters;
 using HomeManagement.Contracts;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace HomeManagement.Api.Identity.Controllers
-{    
+{
     [EnableCors("IdentityApiCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
@@ -21,14 +23,24 @@ namespace HomeManagement.Api.Identity.Controllers
         private readonly UserManager<IdentityUser> userManager;
         private readonly IEmailService emailService;
         private readonly ICryptography cryptography;
+        private readonly IConfiguration configuration;
 
         public PasswordManagementController(UserManager<IdentityUser> userManager,
             IEmailService emailService,
-            ICryptography cryptography)
+            ICryptography cryptography,
+            IConfiguration configuration)
         {
             this.userManager = userManager;
             this.emailService = emailService;
             this.cryptography = cryptography;
+            this.configuration = configuration;
+        }
+
+        [HttpGet]
+        public IActionResult test()
+        {
+            var url = GetEnvironmentUrl();
+            return Ok();
         }
 
         [Authorization]
@@ -68,39 +80,14 @@ namespace HomeManagement.Api.Identity.Controllers
                 $@"Here yours temporary password {GetEnvironmentUrl() + token}. \r\n Update it as soon as you sign in the web page.",
                 $@"<strong>Here yours temporary password {GetEnvironmentUrl() + token}. \r\n Update it as soon as you sign in the web page.</strong>");
 
-            //var randomPassword = CreateRandomPassword();
-            //var resetResult = await userManager.ResetPasswordAsync(appUser, token, randomPassword);
-
-            //if (!resetResult.Succeeded) return BadRequest(resetResult.Errors.ToList());
-
-            //await emailService.Send(
-            //    "no-reply@homemanagement.com",
-            //    new List<string> { email },
-            //    "Temporary Password",
-            //    $@"Here yours temporary password {randomPassword}. \r\n Update it as soon as you sign in the web page.",
-            //    $@"<strong>Here yours temporary password {randomPassword}. \r\n Update it as soon as you sign in the web page.</strong>");
-
             return Ok();
         }
 
-        private string GetEnvironmentUrl() => "http://localhost:5800/token?value=";
-
-        private string CreateRandomPassword()
+        private string GetEnvironmentUrl()
         {
-            var random = new Random();
-
-            var numericRandomPassword = random.Next(11111, 99999).ToString();
-            var randomUppercaseLetter = random.Next(65, 90);
-            var randomLowercaseLetter = random.Next(97, 122);
-            var randomSpecialCharacter = random.Next(35, 38);
-
-            var uppercaseLetter = char.ConvertFromUtf32(randomUppercaseLetter);
-            var lowerCaseLetter = char.ConvertFromUtf32(randomLowercaseLetter);
-            var specialCharacter = char.ConvertFromUtf32(randomSpecialCharacter);
-
-            var randomPassword = numericRandomPassword + uppercaseLetter + lowerCaseLetter + specialCharacter;
-
-            return randomPassword;
+            var tokenUrl = configuration.GetSection("Endpoints:WebApp:url").Value;
+            tokenUrl += "token?value=";
+            return tokenUrl;
         }
     }
 }
