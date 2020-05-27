@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '../auth/authentication.service';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { ForgotPasswordDialogComponent } from '../cards/user/forgot-password/forgot.password.dialog.component';
+import { IdentityService } from '../api/identity.service';
 
 @Component({
   selector: 'login',
@@ -17,7 +18,8 @@ export class LoginComponent {
 
   constructor(private authenticationService: AuthService,
     private snackBar: MatSnackBar,
-    public dialog: MatDialog) {    
+    public dialog: MatDialog,
+    private identityService: IdentityService) {    
   }
 
   login(){
@@ -33,8 +35,23 @@ export class LoginComponent {
   }
 
   forgotPassword(){
-    let ForgotPasswordDialog = this.dialog.open(ForgotPasswordDialogComponent, {
+    let forgotPasswordDialog = this.dialog.open(ForgotPasswordDialogComponent, {
       width: '250px'
+    });
+
+    forgotPasswordDialog.afterClosed().subscribe( (recoveryEmail:string) => {
+
+      if(recoveryEmail === undefined || recoveryEmail === null || recoveryEmail === '') return;
+
+      this.identityService.forgotPassword(recoveryEmail).subscribe(result => {
+        this.snackBar.open('Recovery sent to: '+recoveryEmail, 'ok', {
+          duration: 3000
+        });
+      }, error => {
+        this.snackBar.open('Error sending the recovery', 'ok', {
+          duration: 3000
+        });
+      });
     });
   }
 }

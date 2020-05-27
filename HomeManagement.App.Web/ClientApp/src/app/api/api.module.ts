@@ -11,6 +11,7 @@ import { UserService } from './user.service';
 import { ReminderService } from './reminder.service';
 import { AccountMetricService } from './account.metric.service';
 import { NotificationService } from './notification.service';
+import { IdentityService } from './identity.service';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import { NotificationService } from './notification.service';
     UserService,
     ReminderService,
     AccountMetricService,
-    NotificationService],
+    NotificationService,
+    IdentityService],
   exports: []
 })
 export class ApiModule { }

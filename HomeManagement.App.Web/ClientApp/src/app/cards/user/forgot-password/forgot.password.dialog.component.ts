@@ -32,6 +32,6 @@ export class ForgotPasswordDialogComponent {
             return;
         }
 
-        this.dialogRef.close();
+        this.dialogRef.close(this.email);
     }
 }

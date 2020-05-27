@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace HomeManagement.Api.Identity.Controllers
 {
@@ -65,21 +66,42 @@ namespace HomeManagement.Api.Identity.Controllers
             var appUser = await userManager.FindByEmailAsync(email);
 
             var token = await userManager.GeneratePasswordResetTokenAsync(appUser);
+            var encodedToken = HttpUtility.UrlEncode(token);
+
+            var url = GetEnvironmentUrl() + encodedToken + "&email=" + email;
+            var href = "<a href=\"" + url + "\">Click Here</a>";
 
             await emailService.Send(
                 "no-reply@homemanagement.com",
                 new List<string> { email },
                 "Password Recovery",
-                $@"Click on the link to change your password. \r\n {GetEnvironmentUrl() + token}",
-                $@"<strong>Click on the link to change your password. \r\n {GetEnvironmentUrl() + token}</strong>");
+                $@"Click Here to change your password.",
+                $@"<p>{href} to change your password.</p>");
+
+            return Ok();
+        }
+
+        [HttpPost("tokenpasswordchange")]
+        public async Task<IActionResult> TokenPasswordChange([FromBody] TokenPasswordModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState.Select(e => e.Value).ToList());
+
+            var appUser = await userManager.FindByEmailAsync(model.Email);
+
+            var token = HttpUtility.UrlDecode(model.Token);
+
+            var result = await userManager.ResetPasswordAsync(appUser, token, model.NewPassword);
+
+            if (!result.Succeeded) return BadRequest();
 
             return Ok();
         }
 
         private string GetEnvironmentUrl()
         {
-            var tokenUrl = configuration.GetSection("Endpoints:WebApp:url").Value;
-            tokenUrl += "token?value=";
+            var section = configuration.GetSection("Endpoints:WebApp");
+            var tokenUrl = section.Value;
+            tokenUrl += "/token?value=";
             return tokenUrl;
         }
     }
