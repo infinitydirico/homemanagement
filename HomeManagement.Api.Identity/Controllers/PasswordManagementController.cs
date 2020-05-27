@@ -36,13 +36,6 @@ namespace HomeManagement.Api.Identity.Controllers
             this.configuration = configuration;
         }
 
-        [HttpGet]
-        public IActionResult test()
-        {
-            var url = GetEnvironmentUrl();
-            return Ok();
-        }
-
         [Authorization]
         [HttpPost("changepassword")]        
         public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordModel model)
@@ -76,9 +69,9 @@ namespace HomeManagement.Api.Identity.Controllers
             await emailService.Send(
                 "no-reply@homemanagement.com",
                 new List<string> { email },
-                "Temporary Password",
-                $@"Here yours temporary password {GetEnvironmentUrl() + token}. \r\n Update it as soon as you sign in the web page.",
-                $@"<strong>Here yours temporary password {GetEnvironmentUrl() + token}. \r\n Update it as soon as you sign in the web page.</strong>");
+                "Password Recovery",
+                $@"Click on the link to change your password. \r\n {GetEnvironmentUrl() + token}",
+                $@"<strong>Click on the link to change your password. \r\n {GetEnvironmentUrl() + token}</strong>");
 
             return Ok();
         }
