@@ -88,9 +88,7 @@ namespace HomeManagement.Api.Identity.Controllers
 
             var appUser = await userManager.FindByEmailAsync(model.Email);
 
-            var token = HttpUtility.UrlDecode(model.Token);
-
-            var result = await userManager.ResetPasswordAsync(appUser, token, model.NewPassword);
+            var result = await userManager.ResetPasswordAsync(appUser, model.Token, model.NewPassword);
 
             if (!result.Succeeded) return BadRequest();
 
