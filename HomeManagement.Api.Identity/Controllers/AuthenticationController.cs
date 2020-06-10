@@ -46,17 +46,24 @@ namespace HomeManagement.Api.Identity.Controllers
 
             var password = cryptography.Decrypt(userModel.Password);
 
-            var result = await signInManager.PasswordSignInAsync(userModel.Email, password, true, false);
+            var user = await userManager.FindByEmailAsync(userModel.Email);            
 
-            if (!result.Succeeded)
+            if (user == null) return BadRequest("Invalid email or password.");
+
+            if (await userManager.IsLockedOutAsync(user)) return BadRequest($"The user {user.Email} has been locked out.");
+
+            if (!await userManager.CheckPasswordAsync(user, password))
             {
-                logger.LogInformation("Invalid email or password.");
-                return BadRequest();
+                await userManager.AccessFailedAsync(user);
+                return BadRequest("Invalid email or password.");
             }
 
-            var user = await userManager.FindByEmailAsync(userModel.Email);
+            var result = await signInManager.PasswordSignInAsync(userModel.Email, password, true, false);
+
+            if (!result.Succeeded) return BadRequest("Invalid email or password.");
+
             var roles = await userManager.GetRolesAsync(user);
-            
+
             var token = roles.Any() ?
                 TokenFactory.CreateToken(user.Email, roles, configuration["Issuer"], configuration["Audience"], configuration["SigningKey"], DateTime.UtcNow.AddDays(1)) :
                 TokenFactory.CreateToken(user.Email, configuration["Issuer"], configuration["Audience"], configuration["SigningKey"]);

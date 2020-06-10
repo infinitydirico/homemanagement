@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Category } from "../models/category";
+import { Category } from "../../models/category";
 import { Subject, Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthService } from '../auth/authentication.service';
+import { AuthService } from '../../auth/authentication.service';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 

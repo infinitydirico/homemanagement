@@ -24,10 +24,10 @@ import { CryptoService } from './services/crypto.service';
 import { ColorService } from './services/color.service';
 
 //pages
-import { HomeComponent } from './home/home.component';
+import { HomeComponent } from './pages/home/home.component';
 import { AccountComponent } from './pages/accounts/account.component';
 import { AccountDetailComponent } from './pages/accounts/detail/account.detail.page.component';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './pages/login/login.component';
 import { HelperService } from './services/helper.service';
 import { UserComponent } from './pages/user/user.page.component';
 import { CommonService } from './common/common.service';
@@ -36,10 +36,10 @@ import { PaletteService } from './services/palette.service';
 import { CacheService } from './services/cache.service';
 import { NotificationsBottomBarComponent } from './components/notifications-bottom-bar/notifications.bar.component';
 import { MatMenuModule } from '@angular/material/menu';
-import { ChangePasswordComponent } from "./pages/user/password/change.password.component";
 import { TokenGuard } from './auth/token.guard';
 import { TokenPageComponent } from './pages/user/token/token.page.component';
 import { PasswordService } from './common/password.service';
+import { SecuritySettingsComponent } from './pages/user/security-settings/security-settings.component';
 
 @NgModule({
   declarations: [
@@ -51,8 +51,8 @@ import { PasswordService } from './common/password.service';
     AccountComponent,
     AccountDetailComponent,
     NotificationsBottomBarComponent,
-    ChangePasswordComponent,
-    TokenPageComponent
+    TokenPageComponent,
+    SecuritySettingsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -70,7 +70,7 @@ import { PasswordService } from './common/password.service';
         canActivate: [AuthGuard]
       },
       { path: 'user', component: UserComponent, canActivate: [AuthGuard]},
-      { path: 'changepassword', component: ChangePasswordComponent, canActivate: [AuthGuard]},
+      { path: 'security-settings', component: SecuritySettingsComponent, canActivate: [AuthGuard]},
       { path: 'token', component: TokenPageComponent, canActivate: [TokenGuard]}
     ]),
     BrowserModule,

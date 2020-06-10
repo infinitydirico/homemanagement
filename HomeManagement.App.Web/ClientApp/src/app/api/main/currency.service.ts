@@ -1,8 +1,8 @@
 import { Injectable, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { Currency } from '../models/base-types';
+import { Currency } from '../../models/base-types';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthService } from '../auth/authentication.service';
+import { AuthService } from './../../auth/authentication.service'
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 

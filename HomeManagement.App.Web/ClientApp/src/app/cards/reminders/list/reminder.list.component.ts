@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ReminderService } from 'src/app/api/reminder.service';
+import { ReminderService } from 'src/app/api/main/reminder.service';
 import { Reminder } from 'src/app/models/reminder';
 import { ReminderAddDialog } from '../add/reminder.add.dialog.compnent';
 import { MatDialog } from '@angular/material/dialog';

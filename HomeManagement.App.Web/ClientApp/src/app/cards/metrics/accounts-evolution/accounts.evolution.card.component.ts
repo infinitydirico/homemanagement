@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { AccountMetricService } from "src/app/api/account.metric.service";
+import { AccountMetricService } from "src/app/api/main/account.metric.service";
 import { AccountsEvolutionModel } from "src/app/models/account-chart-data";
 import { PaletteService } from "src/app/services/palette.service";
 

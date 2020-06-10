@@ -3,7 +3,7 @@ import { ColorService } from 'src/app/services/color.service';
 import { MatSnackBar } from '@angular/material';
 import { PasswordService } from 'src/app/common/password.service';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { IdentityService } from 'src/app/api/identity.service';
+import { IdentityService } from 'src/app/api/identity/identity.service';
 
 @Component({
   selector: 'token',

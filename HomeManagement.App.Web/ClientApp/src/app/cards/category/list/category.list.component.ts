@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CategoryService } from 'src/app/api/category.service';
+import { CategoryService } from 'src/app/api/main/category.service';
 import { Category } from 'src/app/models/category';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { CategoryAddDialog } from '../add/category.add.dialog.component';

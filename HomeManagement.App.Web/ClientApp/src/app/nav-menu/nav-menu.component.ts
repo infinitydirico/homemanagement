@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/authentication.service';
 import { Router } from '@angular/router';
 import { saveAs } from 'file-saver';
-import { UserService } from '../api/user.service';
+import { UserService } from '../api/main/user.service';
 import { CommonService } from '../common/common.service';
-import { NotificationService } from '../api/notification.service';
+import { NotificationService } from '../api/main/notification.service';
 import { MatBottomSheet } from '@angular/material';
 import { NotificationsBottomBarComponent } from '../components/notifications-bottom-bar/notifications.bar.component';
 
@@ -84,6 +84,6 @@ export class NavMenuComponent implements OnInit {
   }
 
   changePassword(){
-    this.router.navigate(['/changepassword']);
+    this.router.navigate(['/security-settings']);
   }
 }

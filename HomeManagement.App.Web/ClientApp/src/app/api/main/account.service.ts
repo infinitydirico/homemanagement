@@ -1,11 +1,11 @@
 import { Injectable, EventEmitter, Output } from '@angular/core';
-import { User } from "../models/user";
-import { Account, AccountPageModel, TransferDto } from "../models/account";
-import { ServiceConstants } from './service.constants';
+import { User } from "../../models/user";
+import { Account, AccountPageModel, TransferDto } from "../../models/account";
+import { ServiceConstants } from '../service.constants';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { AuthService } from '../auth/authentication.service';
-import { AccountEvolutionModel, AccountsEvolutionModel } from '../models/account-chart-data';
+import { AuthService } from '../../auth/authentication.service';
+import { AccountEvolutionModel, AccountsEvolutionModel } from '../../models/account-chart-data';
 import { pipe, Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Http, RequestOptions, Headers, Response, ResponseContentType } from '@angular/http';

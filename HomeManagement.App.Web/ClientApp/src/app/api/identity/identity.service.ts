@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter, Output } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthService } from '../auth/authentication.service';
+import { AuthService } from '../../auth/authentication.service';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 

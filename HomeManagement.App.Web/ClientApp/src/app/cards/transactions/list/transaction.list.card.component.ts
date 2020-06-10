@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Account } from '../../../models/account';
-import { TransactionService } from 'src/app/api/transaction.service';
+import { TransactionService } from 'src/app/api/main/transaction.service';
 import { TransactionPageModel, Transaction } from 'src/app/models/transaction';
 import { ColorService } from 'src/app/services/color.service';
 import { Category } from 'src/app/models/category';
-import { CategoryService } from 'src/app/api/category.service';
+import { CategoryService } from 'src/app/api/main/category.service';
 import { HelperService } from 'src/app/services/helper.service';
 import { CommonService } from 'src/app/common/common.service';
 import { MatDialog } from '@angular/material';

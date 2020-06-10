@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Notification, sampleNotifications } from "../models/notification";
+import { Notification, sampleNotifications } from "../../models/notification";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthService } from '../auth/authentication.service';
+import { AuthService } from './../../auth/authentication.service'
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';

@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { NotificationService } from "src/app/api/notification.service";
+import { NotificationService } from "src/app/api/main/notification.service";
 import { Notification } from "./../../models/notification";
 import { MatBottomSheetRef } from "@angular/material";
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Reminder } from "./../models/reminder";
+import { Reminder } from "../../models/reminder";
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { AuthService } from '../auth/authentication.service';
+import { AuthService } from './../../auth/authentication.service'
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';

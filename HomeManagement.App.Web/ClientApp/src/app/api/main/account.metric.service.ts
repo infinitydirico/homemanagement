@@ -1,13 +1,13 @@
 import { Injectable, EventEmitter, Output } from '@angular/core';
-import { User } from "../models/user";
+import { User } from "../../models/user";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { AuthService } from '../auth/authentication.service';
+import { AuthService } from './../../auth/authentication.service'
 import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Metric } from '../models/base-types';
-import { OutcomeCategories } from '../models/category';
-import { AccountBalanceModel, AccountsEvolutionModel } from '../models/account-chart-data';
+import { Metric } from '../../models/base-types';
+import { OutcomeCategories } from '../../models/category';
+import { AccountBalanceModel, AccountsEvolutionModel } from '../../models/account-chart-data';
 
 @Injectable()
 export class AccountMetricService {

@@ -22,6 +22,8 @@ import { AccountsEvolutionCardComponent } from './metrics/accounts-evolution/acc
 import { TransactionAddDialogComponent } from './transactions/add-dialog/transaction.add.dialog.component';
 import { PreferencesCardComponent } from './preferences/preferences.card.component';
 import { ForgotPasswordDialogComponent } from "./user/forgot-password/forgot.password.dialog.component";
+import { TwoFaAuthenticationComponent } from './user/two-factor/twofa.authentication.component';
+import { ChangePasswordComponent } from './user/password/change.password.component';
 
 @NgModule({
     declarations: [
@@ -44,7 +46,9 @@ import { ForgotPasswordDialogComponent } from "./user/forgot-password/forgot.pas
         AccountsEvolutionCardComponent,
         TransactionAddDialogComponent,
         PreferencesCardComponent,
-        ForgotPasswordDialogComponent
+        ForgotPasswordDialogComponent,
+        TwoFaAuthenticationComponent,
+        ChangePasswordComponent
     ],
     imports: [
         MaterialModule,
@@ -71,7 +75,9 @@ import { ForgotPasswordDialogComponent } from "./user/forgot-password/forgot.pas
         AccountsEvolutionCardComponent,
         TransactionAddDialogComponent,
         PreferencesCardComponent,
-        ForgotPasswordDialogComponent
+        ForgotPasswordDialogComponent,
+        TwoFaAuthenticationComponent,
+        ChangePasswordComponent
     ],
     entryComponents: [
         ReminderAddDialog,

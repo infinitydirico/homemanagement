@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PreferencesService } from '../api/preferences.service';
+import { PreferencesService } from '../../api/main/preferences.service';
 
 @Component({
   selector: 'app-home',

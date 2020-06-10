@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../auth/authentication.service';
+import { AuthService } from '../../auth/authentication.service';
 import { MatSnackBar, MatDialog } from '@angular/material';
-import { ForgotPasswordDialogComponent } from '../cards/user/forgot-password/forgot.password.dialog.component';
-import { IdentityService } from '../api/identity.service';
+import { ForgotPasswordDialogComponent } from '../../cards/user/forgot-password/forgot.password.dialog.component';
+import { IdentityService } from '../../api/identity/identity.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'login',
@@ -26,9 +27,9 @@ export class LoginComponent {
     this.isLoading = true;
     this.authenticationService.login(this.username, this.password, this.remember).subscribe(res => {
       this.isLoading = false;
-    }, err => {
+    }, (errorResponse:HttpErrorResponse) => {
       this.isLoading = false;
-      this.snackBar.open('An error happened while authenticating', 'ok', {
+      this.snackBar.open(errorResponse.error, 'ok', {
         duration : 2000
       })
     });

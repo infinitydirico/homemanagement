@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material";
 import { Account } from "src/app/models/account";
 import { Currency, GetAccountTypes, AccountType, FormError } from "src/app/models/base-types";
-import { CurrencyService } from "src/app/api/currency.service";
+import { CurrencyService } from "src/app/api/main/currency.service";
 import { FormControl, Validators } from "@angular/forms";
 
 @Component({

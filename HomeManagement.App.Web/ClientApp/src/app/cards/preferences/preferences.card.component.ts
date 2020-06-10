@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PreferencesService } from 'src/app/api/preferences.service';
+import { PreferencesService } from 'src/app/api/main/preferences.service';
 import { MatSnackBar } from '@angular/material';
 import { Preference } from 'src/app/models/preference';
 

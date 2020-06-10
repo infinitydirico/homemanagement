@@ -1,5 +1,5 @@
 import { Component, OnInit, ApplicationRef } from "@angular/core";
-import { AccountMetricService } from "src/app/api/account.metric.service";
+import { AccountMetricService } from "src/app/api/main/account.metric.service";
 import { DateService } from "src/app/common/date.service";
 import { OutcomeCategories } from "src/app/models/category";
 

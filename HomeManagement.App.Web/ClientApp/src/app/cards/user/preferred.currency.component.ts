@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CurrencyService } from 'src/app/api/currency.service';
+import { CurrencyService } from 'src/app/api/main/currency.service';
 import { Currency } from 'src/app/models/base-types';
-import { PreferencesService } from 'src/app/api/preferences.service';
+import { PreferencesService } from 'src/app/api/main/preferences.service';
 import { MatSnackBar } from '@angular/material';
 
 @Component({

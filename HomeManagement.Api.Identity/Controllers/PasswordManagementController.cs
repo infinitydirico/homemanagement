@@ -89,8 +89,11 @@ namespace HomeManagement.Api.Identity.Controllers
             var appUser = await userManager.FindByEmailAsync(model.Email);
 
             var result = await userManager.ResetPasswordAsync(appUser, model.Token, model.NewPassword);
-
+            
             if (!result.Succeeded) return BadRequest();
+
+            await userManager.ResetAccessFailedCountAsync(appUser);
+            await userManager.SetLockoutEndDateAsync(appUser, null);
 
             return Ok();
         }
