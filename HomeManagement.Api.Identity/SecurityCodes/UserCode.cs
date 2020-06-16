@@ -22,6 +22,7 @@ namespace HomeManagement.Api.Identity.SecurityCodes
         public void GenerateNewCode()
         {
             Code = random.Next(111111, 999999);
+            DumpCode();
             CodeExpirationStamp = DateTime.Now.AddSeconds(30);
             ScheduleCodeGeneration();
         }
@@ -33,6 +34,13 @@ namespace HomeManagement.Api.Identity.SecurityCodes
                 await Task.Delay(30 * 1000);
                 GenerateNewCode();
             });
+        }
+
+        public void DumpCode()
+        {
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine(Code);
+#endif
         }
     }
 }

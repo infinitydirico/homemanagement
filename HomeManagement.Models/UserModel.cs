@@ -20,5 +20,7 @@ namespace HomeManagement.Models
         public string Currency { get; set; }
 
         public DateTime ExpirationDate { get; set; }
+
+        public int SecurityCode { get; set; }
     }
 }

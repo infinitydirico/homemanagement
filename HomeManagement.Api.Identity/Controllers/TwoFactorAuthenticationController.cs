@@ -21,16 +21,24 @@ namespace HomeManagement.Api.Identity.Controllers
             this.userManager = userManager;
         }
 
+        [HttpGet("IsEnabled/{email}")]
+        public async Task<IActionResult> IsEnabled(string email)
+        {
+            var appUser = await userManager.FindByEmailAsync(email);
+
+            if (appUser == null) return Ok(false);
+
+            var result = await userManager.GetTwoFactorEnabledAsync(appUser);
+
+            return Ok(result);
+        }
+
         [Authorization]
         [HttpGet("IsEnabled")]
         public async Task<IActionResult> IsEnabled()
         {
             var email = HttpContext.User.Claims.First(x => x.Type.Equals(JwtRegisteredClaimNames.Sub)).Value;
-            var appUser = await userManager.FindByEmailAsync(email);
-
-            var result = await userManager.GetTwoFactorEnabledAsync(appUser);
-
-            return Ok(result);
+            return await IsEnabled(email);
         }
 
         [Authorization]

@@ -16,6 +16,11 @@ export class NotificationsBottomBarComponent implements OnInit{
     }
 
     ngOnInit(): void {
+        this.loadNotifications();
+    }
+
+    loadNotifications(){
+        this.notifications.splice(0, this.notifications.length);
         this.notificationService.get().subscribe(notif => {
             notif.forEach(n => {
                 this.notifications.push(n);

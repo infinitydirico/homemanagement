@@ -19,7 +19,6 @@ export class NotificationService {
     constructor(private http: HttpClient,
         private authenticationService: AuthService) {
 
-        this.httpOptions.headers = this.httpOptions.headers.append('Authorization', this.authenticationService.getToken());
         this.endpoint = environment.api + '/api/notification';
     }
 
@@ -28,6 +27,8 @@ export class NotificationService {
         if(this.notifications.length > 0){
             return new Observable(obs => obs.next(this.notifications));
         }
+
+        this.httpOptions.headers = this.httpOptions.headers.append('Authorization', this.authenticationService.getToken());
 
         return this.http.get<Array<Notification>>(this.endpoint, this.httpOptions)
         .pipe(map(_ => {

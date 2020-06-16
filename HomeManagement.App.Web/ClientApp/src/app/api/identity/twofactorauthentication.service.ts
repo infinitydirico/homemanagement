@@ -21,6 +21,15 @@ export class TwoFactorAuthenticationService {
         this.endpoint = environment.identityApi + '/api/twofactorauthentication';
     }
 
+    isEnabledByEmail(email:string){
+        return this.http.get<boolean>(this.endpoint + '/IsEnabled/' + email)
+        .pipe(map(result => {
+            return result;
+        }, error => {
+
+        }));
+    }
+
     isEnabled(){
         return this.http.get(this.endpoint + '/IsEnabled', this.httpOptions)
         .pipe(map(result => {

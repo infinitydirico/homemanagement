@@ -43,10 +43,7 @@ namespace HomeManagement.Api.Identity.Controllers
             if (user.Code.Equals(default)) return NotFound();
             else
             {
-                if (user.Code != userCodeModel.Code)
-                {
-                    return BadRequest("Wrong code.");
-                }
+                if (user.Code != userCodeModel.Code) return BadRequest("Wrong code.");
 
                 return Ok();
             }

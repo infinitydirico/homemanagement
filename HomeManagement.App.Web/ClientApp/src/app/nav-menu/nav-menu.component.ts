@@ -36,10 +36,12 @@ export class NavMenuComponent implements OnInit {
     this.authenticationService.onUserAuthenticated.subscribe(user =>
     {
       this.isAuthenticated = user != null;
-    });
 
-    this.notificationService.get().subscribe(_ => {
-      this.hasNotifications = _.length > 0;
+      if(this.isAuthenticated) {
+        this.notificationService.get().subscribe(_ => {
+          this.hasNotifications = _.length > 0;
+        });
+      }
     });
   }
 

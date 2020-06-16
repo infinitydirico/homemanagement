@@ -1,4 +1,5 @@
 ﻿using HomeManagement.Api.Core;
+using HomeManagement.Api.Identity.SecurityCodes;
 using HomeManagement.Contracts;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Identity;
@@ -21,18 +22,21 @@ namespace HomeManagement.Api.Identity.Controllers
         private readonly ICryptography cryptography;
         private readonly IConfiguration configuration;
         private readonly ILogger<AuthenticationController> logger;
+        private readonly ICodesServices codesServices;
 
         public AuthenticationController(UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ICryptography cryptography,
             IConfiguration configuration,
-            ILogger<AuthenticationController> logger)
+            ILogger<AuthenticationController> logger,
+            ICodesServices codesServices)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.cryptography = cryptography;
             this.configuration = configuration;
             this.logger = logger;
+            this.codesServices = codesServices;
         }
 
         [HttpPost("SignIn")]
@@ -58,8 +62,19 @@ namespace HomeManagement.Api.Identity.Controllers
                 return BadRequest("Invalid email or password.");
             }
 
-            var result = await signInManager.PasswordSignInAsync(userModel.Email, password, true, false);
+            var twoFactorEnabled = await userManager.GetTwoFactorEnabledAsync(user);
 
+            if (twoFactorEnabled)
+            {
+                var userCode = codesServices.GetUserCode(userModel.Email);
+
+                if (userCode.Code.Equals(default)) return NotFound("Code not found.");
+
+                if (userCode.Code != userModel.SecurityCode) return BadRequest("Invalid code.");
+            }            
+
+            var result = await signInManager.PasswordSignInAsync(userModel.Email, password, true, false);
+            
             if (!result.Succeeded) return BadRequest("Invalid email or password.");
 
             var roles = await userManager.GetRolesAsync(user);
