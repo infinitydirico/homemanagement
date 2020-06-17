@@ -1,4 +1,5 @@
 ﻿using HomeManagement.Api.Core.Email;
+using HomeManagement.Api.Core.Extensions;
 using HomeManagement.Api.Identity.Filters;
 using HomeManagement.Contracts;
 using HomeManagement.Models;
@@ -9,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -43,7 +43,7 @@ namespace HomeManagement.Api.Identity.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.Select(x => x.Value).ToList());
 
-            var email = HttpContext.User.Claims.First(x => x.Type.Equals(JwtRegisteredClaimNames.Sub)).Value;
+            var email = HttpContext.GetEmail();
 
             var appUser = await userManager.FindByEmailAsync(email);
             var result = await userManager.ChangePasswordAsync(appUser, 

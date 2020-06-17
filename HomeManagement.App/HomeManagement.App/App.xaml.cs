@@ -27,6 +27,8 @@ namespace HomeManagement.App
         {
             InitializeComponent();
 
+            InitializeSettings();
+
             InitializeDependencies();
 
             InitializeDefaultValues();
@@ -66,6 +68,11 @@ namespace HomeManagement.App
         protected override void OnResume()
         {
             // Handle when your app resumes
+        }
+
+        private void InitializeSettings()
+        {
+            Preferences.Set("HomeManagementAppHeader", "D3BUGT0K3N");
         }
 
         private void InitializeDependencies()

@@ -1,5 +1,5 @@
 ﻿using HomeManagement.API.Business;
-using HomeManagement.API.Extensions;
+using HomeManagement.Api.Core.Extensions;
 using HomeManagement.API.Filters;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;

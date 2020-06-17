@@ -1,10 +1,9 @@
-﻿using HomeManagement.Api.Identity.Filters;
+﻿using HomeManagement.Api.Core.Extensions;
+using HomeManagement.Api.Identity.Filters;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace HomeManagement.Api.Identity.Controllers
@@ -37,7 +36,7 @@ namespace HomeManagement.Api.Identity.Controllers
         [HttpGet("IsEnabled")]
         public async Task<IActionResult> IsEnabled()
         {
-            var email = HttpContext.User.Claims.First(x => x.Type.Equals(JwtRegisteredClaimNames.Sub)).Value;
+            var email = HttpContext.GetEmail();
             return await IsEnabled(email);
         }
 
@@ -45,7 +44,7 @@ namespace HomeManagement.Api.Identity.Controllers
         [HttpPost("Enable")]
         public async Task<IActionResult> Enable()
         {
-            var email = HttpContext.User.Claims.First(x => x.Type.Equals(JwtRegisteredClaimNames.Sub)).Value;
+            var email = HttpContext.GetEmail();
             var appUser = await userManager.FindByEmailAsync(email);
 
             var result = await userManager.SetTwoFactorEnabledAsync(appUser, true);
@@ -57,7 +56,7 @@ namespace HomeManagement.Api.Identity.Controllers
         [HttpPost("Disable")]
         public async Task<IActionResult> Disable()
         {
-            var email = HttpContext.User.Claims.First(x => x.Type.Equals(JwtRegisteredClaimNames.Sub)).Value;
+            var email = HttpContext.GetEmail();
             var appUser = await userManager.FindByEmailAsync(email);
 
             var result = await userManager.SetTwoFactorEnabledAsync(appUser, false);

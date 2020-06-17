@@ -1,9 +1,8 @@
-﻿using HomeManagement.Api.Identity.Filters;
+﻿using HomeManagement.Api.Core.Extensions;
+using HomeManagement.Api.Identity.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace HomeManagement.Api.Identity.Controllers
@@ -26,7 +25,7 @@ namespace HomeManagement.Api.Identity.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var email = HttpContext.User.Claims.First(x => x.Type.Equals(JwtRegisteredClaimNames.Sub)).Value;
+            var email = HttpContext.GetEmail();
             var appUser = await userManager.FindByEmailAsync(email);
 
             var codes = await userManager.CountRecoveryCodesAsync(appUser);

@@ -20,6 +20,8 @@ namespace HomeManagement.App.Services.Rest
             {
                 using(var client = restClient.CreateClient())
                 {
+                    var header = Xamarin.Essentials.Preferences.Get("HomeManagementAppHeader", string.Empty);
+                    client.DefaultRequestHeaders.Add("HomeManagementApp", header);
                     var result = await client.PostAsync(Endpoints.Auth.LOGIN, restClient.SerializeToJson(user));
                     var json = await restClient.ReadJsonResponse<UserModel>(result);
                     return json;

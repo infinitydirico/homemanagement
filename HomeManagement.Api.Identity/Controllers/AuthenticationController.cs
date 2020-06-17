@@ -1,4 +1,5 @@
 ﻿using HomeManagement.Api.Core;
+using HomeManagement.Api.Core.Extensions;
 using HomeManagement.Api.Identity.SecurityCodes;
 using HomeManagement.Contracts;
 using HomeManagement.Models;
@@ -23,6 +24,7 @@ namespace HomeManagement.Api.Identity.Controllers
         private readonly IConfiguration configuration;
         private readonly ILogger<AuthenticationController> logger;
         private readonly ICodesServices codesServices;
+        private readonly string mobileAppToken;
 
         public AuthenticationController(UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
@@ -37,6 +39,7 @@ namespace HomeManagement.Api.Identity.Controllers
             this.configuration = configuration;
             this.logger = logger;
             this.codesServices = codesServices;
+            mobileAppToken = configuration["MobileApp:Token"];
         }
 
         [HttpPost("SignIn")]
@@ -64,7 +67,7 @@ namespace HomeManagement.Api.Identity.Controllers
 
             var twoFactorEnabled = await userManager.GetTwoFactorEnabledAsync(user);
 
-            if (twoFactorEnabled)
+            if (twoFactorEnabled && !HttpContext.GetMobileHeader().Equals(mobileAppToken))
             {
                 var userCode = codesServices.GetUserCode(userModel.Email);
 

@@ -1,4 +1,4 @@
-﻿using HomeManagement.API.Extensions;
+﻿using HomeManagement.Api.Core.Extensions;
 using HomeManagement.API.Filters;
 using HomeManagement.Business.Contracts;
 using HomeManagement.Models;

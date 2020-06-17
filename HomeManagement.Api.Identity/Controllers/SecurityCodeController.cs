@@ -1,10 +1,9 @@
-﻿using HomeManagement.Api.Identity.Filters;
+﻿using HomeManagement.Api.Core.Extensions;
+using HomeManagement.Api.Identity.Filters;
 using HomeManagement.Api.Identity.SecurityCodes;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 
 namespace HomeManagement.Api.Identity.Controllers
 {
@@ -23,7 +22,7 @@ namespace HomeManagement.Api.Identity.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var email = HttpContext.User.Claims.First(x => x.Type.Equals(JwtRegisteredClaimNames.Sub)).Value;
+            var email = HttpContext.GetEmail();
             var user = codesServices.GetUserCode(email);
 
             if (user.Code.Equals(default)) return NotFound();
@@ -35,6 +34,7 @@ namespace HomeManagement.Api.Identity.Controllers
             });
         }
 
+        [MobileAuthorization]
         [HttpPost]
         public IActionResult Post(UserCodeModel userCodeModel)
         {
