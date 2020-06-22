@@ -19,7 +19,7 @@ namespace HomeManagement.Api.Identity.Filters
 
             if(!header.Equals(mobileAppToken))
             {
-                context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Forbidden, Content = "Header not present." };
+                context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Unauthorized };
 
                 return;
             }

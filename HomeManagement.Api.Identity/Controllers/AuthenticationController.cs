@@ -1,5 +1,6 @@
-﻿using HomeManagement.Api.Core;
-using HomeManagement.Api.Core.Extensions;
+﻿using HomeManagement.Api.Core.Extensions;
+using HomeManagement.Api.Identity.Authentication;
+using HomeManagement.Api.Identity.Filters;
 using HomeManagement.Api.Identity.SecurityCodes;
 using HomeManagement.Contracts;
 using HomeManagement.Models;
@@ -7,7 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,12 +19,8 @@ namespace HomeManagement.Api.Identity.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
-        private readonly ICryptography cryptography;
-        private readonly IConfiguration configuration;
         private readonly ILogger<AuthenticationController> logger;
-        private readonly ICodesServices codesServices;
-        private readonly string mobileAppToken;
+        private readonly AuthenticationStrategy authenticationStrategy;
 
         public AuthenticationController(UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
@@ -34,12 +30,8 @@ namespace HomeManagement.Api.Identity.Controllers
             ICodesServices codesServices)
         {
             this.userManager = userManager;
-            this.signInManager = signInManager;
-            this.cryptography = cryptography;
-            this.configuration = configuration;
             this.logger = logger;
-            this.codesServices = codesServices;
-            mobileAppToken = configuration["MobileApp:Token"];
+            authenticationStrategy = new AuthenticationStrategy(userManager, signInManager, cryptography, configuration, logger, codesServices);
         }
 
         [HttpPost("SignIn")]
@@ -51,50 +43,35 @@ namespace HomeManagement.Api.Identity.Controllers
                 return BadRequest(ModelState);
             }
 
-            var password = cryptography.Decrypt(userModel.Password);
+            var authenticationResult = await authenticationStrategy.Authenticate(userModel, HttpContext.GetMobileHeader());
 
-            var user = await userManager.FindByEmailAsync(userModel.Email);            
-
-            if (user == null) return BadRequest("Invalid email or password.");
-
-            if (await userManager.IsLockedOutAsync(user)) return BadRequest($"The user {user.Email} has been locked out.");
-
-            if (!await userManager.CheckPasswordAsync(user, password))
+            if (authenticationResult.Succeed)
             {
-                await userManager.AccessFailedAsync(user);
-                return BadRequest("Invalid email or password.");
+                var authenticatedUser = await authenticationStrategy.GetAuthenticatedUser();
+                return Ok(authenticatedUser);
+            }
+            else return BadRequest(authenticationResult.Error);
+        }
+
+        [MobileAuthorization]
+        [HttpPost("MobileSignIn")]
+        public async Task<IActionResult> MobileSignIn([FromBody] UserModel userModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                logger.LogInformation($"Invalid model state: {string.Concat(ModelState.Values.Select(x => x.Errors.Select(r => r.ErrorMessage)))}");
+                return BadRequest(ModelState);
             }
 
-            var twoFactorEnabled = await userManager.GetTwoFactorEnabledAsync(user);
-
-            if (twoFactorEnabled && !HttpContext.GetMobileHeader().Equals(mobileAppToken))
-            {
-                var userCode = codesServices.GetUserCode(userModel.Email);
-
-                if (userCode.Code.Equals(default)) return NotFound("Code not found.");
-
-                if (userCode.Code != userModel.SecurityCode) return BadRequest("Invalid code.");
-            }            
-
-            var result = await signInManager.PasswordSignInAsync(userModel.Email, password, true, false);
+            var authenticationResult = await authenticationStrategy.Authenticate(userModel);
             
-            if (!result.Succeeded) return BadRequest("Invalid email or password.");
-
-            var roles = await userManager.GetRolesAsync(user);
-
-            var token = roles.Any() ?
-                TokenFactory.CreateToken(user.Email, roles, configuration["Issuer"], configuration["Audience"], configuration["SigningKey"], DateTime.UtcNow.AddDays(1)) :
-                TokenFactory.CreateToken(user.Email, configuration["Issuer"], configuration["Audience"], configuration["SigningKey"]);
-
-            var tokenResult = await userManager.SetAuthenticationTokenAsync(user, nameof(JwtSecurityToken), nameof(JwtSecurityToken), token);
-
-            return Ok(new UserModel
+            if (authenticationResult.Succeed)
             {
-                Email = userModel.Email,
-                Token = token,
-                ExpirationDate = DateTime.UtcNow.AddDays(1)
-            });
-        }
+                var authenticatedUser = await authenticationStrategy.GetAuthenticatedUser();
+                return Ok(authenticatedUser);
+            }
+            else return BadRequest(authenticationResult.Error);
+        } 
 
         [HttpPost("SignOut")]
         public async Task<IActionResult> SignOut([FromBody] UserModel userModel)
