@@ -19,6 +19,7 @@ namespace HomeManagement.Api.Identity.Controllers
         }
 
         [Authorization]
+        [MobileAuthorization]
         [HttpGet]
         public IActionResult Get()
         {

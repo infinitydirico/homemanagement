@@ -14,10 +14,12 @@
             public class Auth
             {
                 private const string AUTH = IDENTITY_API + API + "authentication/";
-                public const string LOGIN = AUTH + "signin";
+                public const string LOGIN = AUTH + "MobileSignIn";
                 public const string LOGOUT = AUTH + "signout";
 
                 public const string REGISTER = API + "register";
+
+                public const string SECURITY_CODE = API + "SecurityCode";
             }
 
             public class Accounts

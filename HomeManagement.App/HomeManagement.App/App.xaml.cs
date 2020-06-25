@@ -72,7 +72,7 @@ namespace HomeManagement.App
 
         private void InitializeSettings()
         {
-            Preferences.Set("HomeManagementAppHeader", "D3BUGT0K3N");
+            Preferences.Set("HomeManagementAppHeader", "D3V3L0PM3NT");
         }
 
         private void InitializeDependencies()
@@ -110,7 +110,8 @@ namespace HomeManagement.App
         {
             Workers = new List<BaseWorker>
             {
-                new SincronizationWorker()
+                new SincronizationWorker(),
+                new SecurityCodesWorker()
             };
 
             var authenticationManager = _container.Resolve<IAuthenticationManager>();

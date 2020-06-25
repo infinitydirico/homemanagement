@@ -6,7 +6,7 @@ namespace HomeManagement.App.Services.BackgroundWorker
 {
     public abstract class BaseWorker
     {
-        private Timer timer;
+        protected Timer timer;
 
         public bool Started { get; private set; }
 
