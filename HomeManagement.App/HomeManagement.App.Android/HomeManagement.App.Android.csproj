@@ -55,9 +55,7 @@
     <AndroidLinkMode>None</AndroidLinkMode>
     <AndroidAotAdditionalArguments>no-write-symbols,nodebug</AndroidAotAdditionalArguments>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
-    <AndroidKeyStore>true</AndroidKeyStore>
-    <AndroidSigningKeyStore>C:\Users\ramir\AppData\Local\Xamarin\Mono for Android\Keystore\Ramiro Di Rico\Ramiro Di Rico.keystore</AndroidSigningKeyStore>
-    <AndroidSigningStorePass>4430598Q#$q</AndroidSigningStorePass>
+    <AndroidKeyStore>false</AndroidKeyStore>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
