@@ -22,6 +22,7 @@ namespace HomeManagement.App.ViewModels.Cards
             {
                 isEnabled = value;
                 OnPropertyChanged();
+                Code = string.Empty;
                 ChangeTwoFactor(isEnabled);
             }
         }
@@ -46,6 +47,8 @@ namespace HomeManagement.App.ViewModels.Cards
             }
         }
 
+        public DateTime ExpirationDate { get; private set; }
+
         protected override async Task InitializeAsync()
         {
             isEnabled = await authenticationManager.IsTwoFactorEnabled();
@@ -65,18 +68,20 @@ namespace HomeManagement.App.ViewModels.Cards
             });
         }
 
-        private async Task UpdateCode(object state = null)
+        private async Task UpdateCode()
         {
             OnCodeChanging?.Invoke(this, CodeChangeEventArgs.Changed(false));
 
             var result = await authenticationManager.GetUserCode();
+            await Task.Delay(250);
+
             var s1 = result.Code.ToString().Substring(0, 2);
             var s2 = result.Code.ToString().Substring(2, 2);
             var s3 = result.Code.ToString().Substring(4, 2);
 
             Code = $"{s1} {s2} {s3}";
             Expiration = (result.Expiration - DateTime.Now).Seconds;
-
+            ExpirationDate = result.Expiration;
             OnCodeChanging?.Invoke(this, CodeChangeEventArgs.Changed(true));
 
             await Task.Delay(Expiration * 1000);

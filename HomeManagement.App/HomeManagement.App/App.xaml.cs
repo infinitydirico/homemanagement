@@ -72,7 +72,7 @@ namespace HomeManagement.App
 
         private void InitializeSettings()
         {
-            Preferences.Set("HomeManagementAppHeader", "D3V3L0PM3NT");
+            Preferences.Set("HomeManagementAppHeader", "PR0DT0K3N");
         }
 
         private void InitializeDependencies()

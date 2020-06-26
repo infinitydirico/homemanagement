@@ -10,7 +10,7 @@
     <Conv:DateConverter x:Key="DateConverter" />
     <Conv:TransactionTypeColorConverter x:Key="TransactionTypeColor" />
     <DataTemplate x:Key="TransactionTemplate">
-        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Margin="0, 10, 0, 10">
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Margin="0, 5, 0, 5">
             <StackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnTransactionTapped" />
             </StackLayout.GestureRecognizers>
@@ -24,11 +24,11 @@
             </StackLayout>
             <StackLayout IsVisible="False" Orientation="Horizontal" HorizontalOptions="EndAndExpand" VerticalOptions="Start">
                 <Button Image="red_trash_18dp.png" VerticalOptions="Center"
-                        WidthRequest="20" HeightRequest="20" Clicked="Delete" />
+                        WidthRequest="30" HeightRequest="30" Clicked="Delete" />
                 <Button Image="edit_18dp.png" VerticalOptions="Center"
-                        WidthRequest="20" HeightRequest="20" Clicked="Edit"  />
+                        WidthRequest="30" HeightRequest="30" Clicked="Edit"  />
                 <Button Image="file_purple_light_24dp.png" VerticalOptions="Center"
-                        WidthRequest="20" HeightRequest="20" Clicked="ViewFiles" />
+                        WidthRequest="30" HeightRequest="30" Clicked="ViewFiles" />
             </StackLayout>
         </StackLayout>
     </DataTemplate>
