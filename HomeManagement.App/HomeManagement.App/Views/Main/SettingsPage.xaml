@@ -23,6 +23,7 @@
             <cards:LanguageCard />
             <cards:OfflineModeCard />
             <cards:DailyBackupCard />
+            <cards:TwoFactorAuthentication />
 
             <Frame x:Name="logFileFrame" IsVisible="False" Margin="5, 5, 5, 5">
                 <StackLayout>

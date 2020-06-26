@@ -34,7 +34,7 @@ export class AuthService {
         let endpoint = environment.identityApi;        
         this.user = new User();
         this.user.email = username;
-        this.user.securityCode = securityCode;
+        this.user.securityCode = securityCode || 0;
         this.user.password = this.cryptoService.encrypt(password);
         return this.http.post<User>(endpoint + "/Api/Authentication/SignIn", this.user)
             .pipe(map(result => {

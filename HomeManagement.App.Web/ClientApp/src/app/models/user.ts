@@ -6,7 +6,7 @@ export class User{
     language:string;
     currency:string;
     expirationDate: Date;
-    securityCode: number;
+    securityCode: number = 0;
 }
 
 export class token{

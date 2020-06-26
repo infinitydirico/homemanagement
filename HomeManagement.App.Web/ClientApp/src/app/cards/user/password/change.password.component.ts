@@ -9,6 +9,7 @@ import { PasswordService } from 'src/app/common/password.service';
 })
 export class ChangePasswordComponent {
 
+  oldPassword:string;
   newPassword:string;
   repeatNewPassword:string;
 
@@ -34,5 +35,9 @@ export class ChangePasswordComponent {
 
   isStrong(){
       return this.passwordService.isStrong(this.newPassword);
+  }
+
+  submit(){
+
   }
 }

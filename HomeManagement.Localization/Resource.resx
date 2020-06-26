@@ -288,4 +288,7 @@
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
+  <data name="TwoFactor" xml:space="preserve">
+    <value>Two Factor Authentication</value>
+  </data>
 </root>

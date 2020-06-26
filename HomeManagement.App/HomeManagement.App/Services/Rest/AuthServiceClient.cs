@@ -11,7 +11,7 @@ namespace HomeManagement.App.Services.Rest
 
         public AuthServiceClient()
         {
-            restClient = new BaseRestClient(Endpoints.BASEURL);
+            restClient = new BaseRestClient(Endpoints.IDENTITY_API);
         }
 
         public async Task<UserModel> Login(UserModel user)
@@ -59,7 +59,6 @@ namespace HomeManagement.App.Services.Rest
                 using (var client = await restClient.CreateAuthenticatedClient())
                 {
                     var header = Xamarin.Essentials.Preferences.Get("HomeManagementAppHeader", string.Empty);
-                    client.DefaultRequestHeaders.Add("HomeManagementApp", header);
                     client.DefaultRequestHeaders.Add("HomeManagementApp", header);
                     var result = await client.GetAsync(Endpoints.Auth.SECURITY_CODE);
                     var json = await restClient.ReadJsonResponse<UserCodeModel>(result);

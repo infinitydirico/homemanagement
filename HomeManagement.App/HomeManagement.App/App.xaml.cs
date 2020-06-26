@@ -110,8 +110,7 @@ namespace HomeManagement.App
         {
             Workers = new List<BaseWorker>
             {
-                new SincronizationWorker(),
-                new SecurityCodesWorker()
+                new SincronizationWorker()
             };
 
             var authenticationManager = _container.Resolve<IAuthenticationManager>();
@@ -129,7 +128,8 @@ namespace HomeManagement.App
         {
             Parallel.ForEach(Workers, w =>
             {
-                if(!w.Started) w.Start();
+                if (!w.Started) w.Start();
+                else w.Stop();
             });
         }
     }

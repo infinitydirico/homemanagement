@@ -26,7 +26,7 @@ namespace HomeManagement.Api.Identity.Controllers
             var email = HttpContext.GetEmail();
             var user = codesServices.GetUserCode(email);
 
-            if (user.Code.Equals(default)) return NotFound();
+            if (user == null || user.Code.Equals(default)) return NotFound();
             else return Ok(new UserCodeModel
             {
                 Email = user.Email,

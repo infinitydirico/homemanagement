@@ -1,7 +1,9 @@
 ﻿using Autofac;
 using HomeManagement.App.Data;
 using HomeManagement.App.Data.Entities;
+using HomeManagement.App.Services.BackgroundWorker;
 using HomeManagement.App.Services.Rest;
+using HomeManagement.App.Services.Rest.Identity;
 using HomeManagement.Contracts;
 using HomeManagement.Core.Caching;
 using HomeManagement.Core.Extensions;
@@ -30,6 +32,12 @@ namespace HomeManagement.App.Managers
 
         bool IsAuthenticated();
 
+        Task<bool> IsTwoFactorEnabled();
+
+        Task ChangeTwoFactorAuthentication(bool value);
+
+        Task<UserCodeModel> GetUserCode();
+
         event EventHandler OnAuthenticationChanged;
     }
 
@@ -39,11 +47,13 @@ namespace HomeManagement.App.Managers
         private readonly AuthServiceClient authServiceClient = new AuthServiceClient();
         private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
         private readonly GenericRepository<AppSettings> appSettingsRepository = new GenericRepository<AppSettings>();
+        private readonly TwoFactorServiceClient twoFactorServiceClient = new TwoFactorServiceClient();
         string username;
         string password;
         string token;
         DateTime lastApiCall;
         bool isAuthenticated;
+        bool twoFactorEnabled;
 
         public AuthenticationManager()
         {
@@ -142,5 +152,29 @@ namespace HomeManagement.App.Managers
         }
 
         public bool IsAuthenticated() => isAuthenticated;
+
+        public async Task<bool> IsTwoFactorEnabled()
+        {
+            twoFactorEnabled = Preferences.Get("TwoFactor", false);
+
+            if (!twoFactorEnabled)
+            {
+                var twoFactorEnabled = await twoFactorServiceClient.IsEnabled();
+                Preferences.Set("TwoFactor", twoFactorEnabled);
+            }
+
+            return twoFactorEnabled;
+        }
+
+        public async Task ChangeTwoFactorAuthentication(bool value)
+        {
+            if (value) await twoFactorServiceClient.Enable();
+            else await twoFactorServiceClient.Disable();
+
+            twoFactorEnabled = value;
+            Preferences.Set("TwoFactor", twoFactorEnabled);
+        }
+
+        public async Task<UserCodeModel> GetUserCode() => await authServiceClient.GetCode();
     }
 }
