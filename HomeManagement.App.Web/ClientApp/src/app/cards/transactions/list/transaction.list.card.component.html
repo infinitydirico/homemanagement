@@ -5,15 +5,22 @@
         Transactions
       </h2>
     </div>
-    <div class="col-sm-2"></div>
+    <div class="col-sm-2">
+      <button mat-button (click)="deleteAll()" class="pull-right" matTooltip="Delete all transactions">
+        <mat-icon aria-hidden="false" aria-label="Example home icon">delete_forever</mat-icon>
+      </button>
+    </div>
     <div class="col-sm-2">
       <button mat-button (click)="add()" class="pull-right" matTooltip="Add new transaction">
         <mat-icon aria-hidden="false" aria-label="Example home icon">add</mat-icon>
       </button>
     </div>
   </div>
-  <mat-progress-bar mode="indeterminate" *ngIf="!transactions.length"></mat-progress-bar>
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
 
+  <div *ngIf="!transactions.length && !isLoading">
+    <h4>No records found</h4>
+  </div>
   <table mat-table [dataSource]="transactions" class="table" *ngIf="transactions.length">
     <!-- Name Column -->
     <ng-container matColumnDef="name">

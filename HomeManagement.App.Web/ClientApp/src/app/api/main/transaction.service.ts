@@ -63,7 +63,7 @@ export class TransactionService {
     }
 
     removeAll(a:Account){
-        return this.http.delete(this.endpoint + '/deleteall/' + a.id)
+        return this.http.delete(this.endpoint + '/deleteall/' + a.id, this.httpOptions)
         .pipe(map(result => {
             return result;
         }));

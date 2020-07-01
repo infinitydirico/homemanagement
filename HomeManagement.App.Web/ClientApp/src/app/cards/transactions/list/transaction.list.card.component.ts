@@ -25,6 +25,7 @@ export class TransactionListCardComponent implements OnInit {
     categories: Array<Category> = new Array<Category>();
     totalPages: Array<number> = [];
     isMobile = this.commonService.isMobile();
+    isLoading: boolean = false;
 
     constructor(private transactionService: TransactionService,
         private colorService: ColorService,
@@ -49,13 +50,13 @@ export class TransactionListCardComponent implements OnInit {
         this.page.currentPage = p;
         this.page.pageCount = 10;
         this.page.skip = 0;
-
-        this.transactionService.paginate(this.page).subscribe(_ => {
+        this.isLoading = true;
+        this.transactionService.paginate(this.page).subscribe(_ => {            
+            this.isLoading = false;
             _.transactions.forEach(charge => {
                 this.transactions.push(charge);
-
             });
-
+            
             this.page.totalPages = _.totalPages;
             this.totalPages = this.helperService.thinPageNumbers(this.page.currentPage, _.totalPages);
         });
@@ -92,6 +93,12 @@ export class TransactionListCardComponent implements OnInit {
     delete(transaction: Transaction) {
         this.transactionService.removeTransaction(transaction).subscribe(result => {
             this.paginate(this.page.currentPage);
+        });
+    }
+
+    deleteAll(){
+        this.transactionService.removeAll(this.account).subscribe(_ => {
+            this.paginate(1);
         });
     }
 

@@ -13,6 +13,7 @@ import { AccountMetricService } from './main/account.metric.service';
 import { NotificationService } from './main/notification.service';
 import { IdentityService } from './identity/identity.service';
 import { TwoFactorAuthenticationService } from './identity/twofactorauthentication.service';
+import { TransactionMetricService } from './main/transaction.metric.service';
 
 @NgModule({
   imports: [
@@ -30,7 +31,8 @@ import { TwoFactorAuthenticationService } from './identity/twofactorauthenticati
     AccountMetricService,
     NotificationService,
     IdentityService,
-    TwoFactorAuthenticationService],
+    TwoFactorAuthenticationService,
+    TransactionMetricService],
   exports: []
 })
 export class ApiModule { }

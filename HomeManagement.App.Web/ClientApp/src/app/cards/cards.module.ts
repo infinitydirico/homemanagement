@@ -24,6 +24,7 @@ import { PreferencesCardComponent } from './preferences/preferences.card.compone
 import { ForgotPasswordDialogComponent } from "./user/forgot-password/forgot.password.dialog.component";
 import { TwoFaAuthenticationComponent } from './user/two-factor/twofa.authentication.component';
 import { ChangePasswordComponent } from './user/password/change.password.component';
+import { AccountOutcomeCategoriesChart } from './accounts/detail/top-charges/top-charge.chart.component';
 
 @NgModule({
     declarations: [
@@ -48,7 +49,8 @@ import { ChangePasswordComponent } from './user/password/change.password.compone
         PreferencesCardComponent,
         ForgotPasswordDialogComponent,
         TwoFaAuthenticationComponent,
-        ChangePasswordComponent
+        ChangePasswordComponent,
+        AccountOutcomeCategoriesChart
     ],
     imports: [
         MaterialModule,
@@ -77,7 +79,8 @@ import { ChangePasswordComponent } from './user/password/change.password.compone
         PreferencesCardComponent,
         ForgotPasswordDialogComponent,
         TwoFaAuthenticationComponent,
-        ChangePasswordComponent
+        ChangePasswordComponent,
+        AccountOutcomeCategoriesChart
     ],
     entryComponents: [
         ReminderAddDialog,

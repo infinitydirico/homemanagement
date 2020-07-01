@@ -9,6 +9,7 @@ import { AccountEvolutionModel, AccountsEvolutionModel } from '../../models/acco
 import { pipe, Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Http, RequestOptions, Headers, Response, ResponseContentType } from '@angular/http';
+import { OutcomeCategories, OutcomeCategory } from 'src/app/models/category';
 
 @Injectable()
 export class AccountService {
@@ -155,12 +156,8 @@ export class AccountService {
         }));
     }
 
-    getAccountTopCharges(account: Account, month: Number){
-
-        return this.httpClient.get(this.endpoint + '/' + account.id + '/toptransactions/' + month)
-        .pipe(map(result => {
-            return result;
-        }));
+    getAccountTopCharges(account: Account, month: Number) : Observable<Array<OutcomeCategory>> {
+        return this.httpClient.get<Array<OutcomeCategory>>(this.endpoint + '/' + account.id + '/toptransactions/' + month, this.httpOptions);
     }
 
     update(account:Account){
