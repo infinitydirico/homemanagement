@@ -1,8 +1,8 @@
 <content-card>
-    <h3>Transactions overall grouped by categories</h3>
+    <h3>Transactions grouped by categories</h3>
     <mat-progress-bar mode="indeterminate" *ngIf="!data"></mat-progress-bar>
 
     <bar-chart [data]="data" *ngIf="data"
-                [title]="'Outcome Groupped by categories'" 
+                [title]="'Outcome'" 
                 [labels]="labels"></bar-chart>
 </content-card>

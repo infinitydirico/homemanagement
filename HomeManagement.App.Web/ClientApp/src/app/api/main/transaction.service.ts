@@ -47,8 +47,8 @@ export class TransactionService {
         }));
     }
 
-    updateCharge(transaction:Transaction){
-        return this.http.put(this.endpoint, transaction)
+    update(transaction:Transaction){
+        return this.http.put(this.endpoint, transaction, this.httpOptions)
         .pipe(map(result => {
             this.serviceUpdate.emit();
             return result;

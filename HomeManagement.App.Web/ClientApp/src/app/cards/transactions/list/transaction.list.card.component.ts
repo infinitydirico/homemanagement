@@ -7,9 +7,9 @@ import { Category } from 'src/app/models/category';
 import { CategoryService } from 'src/app/api/main/category.service';
 import { HelperService } from 'src/app/services/helper.service';
 import { CommonService } from 'src/app/common/common.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { TransactionAddDialogComponent } from '../add-dialog/transaction.add.dialog.component';
-import { Router } from '@angular/router';
+import { TransactionEditDialogComponent } from '../edit/transaction.edit.dialog.component';
 
 @Component({
     selector: 'transaction-list-card',
@@ -32,7 +32,8 @@ export class TransactionListCardComponent implements OnInit {
         private categoryService: CategoryService,
         private helperService: HelperService,
         private commonService: CommonService,
-        public dialog: MatDialog) {
+        public dialog: MatDialog,
+        private snackBar: MatSnackBar) {
     }
 
     ngOnInit(): void {
@@ -87,7 +88,21 @@ export class TransactionListCardComponent implements OnInit {
     }
 
     edit(transaction: Transaction) {
-        console.log(transaction);
+        let transactionDialog = this.dialog.open(TransactionEditDialogComponent, {
+            width: '550px',
+            data: transaction
+          })
+      
+          transactionDialog.afterClosed().subscribe((updateTransaction:Transaction) => {
+      
+            if (updateTransaction === undefined) return;
+      
+            this.transactionService.update(updateTransaction).subscribe(result => {
+                this.snackBar.open("Transaction " + updateTransaction.name + " updated !", "Dismiss", {
+                    duration: 2000
+                })
+            });
+          });
     }
 
     delete(transaction: Transaction) {

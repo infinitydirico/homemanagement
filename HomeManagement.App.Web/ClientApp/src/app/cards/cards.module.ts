@@ -25,6 +25,7 @@ import { ForgotPasswordDialogComponent } from "./user/forgot-password/forgot.pas
 import { TwoFaAuthenticationComponent } from './user/two-factor/twofa.authentication.component';
 import { ChangePasswordComponent } from './user/password/change.password.component';
 import { AccountOutcomeCategoriesChart } from './accounts/detail/top-charges/top-charge.chart.component';
+import { TransactionEditDialogComponent } from './transactions/edit/transaction.edit.dialog.component';
 
 @NgModule({
     declarations: [
@@ -46,6 +47,7 @@ import { AccountOutcomeCategoriesChart } from './accounts/detail/top-charges/top
         OutcomeCategoriesChart,
         AccountsEvolutionCardComponent,
         TransactionAddDialogComponent,
+        TransactionEditDialogComponent,
         PreferencesCardComponent,
         ForgotPasswordDialogComponent,
         TwoFaAuthenticationComponent,
@@ -76,6 +78,7 @@ import { AccountOutcomeCategoriesChart } from './accounts/detail/top-charges/top
         OutcomeCategoriesChart,
         AccountsEvolutionCardComponent,
         TransactionAddDialogComponent,
+        TransactionEditDialogComponent,
         PreferencesCardComponent,
         ForgotPasswordDialogComponent,
         TwoFaAuthenticationComponent,
@@ -87,6 +90,7 @@ import { AccountOutcomeCategoriesChart } from './accounts/detail/top-charges/top
         AccountAddDialog,
         CategoryAddDialog,
         TransactionAddDialogComponent,
+        TransactionEditDialogComponent,
         ForgotPasswordDialogComponent
     ]
 })
