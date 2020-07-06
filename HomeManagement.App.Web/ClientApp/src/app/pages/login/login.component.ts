@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../auth/authentication.service';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ForgotPasswordDialogComponent } from '../../cards/user/forgot-password/forgot.password.dialog.component';
 import { IdentityService } from '../../api/identity/identity.service';
 import { HttpErrorResponse } from '@angular/common/http';

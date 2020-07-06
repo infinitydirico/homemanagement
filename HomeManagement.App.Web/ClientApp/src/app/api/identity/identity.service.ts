@@ -1,9 +1,10 @@
-import { Injectable, EventEmitter, Output } from '@angular/core';
+import { Injectable, EventEmitter, Output, Directive } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../auth/authentication.service';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 
+@Directive()
 @Injectable()
 export class IdentityService {
 

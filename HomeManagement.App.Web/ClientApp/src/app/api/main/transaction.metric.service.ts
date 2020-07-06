@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter, Output } from '@angular/core';
+import { Injectable, EventEmitter, Output, Directive } from '@angular/core';
 import { Transaction, TransactionPageModel } from "../../models/transaction";
 import { Account } from "../../models/account";
 import { map } from 'rxjs/operators';
@@ -6,6 +6,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './../../auth/authentication.service'
 import { environment } from 'src/environments/environment';
 
+@Directive()
 @Injectable()
 export class TransactionMetricService {
 

@@ -7,7 +7,8 @@ import { Category } from 'src/app/models/category';
 import { CategoryService } from 'src/app/api/main/category.service';
 import { HelperService } from 'src/app/services/helper.service';
 import { CommonService } from 'src/app/common/common.service';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TransactionAddDialogComponent } from '../add-dialog/transaction.add.dialog.component';
 import { TransactionEditDialogComponent } from '../edit/transaction.edit.dialog.component';
 

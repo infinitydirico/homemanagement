@@ -9,7 +9,7 @@ import { Category } from 'src/app/models/category';
 import { FormControl, Validators } from '@angular/forms';
 import { startWith, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'transaction-add-card',

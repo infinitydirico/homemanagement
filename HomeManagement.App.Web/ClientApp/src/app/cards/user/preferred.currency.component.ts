@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CurrencyService } from 'src/app/api/main/currency.service';
 import { Currency } from 'src/app/models/base-types';
 import { PreferencesService } from 'src/app/api/main/preferences.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'preferred-currency',

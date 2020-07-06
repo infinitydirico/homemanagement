@@ -4,7 +4,7 @@ import { AccountType, GetAccountTypes, Currency } from 'src/app/models/base-type
 import { CurrencyService } from 'src/app/api/main/currency.service';
 import { Account } from '../../../models/account';
 import { ColorService } from 'src/app/services/color.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { saveAs } from 'file-saver';
 
 @Component({

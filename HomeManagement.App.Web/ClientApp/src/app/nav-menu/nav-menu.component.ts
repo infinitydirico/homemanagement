@@ -5,7 +5,7 @@ import { saveAs } from 'file-saver';
 import { UserService } from '../api/main/user.service';
 import { CommonService } from '../common/common.service';
 import { NotificationService } from '../api/main/notification.service';
-import { MatBottomSheet } from '@angular/material';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { NotificationsBottomBarComponent } from '../components/notifications-bottom-bar/notifications.bar.component';
 
 @Component({

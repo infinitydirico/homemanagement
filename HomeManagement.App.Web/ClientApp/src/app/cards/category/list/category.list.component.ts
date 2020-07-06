@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CategoryService } from 'src/app/api/main/category.service';
 import { Category } from 'src/app/models/category';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CategoryAddDialog } from '../add/category.add.dialog.component';
 import { ColorService } from 'src/app/services/color.service';
 

@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter, Output } from '@angular/core';
+import { Injectable, EventEmitter, Output, Directive } from '@angular/core';
 import { User } from "../../models/user";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { Metric } from '../../models/base-types';
 import { OutcomeCategories } from '../../models/category';
 import { AccountBalanceModel, AccountsEvolutionModel } from '../../models/account-chart-data';
 
+@Directive()
 @Injectable()
 export class AccountMetricService {
 

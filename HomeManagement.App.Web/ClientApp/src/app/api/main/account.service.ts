@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter, Output } from '@angular/core';
+import { Injectable, EventEmitter, Output, Directive } from '@angular/core';
 import { User } from "../../models/user";
 import { Account, AccountPageModel, TransferDto } from "../../models/account";
 import { ServiceConstants } from '../service.constants';
@@ -11,6 +11,7 @@ import { environment } from 'src/environments/environment';
 import { Http, RequestOptions, Headers, Response, ResponseContentType } from '@angular/http';
 import { OutcomeCategories, OutcomeCategory } from 'src/app/models/category';
 
+@Directive()
 @Injectable()
 export class AccountService {
 

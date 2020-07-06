@@ -7,7 +7,8 @@ import { Category } from 'src/app/models/category';
 import { FormControl, Validators } from '@angular/forms';
 import { startWith, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { MatSnackBar, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ColorService } from 'src/app/services/color.service';
 
 @Component({
