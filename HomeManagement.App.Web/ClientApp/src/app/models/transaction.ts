@@ -8,6 +8,7 @@ export class Transaction
     accountId: number = 0;
     categoryId: number = 0;
     selected: boolean = false;
+    hover: boolean = false;
 
     static new(transaction:Transaction){
         let value = new Transaction();

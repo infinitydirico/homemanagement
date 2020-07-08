@@ -24,7 +24,10 @@
   <table mat-table [dataSource]="transactions" class="table" *ngIf="transactions.length">
     <!-- Name Column -->
     <ng-container matColumnDef="name">
-      <td mat-cell *matCellDef="let element" (click)="edit(element)"> {{element.name}} </td>
+      <td mat-cell *matCellDef="let element" (click)="edit(element)" (mouseover)="element.hover = true" (mouseout)="element.hover = false">        
+        {{element.name}} 
+        <mat-icon [style.color]="colorService.getPrimary()" *ngIf="element.hover">edit</mat-icon>
+      </td>
     </ng-container>
 
     <!-- Category Column -->

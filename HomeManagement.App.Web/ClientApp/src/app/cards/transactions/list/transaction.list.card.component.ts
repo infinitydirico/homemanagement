@@ -29,7 +29,7 @@ export class TransactionListCardComponent implements OnInit {
     isLoading: boolean = false;
 
     constructor(private transactionService: TransactionService,
-        private colorService: ColorService,
+        public colorService: ColorService,
         private categoryService: CategoryService,
         private helperService: HelperService,
         private commonService: CommonService,

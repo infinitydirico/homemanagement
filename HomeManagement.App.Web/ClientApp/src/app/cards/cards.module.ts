@@ -57,7 +57,7 @@ import { TransactionEditDialogComponent } from './transactions/edit/transaction.
     imports: [
         MaterialModule,
         FormsModule,
-        ReactiveFormsModule        
+        ReactiveFormsModule
     ],
     exports: [
         AccountListCardComponent,
