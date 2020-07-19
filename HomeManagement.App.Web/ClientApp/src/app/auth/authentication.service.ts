@@ -51,6 +51,22 @@ export class AuthService {
             }));     
     }
 
+    register(username:string, password:string){
+        let endpoint = environment.identityApi;        
+        this.user = new User();
+        this.user.email = username;
+        this.user.securityCode = 0;
+        this.user.password = this.cryptoService.encrypt(password);
+
+        return this.http.post(endpoint + "/Api/Registration", this.user)
+            .pipe(map(() => {
+
+                this.login(username, password).subscribe();
+            }, err => {
+                return err;
+            }));
+    }
+
     logout(){
         this.user = null;
         this.onUserAuthenticated.next(this.user);

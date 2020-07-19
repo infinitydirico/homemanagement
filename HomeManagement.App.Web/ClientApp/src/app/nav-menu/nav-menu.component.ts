@@ -72,7 +72,7 @@ export class NavMenuComponent implements OnInit {
   }
 
   register(){
-
+    this.router.navigate(['/register']);
   }
 
   login(){

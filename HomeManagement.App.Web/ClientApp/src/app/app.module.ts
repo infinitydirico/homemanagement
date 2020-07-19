@@ -40,6 +40,7 @@ import { TokenGuard } from './auth/token.guard';
 import { TokenPageComponent } from './pages/user/token/token.page.component';
 import { PasswordService } from './common/password.service';
 import { SecuritySettingsComponent } from './pages/user/security-settings/security-settings.component';
+import { RegisterComponent } from './pages/register/register.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { SecuritySettingsComponent } from './pages/user/security-settings/securi
     AccountDetailComponent,
     NotificationsBottomBarComponent,
     TokenPageComponent,
-    SecuritySettingsComponent
+    SecuritySettingsComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -61,6 +63,7 @@ import { SecuritySettingsComponent } from './pages/user/security-settings/securi
     RouterModule.forRoot([      
       { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
       { path: 'login', component: LoginComponent},
+      { path: 'register', component: RegisterComponent},
       { 
         path: 'account', 
         component: AccountComponent,
