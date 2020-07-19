@@ -1,9 +1,12 @@
 ﻿using HomeManagement.Api.Identity.Services;
+using HomeManagement.API.Queue.Messages;
+using HomeManagement.API.RabbitMQ;
 using HomeManagement.Contracts;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -18,14 +21,17 @@ namespace HomeManagement.Api.Identity.Controllers
         private readonly UserManager<IdentityUser> userManager;
         private readonly ICryptography cryptography;
         private readonly IBroadcaster broadcaster;
+        private readonly IConfiguration configuration;
 
         public RegistrationController(UserManager<IdentityUser> userManager,
             ICryptography cryptography,
-            IBroadcaster broadcaster)
+            IBroadcaster broadcaster,
+            IConfiguration configuration)
         {
             this.userManager = userManager;
             this.cryptography = cryptography;
             this.broadcaster = broadcaster;
+            this.configuration = configuration;
         }
 
         [HttpPost]
@@ -48,8 +54,14 @@ namespace HomeManagement.Api.Identity.Controllers
 
                     if (result.Succeeded)
                     {
-                        broadcaster.BroadcastRegistration(userModel.Email, userModel.Language);
-                        scope.Complete();
+                        //broadcaster.BroadcastRegistration(userModel.Email, userModel.Language);
+                        //scope.Complete();
+                        var sender = new Sender(configuration);
+                        sender.SendMessage(new RegistrationMessage
+                        {
+                            Email = userModel.Email,
+                            Language = userModel.Language
+                        });
                         return Ok();
                     }
                     else

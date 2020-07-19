@@ -38,6 +38,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\HomeManagement.API.RabbitMQ\HomeManagement.API.RabbitMQ.csproj" />
     <ProjectReference Include="..\HomeManagement.Core\HomeManagement.Core.csproj" />
     <ProjectReference Include="..\HomeManagement.Data\HomeManagement.Data.csproj" />
     <ProjectReference Include="..\HomeManagement.Models\HomeManagement.Models.csproj" />

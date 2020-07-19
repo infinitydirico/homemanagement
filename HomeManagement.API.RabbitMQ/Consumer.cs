@@ -1,39 +1,50 @@
 ﻿using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System;
 
 namespace HomeManagement.API.RabbitMQ
 {
-    public class Consumer
+    public abstract class Consumer
     {
-        private readonly IConfiguration configuration;
+        protected readonly IServiceProvider serviceProvider;
 
-        public Consumer(IConfiguration configuration)
+        public Consumer(IServiceProvider serviceProvider)
         {
-            this.configuration = configuration;
+            this.serviceProvider = serviceProvider;
         }
 
-        public void Suscribe(IConsummerService consumerService)
+        public abstract string QueueName { get; }
+
+        public abstract EventingBasicConsumer CreateConsumer(IModel channel);
+
+        public void Suscribe()
         {
             using (var rabbitConnection = CreateConnectionFactor().CreateConnection())
             using (var channel = rabbitConnection.CreateModel())
             {
-                channel.QueueDeclare(consumerService.QueueName, false, false, false, null);
+                channel.QueueDeclare(QueueName, false, false, false, null);
 
                 channel.BasicConsume(
-                    queue: consumerService.QueueName,
+                    queue: QueueName,
                     autoAck: true,
-                    consumer: consumerService.Consumer);
+                    consumer: CreateConsumer(channel));
             }
         }
 
-        private ConnectionFactory CreateConnectionFactor() => new ConnectionFactory
+        private ConnectionFactory CreateConnectionFactor()
         {
-            HostName = configuration.GetSection("RabbitMQ:HostName").Value ?? throw new ArgumentNullException("Configuration RabbitMQ:HostName cannot be null."),
-            UserName = configuration.GetSection("RabbitMQ:UserName").Value ?? throw new ArgumentNullException("Configuration RabbitMQ:UserName cannot be null."),
-            Password = configuration.GetSection("RabbitMQ:Password").Value ?? throw new ArgumentNullException("Configuration RabbitMQ:Password cannot be null."),
-            Port = int.Parse(configuration.GetSection("RabbitMQ:Port").Value),
-            RequestedConnectionTimeout = TimeSpan.FromSeconds(int.Parse(configuration.GetSection("RabbitMQ:RequestedConnectionTimeout").Value))
-        };
+            var configuration = serviceProvider.GetService(typeof(IConfiguration)) as IConfiguration;
+            var connection = new ConnectionFactory
+            {
+                HostName = configuration.GetSection("RabbitMQ:HostName").Value ?? throw new ArgumentNullException("Configuration RabbitMQ:HostName cannot be null."),
+                UserName = configuration.GetSection("RabbitMQ:UserName").Value ?? throw new ArgumentNullException("Configuration RabbitMQ:UserName cannot be null."),
+                Password = configuration.GetSection("RabbitMQ:Password").Value ?? throw new ArgumentNullException("Configuration RabbitMQ:Password cannot be null."),
+                Port = int.Parse(configuration.GetSection("RabbitMQ:Port").Value),
+                RequestedConnectionTimeout = TimeSpan.FromSeconds(int.Parse(configuration.GetSection("RabbitMQ:RequestedConnectionTimeout").Value))
+            };
+
+            return connection;
+        }
     }
 }
