@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Text;
 using HomeManagement.Api.Core.Throttle;
 using HomeManagement.Api.Core.HealthChecks;
+using HomeManagement.API.Queue;
 
 namespace HomeManagement.API
 {
@@ -80,6 +81,7 @@ namespace HomeManagement.API
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, CurrencyUpdaterHostedService>();
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackupHostedService>();
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, EmailBackupHostedService>();
+            services.AddHostedService<RegistrationServiceQueue>();
             
             services.AddMvc(options =>
             {
