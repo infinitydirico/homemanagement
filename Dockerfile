@@ -17,6 +17,7 @@ COPY ["HomeManagement.Mapper/HomeManagement.Mapper.csproj", "HomeManagement.Mapp
 COPY ["HomeManagement.Models/HomeManagement.Models.csproj", "HomeManagement.Models/"]
 COPY ["HomeManagement.AI.Vision/HomeManagement.AI.Vision.csproj", "HomeManagement.AI.Vision/"]
 COPY ["HomeManagement.Tokens/HomeManagement.Api.Core.csproj", "HomeManagement.Tokens/"]
+COPY ["HomeManagement.API.RabbitMQ/HomeManagement.API.RabbitMQ.csproj", "HomeManagement.API.RabbitMQ/"]
 RUN dotnet restore "HomeManagement.API/HomeManagement.API.csproj"
 COPY . .
 WORKDIR "/src/HomeManagement.API"

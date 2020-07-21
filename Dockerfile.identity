@@ -11,6 +11,7 @@ COPY ["HomeManagement.Domain/HomeManagement.Domain.csproj", "HomeManagement.Doma
 COPY ["HomeManagement.Contracts/HomeManagement.Contracts.csproj", "HomeManagement.Contracts/"]
 COPY ["HomeManagement.Core/HomeManagement.Core.csproj", "HomeManagement.Core/"]
 COPY ["HomeManagement.Tokens/HomeManagement.Api.Core.csproj", "HomeManagement.Tokens/"]
+COPY ["HomeManagement.API.RabbitMQ/HomeManagement.API.RabbitMQ.csproj", "HomeManagement.API.RabbitMQ/"]
 COPY ["HomeManagement.Models/HomeManagement.Models.csproj", "HomeManagement.Models/"]
 RUN dotnet restore "HomeManagement.Api.Identity/HomeManagement.Api.Identity.csproj"
 COPY . .

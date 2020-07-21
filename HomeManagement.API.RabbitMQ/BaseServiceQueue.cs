@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
@@ -21,33 +22,51 @@ namespace HomeManagement.API.RabbitMQ
         {
             this.serviceScopeFactory = serviceScopeFactory;
             this.configuration = configuration;
-
-            Initialize();
         }
 
         public abstract string QueueName { get; }
 
-        protected void Initialize()
+        private async Task Connect()
         {
-            var factory = new ConnectionFactory
+            try
             {
-                HostName = configuration.GetSection("RabbitMQ:HostName").Value ?? throw new ArgumentNullException("Configuration RabbitMQ:HostName cannot be null."),
-                UserName = configuration.GetSection("RabbitMQ:UserName").Value ?? throw new ArgumentNullException("Configuration RabbitMQ:UserName cannot be null."),
-                Password = configuration.GetSection("RabbitMQ:Password").Value ?? throw new ArgumentNullException("Configuration RabbitMQ:Password cannot be null."),
-                Port = int.Parse(configuration.GetSection("RabbitMQ:Port").Value),
-                RequestedConnectionTimeout = TimeSpan.FromSeconds(int.Parse(configuration.GetSection("RabbitMQ:RequestedConnectionTimeout").Value))
-            };
+                var factory = new ConnectionFactory
+                {
+                    HostName = configuration.GetSection("RabbitMQ:HostName").Value ?? throw new ArgumentNullException("Configuration RabbitMQ:HostName cannot be null."),
+                    UserName = configuration.GetSection("RabbitMQ:UserName").Value ?? throw new ArgumentNullException("Configuration RabbitMQ:UserName cannot be null."),
+                    Password = configuration.GetSection("RabbitMQ:Password").Value ?? throw new ArgumentNullException("Configuration RabbitMQ:Password cannot be null."),
+                    Port = int.Parse(configuration.GetSection("RabbitMQ:Port").Value),
+                    RequestedConnectionTimeout = TimeSpan.FromSeconds(int.Parse(configuration.GetSection("RabbitMQ:RequestedConnectionTimeout").Value))
+                };
 
-            _connection = factory.CreateConnection();
-            _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
-            _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: QueueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+                _connection = factory.CreateConnection();
+                _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
+                _channel = _connection.CreateModel();
+                _channel.QueueDeclare(queue: QueueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+
+                await Consume();
+            }
+            catch (Exception ex)
+            {
+                using (var scope = serviceScopeFactory.CreateScope())
+                {
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger>();
+                    logger.LogError(ex, "Fail to connect to rabbit mq service.");
+                }
+                await Task.Delay(1000 * 60 * 10);
+                await Connect();
+            }
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             stoppingToken.ThrowIfCancellationRequested();
 
+            await Connect();            
+        }
+
+        private async Task Consume()
+        {
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += OnRecieved;
 
@@ -58,7 +77,7 @@ namespace HomeManagement.API.RabbitMQ
 
             _channel.BasicConsume(QueueName, false, consumer);
 
-            return Task.CompletedTask;
+            await Task.Yield();
         }
 
         protected abstract void OnRecieved(object sender, BasicDeliverEventArgs ea);
@@ -75,8 +94,8 @@ namespace HomeManagement.API.RabbitMQ
 
         public override void Dispose()
         {
-            _channel.Close();
-            _connection.Close();
+            _channel?.Close();
+            _connection?.Close();
             base.Dispose();
         }
     }
