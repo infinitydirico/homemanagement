@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
+using HomeManagement.Core.Extensions;
 
 namespace HomeManagement.Api.Identity.Controllers
 {
@@ -20,15 +20,15 @@ namespace HomeManagement.Api.Identity.Controllers
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly ICryptography cryptography;
-        private readonly IConfiguration configuration;
+        private readonly IQueueService  queueService;
 
         public RegistrationController(UserManager<IdentityUser> userManager,
             ICryptography cryptography,
-            IConfiguration configuration)
+            IQueueService queueService)
         {
             this.userManager = userManager;
             this.cryptography = cryptography;
-            this.configuration = configuration;
+            this.queueService = queueService;
         }
 
         [HttpPost]
@@ -50,12 +50,11 @@ namespace HomeManagement.Api.Identity.Controllers
                     var result = await userManager.CreateAsync(user, password);
 
                     if (result.Succeeded)
-                    {                        
-                        var sender = new Sender(configuration);
-                        sender.SendMessage(new RegistrationMessage
+                    {
+                        queueService.SendMessage(new RegistrationMessage
                         {
                             Email = userModel.Email,
-                            Language = userModel.Language
+                            Language = userModel.Language.IsEmpty() ? GetBrowserLanguage() : userModel.Language
                         });
                         scope.Complete();
                         return Ok();

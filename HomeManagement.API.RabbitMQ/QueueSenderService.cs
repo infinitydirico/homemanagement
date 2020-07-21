@@ -4,11 +4,16 @@ using System;
 
 namespace HomeManagement.API.RabbitMQ
 {
-    public class Sender
+    public interface IQueueService
+    {
+        void SendMessage(Message message);
+    }
+
+    public class QueueSenderService : IQueueService
     {
         private readonly IConfiguration configuration;
 
-        public Sender(IConfiguration configuration)
+        public QueueSenderService(IConfiguration configuration)
         {
             this.configuration = configuration;
         }

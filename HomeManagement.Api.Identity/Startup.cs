@@ -22,6 +22,7 @@ using HomeManagement.Api.Core.HealthChecks;
 using HomeManagement.Api.Core.Email;
 using HomeManagement.Api.Identity.HostedServices;
 using HomeManagement.Api.Identity.SecurityCodes;
+using HomeManagement.API.RabbitMQ;
 
 namespace HomeManagement.Api.Identity
 {
@@ -112,6 +113,8 @@ namespace HomeManagement.Api.Identity
             services.AddSingleton<ICodesServices, CodesServices>();
 
             services.AddScoped<ICryptography, AesCryptographyService>();
+
+            services.AddScoped<IQueueService, QueueSenderService>();
 
             services.AddScoped<IBroadcaster, Broadcaster>();
 

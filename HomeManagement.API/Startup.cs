@@ -149,8 +149,6 @@ namespace HomeManagement.API
 
             app.EnsureDatabaseCreated(true);
 
-            app.SuscribeQueues();
-
             app.UseStaticFiles();
 
             app.UseRequestLocalization();

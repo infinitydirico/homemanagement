@@ -2,9 +2,6 @@
 using HomeManagement.API.Business;
 using HomeManagement.API.Data;
 using HomeManagement.API.Data.Repositories;
-using HomeManagement.API.Queue;
-using HomeManagement.API.RabbitMQ;
-using HomeManagement.API.RabbitMQ.Consumers;
 using HomeManagement.Business.Contracts;
 using HomeManagement.Business.Exportation;
 using HomeManagement.Business.Units;
@@ -13,7 +10,6 @@ using HomeManagement.Core.Cryptography;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HomeManagement.API.Extensions
@@ -107,19 +103,6 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IMonthlyExpenseService, MonthlyExpenseService>();
             services.AddScoped<IImageService, ImageService>();
             services.AddSingleton<IEmailService, EmailService>();
-        }
-
-        public static void SuscribeQueues(this IApplicationBuilder applicationBuilder)
-        {
-            using (var serviceScope = applicationBuilder.ApplicationServices
-                                        .GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                var context = serviceScope.ServiceProvider.GetService<WebAppDbContext>();
-
-                var registrationConsumer = new RegistrationConsumer(serviceScope.ServiceProvider);
-                registrationConsumer.Suscribe();
-            }
-            
         }
     }
 }
