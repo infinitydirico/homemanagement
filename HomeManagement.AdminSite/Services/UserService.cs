@@ -55,7 +55,7 @@ namespace HomeManagement.AdminSite.Services
 
                 client.DefaultRequestHeaders.Add("Authorization", userModel.Token);
 
-                var response = await client.DeleteAsync($"user/{userId}");
+                var response = await client.DeleteAsync($"api/user/{userId}");
                 response.EnsureSuccessStatusCode();
             }
         }

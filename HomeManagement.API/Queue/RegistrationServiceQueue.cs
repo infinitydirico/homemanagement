@@ -5,83 +5,48 @@ using HomeManagement.Data;
 using HomeManagement.Domain;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace HomeManagement.API.Queue
 {
-    public interface IRegistrationServiceQueue : IConsummerService { }
-
-    public class RegistrationServiceQueue : BackgroundService, IRegistrationServiceQueue
+    public class RegistrationServiceQueue : BaseServiceQueue
     {
         private readonly ILogger<RegistrationServiceQueue> logger;
-        protected readonly IServiceScopeFactory serviceScopeFactory;
-        private readonly IConfiguration configuration;
-        private IModel _channel;
-        private IConnection _connection;
 
         public RegistrationServiceQueue(ILogger<RegistrationServiceQueue> logger,
-            IServiceScopeFactory serviceScopeFactory,
-            IConfiguration configuration)
+            IServiceScopeFactory serviceScopeFactory, IConfiguration configuration) 
+            : base(serviceScopeFactory, configuration)
         {
             this.logger = logger;
-            this.serviceScopeFactory = serviceScopeFactory;
-            this.configuration = configuration;
-
-            Initialize();
         }
 
-        public string QueueName => "RegistrationQueue";
+        public override string QueueName => "RegistrationQueue";
 
-        public EventingBasicConsumer Consumer { get; private set; }
-
-        private void Initialize()
+        protected override void OnConsumerConsumerCancelled(object sender, ConsumerEventArgs e)
         {
-            var factory = new ConnectionFactory
-            {
-                HostName = configuration.GetSection("RabbitMQ:HostName").Value ?? throw new ArgumentNullException("Configuration RabbitMQ:HostName cannot be null."),
-                UserName = configuration.GetSection("RabbitMQ:UserName").Value ?? throw new ArgumentNullException("Configuration RabbitMQ:UserName cannot be null."),
-                Password = configuration.GetSection("RabbitMQ:Password").Value ?? throw new ArgumentNullException("Configuration RabbitMQ:Password cannot be null."),
-                Port = int.Parse(configuration.GetSection("RabbitMQ:Port").Value),
-                RequestedConnectionTimeout = TimeSpan.FromSeconds(int.Parse(configuration.GetSection("RabbitMQ:RequestedConnectionTimeout").Value))
-            };
-
-            _connection = factory.CreateConnection();
-            _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
-            _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: QueueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+            logger.LogInformation($"Consumer cancelled service {nameof(RegistrationServiceQueue)}.");
         }
 
-        public void BindChannel(IModel channel)
+        protected override void OnConsumerRegistered(object sender, ConsumerEventArgs e)
         {
-            Consumer = new EventingBasicConsumer(channel);
-            Consumer.Received += OnRecieved;
+            logger.LogInformation($"Service {nameof(RegistrationServiceQueue)} has been registered.");
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override void OnConsumerShutdown(object sender, ShutdownEventArgs e)
         {
-            stoppingToken.ThrowIfCancellationRequested();
-
-            var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += OnRecieved;
-
-            consumer.Shutdown += OnConsumerShutdown;
-            consumer.Registered += OnConsumerRegistered;
-            consumer.Unregistered += OnConsumerUnregistered;
-            consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
-
-            _channel.BasicConsume(QueueName, false, consumer);
-
-            return Task.CompletedTask;
+            logger.LogInformation($"shutting down service {nameof(RegistrationServiceQueue)}.");
         }
 
-        private void OnRecieved(object sender, BasicDeliverEventArgs ea)
+        protected override void OnConsumerUnregistered(object sender, ConsumerEventArgs e)
+        {
+            logger.LogInformation($"Unregistering service {nameof(RegistrationServiceQueue)}.");
+        }
+
+        protected override void OnRecieved(object sender, BasicDeliverEventArgs ea)
         {            
             var message = new RegistrationMessage(ea.Body.ToArray());
             try
@@ -162,31 +127,9 @@ namespace HomeManagement.API.Queue
             }
         }
 
-        private void OnConsumerConsumerCancelled(object sender, ConsumerEventArgs e)
+        protected override void RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs e)
         {
-        }
-
-        private void OnConsumerUnregistered(object sender, ConsumerEventArgs e)
-        {
-        }
-
-        private void OnConsumerRegistered(object sender, ConsumerEventArgs e)
-        {
-        }
-
-        private void OnConsumerShutdown(object sender, ShutdownEventArgs e)
-        {
-        }
-
-        private void RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs e)
-        {
-        }
-
-        public override void Dispose()
-        {
-            _channel.Close();
-            _connection.Close();
-            base.Dispose();
+            
         }
     }
 }

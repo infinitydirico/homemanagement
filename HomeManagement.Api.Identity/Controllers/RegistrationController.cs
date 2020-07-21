@@ -1,9 +1,9 @@
-﻿using HomeManagement.Api.Identity.Services;
-using HomeManagement.API.Queue.Messages;
+﻿using HomeManagement.API.Queue.Messages;
 using HomeManagement.API.RabbitMQ;
 using HomeManagement.Contracts;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -20,17 +20,14 @@ namespace HomeManagement.Api.Identity.Controllers
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly ICryptography cryptography;
-        private readonly IBroadcaster broadcaster;
         private readonly IConfiguration configuration;
 
         public RegistrationController(UserManager<IdentityUser> userManager,
             ICryptography cryptography,
-            IBroadcaster broadcaster,
             IConfiguration configuration)
         {
             this.userManager = userManager;
             this.cryptography = cryptography;
-            this.broadcaster = broadcaster;
             this.configuration = configuration;
         }
 
@@ -53,15 +50,14 @@ namespace HomeManagement.Api.Identity.Controllers
                     var result = await userManager.CreateAsync(user, password);
 
                     if (result.Succeeded)
-                    {
-                        //broadcaster.BroadcastRegistration(userModel.Email, userModel.Language);
-                        //scope.Complete();
+                    {                        
                         var sender = new Sender(configuration);
                         sender.SendMessage(new RegistrationMessage
                         {
                             Email = userModel.Email,
                             Language = userModel.Language
                         });
+                        scope.Complete();
                         return Ok();
                     }
                     else
@@ -76,6 +72,32 @@ namespace HomeManagement.Api.Identity.Controllers
                     scope.Dispose();
                     throw ex;
                 }
+            }
+        }
+
+        private string GetBrowserLanguage()
+        {
+            try
+            {
+                var acceptedLanguages = HttpContext.Request.GetTypedHeaders().AcceptLanguage;
+
+                if (acceptedLanguages.Any(x => x.Quality.HasValue))
+                {
+                    var language = acceptedLanguages
+                        .Where(x => x.Quality.HasValue)
+                        .OrderBy(x => x.Quality)
+                        .First();
+
+                    return language.Value.Value;
+                }
+                else
+                {
+                    return acceptedLanguages.First().Value.Value;
+                }
+            }
+            catch
+            {
+                return "en";
             }
         }
     }
