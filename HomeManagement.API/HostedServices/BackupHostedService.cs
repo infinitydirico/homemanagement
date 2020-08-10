@@ -12,17 +12,14 @@ namespace HomeManagement.API.HostedServices
 {
     public class BackupHostedService : HostedService, IHostedService
     {
-        private readonly IEmailService emailService;
         private readonly IPlatformContext context;
         private readonly IConfiguration configuration;
         private readonly PreferencesRepository preferenceRepository;
 
         public BackupHostedService(ILogger<HostedService> logger, 
-            IServiceScopeFactory factory,
-            IEmailService emailService) 
+            IServiceScopeFactory factory) 
             : base(logger, factory)
         {
-            this.emailService = emailService;
             context = GetService<IPlatformContext>();
             configuration = GetService<IConfiguration>();
             preferenceRepository = new PreferencesRepository(context.CreateDbContext());

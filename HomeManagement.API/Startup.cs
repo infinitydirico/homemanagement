@@ -82,6 +82,7 @@ namespace HomeManagement.API
             services.AddHostedService<BackupHostedService>();
             services.AddHostedService<EmailBackupHostedService>();
             services.AddHostedService<RegistrationServiceQueue>();
+            services.AddHostedService<UserDeletionServiceQueue>();
 
             services.AddMvc(options =>
             {

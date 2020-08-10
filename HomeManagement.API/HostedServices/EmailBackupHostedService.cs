@@ -38,6 +38,8 @@ namespace HomeManagement.API.HostedServices
 
                 if (!weeklyEmails) continue;
 
+                logger.LogInformation($"Sending backup to user: {user.Email} at {DateTime.Now}");
+
                 var userdata = userService.DownloadUserData(user.Id);
 
                 var bytes = userdata.GetBuffer();

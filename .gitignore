@@ -278,3 +278,5 @@ __pycache__/
 /HomeManagement.API/appsettings.Development.json
 /HomeManagement.AdminSite/appsettings.json
 /HomeManagement.AdminSite/appsettings.Development.json
+/HomeManagement.AdminSite/Logs
+/HomeManagement.Proxy/logs

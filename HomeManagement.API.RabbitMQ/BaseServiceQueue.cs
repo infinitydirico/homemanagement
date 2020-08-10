@@ -42,7 +42,8 @@ namespace HomeManagement.API.RabbitMQ
                 _connection = factory.CreateConnection();
                 _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
                 _channel = _connection.CreateModel();
-                _channel.QueueDeclare(queue: QueueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+                _channel.QueueDeclare(queue: QueueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
+                _channel.BasicQos(0, 1, false);
 
                 await Consume();
             }
@@ -75,9 +76,15 @@ namespace HomeManagement.API.RabbitMQ
             consumer.Unregistered += OnConsumerUnregistered;
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
 
-            _channel.BasicConsume(QueueName, false, consumer);
+            _channel.BasicConsume(QueueName, true, consumer);
 
             await Task.Yield();
+        }
+
+        protected void OnMessageRecieved(object sender, BasicDeliverEventArgs ea)
+        {
+            OnRecieved(sender, ea);
+            _channel.BasicAck(ea.DeliveryTag, false);
         }
 
         protected abstract void OnRecieved(object sender, BasicDeliverEventArgs ea);

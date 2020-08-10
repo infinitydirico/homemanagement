@@ -19,14 +19,17 @@ namespace HomeManagement.Api.Identity.Controllers
     public class RegistrationController : ControllerBase
     {
         private readonly UserManager<IdentityUser> userManager;
+        private readonly RoleManager<IdentityRole> roleManager;
         private readonly ICryptography cryptography;
         private readonly IQueueService  queueService;
 
         public RegistrationController(UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager,
             ICryptography cryptography,
             IQueueService queueService)
         {
             this.userManager = userManager;
+            this.roleManager = roleManager;
             this.cryptography = cryptography;
             this.queueService = queueService;
         }
@@ -51,6 +54,11 @@ namespace HomeManagement.Api.Identity.Controllers
 
                     if (result.Succeeded)
                     {
+                        var roles = roleManager.Roles.ToList();
+                        var role = roles.First(x => x.Name.Equals("RegularUser"));
+                        
+                        await userManager.AddToRoleAsync(user, role.Name);
+
                         queueService.SendMessage(new RegistrationMessage
                         {
                             Email = userModel.Email,

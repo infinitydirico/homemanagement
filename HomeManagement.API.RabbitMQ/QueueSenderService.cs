@@ -23,11 +23,15 @@ namespace HomeManagement.API.RabbitMQ
             using(var rabbitConnection = CreateConnectionFactor().CreateConnection())
             using(var channel = rabbitConnection.CreateModel())
             {
-                channel.QueueDeclare(message.QueueName, false, false, false, null);
+                channel.QueueDeclare(message.QueueName, true, false, false, null);
+
+                var properties = channel.CreateBasicProperties();
+                properties.Persistent = true;
+
                 channel.BasicPublish(
                     exchange: string.Empty,
                     routingKey: message.QueueName,
-                    basicProperties: null,
+                    basicProperties: properties,
                     body: message.EncodeBody());
             }
         }

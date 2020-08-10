@@ -124,7 +124,7 @@ namespace HomeManagement.API.Queue
             catch (Exception ex)
             {
                 logger.LogError(ex, "Exception on creating new user data.");                
-            }
+            }            
         }
 
         protected override void RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs e)
