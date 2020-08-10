@@ -23,6 +23,7 @@ namespace HomeManagement.App.Services.Rest
                     var header = Xamarin.Essentials.Preferences.Get("HomeManagementAppHeader", string.Empty);
                     client.DefaultRequestHeaders.Add("HomeManagementApp", header);
                     var result = await client.PostAsync(Endpoints.Auth.LOGIN, restClient.SerializeToJson(user));
+                    result.EnsureSuccessStatusCode();
                     var json = await restClient.ReadJsonResponse<UserModel>(result);
                     return json;
                 }
@@ -30,7 +31,7 @@ namespace HomeManagement.App.Services.Rest
             catch (Exception ex)
             {
                 Logger.LogException(ex);
-                throw;
+                throw ex;
             }
         }
 
@@ -61,6 +62,7 @@ namespace HomeManagement.App.Services.Rest
                     var header = Xamarin.Essentials.Preferences.Get("HomeManagementAppHeader", string.Empty);
                     client.DefaultRequestHeaders.Add("HomeManagementApp", header);
                     var result = await client.GetAsync(Endpoints.Auth.SECURITY_CODE);
+                    result.EnsureSuccessStatusCode();
                     var json = await restClient.ReadJsonResponse<UserCodeModel>(result);
                     return json;
                 }
@@ -68,7 +70,7 @@ namespace HomeManagement.App.Services.Rest
             catch (Exception ex)
             {
                 Logger.LogException(ex);
-                throw;
+                throw ex;
             }
         }
     }

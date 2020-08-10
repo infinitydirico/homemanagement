@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using HomeManagement.App.Data;
 using HomeManagement.App.Data.Entities;
-using HomeManagement.App.Services.BackgroundWorker;
 using HomeManagement.App.Services.Rest;
 using HomeManagement.App.Services.Rest.Identity;
 using HomeManagement.Contracts;
@@ -88,7 +87,7 @@ namespace HomeManagement.App.Managers
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
             finally
             {

@@ -17,7 +17,7 @@
                 public const string LOGIN = AUTH + "MobileSignIn";
                 public const string LOGOUT = "signout";
 
-                public const string REGISTER = API + "register";
+                public const string REGISTER = API + "registration";
 
                 public const string SECURITY_CODE = API + "SecurityCode";
             }
