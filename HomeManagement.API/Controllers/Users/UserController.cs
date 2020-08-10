@@ -33,22 +33,5 @@ namespace HomeManagement.API.Controllers.Users
 
             return File(file.GetBytes(), contentType, "userdata.zip");
         }
-
-        [Authorization]
-        [AdminAuthorization]
-        [HttpGet("getusers")]
-        public IActionResult GetUsers()
-        {
-            return Ok(userService.GetUsers());
-        }
-
-        [Authorization]
-        [AdminAuthorization]
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            userService.DeleteUser(id);
-            return Ok();
-        }
     }
 }

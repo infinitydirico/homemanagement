@@ -46,13 +46,13 @@ namespace HomeManagement.App.ViewModels
         {
             var result = await metricsManager.GetAccountEvolution(Account.Id);
 
-            IncomeSeries.AddRange(result.IncomingSeries.Select(x => new SeriesValue
+            IncomeSeries.AddRange(result.IncomingSeries.TakeLast(5).Select(x => new SeriesValue
             {
                 Value = x,
                 Label = DateTime.Now.GetCurrentMonth(result.IncomingSeries.IndexOf(x) + 1)
             }));
 
-            OutcomeSeries.AddRange(result.OutgoingSeries.Select(x => new SeriesValue
+            OutcomeSeries.AddRange(result.OutgoingSeries.TakeLast(5).Select(x => new SeriesValue
             {
                 Value = x,
                 Label = DateTime.Now.GetCurrentMonth(result.OutgoingSeries.IndexOf(x) + 1)

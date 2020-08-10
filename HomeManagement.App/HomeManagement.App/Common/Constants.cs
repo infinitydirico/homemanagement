@@ -13,11 +13,21 @@
 
             public class Auth
             {
-                private const string AUTH = IDENTITY_API + API + "authentication/";
-                public const string LOGIN = AUTH + "signin";
-                public const string LOGOUT = AUTH + "signout";
+                private const string AUTH = API + "authentication/";
+                public const string LOGIN = AUTH + "MobileSignIn";
+                public const string LOGOUT = "signout";
 
-                public const string REGISTER = API + "register";
+                public const string REGISTER = API + "registration";
+
+                public const string SECURITY_CODE = API + "SecurityCode";
+            }
+
+            public class TwoFactor
+            {
+                public const string TWO_FACTOR = IDENTITY_API + API + "TwoFactorAuthentication/";
+                public const string IS_ENABLED = TWO_FACTOR + "IsEnabled";
+                public const string ENABLE = TWO_FACTOR + "Enable";
+                public const string DISABLE = TWO_FACTOR + "Disable";
             }
 
             public class Accounts

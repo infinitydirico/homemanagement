@@ -23,7 +23,7 @@
                             </Label.Behaviors>
                         </Label>
                         <charts:BarChart x:Name="barChart" Series="{Binding ExpensiveCategories}" 
-                                     TextSize="20" BackgroundColor="#303030" HeightRequest="150" />
+                                     TextSize="30" BackgroundColor="#303030" HeightRequest="150" />
                     </StackLayout>
                 </Frame>
 
@@ -35,7 +35,7 @@
                             </Label.Behaviors>
                         </Label>
                         <charts:LineChart x:Name="incomeChart" Series="{Binding IncomeSeries}" RenderArea="True"
-                                     TextSize="20" BackgroundColor="#303030" HeightRequest="150" />
+                                     TextSize="25" BackgroundColor="#303030" HeightRequest="150" />
                     </StackLayout>
                 </Frame>
 
@@ -47,7 +47,7 @@
                             </Label.Behaviors>
                         </Label>
                         <charts:LineChart x:Name="outcomeChart" Series="{Binding OutcomeSeries}" RenderArea="True"
-                                    TextSize="20" BackgroundColor="#303030" HeightRequest="150" />
+                                    TextSize="25" BackgroundColor="#303030" HeightRequest="150" />
                     </StackLayout>
 
                 </Frame>

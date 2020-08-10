@@ -26,36 +26,36 @@ namespace HomeManagement.AdminSite.Services
 
         public string GetApiEndpoint() => this.GetEndpoint();
 
-        public async Task<IEnumerable<UserModel>> GetUsers()
+        public async Task<IEnumerable<UserIdentityModel>> GetUsers()
         {
-            using (var client = this.CreateClient())
+            using (var client = this.CreateIdentityClient())
             {
                 var ip = httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
                 var userModel = _cache.Get<UserModel>(ip);
 
                 client.DefaultRequestHeaders.Add("Authorization", userModel.Token);
 
-                var response = await client.GetAsync("api/user/getusers");
+                var response = await client.GetAsync("api/users");
                 response.EnsureSuccessStatusCode();
 
                 var result = await response.Content.ReadAsStringAsync();
 
-                var data = JsonConvert.DeserializeObject<IEnumerable<UserModel>>(result);
+                var data = JsonConvert.DeserializeObject<IEnumerable<UserIdentityModel>>(result);
 
                 return data;
             }
         }
 
-        public async Task Delete(int userId)
+        public async Task Delete(string email)
         {
-            using (var client = this.CreateClient())
+            using (var client = this.CreateIdentityClient())
             {
                 var ip = httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
                 var userModel = _cache.Get<UserModel>(ip);
 
                 client.DefaultRequestHeaders.Add("Authorization", userModel.Token);
 
-                var response = await client.DeleteAsync($"user/{userId}");
+                var response = await client.DeleteAsync($"api/users/{email}");
                 response.EnsureSuccessStatusCode();
             }
         }
@@ -63,8 +63,8 @@ namespace HomeManagement.AdminSite.Services
 
     public interface IUserService
     {
-        Task<IEnumerable<UserModel>> GetUsers();
+        Task<IEnumerable<UserIdentityModel>> GetUsers();
 
-        Task Delete(int userId);
+        Task Delete(string email);
     }
 }

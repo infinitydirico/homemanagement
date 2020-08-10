@@ -24,7 +24,7 @@ header{
 }
 
 .example-icon {
-  padding: 0 14px;
+  padding: 0 25px;
 }
 
 .example-spacer {
@@ -32,6 +32,6 @@ header{
 }
 
 button{
-  padding-right: 2%;
-  padding-left: 2%;
+  margin-left: 15px;
+  margin-right: 15px;
 }

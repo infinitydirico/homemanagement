@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Frame xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="HomeManagement.App.Views.Cards.TwoFactorAuthentication"
+             xmlns:Beh="clr-namespace:HomeManagement.App.Behaviours"
+             BackgroundColor="#303030"
+             Margin="5, 5, 5, 5">
+    <StackLayout Orientation="Vertical">
+        <StackLayout Orientation="Horizontal">
+            <CheckBox IsChecked="{Binding IsEnabled}" VerticalOptions="Center" />
+            <Label VerticalOptions="Center">
+                <Label.Behaviors>
+                    <Beh:TranslationBehavior LanguageKey="TwoFactor" />
+                </Label.Behaviors>
+            </Label>
+            <Label x:Name="codeLabel" Text="{Binding Code}" VerticalOptions="Center" HorizontalOptions="EndAndExpand" />
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" IsVisible="{Binding IsEnabled}">
+            <ProgressBar x:Name="countdown" HorizontalOptions="FillAndExpand"/>
+        </StackLayout>
+    </StackLayout>
+</Frame>

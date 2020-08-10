@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { NotificationService } from "src/app/api/notification.service";
+import { NotificationService } from "src/app/api/main/notification.service";
 import { Notification } from "./../../models/notification";
-import { MatBottomSheetRef } from "@angular/material";
+import { MatBottomSheetRef } from "@angular/material/bottom-sheet";
 
 @Component({
     selector: 'notifications-bottom',
@@ -16,6 +16,11 @@ export class NotificationsBottomBarComponent implements OnInit{
     }
 
     ngOnInit(): void {
+        this.loadNotifications();
+    }
+
+    loadNotifications(){
+        this.notifications.splice(0, this.notifications.length);
         this.notificationService.get().subscribe(notif => {
             notif.forEach(n => {
                 this.notifications.push(n);

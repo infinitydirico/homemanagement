@@ -56,3 +56,7 @@ label {
   background-color: var(--secondary-bg-background-color);
   color:white;
 }
+
+button:focus {
+  outline: none !important;
+}

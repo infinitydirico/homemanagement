@@ -9,9 +9,7 @@
         </div>
         <div class="row">
             <div class="col-lg-12 col-sm-12">
-                <!--<content-card [title]="'Add new transaction'">
-                    <transaction-add-card [account]="account"></transaction-add-card>
-                </content-card>-->
+                <account-outcome-categories-chart [account]="account" *ngIf="account.measurable"></account-outcome-categories-chart>
             </div>
         </div>
     </div>

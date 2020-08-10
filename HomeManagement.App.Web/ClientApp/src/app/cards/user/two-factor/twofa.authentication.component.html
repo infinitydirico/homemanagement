@@ -1,0 +1,10 @@
+<content-card>
+    <h3>
+        <mat-checkbox [(ngModel)]="twoFactorEnabled" (change)="onTwoFactorChanged()">
+            
+        </mat-checkbox>
+        Two Factor Authentication
+
+        {{ twoFactorEnabled ? 'Enabled' : 'Disabled' }}
+    </h3>
+</content-card>

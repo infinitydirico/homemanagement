@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ReminderService } from 'src/app/api/reminder.service';
+import { ReminderService } from 'src/app/api/main/reminder.service';
 import { Reminder } from 'src/app/models/reminder';
 import { ReminderAddDialog } from '../add/reminder.add.dialog.compnent';
 import { MatDialog } from '@angular/material/dialog';
 import { ColorService } from 'src/app/services/color.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'reminder-list',

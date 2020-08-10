@@ -21,6 +21,11 @@ import { OutcomeCategoriesChart } from './accounts/outcome-categories/outcome.ca
 import { AccountsEvolutionCardComponent } from './metrics/accounts-evolution/accounts.evolution.card.component';
 import { TransactionAddDialogComponent } from './transactions/add-dialog/transaction.add.dialog.component';
 import { PreferencesCardComponent } from './preferences/preferences.card.component';
+import { ForgotPasswordDialogComponent } from "./user/forgot-password/forgot.password.dialog.component";
+import { TwoFaAuthenticationComponent } from './user/two-factor/twofa.authentication.component';
+import { ChangePasswordComponent } from './user/password/change.password.component';
+import { AccountOutcomeCategoriesChart } from './accounts/detail/top-charges/top-charge.chart.component';
+import { TransactionEditDialogComponent } from './transactions/edit/transaction.edit.dialog.component';
 
 @NgModule({
     declarations: [
@@ -42,12 +47,17 @@ import { PreferencesCardComponent } from './preferences/preferences.card.compone
         OutcomeCategoriesChart,
         AccountsEvolutionCardComponent,
         TransactionAddDialogComponent,
-        PreferencesCardComponent
+        TransactionEditDialogComponent,
+        PreferencesCardComponent,
+        ForgotPasswordDialogComponent,
+        TwoFaAuthenticationComponent,
+        ChangePasswordComponent,
+        AccountOutcomeCategoriesChart
     ],
     imports: [
         MaterialModule,
         FormsModule,
-        ReactiveFormsModule        
+        ReactiveFormsModule
     ],
     exports: [
         AccountListCardComponent,
@@ -68,13 +78,20 @@ import { PreferencesCardComponent } from './preferences/preferences.card.compone
         OutcomeCategoriesChart,
         AccountsEvolutionCardComponent,
         TransactionAddDialogComponent,
-        PreferencesCardComponent
+        TransactionEditDialogComponent,
+        PreferencesCardComponent,
+        ForgotPasswordDialogComponent,
+        TwoFaAuthenticationComponent,
+        ChangePasswordComponent,
+        AccountOutcomeCategoriesChart
     ],
     entryComponents: [
         ReminderAddDialog,
         AccountAddDialog,
         CategoryAddDialog,
-        TransactionAddDialogComponent
+        TransactionAddDialogComponent,
+        TransactionEditDialogComponent,
+        ForgotPasswordDialogComponent
     ]
 })
 export class CardsModule { }

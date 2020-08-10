@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { NgModule, Component } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { HttpModule } from "@angular/http";
@@ -24,10 +24,10 @@ import { CryptoService } from './services/crypto.service';
 import { ColorService } from './services/color.service';
 
 //pages
-import { HomeComponent } from './home/home.component';
+import { HomeComponent } from './pages/home/home.component';
 import { AccountComponent } from './pages/accounts/account.component';
 import { AccountDetailComponent } from './pages/accounts/detail/account.detail.page.component';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './pages/login/login.component';
 import { HelperService } from './services/helper.service';
 import { UserComponent } from './pages/user/user.page.component';
 import { CommonService } from './common/common.service';
@@ -36,6 +36,11 @@ import { PaletteService } from './services/palette.service';
 import { CacheService } from './services/cache.service';
 import { NotificationsBottomBarComponent } from './components/notifications-bottom-bar/notifications.bar.component';
 import { MatMenuModule } from '@angular/material/menu';
+import { TokenGuard } from './auth/token.guard';
+import { TokenPageComponent } from './pages/user/token/token.page.component';
+import { PasswordService } from './common/password.service';
+import { SecuritySettingsComponent } from './pages/user/security-settings/security-settings.component';
+import { RegisterComponent } from './pages/register/register.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +51,10 @@ import { MatMenuModule } from '@angular/material/menu';
     UserComponent,
     AccountComponent,
     AccountDetailComponent,
-    NotificationsBottomBarComponent
+    NotificationsBottomBarComponent,
+    TokenPageComponent,
+    SecuritySettingsComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -55,6 +63,7 @@ import { MatMenuModule } from '@angular/material/menu';
     RouterModule.forRoot([      
       { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
       { path: 'login', component: LoginComponent},
+      { path: 'register', component: RegisterComponent},
       { 
         path: 'account', 
         component: AccountComponent,
@@ -64,16 +73,20 @@ import { MatMenuModule } from '@angular/material/menu';
         canActivate: [AuthGuard]
       },
       { path: 'user', component: UserComponent, canActivate: [AuthGuard]},
+      { path: 'security-settings', component: SecuritySettingsComponent, canActivate: [AuthGuard]},
+      { path: 'token', component: TokenPageComponent, canActivate: [TokenGuard]}
     ]),
     BrowserModule,
     MaterialModule,
     CardsModule,
     ApiModule,
     HttpModule,
-    MatMenuModule
+    MatMenuModule,
+    ReactiveFormsModule    
   ],
   providers: [
     AuthGuard,
+    TokenGuard,
     AuthService,
     EndpointsService,
     CryptoService,
@@ -84,6 +97,7 @@ import { MatMenuModule } from '@angular/material/menu';
     DateService,
     PaletteService,
     CacheService,
+    PasswordService,
   ],
   bootstrap: [AppComponent],
   entryComponents: [

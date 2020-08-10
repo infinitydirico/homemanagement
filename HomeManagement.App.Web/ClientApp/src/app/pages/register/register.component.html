@@ -1,0 +1,32 @@
+<div class="col-lg-4 col-sm-4">
+    <content-card [title]="'Registration'">
+        <div class="row col-lg-12 col-sm-12">
+            <mat-icon aria-hidden="false" class="login-icon" 
+                      aria-label="Example home icon">account_circle</mat-icon>
+            <mat-form-field>
+                <mat-label>Email</mat-label>
+                <input [(ngModel)]="username" matInput>
+            </mat-form-field>
+        </div>
+        <div class="row col-lg-12 col-sm-12">
+            <mat-icon aria-hidden="false" class="login-icon" 
+            aria-label="Example home icon">lock</mat-icon>
+            <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input [(ngModel)]="password" type="password" matInput>
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <button mat-raised-button (click)="register()" matTooltip="Click to register"
+                        color="default">
+                        <mat-icon>send</mat-icon>
+                </button>
+            </div>
+        </div>
+        <br />
+        <div class="row col-sm-12" *ngIf="isLoading">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </div>
+    </content-card>
+</div>

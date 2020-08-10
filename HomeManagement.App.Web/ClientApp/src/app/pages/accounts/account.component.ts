@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AccountService } from 'src/app/api/account.service';
+import { AccountService } from 'src/app/api/main/account.service';
 import { ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { switchMap, map } from 'rxjs/operators';
 import { Account } from '../../models/account';

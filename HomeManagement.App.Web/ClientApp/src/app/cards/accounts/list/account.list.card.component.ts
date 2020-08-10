@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Account } from '../../../models/account';
-import { AccountService } from 'src/app/api/account.service';
+import { AccountService } from 'src/app/api/main/account.service';
 import { Currency, AccountType, GetAccountTypes } from 'src/app/models/base-types';
-import { CurrencyService } from 'src/app/api/currency.service';
+import { CurrencyService } from 'src/app/api/main/currency.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountAddDialog } from '../add/account.add.dialog.component';

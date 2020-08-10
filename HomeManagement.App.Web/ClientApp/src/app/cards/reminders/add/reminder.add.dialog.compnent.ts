@@ -1,7 +1,7 @@
 import { Component, Inject } from "@angular/core";
 import { Reminder } from "src/app/models/reminder";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
     selector: 'reminder-dialog',

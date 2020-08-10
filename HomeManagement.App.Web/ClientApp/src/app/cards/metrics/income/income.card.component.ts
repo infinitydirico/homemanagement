@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { AccountMetricService } from "src/app/api/account.metric.service";
+import { AccountMetricService } from "src/app/api/main/account.metric.service";
 import { Metric } from "src/app/models/base-types";
 import { ColorService } from "src/app/services/color.service";
 import { DateService } from "src/app/common/date.service";

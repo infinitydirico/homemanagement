@@ -28,5 +28,17 @@ namespace HomeManagement.Core.Extensions
                 yield return i;
             }
         }
+
+        public static IEnumerable<T> TakeLast<T>(this IEnumerable<T> enumeration, int count)
+        {
+            if (count == default) yield break;
+
+            var start = enumeration.Count() - count;
+            start = start > 0 ? start : 0;
+            for (int i = start; i < enumeration.Count(); i++)
+            {
+                yield return enumeration.ElementAt(i);
+            }
+        }
     }
 }

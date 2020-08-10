@@ -1,15 +1,16 @@
 import { Component, Input, OnInit, Inject } from '@angular/core';
 import { Account } from '../../../models/account';
-import { TransactionService } from 'src/app/api/transaction.service';
+import { TransactionService } from 'src/app/api/main/transaction.service';
 import { Transaction } from 'src/app/models/transaction';
-import { CurrencyService } from 'src/app/api/currency.service';
+import { CurrencyService } from 'src/app/api/main/currency.service';
 import { Currency, FormError } from 'src/app/models/base-types';
-import { CategoryService } from 'src/app/api/category.service';
+import { CategoryService } from 'src/app/api/main/category.service';
 import { Category } from 'src/app/models/category';
 import { FormControl, Validators } from '@angular/forms';
 import { startWith, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { MatSnackBar, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ColorService } from 'src/app/services/color.service';
 
 @Component({

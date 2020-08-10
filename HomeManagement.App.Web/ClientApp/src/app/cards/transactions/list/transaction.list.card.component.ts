@@ -1,15 +1,16 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Account } from '../../../models/account';
-import { TransactionService } from 'src/app/api/transaction.service';
+import { TransactionService } from 'src/app/api/main/transaction.service';
 import { TransactionPageModel, Transaction } from 'src/app/models/transaction';
 import { ColorService } from 'src/app/services/color.service';
 import { Category } from 'src/app/models/category';
-import { CategoryService } from 'src/app/api/category.service';
+import { CategoryService } from 'src/app/api/main/category.service';
 import { HelperService } from 'src/app/services/helper.service';
 import { CommonService } from 'src/app/common/common.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TransactionAddDialogComponent } from '../add-dialog/transaction.add.dialog.component';
-import { Router } from '@angular/router';
+import { TransactionEditDialogComponent } from '../edit/transaction.edit.dialog.component';
 
 @Component({
     selector: 'transaction-list-card',
@@ -25,13 +26,15 @@ export class TransactionListCardComponent implements OnInit {
     categories: Array<Category> = new Array<Category>();
     totalPages: Array<number> = [];
     isMobile = this.commonService.isMobile();
+    isLoading: boolean = false;
 
     constructor(private transactionService: TransactionService,
-        private colorService: ColorService,
+        public colorService: ColorService,
         private categoryService: CategoryService,
         private helperService: HelperService,
         private commonService: CommonService,
-        public dialog: MatDialog) {
+        public dialog: MatDialog,
+        private snackBar: MatSnackBar) {
     }
 
     ngOnInit(): void {
@@ -49,13 +52,13 @@ export class TransactionListCardComponent implements OnInit {
         this.page.currentPage = p;
         this.page.pageCount = 10;
         this.page.skip = 0;
-
-        this.transactionService.paginate(this.page).subscribe(_ => {
+        this.isLoading = true;
+        this.transactionService.paginate(this.page).subscribe(_ => {            
+            this.isLoading = false;
             _.transactions.forEach(charge => {
                 this.transactions.push(charge);
-
             });
-
+            
             this.page.totalPages = _.totalPages;
             this.totalPages = this.helperService.thinPageNumbers(this.page.currentPage, _.totalPages);
         });
@@ -86,12 +89,32 @@ export class TransactionListCardComponent implements OnInit {
     }
 
     edit(transaction: Transaction) {
-        console.log(transaction);
+        let transactionDialog = this.dialog.open(TransactionEditDialogComponent, {
+            width: '550px',
+            data: transaction
+          })
+      
+          transactionDialog.afterClosed().subscribe((updateTransaction:Transaction) => {
+      
+            if (updateTransaction === undefined) return;
+      
+            this.transactionService.update(updateTransaction).subscribe(result => {
+                this.snackBar.open("Transaction " + updateTransaction.name + " updated !", "Dismiss", {
+                    duration: 2000
+                })
+            });
+          });
     }
 
     delete(transaction: Transaction) {
         this.transactionService.removeTransaction(transaction).subscribe(result => {
             this.paginate(this.page.currentPage);
+        });
+    }
+
+    deleteAll(){
+        this.transactionService.removeAll(this.account).subscribe(_ => {
+            this.paginate(1);
         });
     }
 

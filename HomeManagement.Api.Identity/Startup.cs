@@ -1,6 +1,5 @@
 ﻿using HomeManagement.Api.Identity.Data;
 using HomeManagement.Api.Identity.Filters;
-using HomeManagement.Api.Identity.Services;
 using HomeManagement.Contracts;
 using HomeManagement.Core.Cryptography;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,6 +18,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HomeManagement.Api.Core.HealthChecks;
+using HomeManagement.Api.Core.Email;
+using HomeManagement.Api.Identity.HostedServices;
+using HomeManagement.Api.Identity.SecurityCodes;
+using HomeManagement.API.RabbitMQ;
 
 namespace HomeManagement.Api.Identity
 {
@@ -102,11 +105,17 @@ namespace HomeManagement.Api.Identity
                 options.Filters.Add(new ExceptionFilter());
             }).SetCompatibilityVersion(CompatibilityVersion.Latest);
 
+            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, CodesGeneratorService>();
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddSingleton<ICodesServices, CodesServices>();
 
             services.AddScoped<ICryptography, AesCryptographyService>();
 
-            services.AddScoped<IBroadcaster, Broadcaster>();
+            services.AddScoped<IQueueService, QueueSenderService>();
+
+            services.AddScoped<IEmailService, EmailService>();
 
             services.AddHealthChecks()
                 .AddCheck<MemoryHealthCheck>("memory")
@@ -127,13 +136,13 @@ namespace HomeManagement.Api.Identity
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Idnetity API V1");
-            });            
+            });
 
             app.UseRouting();
 
             app.UseAuthentication();
 
-            app.UseCors("IdentityApiCorsPolicy");            
+            app.UseCors("IdentityApiCorsPolicy");
 
             app.UseEndpoints(x =>
             {

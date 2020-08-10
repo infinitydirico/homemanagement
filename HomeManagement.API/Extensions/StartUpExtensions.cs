@@ -1,7 +1,7 @@
-﻿using HomeManagement.API.Business;
+﻿using HomeManagement.Api.Core.Email;
+using HomeManagement.API.Business;
 using HomeManagement.API.Data;
 using HomeManagement.API.Data.Repositories;
-using HomeManagement.API.Services;
 using HomeManagement.Business.Contracts;
 using HomeManagement.Business.Exportation;
 using HomeManagement.Business.Units;
@@ -9,6 +9,7 @@ using HomeManagement.Contracts;
 using HomeManagement.Core.Cryptography;
 using HomeManagement.Data;
 using HomeManagement.Mapper;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HomeManagement.API.Extensions

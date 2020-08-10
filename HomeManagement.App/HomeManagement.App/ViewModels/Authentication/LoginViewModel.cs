@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using HomeManagement.App.Managers;
-using HomeManagement.Core.Caching;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -14,7 +13,6 @@ namespace HomeManagement.App.ViewModels
         string password = "123Abc!";
 
         private readonly IAuthenticationManager authenticationManager = App._container.Resolve<IAuthenticationManager>();
-        private readonly ICachingService cachingService = App._container.Resolve<ICachingService>();
 
         public LoginViewModel()
         {

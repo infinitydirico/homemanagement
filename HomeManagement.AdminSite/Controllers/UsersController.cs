@@ -1,9 +1,11 @@
 ﻿using HomeManagement.AdminSite.Services;
 using HomeManagement.Models;
+using HomeManagement.Core.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HomeManagement.AdminSite.Controllers
@@ -24,16 +26,20 @@ namespace HomeManagement.AdminSite.Controllers
             return View(await GetUsers());
         }
 
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
-            await userService.Delete(id);
+            if (id.IsEmpty()) return BadRequest();
+
+            var users = await GetUsers();
+            var userToDelete = users.First(x => x.Id.Equals(id));
+            await userService.Delete(userToDelete.Email);
             FlushUserModels();
             return RedirectToAction("Index");
         }
 
-        private async Task<IEnumerable<UserModel>> GetUsers()
+        private async Task<IEnumerable<UserIdentityModel>> GetUsers()
         {
-            var users = cache.Get<IEnumerable<UserModel>>(nameof(GetUsers));
+            var users = cache.Get<IEnumerable<UserIdentityModel>>(nameof(GetUsers));
 
             if (users != null) return users;
 

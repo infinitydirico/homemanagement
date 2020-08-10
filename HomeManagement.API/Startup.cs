@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Text;
 using HomeManagement.Api.Core.Throttle;
 using HomeManagement.Api.Core.HealthChecks;
+using HomeManagement.API.Queue;
 
 namespace HomeManagement.API
 {
@@ -76,11 +77,13 @@ namespace HomeManagement.API
 
             services.AddScoped<IStorageClient, FilesStore.DropboxFileStore.RestClient>();
 
-            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, NotificationGeneratorHostedService>();
-            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, CurrencyUpdaterHostedService>();
-            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackupHostedService>();
-            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, EmailHostedService>();
-            
+            services.AddHostedService<NotificationGeneratorHostedService>();
+            services.AddHostedService<CurrencyUpdaterHostedService>();
+            services.AddHostedService<BackupHostedService>();
+            services.AddHostedService<EmailBackupHostedService>();
+            services.AddHostedService<RegistrationServiceQueue>();
+            services.AddHostedService<UserDeletionServiceQueue>();
+
             services.AddMvc(options =>
             {
                 options.Filters.Add(typeof(ThrottleFilter));
@@ -90,6 +93,8 @@ namespace HomeManagement.API
 
             services.AddSwaggerGen(c =>
             {
+                c.CustomSchemaIds(x => x.FullName);
+
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Idnetity API", Version = "v1" });
 
                 var security = new Dictionary<string, IEnumerable<string>>

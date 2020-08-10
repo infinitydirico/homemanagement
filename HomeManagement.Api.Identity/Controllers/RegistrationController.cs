@@ -1,12 +1,15 @@
-﻿using HomeManagement.Api.Identity.Services;
+﻿using HomeManagement.API.Queue.Messages;
+using HomeManagement.API.RabbitMQ;
 using HomeManagement.Contracts;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
+using HomeManagement.Core.Extensions;
 
 namespace HomeManagement.Api.Identity.Controllers
 {
@@ -16,16 +19,19 @@ namespace HomeManagement.Api.Identity.Controllers
     public class RegistrationController : ControllerBase
     {
         private readonly UserManager<IdentityUser> userManager;
+        private readonly RoleManager<IdentityRole> roleManager;
         private readonly ICryptography cryptography;
-        private readonly IBroadcaster broadcaster;
+        private readonly IQueueService  queueService;
 
         public RegistrationController(UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager,
             ICryptography cryptography,
-            IBroadcaster broadcaster)
+            IQueueService queueService)
         {
             this.userManager = userManager;
+            this.roleManager = roleManager;
             this.cryptography = cryptography;
-            this.broadcaster = broadcaster;
+            this.queueService = queueService;
         }
 
         [HttpPost]
@@ -48,7 +54,16 @@ namespace HomeManagement.Api.Identity.Controllers
 
                     if (result.Succeeded)
                     {
-                        broadcaster.BroadcastRegistration(userModel.Email, userModel.Language);
+                        var roles = roleManager.Roles.ToList();
+                        var role = roles.First(x => x.Name.Equals("RegularUser"));
+                        
+                        await userManager.AddToRoleAsync(user, role.Name);
+
+                        queueService.SendMessage(new RegistrationMessage
+                        {
+                            Email = userModel.Email,
+                            Language = userModel.Language.IsEmpty() ? GetBrowserLanguage() : userModel.Language
+                        });
                         scope.Complete();
                         return Ok();
                     }
@@ -64,6 +79,32 @@ namespace HomeManagement.Api.Identity.Controllers
                     scope.Dispose();
                     throw ex;
                 }
+            }
+        }
+
+        private string GetBrowserLanguage()
+        {
+            try
+            {
+                var acceptedLanguages = HttpContext.Request.GetTypedHeaders().AcceptLanguage;
+
+                if (acceptedLanguages.Any(x => x.Quality.HasValue))
+                {
+                    var language = acceptedLanguages
+                        .Where(x => x.Quality.HasValue)
+                        .OrderBy(x => x.Quality)
+                        .First();
+
+                    return language.Value.Value;
+                }
+                else
+                {
+                    return acceptedLanguages.First().Value.Value;
+                }
+            }
+            catch
+            {
+                return "en";
             }
         }
     }

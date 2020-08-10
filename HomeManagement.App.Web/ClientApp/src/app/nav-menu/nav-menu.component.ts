@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/authentication.service';
 import { Router } from '@angular/router';
 import { saveAs } from 'file-saver';
-import { UserService } from '../api/user.service';
+import { UserService } from '../api/main/user.service';
 import { CommonService } from '../common/common.service';
-import { NotificationService } from '../api/notification.service';
-import { MatBottomSheet } from '@angular/material';
+import { NotificationService } from '../api/main/notification.service';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { NotificationsBottomBarComponent } from '../components/notifications-bottom-bar/notifications.bar.component';
 
 @Component({
@@ -36,10 +36,12 @@ export class NavMenuComponent implements OnInit {
     this.authenticationService.onUserAuthenticated.subscribe(user =>
     {
       this.isAuthenticated = user != null;
-    });
 
-    this.notificationService.get().subscribe(_ => {
-      this.hasNotifications = _.length > 0;
+      if(this.isAuthenticated) {
+        this.notificationService.get().subscribe(_ => {
+          this.hasNotifications = _.length > 0;
+        });
+      }
     });
   }
 
@@ -70,16 +72,20 @@ export class NavMenuComponent implements OnInit {
   }
 
   register(){
-
+    this.router.navigate(['/register']);
   }
 
   login(){
-
+    this.router.navigate(['/login']);
   }
 
   viewNotifications(){
     this.bottomSheet.open(NotificationsBottomBarComponent,{
       panelClass: 'bottom-sheet'
     });
+  }
+
+  changePassword(){
+    this.router.navigate(['/security-settings']);
   }
 }

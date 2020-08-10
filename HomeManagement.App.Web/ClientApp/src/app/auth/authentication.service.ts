@@ -29,11 +29,12 @@ export class AuthService {
         }
     }
 
-    login(username:string, password:string, remember?:boolean){
+    login(username:string, password:string, securityCode?:number, remember?:boolean){
 
         let endpoint = environment.identityApi;        
         this.user = new User();
         this.user.email = username;
+        this.user.securityCode = securityCode || 0;
         this.user.password = this.cryptoService.encrypt(password);
         return this.http.post<User>(endpoint + "/Api/Authentication/SignIn", this.user)
             .pipe(map(result => {
@@ -48,6 +49,22 @@ export class AuthService {
             }, err => {
                 return err;
             }));     
+    }
+
+    register(username:string, password:string){
+        let endpoint = environment.identityApi;        
+        this.user = new User();
+        this.user.email = username;
+        this.user.securityCode = 0;
+        this.user.password = this.cryptoService.encrypt(password);
+
+        return this.http.post(endpoint + "/Api/Registration", this.user)
+            .pipe(map(() => {
+
+                this.login(username, password).subscribe();
+            }, err => {
+                return err;
+            }));
     }
 
     logout(){

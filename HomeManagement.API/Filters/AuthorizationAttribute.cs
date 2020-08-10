@@ -1,5 +1,5 @@
 ﻿using HomeManagement.Api.Core;
-using HomeManagement.API.Extensions;
+using HomeManagement.Api.Core.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

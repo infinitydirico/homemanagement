@@ -1,11 +1,13 @@
-﻿using HomeManagement.Api.Core;
+﻿using HomeManagement.Api.Core.Extensions;
+using HomeManagement.Api.Identity.Authentication;
+using HomeManagement.Api.Identity.Filters;
+using HomeManagement.Api.Identity.SecurityCodes;
 using HomeManagement.Contracts;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,22 +19,19 @@ namespace HomeManagement.Api.Identity.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
-        private readonly ICryptography cryptography;
-        private readonly IConfiguration configuration;
         private readonly ILogger<AuthenticationController> logger;
+        private readonly AuthenticationStrategy authenticationStrategy;
 
         public AuthenticationController(UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ICryptography cryptography,
             IConfiguration configuration,
-            ILogger<AuthenticationController> logger)
+            ILogger<AuthenticationController> logger,
+            ICodesServices codesServices)
         {
             this.userManager = userManager;
-            this.signInManager = signInManager;
-            this.cryptography = cryptography;
-            this.configuration = configuration;
             this.logger = logger;
+            authenticationStrategy = new AuthenticationStrategy(userManager, signInManager, cryptography, configuration, logger, codesServices);
         }
 
         [HttpPost("SignIn")]
@@ -44,32 +43,35 @@ namespace HomeManagement.Api.Identity.Controllers
                 return BadRequest(ModelState);
             }
 
-            var password = cryptography.Decrypt(userModel.Password);
+            var authenticationResult = await authenticationStrategy.Authenticate(userModel, HttpContext.GetMobileHeader());
 
-            var result = await signInManager.PasswordSignInAsync(userModel.Email, password, true, false);
-
-            if (!result.Succeeded)
+            if (authenticationResult.Succeed)
             {
-                logger.LogInformation("Invalid email or password.");
-                return BadRequest();
+                var authenticatedUser = await authenticationStrategy.GetAuthenticatedUser();
+                return Ok(authenticatedUser);
+            }
+            else return BadRequest(authenticationResult.Error);
+        }
+
+        [MobileAuthorization]
+        [HttpPost("MobileSignIn")]
+        public async Task<IActionResult> MobileSignIn([FromBody] UserModel userModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                logger.LogInformation($"Invalid model state: {string.Concat(ModelState.Values.Select(x => x.Errors.Select(r => r.ErrorMessage)))}");
+                return BadRequest(ModelState);
             }
 
-            var user = await userManager.FindByEmailAsync(userModel.Email);
-            var roles = await userManager.GetRolesAsync(user);
+            var authenticationResult = await authenticationStrategy.Authenticate(userModel);
             
-            var token = roles.Any() ?
-                TokenFactory.CreateToken(user.Email, roles, configuration["Issuer"], configuration["Audience"], configuration["SigningKey"], DateTime.UtcNow.AddDays(1)) :
-                TokenFactory.CreateToken(user.Email, configuration["Issuer"], configuration["Audience"], configuration["SigningKey"]);
-
-            var tokenResult = await userManager.SetAuthenticationTokenAsync(user, nameof(JwtSecurityToken), nameof(JwtSecurityToken), token);
-
-            return Ok(new UserModel
+            if (authenticationResult.Succeed)
             {
-                Email = userModel.Email,
-                Token = token,
-                ExpirationDate = DateTime.UtcNow.AddDays(1)
-            });
-        }
+                var authenticatedUser = await authenticationStrategy.GetAuthenticatedUser();
+                return Ok(authenticatedUser);
+            }
+            else return BadRequest(authenticationResult.Error);
+        } 
 
         [HttpPost("SignOut")]
         public async Task<IActionResult> SignOut([FromBody] UserModel userModel)
