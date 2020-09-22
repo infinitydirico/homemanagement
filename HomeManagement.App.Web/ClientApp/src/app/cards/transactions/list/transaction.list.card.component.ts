@@ -55,12 +55,11 @@ export class TransactionListCardComponent implements OnInit {
         this.isLoading = true;
         this.transactionService.paginate(this.page).subscribe(_ => {            
             this.isLoading = false;
-            _.transactions.forEach(charge => {
+            _.forEach(charge => {
                 this.transactions.push(charge);
             });
             
-            this.page.totalPages = _.totalPages;
-            this.totalPages = this.helperService.thinPageNumbers(this.page.currentPage, _.totalPages);
+            this.totalPages = this.helperService.thinPageNumbers(this.page.currentPage, 100);//will implement infinite scrolling
         });
     }
 

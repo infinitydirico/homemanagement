@@ -2,6 +2,7 @@
 using HomeManagement.API.Business;
 using HomeManagement.API.Data;
 using HomeManagement.API.Data.Querys.Account.Metrics;
+using HomeManagement.API.Data.Querys.Transaction;
 using HomeManagement.API.Data.Repositories;
 using HomeManagement.Business.Contracts;
 using HomeManagement.Business.Exportation;
@@ -109,6 +110,7 @@ namespace HomeManagement.API.Extensions
         public static void AddQueryes(this IServiceCollection services)
         {
             services.AddScoped<IAccountAverageSeriesQuery, AccountAverageSeriesQuery>();
+            services.AddScoped<ITransactionPagingQuery, TransactionPagingQuery>();
         }
     }
 }

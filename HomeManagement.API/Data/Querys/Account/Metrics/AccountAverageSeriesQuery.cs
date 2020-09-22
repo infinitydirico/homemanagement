@@ -29,9 +29,9 @@ namespace HomeManagement.API.Data.Querys.Account.Metrics
                         orderby t.Date.Month
                         select t;
 
-            var b = query.ToList();
+            var querResult = query.ToList();
 
-            var result = b
+            var result = querResult
                 .GroupBy(x => x.AccountId)
                 .Select(x => new AccountAverageSeriesModel
                 {
