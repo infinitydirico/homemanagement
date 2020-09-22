@@ -1,15 +1,14 @@
-﻿using HomeManagement.Api.Core;
-using HomeManagement.Api.Core.Extensions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using System;
+﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
-using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
+using HomeManagement.Api.Core;
+using HomeManagement.Api.Core.Extensions;
+using HomeManagement.API.Infraestructure;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace HomeManagement.API.Filters
 {
@@ -41,9 +40,7 @@ namespace HomeManagement.API.Filters
                 return;
             }
 
-            var email = token.Claims.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
-
-            context.HttpContext.User = new GenericPrincipal(new ClaimsIdentity(token.Claims), Array.Empty<string>());
+            context.HttpContext.User = new HomeManagementPrincipal(token.Claims);
 
             await next();
         }

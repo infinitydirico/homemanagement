@@ -1,6 +1,7 @@
 ﻿using HomeManagement.Api.Core.Email;
 using HomeManagement.API.Business;
 using HomeManagement.API.Data;
+using HomeManagement.API.Data.Querys.Account.Metrics;
 using HomeManagement.API.Data.Repositories;
 using HomeManagement.Business.Contracts;
 using HomeManagement.Business.Exportation;
@@ -103,6 +104,11 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IMonthlyExpenseService, MonthlyExpenseService>();
             services.AddScoped<IImageService, ImageService>();
             services.AddSingleton<IEmailService, EmailService>();
+        }
+
+        public static void AddQueryes(this IServiceCollection services)
+        {
+            services.AddScoped<IAccountAverageSeriesQuery, AccountAverageSeriesQuery>();
         }
     }
 }
