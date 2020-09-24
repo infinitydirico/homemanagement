@@ -25,7 +25,8 @@ namespace HomeManagement.API.Data.Querys.Account.Metrics
                         on a.Id equals t.AccountId
                         where t.Date.Year.Equals(DateTime.Now.Year) && 
                                 t.Date.Month > (DateTime.Now.Month - 3) &&
-                                a.User.Email.Equals(email)
+                                a.User.Email.Equals(email) &&
+                                a.Measurable
                         orderby t.Date.Month
                         select t;
 
