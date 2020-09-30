@@ -76,7 +76,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HomeManagement.AI.Vision\HomeManagement.AI.Vision.csproj" />
     <ProjectReference Include="..\HomeManagement.API.RabbitMQ\HomeManagement.API.RabbitMQ.csproj" />
     <ProjectReference Include="..\HomeManagement.Business\HomeManagement.Business.csproj" />
     <ProjectReference Include="..\HomeManagement.Core\HomeManagement.Core.csproj" />

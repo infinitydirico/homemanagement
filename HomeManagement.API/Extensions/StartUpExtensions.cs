@@ -103,7 +103,6 @@ namespace HomeManagement.API.Extensions
             services.AddScoped<IMetricsService, MetricsService>();
             services.AddScoped<IConfigurationSettingsService, ConfigurationSettingsService>();
             services.AddScoped<IMonthlyExpenseService, MonthlyExpenseService>();
-            services.AddScoped<IImageService, ImageService>();
             services.AddSingleton<IEmailService, EmailService>();
         }
 
