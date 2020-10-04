@@ -1,12 +1,8 @@
 ﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using HomeManagement.Api.Core;
 using HomeManagement.Api.Core.Extensions;
-using HomeManagement.API.Infraestructure;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -14,14 +10,16 @@ namespace HomeManagement.API.Filters
 {
     public class AuthorizationAttribute : Attribute, IAsyncActionFilter
     {
+        protected HomeManagementPrincipal principal;
+
+        public AuthorizationAttribute() : this(Constants.Roles.RegularUser) { }
+
+        public AuthorizationAttribute(params string[] policies) => Policies = policies;
+
+        public string[] Policies { get; }
+
         public virtual async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (IsDropboxRequest(context.HttpContext.Request.QueryString))
-            {
-                await next();
-                return;
-            }
-
             var header = context.HttpContext.GetAuthorizationHeader();
 
             if (string.IsNullOrEmpty(header))
@@ -33,21 +31,25 @@ namespace HomeManagement.API.Filters
 
             var token = TokenFactory.Reader(header);
 
-            if (TokenFactory.IsExpired(token))
+            principal = new HomeManagementPrincipal(token);
+
+            if (principal.Expired())
             {
                 context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Forbidden, Content = "Token has expired" };
 
                 return;
             }
 
-            context.HttpContext.User = new HomeManagementPrincipal(token.Claims);
+            if (!principal.IsAuthorized(Policies))
+            {
+                context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Unauthorized, Content = "Not authorized." };
+
+                return;
+            }
+
+            context.HttpContext.User = principal;
 
             await next();
         }
-
-        private bool IsDropboxRequest(QueryString queryString)
-            => queryString.HasValue &&
-            queryString.Value.Contains("code") &&
-            queryString.Value.Contains("state");
     }
 }

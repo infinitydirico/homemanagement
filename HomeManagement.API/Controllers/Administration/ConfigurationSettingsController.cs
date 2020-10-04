@@ -1,4 +1,5 @@
-﻿using HomeManagement.API.Filters;
+﻿using HomeManagement.Api.Core;
+using HomeManagement.API.Filters;
 using HomeManagement.Business.Contracts;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
@@ -6,8 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeManagement.API.Controllers.Administration
 {
-    [Authorization]
-    [AdminAuthorization]
+    [Authorization(Constants.Roles.Admininistrator)]
     [EnableCors("SiteCorsPolicy")]
     [Produces("application/json")]
     [Route("api/ConfigurationSettings")]

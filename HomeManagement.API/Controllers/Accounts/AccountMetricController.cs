@@ -1,8 +1,6 @@
 ﻿using HomeManagement.API.Data.Querys.Account.Metrics;
 using HomeManagement.API.Filters;
-using HomeManagement.API.Infraestructure;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeManagement.API.Controllers.Accounts
@@ -11,7 +9,7 @@ namespace HomeManagement.API.Controllers.Accounts
     [EnableCors("SiteCorsPolicy")]
     [Route("api/account/v1")]
     [ApiController]
-    public class AccountMetricController : ControllerBase
+    public class AccountMetricController : HomeManagementController
     {
         private readonly IAccountAverageSeriesQuery accountAverageSeriesQuery;
 
@@ -23,7 +21,7 @@ namespace HomeManagement.API.Controllers.Accounts
         [HttpGet("avgseries")]
         public IActionResult AverageSeries()
         {            
-            var result = accountAverageSeriesQuery.AccountsAvgSeries(HttpContext.User.GetUserEmail());
+            var result = accountAverageSeriesQuery.AccountsAvgSeries(Principal.Email);
 
             return Ok(result);
         }

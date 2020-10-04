@@ -1,4 +1,5 @@
-﻿using HomeManagement.Api.Identity.Filters;
+﻿using HomeManagement.Api.Core;
+using HomeManagement.Api.Identity.Filters;
 using HomeManagement.API.RabbitMQ;
 using HomeManagement.API.RabbitMQ.Messages;
 using HomeManagement.Models;
@@ -15,7 +16,7 @@ namespace HomeManagement.Api.Identity.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AdminAuthorization]
+    [Authorization(Constants.Roles.Admininistrator)]
     public class UsersController : ControllerBase
     {
         private readonly UserManager<IdentityUser> userManager;
@@ -41,6 +42,18 @@ namespace HomeManagement.Api.Identity.Controllers
                 .ToListAsync();
 
             return Ok(users);
+        }
+
+        [HttpPut("addrole/{rolename}/user/{email}")]
+        public async Task<IActionResult> AddRole(string rolename, string email)
+        {
+            var user = await userManager.FindByNameAsync(email);
+
+            if (user == null) return NotFound($"User: {email} does not exists.");
+
+            await userManager.AddToRoleAsync(user, rolename);
+
+            return Ok();
         }
 
         [HttpDelete("{email}")]
