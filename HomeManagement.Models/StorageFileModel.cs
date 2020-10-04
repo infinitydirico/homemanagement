@@ -15,6 +15,8 @@ namespace HomeManagement.Models
 
         public DateTime LastModified { get; set; }
 
+        public bool IsDirectory { get; set; }
+
         public string GetFilename() => Key.Split('/').Last();
     }
 }

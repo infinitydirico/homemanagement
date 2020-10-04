@@ -32,9 +32,15 @@ namespace HomeManagement.API.Storage.Controllers
             bucket = spacesConfig.GetValue<string>("bucket");
         }
 
+        private HomeManagementPrincipal Principal => User as HomeManagementPrincipal;
+
         [Authorization]
         [HttpGet]
-        public IActionResult Get() => Ok(GetObjects());
+        public IActionResult Get() => Ok(GetUserFiles());
+
+        [HttpGet("getall")]
+        [Authorization(Constants.Roles.Admininistrator)]
+        public IActionResult GetAll() => Ok(GetObjects());
 
         [Authorization]
         [HttpGet("{filename}")]
@@ -49,12 +55,29 @@ namespace HomeManagement.API.Storage.Controllers
         }
 
         [Authorization]
-        [HttpPut]
-        public IActionResult Put()
+        [HttpPost("path/{path}/folder/{folder}")]
+        public IActionResult Post(string path, string folder)
         {
-            SendFile(HttpContext.User.Identity.Name,
-                TokenFactory.GetAppName(HttpContext.User.Claims),
-                HttpContext.Request.Headers["Path"].FirstOrDefault());
+            var slash = Core.Extensions.String.GetOsSlash();
+
+            var directory = path.IsEmpty() ?
+                $"{Directory.GetCurrentDirectory()}{slash}{bucket}{slash}{Principal.Name}{slash}{Principal.ApplicationName}" :
+                $"{Directory.GetCurrentDirectory()}{slash}{bucket}{slash}{Principal.Name}{slash}{Principal.ApplicationName}{slash}{path}";
+
+            directory = $"{directory}{slash}{folder}";
+
+            if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+
+            return Ok();
+        }
+
+        [Authorization]
+        [HttpPut("{path}")]
+        public IActionResult Put(string path)
+        {
+            SendFile(Principal.Name,
+                Principal.ApplicationName,
+                path);
 
             return Ok();
         }
@@ -119,27 +142,17 @@ namespace HomeManagement.API.Storage.Controllers
             ClearCachedItems();
         }
 
+        private IEnumerable<StorageFileModel> GetUserFiles()
+        {
+            return ListFiles($@"{Directory.GetCurrentDirectory()}/{bucket}/{Principal.Name}");
+        }
+
         private IEnumerable<StorageFileModel> GetObjects()
         {
             var items = memoryCache.Get<IEnumerable<StorageFileModel>>(bucket);
             if (items == null)
             {
-                var files = Directory.EnumerateFiles($"{Directory.GetCurrentDirectory()}/{bucket}", "*.*", SearchOption.AllDirectories);
-
-                items = files.Select(x =>
-                {
-                    var fileInfo = new FileInfo(x);
-                    var model = new StorageFileModel
-                    {
-                        Name = fileInfo.Name,
-                        Key = fileInfo.FullName,
-                        Tag = fileInfo.FullName,
-                        LastModified = fileInfo.LastAccessTimeUtc,
-                        Size = fileInfo.Length
-                    };
-
-                    return model;
-                });
+                items = ListFiles($"{Directory.GetCurrentDirectory()}/{bucket}");
 
                 memoryCache.CreateEntry(bucket);
                 memoryCache.Set(bucket, items, new MemoryCacheEntryOptions
@@ -149,6 +162,39 @@ namespace HomeManagement.API.Storage.Controllers
             }
 
             return items;
+        }
+
+        private IEnumerable<StorageFileModel> ListFiles(string path)
+        {
+            var all = Directory.EnumerateFileSystemEntries(path, "*.*", SearchOption.AllDirectories);
+
+            return all.Select(x =>
+            {
+                var directory = new DirectoryInfo(x);
+
+                if (directory.Attributes.Equals(FileAttributes.Directory))
+                {
+                    return new StorageFileModel
+                    {
+                        Name = directory.Name,
+                        Key = directory.FullName,
+                        IsDirectory = true
+                    };
+                }
+                else
+                {
+                    var fileInfo = new FileInfo(x);
+                    return new StorageFileModel
+                    {
+                        Name = fileInfo.Name,
+                        Key = fileInfo.FullName,
+                        Tag = fileInfo.FullName,
+                        LastModified = fileInfo.LastAccessTimeUtc,
+                        Size = fileInfo.Length,
+                        IsDirectory = false
+                    };
+                }
+            });
         }
 
         private void ClearCachedItems()
