@@ -1,16 +1,17 @@
-﻿using HomeManagement.Api.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using HomeManagement.Api.Core;
 using HomeManagement.Api.Core.Extensions;
 using HomeManagement.Api.Identity.Filters;
+using HomeManagement.API.Storage.Services;
 using HomeManagement.Core.Extensions;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using FileManager = System.IO.File;
 
 namespace HomeManagement.API.Storage.Controllers
@@ -22,12 +23,16 @@ namespace HomeManagement.API.Storage.Controllers
     {
         private readonly IConfiguration configuration;
         private readonly IMemoryCache memoryCache;
+        private readonly IUserFilesService userFilesService;
         private readonly string bucket;
 
-        public LocalStorageController(IConfiguration configuration, IMemoryCache memoryCache)
+        public LocalStorageController(IConfiguration configuration, 
+            IMemoryCache memoryCache,
+            IUserFilesService userFilesService)
         {
             this.configuration = configuration;
             this.memoryCache = memoryCache;
+            this.userFilesService = userFilesService;
             var spacesConfig = this.configuration.GetSection("DO").GetSection("spaces");
             bucket = spacesConfig.GetValue<string>("bucket");
         }
@@ -36,7 +41,7 @@ namespace HomeManagement.API.Storage.Controllers
 
         [Authorization]
         [HttpGet]
-        public IActionResult Get() => Ok(GetUserFiles());
+        public IActionResult Get() => Ok(userFilesService.GetDirectories($@"{Directory.GetCurrentDirectory()}/{bucket}/{Principal.Name}"));
 
         [HttpGet("getall")]
         [Authorization(Constants.Roles.Admininistrator)]
@@ -60,13 +65,15 @@ namespace HomeManagement.API.Storage.Controllers
         {
             var slash = Core.Extensions.String.GetOsSlash();
 
-            var directory = path.IsEmpty() ?
-                $"{Directory.GetCurrentDirectory()}{slash}{bucket}{slash}{Principal.Name}{slash}{Principal.ApplicationName}" :
-                $"{Directory.GetCurrentDirectory()}{slash}{bucket}{slash}{Principal.Name}{slash}{Principal.ApplicationName}{slash}{path}";
+            var root = new DirectoryInfo($"{Directory.GetCurrentDirectory()}{slash}{bucket}{slash}{Principal.Name}");
 
-            directory = $"{directory}{slash}{folder}";
+            var directory = root
+                .EnumerateFileSystemInfos("*.*", SearchOption.AllDirectories)
+                .FirstOrDefault(x => x.Name.Equals(path));
 
-            if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+            var newFolder = $"{directory.FullName}{slash}{folder}";
+
+            if (!Directory.Exists(newFolder)) Directory.CreateDirectory(newFolder);
 
             return Ok();
         }
@@ -100,7 +107,7 @@ namespace HomeManagement.API.Storage.Controllers
             return Ok();
         }
 
-        [Authorization]
+        [Authorization(Constants.Roles.RegularUser, Constants.Roles.Admininistrator)]
         [HttpDelete("{filename}")]
         public IActionResult Delete(string filename)
         {
