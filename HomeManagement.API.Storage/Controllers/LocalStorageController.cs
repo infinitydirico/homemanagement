@@ -111,13 +111,12 @@ namespace HomeManagement.API.Storage.Controllers
         [HttpDelete("{filename}")]
         public IActionResult Delete(string filename)
         {
-            var objs = GetObjects();
+            var model = userFilesService.Find($@"{Directory.GetCurrentDirectory()}/{bucket}/{Principal.Name}", filename);
 
-            var file = objs.FirstOrDefault(x => x.Name.Contains(filename));
+            if (model == null) return BadRequest();
 
-            if (file == null) return BadRequest();
-
-            FileManager.Delete(file.Key);
+            if (model.IsDirectory) Directory.Delete(model.Path);
+            else FileManager.Delete(model.Name);
 
             ClearCachedItems();
 

@@ -9,7 +9,9 @@ namespace HomeManagement.API.Storage.Services
     public interface IUserFilesService
     {
         IEnumerable<DirectoryModel> GetDirectories(string path);
-    }
+
+		DirectoryModel Find(string rootPath, string name);
+	}
 
     public class UserFilesService : IUserFilesService
     {
@@ -21,6 +23,15 @@ namespace HomeManagement.API.Storage.Services
             var spacesConfig = configuration.GetSection("DO").GetSection("spaces");
             bucket = spacesConfig.GetValue<string>("bucket");
         }
+
+        public DirectoryModel Find(string rootPath, string name)
+        {
+			root = new DirectoryInfo(rootPath);
+
+			var found = DeepFind(root, name);
+
+			return found;
+		}
 
         public IEnumerable<DirectoryModel> GetDirectories(string path)
         {
@@ -95,6 +106,26 @@ namespace HomeManagement.API.Storage.Services
 			model.Children.AddRange(GetChildren(infoDir));
 
 			return model;
+		}
+
+		DirectoryModel DeepFind(DirectoryInfo dir, string name)
+        {
+			if(dir.Name.ToLower().Equals(name.ToLower())) return new DirectoryModel
+			{
+				Name = dir.Name,
+				Path = dir.FullName,
+				IsDirectory = dir.Attributes.Equals(FileAttributes.Directory)
+			};
+
+			var children = dir.EnumerateDirectories("*.*", SearchOption.TopDirectoryOnly);
+
+            foreach (var child in children)
+            {
+				var found = DeepFind(child, name);
+				if (found != null) return found;
+            }
+
+			return null;
 		}
 	}
 }
