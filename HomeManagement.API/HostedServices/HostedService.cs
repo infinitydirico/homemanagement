@@ -34,7 +34,10 @@ namespace HomeManagement.API.HostedServices
             logger.LogInformation($"Starting hosted service {GetType().Name}");
 
             var period = GetPeriodToRun();
-            timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(period));
+            if(period > 0)
+            {
+                timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(period));
+            }
             return Task.CompletedTask;
         }
 

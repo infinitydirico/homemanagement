@@ -19,6 +19,7 @@ namespace HomeManagement.API.Controllers.Accounts
         }
 
         [HttpGet("avgseries")]
+        [Cache(key: nameof(AccountMetricController.AverageSeries), slidingExpiration: 1)]
         public IActionResult AverageSeries()
         {            
             var result = accountAverageSeriesQuery.AccountsAvgSeries(Principal.Email);
