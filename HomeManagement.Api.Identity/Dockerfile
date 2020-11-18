@@ -1,14 +1,17 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim AS base
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0-buster AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["HomeManagement.Api.Identity/HomeManagement.Api.Identity.csproj", "HomeManagement.Api.Identity/"]
 COPY ["HomeManagement.Data/HomeManagement.Data.csproj", "HomeManagement.Data/"]
 COPY ["HomeManagement.Data.Contracts/HomeManagement.Data.Contracts.csproj", "HomeManagement.Data.Contracts/"]
 COPY ["HomeManagement.Domain/HomeManagement.Domain.csproj", "HomeManagement.Domain/"]
 COPY ["HomeManagement.Contracts/HomeManagement.Contracts.csproj", "HomeManagement.Contracts/"]
+COPY ["HomeManagement.API.RabbitMQ/HomeManagement.API.RabbitMQ.csproj", "HomeManagement.API.RabbitMQ/"]
 COPY ["HomeManagement.Core/HomeManagement.Core.csproj", "HomeManagement.Core/"]
 COPY ["HomeManagement.Tokens/HomeManagement.Api.Core.csproj", "HomeManagement.Tokens/"]
 COPY ["HomeManagement.Models/HomeManagement.Models.csproj", "HomeManagement.Models/"]

@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.API.Storage"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.API.Tests", "HomeManagement.API.Tests\HomeManagement.API.Tests.csproj", "{3A1CC306-5936-40A0-BB40-CC6EF9C6FCE5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.App.Web", "HomeManagement.App.Web\HomeManagement.App.Web.csproj", "{39B262C1-CF8B-4999-95C0-309B943D4226}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.Business", "HomeManagement.Business\HomeManagement.Business.csproj", "{330B26EC-90FA-4217-9854-4713BAE8F457}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.Contracts", "HomeManagement.Contracts\HomeManagement.Contracts.csproj", "{13592022-4D72-4A25-A898-ACB69D51E87F}"
@@ -34,8 +32,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.Models", "HomeManagement.Models\HomeManagement.Models.csproj", "{AEDA4902-859A-4AAD-9351-F55B11AE38C2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.Proxy", "HomeManagement.Proxy\HomeManagement.Proxy.csproj", "{A422A21A-CFB4-4EFF-B93A-0FB85D563211}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.Services", "HomeManagement.Services\HomeManagement.Services.csproj", "{D3A1EFF8-9F21-49E1-BEA5-AF742A19DEBD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeManagement.Api.Core", "HomeManagement.Tokens\HomeManagement.Api.Core.csproj", "{783C2DB4-02C0-495B-86CE-DB247EA829DB}"
 EndProject
@@ -65,10 +61,6 @@ Global
 		{3A1CC306-5936-40A0-BB40-CC6EF9C6FCE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A1CC306-5936-40A0-BB40-CC6EF9C6FCE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A1CC306-5936-40A0-BB40-CC6EF9C6FCE5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{39B262C1-CF8B-4999-95C0-309B943D4226}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{39B262C1-CF8B-4999-95C0-309B943D4226}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{39B262C1-CF8B-4999-95C0-309B943D4226}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{39B262C1-CF8B-4999-95C0-309B943D4226}.Release|Any CPU.Build.0 = Release|Any CPU
 		{330B26EC-90FA-4217-9854-4713BAE8F457}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{330B26EC-90FA-4217-9854-4713BAE8F457}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{330B26EC-90FA-4217-9854-4713BAE8F457}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -109,10 +101,6 @@ Global
 		{A422A21A-CFB4-4EFF-B93A-0FB85D563211}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A422A21A-CFB4-4EFF-B93A-0FB85D563211}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A422A21A-CFB4-4EFF-B93A-0FB85D563211}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D3A1EFF8-9F21-49E1-BEA5-AF742A19DEBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D3A1EFF8-9F21-49E1-BEA5-AF742A19DEBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D3A1EFF8-9F21-49E1-BEA5-AF742A19DEBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D3A1EFF8-9F21-49E1-BEA5-AF742A19DEBD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{783C2DB4-02C0-495B-86CE-DB247EA829DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{783C2DB4-02C0-495B-86CE-DB247EA829DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{783C2DB4-02C0-495B-86CE-DB247EA829DB}.Release|Any CPU.ActiveCfg = Release|Any CPU

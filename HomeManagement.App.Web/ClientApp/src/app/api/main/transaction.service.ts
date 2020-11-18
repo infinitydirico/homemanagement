@@ -25,7 +25,7 @@ export class TransactionService {
     }
 
     paginate(page: TransactionPageModel) {
-        return this.http.post<TransactionPageModel>(this.endpoint + '/paging', page, this.httpOptions)
+        return this.http.get<Array<Transaction>>(this.endpoint + '/v1/account/' + page.accountId + '/page?currentPage=' + page.currentPage + '&pageSize=' + page.pageCount, this.httpOptions)
         .pipe(map(res => {
           return res;
         }));

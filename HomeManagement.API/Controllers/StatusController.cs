@@ -1,4 +1,5 @@
-﻿using HomeManagement.Api.Core.HealthChecks;
+﻿using HomeManagement.Api.Core;
+using HomeManagement.Api.Core.HealthChecks;
 using HomeManagement.API.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -9,8 +10,7 @@ using static System.IO.File;
 
 namespace HomeManagement.Api.Identity.Controllers
 {
-    [Authorization]
-    [AdminAuthorization]
+    [Authorization(Constants.Roles.Admininistrator)]
     [Route("api/[controller]")]
     [ApiController]
     public class StatusController : ControllerBase

@@ -28,7 +28,7 @@ namespace HomeManagement.API.Business
         {
             User user;            
 
-            var email = httpContextAccessor.HttpContext.User.Claims.First(x => x.Type.Equals(JwtRegisteredClaimNames.Sub)).Value;
+            var email = httpContextAccessor.HttpContext.User.Claims.First(x => x.Type.Equals(JwtRegisteredClaimNames.Email)).Value;
 
             var key = $"{nameof(GetAuthenticatedUser)}:{email}";
 

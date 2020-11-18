@@ -19,6 +19,7 @@ namespace HomeManagement.API.Controllers.Accounts
         }
 
         [HttpGet("accountsevolution")]
+        [Cache(key: nameof(AccountChartsController.AccountsEvolution), slidingExpiration: 1)]
         public IActionResult AccountsEvolution()
         {
             var model = metricsService.GetAccountsBalancesEvolution();
@@ -33,6 +34,7 @@ namespace HomeManagement.API.Controllers.Accounts
         }
 
         [HttpGet("toptransactions/{month}")]
+        [Cache(key: nameof(AccountChartsController.AccountTopTransactions), slidingExpiration: 1)]
         public IActionResult AccountTopTransactions(int month)
         {
             var model = metricsService.TopTransactionsByMonth(month);

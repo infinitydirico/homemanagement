@@ -21,7 +21,7 @@ namespace HomeManagement.API.Storage.Controllers
     [EnableCors("StorageApiCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class StorageController : ControllerBase
+    public class DOStorageController : ControllerBase
     {
         private readonly IConfiguration configuration;
         private readonly IMemoryCache memoryCache;
@@ -30,7 +30,7 @@ namespace HomeManagement.API.Storage.Controllers
         private readonly string secret;
         private readonly string url;
 
-        public StorageController(IConfiguration configuration, IMemoryCache memoryCache)
+        public DOStorageController(IConfiguration configuration, IMemoryCache memoryCache)
         {
             this.configuration = configuration;
             this.memoryCache = memoryCache;

@@ -71,6 +71,7 @@ namespace HomeManagement.API
             services.AddMappers();
             services.AddExportableComponents();
             services.AddCustomServices();
+            services.AddQueryes();
             services.AddThrottlingService();
 
             services.AddScoped<ICurrencyService, CurrencyService>();

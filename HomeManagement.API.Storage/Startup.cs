@@ -41,6 +41,8 @@ namespace HomeManagement.API.Storage
             services.AddControllers();
             
             services.AddSingleton<IHostedService, TemporaryFilesCleanerService>();
+            services.AddScoped<IUserFilesService, UserFilesService>();
+            services.AddScoped<IFolderService, FolderService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

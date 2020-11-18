@@ -1,28 +1,25 @@
-﻿using HomeManagement.Api.Core;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
+using HomeManagement.Api.Core;
 using HomeManagement.Api.Core.Extensions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net;
-using System.Security.Claims;
-using System.Security.Principal;
-using System.Threading.Tasks;
 
 namespace HomeManagement.API.Filters
 {
     public class AuthorizationAttribute : Attribute, IAsyncActionFilter
     {
+        protected HomeManagementPrincipal principal;
+
+        public AuthorizationAttribute() : this(Constants.Roles.RegularUser) { }
+
+        public AuthorizationAttribute(params string[] policies) => Policies = policies;
+
+        public string[] Policies { get; }
+
         public virtual async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (IsDropboxRequest(context.HttpContext.Request.QueryString))
-            {
-                await next();
-                return;
-            }
-
             var header = context.HttpContext.GetAuthorizationHeader();
 
             if (string.IsNullOrEmpty(header))
@@ -34,23 +31,25 @@ namespace HomeManagement.API.Filters
 
             var token = TokenFactory.Reader(header);
 
-            if (TokenFactory.IsExpired(token))
+            principal = new HomeManagementPrincipal(token);
+
+            if (principal.Expired())
             {
                 context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Forbidden, Content = "Token has expired" };
 
                 return;
             }
 
-            var email = token.Claims.FirstOrDefault(x => x.Type.Equals(JwtRegisteredClaimNames.Sub));
+            if (!principal.IsAuthorized(Policies))
+            {
+                context.Result = new ContentResult { StatusCode = (int)HttpStatusCode.Unauthorized, Content = "Not authorized." };
 
-            context.HttpContext.User = new GenericPrincipal(new ClaimsIdentity(token.Claims), Array.Empty<string>());
+                return;
+            }
+
+            context.HttpContext.User = principal;
 
             await next();
         }
-
-        private bool IsDropboxRequest(QueryString queryString)
-            => queryString.HasValue &&
-            queryString.Value.Contains("code") &&
-            queryString.Value.Contains("state");
     }
 }

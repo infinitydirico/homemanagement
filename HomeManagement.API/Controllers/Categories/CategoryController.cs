@@ -1,9 +1,8 @@
-﻿using HomeManagement.Api.Core.Extensions;
+﻿using HomeManagement.Api.Core;
 using HomeManagement.API.Filters;
 using HomeManagement.Business.Contracts;
 using HomeManagement.Models;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeManagement.API.Controllers.Categories
@@ -24,20 +23,16 @@ namespace HomeManagement.API.Controllers.Categories
         [HttpGet]
         public IActionResult Get()
         {
-            var email = HttpContext.GetEmailClaim();
-
             return Ok(categoryService.Get());
         }
 
         [HttpGet("active")]
         public IActionResult GetActiveCategories()
         {
-            var email = HttpContext.GetEmailClaim();
-
             return Ok(categoryService.GetActive());
         }
 
-        [AdminAuthorization]
+        [Authorization(Constants.Roles.Admininistrator)]
         [HttpGet("GetUsersCategories")]
         public IActionResult GetUsersCategories()
         {

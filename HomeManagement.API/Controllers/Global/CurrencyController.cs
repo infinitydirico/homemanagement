@@ -1,4 +1,5 @@
-﻿using HomeManagement.API.Filters;
+﻿using HomeManagement.Api.Core;
+using HomeManagement.API.Filters;
 using HomeManagement.API.Services;
 using HomeManagement.Mapper;
 using Microsoft.AspNetCore.Cors;
@@ -33,7 +34,7 @@ namespace HomeManagement.API.Controllers.Global
             return Ok(models);
         }
 
-        [AdminAuthorization]
+        [Authorization(Constants.Roles.Admininistrator)]
         [HttpPost]
         public IActionResult UpdateCurrencies()
         {
