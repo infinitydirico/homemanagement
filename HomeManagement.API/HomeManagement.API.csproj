@@ -8,6 +8,7 @@
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
     <StartupObject />
+    <UserSecretsId>3ca4391f-01b0-43be-8362-c396282ba7ae</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
